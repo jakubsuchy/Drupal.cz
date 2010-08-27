@@ -1,0 +1,13 @@
+This is a repository for Drupal.cz community code. You probably don't need it unless you are working on a task to help Drupal.cz with new updates.
+
+Toto je repozitář pro kód webu Drupal.cz. Pravděpodobně ho nepotřebujete, pokud nepomáháte na projektu Drupal.cz webu. 
+
+Jak rozjet lokální verzi Drupal.cz?
+
+1) Vytvořte si clone tohoto repositáře
+2) Stáhněte si nejnovější verzi databáze Drupal.cz na adrese http://www.drupal.cz/files/dump.sql.bz2
+3) Web rozjeďte
+4) Udělejte potřebné změny a vygenerujte patch či commitněte do vašeho vlastního forku
+
+Při vývoji dodržujte Drupal coding standards: http://drupal.org/coding-standards
+Všechny komentáře a commit messages pište v angličtině.
