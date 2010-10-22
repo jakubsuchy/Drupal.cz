@@ -1,0 +1,157 @@
+<?php
+// $Id: subscriptions_blog_ui.module,v 1.4 2008/10/26 23:25:44 salvis Exp $
+
+/**
+ * @file
+ * Provide a Subscriptions UI for the blog content type subscriptions
+ */
+
+/**
+ * Implementation of hook_subscriptions().
+ *
+ * @ingroup hooks
+ */
+function subscriptions_blog_ui_subscriptions($op, $arg0 = NULL, $arg1 = NULL, $arg2 = NULL) {
+  $function = '_subscriptions_blog_ui_'. $op;
+  if (function_exists($function)) {
+    return $function($arg0, $arg1, $arg2);
+  }
+  if ($op == 'stype' && $arg0 == 'blog') {
+    return array('node', 'type', 'blog', $arg1);
+  }
+}
+
+/**
+ * Implementation of hook_types(), subhook of hook_subscriptions().
+ *
+ * This is called by subscriptions_types() in subscriptions.module.
+ *
+ * @return
+ *   Returns information about types for the Subscriptions module interface.
+ *
+ * @ingroup form
+ * @ingroup hooks
+ *
+ * @see subscriptions_types()
+ */
+function _subscriptions_blog_ui_types() {
+  $tr = 't';
+  $types['blog'] = array(
+    'title' => $tr('Blogs'),
+    'access' => 'subscribe to blogs',
+    'page' => 'subscriptions_blog_ui_page_blog',
+    'fields' => array('blog', 'author_uid'),
+    'weight' => -3,
+  );
+  return $types;
+  t('subscribe to blogs');
+}
+
+/**
+ * Returns a list of blog subscriptions.
+ *
+ * @ingroup form
+ */
+function subscriptions_blog_ui_page_blog($account, $form) {
+  $blogs = array();
+  // get the blogs
+  $sql = db_rewrite_sql("
+    SELECT u.uid, u.name
+    FROM {node} n
+    INNER JOIN {users} u ON n.uid = u.uid
+    WHERE n.type = 'blog' AND n.status = 1
+    GROUP BY u.uid
+    ORDER BY u.name");
+  $result = db_query($sql);
+  while ($usr = db_fetch_array($result)) {
+    $blogs[$usr['uid']] = array(
+      'uid' => $usr['uid'],
+      'name' => $usr['name'],
+      'has_blog' => TRUE,
+    );
+  }
+
+  // possibly additional blog subscription entries (no blog nodes)
+  $result = db_query("
+    SELECT s.author_uid, u.name
+    FROM {subscriptions} s
+    INNER JOIN {users} u ON s.author_uid = u.uid
+    WHERE s.module = 'node' AND s.field = 'type' AND s.value = 'blog' AND s.recipient_uid = %d
+    ORDER BY u.name", $account->uid);
+  while ($usr = db_fetch_array($result)) {
+    $blogs[$usr['author_uid']]['uid'] = $usr['author_uid'];
+    $blogs[$usr['author_uid']]['name'] = $usr['name'];
+  }
+
+  if (!empty($blogs)) {
+    return drupal_get_form('subscriptions_blog_ui_blog_form', $blogs, $account, $form);
+  }
+  else {
+    return t('There are no active blogs.');
+  }
+}
+
+/**
+ * Returns the blog subscription form.
+ *
+ * @ingroup form
+ */
+function subscriptions_blog_ui_blog_form(&$form_state, $blogs, $account, $form) {
+  $uid = (isset($account) ? $account->uid : (is_numeric(arg(5)) ? -arg(5) : -DRUPAL_AUTHENTICATED_RID));
+  $subscriptions = array();
+  $result = db_query("
+    SELECT s.value, s.send_interval, s.author_uid, s.send_comments, s.send_updates, u.name
+    FROM {subscriptions} s
+    INNER JOIN {users} u ON s.author_uid = u.uid
+    WHERE s.module = 'node' AND s.field = 'type' AND s.value = 'blog' AND s.recipient_uid = %d
+    ORDER BY u.name", $uid);
+  while ($s = db_fetch_array($result)) {
+    $subscriptions[$s['author_uid']] = $s;
+  }
+  $form[0] = array(
+    '#type' => 'item',
+    '#title' => '',
+    '#tree' => TRUE,
+    '#theme' => 'subscriptions_form_table',
+  );
+
+  $intervals = _subscriptions_send_intervals();
+  foreach ($blogs as $blog) {
+    $title = ($blog['has_blog'] ? l($blog['name'], 'blog/'. $blog['uid']) : $blog['name']);
+    // add the active subscriptions
+    if (!isset($subscriptions[$blog['uid']])) {
+      // author-less item is missing -- add it here:
+      $subscriptions[$blog['uid']] = array(
+        'send_interval' => _subscriptions_get_setting('send_interval', ($uid < 0 ? $uid : $account)),
+        'send_comments' => _subscriptions_get_setting('send_comments', ($uid < 0 ? $uid : $account)),
+        'send_updates' => _subscriptions_get_setting('send_updates', ($uid < 0 ? $uid : $account)),
+      );
+    }
+    subscriptions_form_helper($form[0], $defaults, $blog['uid'], 'blog', $title, $subscriptions[$blog['uid']]);
+  }
+  unset($form[0]['author']);
+  $form[0]['defaults'] = array(
+    '#type' => 'value',
+    '#value' => $defaults,
+  );
+  subscriptions_form_column_filter($form[0], $uid);
+
+  $form['#tree'] = TRUE;
+  $form['uid'] = array('#type' => 'value', '#value' => $uid);
+  $form['access_key'] = array('#type' => 'value', '#value' => 'blog');
+  $form['module'] = array('#type' => 'value', '#value' => 'node');
+  $form['field'] = array('#type' => 'value', '#value' => 'type');
+  $form['submit'] = array('#type' => 'submit', '#value' => t('Save'), '#weight' => 10);
+  $form['#submit'][] = 'subscriptions_page_form_submit';
+  return $form;
+}
+
+/**
+ * Implementation of hook_count_user_subscriptions().
+ *
+ * @ingroup hooks
+ */
+function subscriptions_blog_ui_count_user_subscriptions($counts, $uid) {
+  $counts['blog']['author_uid'] = db_result(db_query("SELECT count(*) FROM {subscriptions} WHERE module = 'node' AND field = 'type' AND value = 'blog' AND recipient_uid = %d", $uid));
+  return $counts;
+}

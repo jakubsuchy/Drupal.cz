@@ -1,0 +1,584 @@
+<?php
+// $Id: custom.module,v 1.1.2.8.2.6 2009/08/05 14:25:13 jeremy Exp $
+
+/**
+ * @file
+ * Custom spam filter module
+ * Copyright(c) 2007-2009
+ *  Jeremy Andrews <jeremy@tag1consulting.com>.
+ *
+ * Allows manual definition of words and regular expressions to detect spam
+ * content.
+ */
+
+define(SPAM_CUSTOM_STYLE_PLAIN, 0);
+define(SPAM_CUSTOM_STYLE_REGEX, 1);
+
+define(SPAM_CUSTOM_STATUS_NOTSPAM, -2);
+define(SPAM_CUSTOM_STATUS_PROBABLYNOT, -1);
+define(SPAM_CUSTOM_STATUS_DISABLED, 0);
+define(SPAM_CUSTOM_STATUS_PROBABLY, 1);
+define(SPAM_CUSTOM_STATUS_SPAM, 2);
+
+define(SPAM_CUSTOM_SCAN_CONTENT, 0x1);
+define(SPAM_CUSTOM_SCAN_REFERRER, 0x4);
+define(SPAM_CUSTOM_SCAN_USERAGENT, 0x8);
+
+// TODO: support actions
+//define(SPAM_CUSTOM_ACTION_DELETE, 0x1);
+//define(SPAM_CUSTOM_ACTION_MAIL, 0x2);
+
+/**
+ * Spam API Hook
+ */
+function custom_spamapi($op, $type = NULL, $content = array(), $fields = array(), $extra = NULL) {
+  switch ($op) {
+    case 'filter':
+      if (!module_invoke('spam', 'filter_enabled', 'custom', $type, $content, $fields, $extra)) return;
+      return custom_spam_filter($content, $type, $fields, $extra);
+
+    case 'filter_module':
+    return 'custom';
+
+    case 'filter_info':
+      return array(
+        'name' => t('Custom filter'),
+        'module' => t('custom'),
+        'description' => t('Custom spam filters.'),
+        'help' => t('The custom spam filter module allows you to manually define custom spam filter rules.'),
+      );
+
+    case 'filter_install':
+      return array(
+        'status' => SPAM_FILTER_ENABLED,
+        'gain' => 250,
+        'weight' => -4,
+      );
+  }
+}
+
+/**
+ * Drupal _menu() hook.
+ */
+function custom_menu() {
+  $items = array();
+
+  $items['admin/settings/spam/filters/custom'] = array(
+    'title' => 'Custom',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_admin_settings'),
+    'access arguments' => array('administer spam'),
+    'description' => 'Configure the custom spam filter module.',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/settings/spam/filters/custom/list'] = array(
+    'title' => 'List',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_admin_settings'),
+    'access arguments' => array('administer spam'),
+    'description' => 'Configure the custom spam filter module.',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/settings/spam/filters/custom/create'] = array(
+    'title' => 'Create',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_admin_filter'),
+    'access arguments' => array('administer spam'),
+    'description' => 'Create a custom spam filter.',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items["admin/settings/spam/filters/custom/%/edit"] = array(
+    'title' => 'Create',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_admin_filter', 5),
+    'access arguments' => array('administer spam'),
+    'description' => 'Edit a custom spam filter.',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Adminsitrative interface for configuring custom spam filter rules.
+ */
+function custom_admin_settings() {
+  $form = array();
+
+  $form['options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Options'),
+    '#prefix' => '<div class="container-inline">',
+    '#suffix' => '</div>'
+  );
+  $options = array();
+  foreach (module_invoke_all('spam_custom_operations') as $operation => $op) {
+    $options[$operation] = $op['label'];
+  }
+  $form['options']['operation'] = array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#default_value' => 'scan'
+  );
+  $form['options']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Execute')
+  );
+
+  $rows = array();
+  $result = pager_query('SELECT * FROM {spam_custom} ORDER BY weight ASC');
+  while ($custom = db_fetch_object($result)) {
+    $all[$custom->cid] = '';
+
+    // The filter text.
+    $form['filter'][$custom->cid] = array('#value' => $custom->filter);
+
+    // What style of filter.
+    if ($custom->style == SPAM_CUSTOM_STYLE_PLAIN) {
+      $form['style'][$custom->cid] = array('#value' => t('Plain text'));
+    }
+    else if ($custom->style == SPAM_CUSTOM_STYLE_REGEX) {
+      $form['style'][$custom->cid] = array('#value' => t('Regular expression'));
+    }
+
+    // What to scan.
+    $scan = array();
+    if ($custom->scan & SPAM_CUSTOM_SCAN_CONTENT) {
+      $scan[] = t('Content');
+    }
+    if ($custom->scan & SPAM_CUSTOM_SCAN_REFERRER) {
+      $scan[] = t('Referrer');
+    }
+    if ($custom->scan & SPAM_CUSTOM_SCAN_USERAGENT) {
+      $scan[] = t('User agent');
+    }
+    $form['scan'][$custom->cid] = array('#value' => implode(', ', $scan));
+
+    // What status to apply.
+    switch ($custom->status) {
+      case SPAM_CUSTOM_STATUS_NOTSPAM:
+        $status = t('Mark as not spam');
+        break;
+      case SPAM_CUSTOM_STATUS_PROBABLYNOT:
+        $status = t('Mark as probably not spam');
+        break;
+      case SPAM_CUSTOM_STATUS_DISABLED:
+        $status = t('Disabled');
+        break;
+      case SPAM_CUSTOM_STATUS_PROBABLY:
+        $status = t('Mark as probably spam');
+        break;
+      case SPAM_CUSTOM_STATUS_SPAM:
+        $status = t('Mark as spam');
+        break;
+      default:
+        $status = t('Unknown');
+        break;
+    }
+    $form['status'][$custom->cid] = array(
+      '#value' => $status
+    );
+
+    // How many times this filter has been matched.
+    $form['matches'][$custom->cid] = array('#value' => $custom->matches);
+
+    // The last time this filter was matched.
+    $last = $custom->last ? t('@time ago', array('@time' => format_interval(time() - $custom->last))) : t('Never');
+    $form['last'][$custom->cid] = array(
+      '#value' => $last
+    );
+
+    // Link to edit the filter.
+    $form['edit'][$custom->cid] = array(
+      '#value' => l(t('edit'), "admin/settings/spam/filters/custom/$custom->cid/edit"),
+    );
+
+    $rows[] = $row;
+  }
+
+  $form['create2'] = array(
+    '#value' => '['. l(t('create custom filter'), 'admin/settings/spam/filters/custom/create') .']',
+    '#prefix' => '<div class="container-inline">',
+    '#suffix' => '</div>'
+  );
+
+  $form['custom'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $all,
+  );
+  $form['pager'] = array(
+    '#value' => theme('pager', NULL, 50, 0),
+  );
+
+  return $form;
+}
+
+/**
+ * Drupal _theme() hook.
+ */
+function custom_theme() {
+  return array(
+    'custom_admin_settings' => array(
+      'file' => 'custom.module',
+      'arguments' => array(
+        'form' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Format the custom filter admin page.
+ */
+function theme_custom_admin_settings($form) {
+  // TODO: use custom_upgrade() from custom_upgrade.inc in custom.install
+  //_custom_upgrade();
+  $header = array(theme('table_select_header_cell'), t('Filter'), t('Style'), t('Scan'), t('Status'), t('Matches'), t('Last'), '');
+
+  $output = drupal_render($form['options']);
+  $rows = array();
+  if (isset($form['filter']) && is_array($form['filter'])) {
+    foreach (element_children($form['filter']) as $key) {
+      $row = array();
+      $row[] = drupal_render($form['custom'][$key]);
+      $row[] = drupal_render($form['filter'][$key]);
+      $row[] = drupal_render($form['style'][$key]);
+      $row[] = drupal_render($form['scan'][$key]);
+      $row[] = drupal_render($form['status'][$key]);
+      $row[] = drupal_render($form['matches'][$key]);
+      $row[] = drupal_render($form['last'][$key]);
+      $row[] = drupal_render($form['edit'][$key]);
+      $rows[] = $row;
+    }
+
+    $output .= theme('table', $header, $rows);
+    if ($form['pager']['#value']) {
+      $output .= drupal_render($form['pager']);
+    }
+  }
+  else {
+    $output .= theme('table', $header, $rows);
+    $output .= '<em>'. t('No custom filters created.') .'</em>';
+  }
+
+  $output .= drupal_render($form);
+
+  return $output;
+}
+
+/**
+ * Define callbacks for custom filter options. Unlike in main spam module,
+ * here a single ID is added to the end of the argument listing by the
+ * only function that calls this (custom_admin_settings_submit).
+ */
+function custom_spam_custom_operations() {
+  $operations = array(
+    'disable' => array(
+      'label' => t('Disable'),
+      'callback' => 'custom_spam_filter_operations',
+      'callback arguments' => array('disable'),
+    ),
+    'delete' => array(
+      'label' => t('Delete'),
+      'callback' => 'custom_spam_filter_operations',
+      'callback arguments' => array('delete'),
+    ),
+  );
+  return $operations;
+}
+
+/**
+ * Create or edit a custom spam filter.
+ */
+function custom_admin_filter($form_state, $cid = NULL) {
+  if ($cid) {
+    drupal_set_title('Edit');
+    $custom = db_fetch_object(db_query('SELECT * FROM {spam_custom} WHERE cid = %d', $cid));
+    if (!isset($custom->cid)) {
+      drupal_set_message(t('Failed to load custom filter.'), 'error');
+      drupal_goto('admin/settings/spam/filters/custom');
+    }
+  }
+  else {
+    drupal_set_title('Create');
+  }
+  $form = array();
+  $form['filter'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Filter'),
+    '#description' => t('Enter a custom filter string. You can enter a word, a phrase, or a regular expression.'),
+    '#default_value' => $custom->cid ? $custom->filter : '',
+    '#required' => TRUE,
+  );
+  $form['style'] = array(
+    '#type' => 'radios',
+    '#title' => t('Filter type'),
+    '#description' => t('For a custom filter to match exactly what you type, select <code>plain text</code>.  If you would like to define a regular expression, your filter must be formatted as a <a href="http://www.php.net/manual/en/ref.pcre.php">Perl-compatible regular expression</a>.'),
+    '#options' => array(SPAM_CUSTOM_STYLE_PLAIN => t('Plain text'), SPAM_CUSTOM_STYLE_REGEX => t('Regular expression')),
+    '#default_value' => $custom->cid ? $custom->style : SPAM_CUSTOM_STYLE_PLAIN,
+    '#required' => TRUE,
+  );
+  $options = array(SPAM_CUSTOM_SCAN_CONTENT => ('Content'), SPAM_CUSTOM_SCAN_REFERRER => t('Referrer'), SPAM_CUSTOM_SCAN_USERAGENT => t('User agent'));
+  $scan = array();
+  if ($custom->scan & SPAM_CUSTOM_SCAN_CONTENT) {
+    $scan[] = SPAM_CUSTOM_SCAN_CONTENT;
+  }
+  if ($custom->scan & SPAM_CUSTOM_SCAN_REFERRER) {
+    $scan[] = SPAM_CUSTOM_SCAN_REFERRER;
+  }
+  if ($custom->scan & SPAM_CUSTOM_SCAN_USERAGENT) {
+    $scan[] = SPAM_CUSTOM_SCAN_USERAGENT;
+  }
+  $form['scan'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Scan'),
+    '#description' => t('Specify where you\'d like to apply your custom filter.'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => !empty($scan) ? $scan : array(SPAM_CUSTOM_SCAN_CONTENT),
+  );
+  $options = array();
+  $form['status'] = array(
+    '#type' => 'radios',
+    '#title' => t('Status'),
+    '#description' => t('Select the status to apply when your custom filter matches site content.  Filters are tested in the order they are displayed above, thus if content matches a filter that says to mark it as spam, and another to mark it as not spam, the first to match will be the actual status applied.'),
+    '#options' => array(
+      SPAM_CUSTOM_STATUS_DISABLED => t('Disabled'),
+      SPAM_CUSTOM_STATUS_SPAM => t('Mark as spam'),
+      SPAM_CUSTOM_STATUS_PROBABLY => t('Mark as probably spam'),
+      SPAM_CUSTOM_STATUS_PROBABLYNOT => t('Mark as probably not spam'),
+      SPAM_CUSTOM_STATUS_NOTSPAM => t('Mark as not spam')),
+    '#default_value' => $custom->cid ? $custom->status : SPAM_CUSTOM_STATUS_SPAM,
+    '#required' => TRUE,
+  );
+  $form['weight'] = array(
+    '#type' => 'weight',
+    '#title' => t('Weight'),
+    '#description' => t('Give your custom filter a weight.  "Lighter" filters with smaller weights will run before "heavier" filters with larger weights.'),
+    '#default_value' => $custom->weight,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => $custom->cid ? t('Update filter') : t('Create filter'),
+  );
+
+  if ($custom->cid) {
+    $form['cid'] = array(
+      '#type' => 'hidden',
+      '#value' => $custom->cid,
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Be sure that the custom filter is valid.
+ */
+function custom_admin_filter_validate($form, &$form_state) {
+  if ($form_state['values']['style'] == SPAM_CUSTOM_STYLE_REGEX) {
+    if (preg_match($form_state['values']['filter'], 'test') === FALSE) {
+      form_set_error('filter', t('Failed to validate your filter\'s regular expression.  It must be properly formatted as a <a href="http://www.php.net/manual/en/ref.pcre.php">Perl-compatible regular expression</a>.  Review the above error for details on the specific problem with your expression.'));
+    }
+  }
+  if (isset($form_state['values']['cid'])) {
+    // update
+    $cid = db_result(db_query("SELECT cid FROM {spam_custom} WHERE filter = '%s' AND cid <> %d", $form_state['values']['filter'], $form_state['values']['cid']));
+    if ($cid) {
+      form_set_error($cid, t('Custom filter %filter already exists', array('%filter' => $form_state['values']['filter'])));
+    }
+  }
+  else {
+    // create
+    $cid = db_result(db_query("SELECT cid FROM {spam_custom} WHERE filter = '%s'", $form_state['values']['filter']));
+    if ($cid) {
+      form_set_error($cid, t('Custom filter %filter already exists', array('%filter' => $form_state['values']['filter'])));
+    }
+  }
+}
+
+/**
+ * Create/update custom filer.
+ */
+function custom_admin_filter_submit($form, &$form_state) {
+  $scan = 0;
+  if (is_array($form_state['values']['scan'])) {
+    foreach ($form_state['values']['scan'] as $s) {
+      $scan += $s;
+    }
+  }
+  if (isset($form_state['values']['cid'])) {
+    db_query("UPDATE {spam_custom} SET filter = '%s', style = %d, status = %d, scan = %d, weight = %d WHERE cid = %d", $form_state['values']['filter'], $form_state['values']['style'], $form_state['values']['status'], $scan, $form_state['values']['weight'], $form_state['values']['cid']);
+    drupal_set_message(t('Custom filter %filter updated.', array('%filter' => $form_state['values']['filter'])));
+  }
+  else {
+    db_query("INSERT INTO {spam_custom} (filter, style, status, scan, weight) VALUES ('%s', %d, %d, %d, %d)", $form_state['values']['filter'], $form_state['values']['style'], $form_state['values']['status'], $scan, $form_state['values']['weight']);
+    drupal_set_message(t('Custom filter %filter created.', array('%filter' => $form_state['values']['filter'])));
+  }
+  drupal_goto('admin/settings/spam/filters/custom');
+}
+
+/**
+ * Perform bulk operations on the filters.
+ */
+function custom_admin_settings_submit($form, &$form_state) {
+  if (is_array($form_state['values']['custom'])) {
+    foreach ($form_state['values']['custom'] as $cid => $selected) {
+      if ($selected) {
+        $process[] = $cid;
+      }
+    }
+  }
+  if (!empty($process)) {
+    foreach (module_invoke_all('spam_custom_operations') as $operation => $op) {
+      $options[$operation] = $op;
+    }
+    $operation = $form_state['values']['operation'];
+    if (isset($options[$operation])) {
+      $function = $options[$operation]['callback'];
+      $arguments = $options[$operation]['callback arguments'];
+      //TODO: Why is order different than spam.module, and why 1 at a time?
+      foreach ($process as $cid) {
+        call_user_func_array($function, array_merge($arguments, array($cid)));
+      }
+    }
+  }
+}
+
+/**
+ * Perform custom operations.
+ * TODO: Confirmation would be nice.
+ */
+function custom_spam_filter_operations($op, $cid) {
+  $filter = db_fetch_object(db_query('SELECT cid, status, filter FROM {spam_custom} WHERE cid = %d', $cid));
+  switch ($op) {
+    case 'delete':
+      if ($filter->cid) {
+        db_query('DELETE FROM {spam_custom} WHERE cid = %d', $cid);
+        drupal_set_message(t('Deleted custom filter %filter.', array('%filter' => $filter->filter)));
+      }
+      break;
+    case 'disable':
+      if ($filter->cid && $filter->status != SPAM_CUSTOM_STATUS_DISABLED) {
+        db_query('UPDATE {spam_custom} SET status = %d WHERE cid = %d', SPAM_CUSTOM_STATUS_DISABLED, $cid);
+        drupal_set_message(t('Disabled custom filter %filter.', array('%filter' => $filter->filter)));
+      }
+      break;
+  }
+}
+
+/**
+ * Apply enabled custom filter rules against content.
+ */
+function custom_spam_filter($content, $type, $fields, $extra = array(), $filter_test = FALSE) {
+  $probably = $probably_not = 0;
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  $result = db_query('SELECT cid, filter, style, status, scan, action FROM {spam_custom} WHERE status <> %d ORDER BY weight ASC', SPAM_CUSTOM_STATUS_DISABLED);
+  while ($custom = db_fetch_object($result)) {
+    $scan = '';
+    if ($custom->scan & SPAM_CUSTOM_SCAN_CONTENT) {
+      // scan content
+      if (is_object($content)) {
+        $content = (array)$content;
+      }
+      $scan .= spam_get_text($content, $type, $fields, $extra);
+      spam_log(SPAM_DEBUG, 'custom_spam_filter', t('scanning content with %filter.', array('%filter' => $custom->filter)), $type, $id);
+    }
+    if ($custom->scan & SPAM_CUSTOM_SCAN_REFERRER) {
+      // scan referrer
+      // TODO: Determine if this is a live scan.  If not, don't scan referrer.
+      $scan .= $_SERVER['HTTP_REFERER'];
+      spam_log(SPAM_DEBUG, 'custom_spam_filter', t('scanning referrer with %filter.', array('%filter' => $custom->filter)), $type, $id);
+    }
+    if ($custom->scan & SPAM_CUSTOM_SCAN_USERAGENT) {
+      // scan user agent
+      // TODO: Determine if this is a live scan.  If not, don't scan user agent.
+      $scan .= $_SERVER['HTTP_USER_AGENT'];
+      spam_log(SPAM_DEBUG, 'custom_spam_filter', t('scanning user agent with %filter.', array('%filter' => $custom->filter)), $type, $id);
+    }
+    switch ($custom->style) {
+      case SPAM_CUSTOM_STYLE_PLAIN:
+        $match = preg_match_all("/$custom->filter/", $scan, $matches);
+        break;
+      case SPAM_CUSTOM_STYLE_REGEX:
+        $match = preg_match_all($custom->filter, $scan, $matches);
+        break;
+    }
+    if ($match) {
+      // Record that we've had one or more matches.
+      db_query('UPDATE {spam_custom} SET matches = matches + %d, last = %d WHERE cid = %d', $match, time(), $custom->cid);
+      spam_log(SPAM_VERBOSE, 'custom_spam_filter', t('matched with %filter.', array('%filter' => $custom->filter)), $type, $id);
+
+      $action['custom'][] = array(
+        'filter' => $custom->filter,
+        'status' => $custom->status,
+        'style' => $custom->style,
+        'scan' => $custom->scan,
+        'extra' => $custom->extra,
+      );
+
+      switch ($custom->status) {
+
+        case SPAM_CUSTOM_STATUS_SPAM:
+          spam_log(SPAM_VERBOSE, 'custom_spam_filter', t('content is spam.'), $type, $id);
+          // no need to scan any more, we've found spam
+          $action['total'] = 99;
+          return $action;
+
+        case SPAM_CUSTOM_STATUS_NOTSPAM:
+          spam_log(SPAM_VERBOSE, 'custom_spam_filter', t('content is not spam.'), $type, $id);
+          // no need to scan any more, we've found non-spam
+          $action['total'] = 1;
+          return $action;
+
+        case SPAM_CUSTOM_STATUS_PROBABLYNOT:
+          spam_log(SPAM_DEBUG, 'custom_spam_filter', t('content is probably not spam.'), $type, $id);
+          // maintain internal counter that this is probably not spam
+          $probably_not += $match;
+          break;
+
+        case SPAM_CUSTOM_STATUS_PROBABLY:
+          spam_log(SPAM_DEBUG, 'custom_spam_filter', t('content is probably spam.'), $type, $id);
+          // maintain internal counter that this is probably spam
+          $probably += $match;
+          break;
+      }
+    }
+  }
+
+  if ($probably && $probably_not) {
+    if ($probably >= $probably_not) {
+      $probably -= $probably_not;
+      $probably_not = 0;
+    }
+    else {
+      $probably_not -= $probably;
+      $probably = 0;
+    }
+  }
+  if ($probably) {
+    spam_log(SPAM_VERBOSE, 'custom_spam_filter', t('matched adjusted total of !number probably spam rule(s).', array('!number' => $probably)), $type, $id);
+    if ($probably >= variable_get('spam_custom_probably', 3)) {
+      $action['total'] = 99;
+    }
+    else {
+      $action['total'] = variable_get('spam_custom_probably_value', variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD));
+    }
+  }
+  else if ($probably_not) {
+    spam_log(SPAM_VERBOSE, 'custom_spam_filter', t('matched adjusted total of !number probably-not spam rule(s).', array('!number' => $probably_not)), $type, $id);
+    if ($probably_not >= variable_get('spam_custom_probablynot', 3)) {
+      $action['total'] = 1;
+    }
+    else {
+      $action['total'] = variable_get('spam_custom_probablynot_value', 40);
+    }
+  }
+  else {
+    // No matched filters, so don't change the overall spam score.
+    $action['total'] = 0;
+  }
+  return $action;
+}

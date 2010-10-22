@@ -1,0 +1,51 @@
+********************************************************************
+                     D R U P A L    M O D U L E
+********************************************************************
+Name: fastpath_fscache.module
+
+Description: File-based page caching mechanism for Drupal rather than
+             storing cached pages in the database.
+
+Maintainers:  Jeremy Andrews <jeremy AT kerneltrap DOT org> and
+              Matt Westgate <drupal AT asitis DOT org> and
+           
+Dependancies:
+  This module works with Drupal HEAD only
+
+
+INSTALLATION:
+********************************************************************
+
+1. Place the entire fastpath_fscache directory into your Drupal 
+   modules/ folder.
+   
+NOTE: It is not enough to just enable this module. Please follow all these 
+      steps. 
+   
+2. Enable this module by navigating to:
+
+     administer » modules
+     
+   The module will attempt to create a folder named 'cache' within your Drupal 
+   'files' folder.
+
+3. At the bottom of your settings.php file, add the following PHP code:
+
+    $conf = array(
+      'page_cache_fastpath' => 1,
+      'cache_inc' => './modules/custom/fastpath_fscache/cache.fs.inc',
+      'file_cache' => './files/cache'
+    );
+    
+  This enables file-based caching at the Drupal level, and also sets up 
+  the paths to your cache.fs.inc file and cache directory:
+  
+4. Enable page caching by navigating to:
+
+     administer » page caching
+
+5. CRON must configured properly on your site. Take a look at Drupal's 
+   INSTALL.txt file for setup instructions. This module relies on cron to 
+   remove stale files, so you'll want cron to run often, say every 5-15 
+   minutes. In the future we hope to give admins more control over the 
+   expiration time.  

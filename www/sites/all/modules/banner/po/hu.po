@@ -1,0 +1,485 @@
+# Hungarian translation of Drupal banner.module
+# Copyright Weblabor Team <info [at] weblabor.hu>
+#
+msgid ""
+msgstr "Project-Id-Version: 1.25\n"
+"POT-Creation-Date: 2003-11-24 15:21+0100\n"
+"PO-Revision-Date: 2004-02-29 22:37+0100\n"
+"Last-Translator: Weblabor Team <info [at] weblabor.hu>\n"
+"Language-Team: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: banner.module:7
+msgid "A banner system."
+msgstr "Reklámok megjelenítése."
+
+#: banner.module:9
+msgid "<p>For each of your advertisements previewed above you are able to view live statistics.  The three rows below offer daily, weekly, and total statistics.  The column 'views' shows how many times your ad has been displayed to visitors of this web site.  The column 'click' shows how many times a visitor has clicked your ad and been redirected to your website.  The column '%' is what percentage of ad views result in a click-through.</p><p>It is possible to throttle your ad to prevent it from being displayed more than a certain number of times in one day.  In the 'max views' column you can enter a number in the 'day' or 'week' column, then click 'Update' below.  If you purchased your ad \"by the click-through\", the 'max clicks' column below will reflect how many click-throughs you purchased.  The 'views left' and 'clicks left' columns display how many clicks and views are left for your ad.</p><p>If you are interested in automatically receiving emails that summarize your ad's activity, put a check mark in the 'notify' column.  To receive daily emails, put a check in the 'today' row.  To receive weekly emails, put a check in the 'this week' row.  Finally, it is possible to enable or disable your ad in real time with the drop-down menu.  After making any changes, be sure to click 'Update' for the ad that you have modified.</p>"
+msgstr "<p>Bármely fent megjelenített reklámhoz tartozó élő statisztikát meg tudod tekinteni. Az alábbi három sor szolgáltatja a napi, heti és összesített statisztikai adatokat. A 'letöltés' oszlop mutatja, hogy hányszor töltötték le az oldal látogatói a reklámodat. A 'kattintás' oszlop ad információt arról, hogy látogatóink hányszor klikkeltek a reklámra, és kerültek átriányításra az oldaladra. A '%' oszlop mutatja, hogy a megjelenések mekkora százaléka vezetett klikkelésre.</p><p>A reklámok napi illetve heti megjelenéséhez limiteket is meg tudsz adni a 'maximális megjelenés' oszlopban. Ha a reklámot a klikkelések száma szerint fizeted, a 'maximális kattintás' mutatja, hogy mekkora mennyiséget vásároltál. A 'maradék megjelenés' illetve 'maradék kattintás' értelemszerűen azt mutatja, hogy mennyi megjelenés illetve kattintás maradt a reklám számára.</p><p>Amennyiben igényled a reklám statisztikai adatai alapján küldött összesítő leveleket, a 'figyelmeztetés' oszlopban lévő jelölőnégyzetet kapcsold be. Amennyiben napi leveleket szeretnél kapni, a 'mai nap' jelölőt kapcsold be, heti rendszeresség esetén az 'ezen a héten' jelölőt. Végül lehetőséged van a reklámod engedélyezésére és letiltására is. A beállítások változtatása után ne felejtsd el megnyomni a 'Frissítés' gombot a módosított reklámnál.</p>"
+
+#: banner.module:27
+msgid "Cache handler"
+msgstr "Gyorsítótár kezelő"
+
+#: banner.module:27
+msgid "Choose a cache handler. No caching has horrible performance but works always. File caching needs write permissions for apache user to misc/ directory."
+msgstr "Válassz egy gyorsítótár kezelőt. Ha nem alkalmazol gyorsítótárat, mindeképpen működni fognak a reklámok, de nagyon rossz teljesítménnyel. Az állomány alapú gyorsítótárazás írási jogot igényel a misc/ könyvtárra a webgyökérben."
+
+#: banner.module:28
+msgid "Cache key"
+msgstr "Gyorsítótár kulcs"
+
+#: banner.module:28
+msgid "Cache key for this site: it must be an unique numeric value."
+msgstr "A webhely gyorsítótár kulcsa: mindenképpen egyedi számértéknek kell lennie"
+
+#: banner.module:29
+msgid "Cache settings"
+msgstr "Gyorsítótár beállítások"
+
+#: banner.module:31
+msgid "Body of daily notification e-mail"
+msgstr "A napi összefoglaló üzenet törzse"
+
+#: banner.module:31
+msgid "Customize the body of the daily notification e-mail, only sent to banner owners when they enable daily notification."
+msgstr "Itt szabhatod testre a napi összefoglaló levél tartalmát, melyet a reklám tulajdonosok kapnak ha napi figyelmeztetéseket kérnek."
+
+#: banner.module:31;32;39
+msgid "Available variables are:"
+msgstr "A szövegben használható változók:"
+
+#: banner.module:32
+msgid "Body of weekly notification e-mail"
+msgstr "Heti összefoglaló levél törzse"
+
+#: banner.module:32
+msgid "Customize the body of the weekly notification e-mail, only sent to banner owners when they enable weekly notification."
+msgstr "Itt szabhatod testre a heti összefoglaló levél tartalmát, melyet a reklám tulajdonosok kapnak ha heti figyelmeztetéseket kérnek."
+
+#: banner.module:33
+msgid "Disable notifications to user after how many failed mail attempts"
+msgstr "Ennyi sikertelen email küldési kísérlet után a figyelmeztető levelek küldése letintandó"
+
+#: banner.module:33;36
+#msgid "Disabled"
+#msgstr ""
+
+#: banner.module:34
+msgid "User notification settings"
+msgstr "Felhasználó értesítési beállítások"
+
+#: banner.module:36
+msgid "Automatic renewal reminder"
+msgstr "Automatikus megújítási figyelmeztetés"
+
+#: banner.module:36
+#msgid "Enabled"
+#msgstr ""
+
+#: banner.module:36
+msgid "If enabled, an automatic reminder can be emailed when an advertisement is about to expire.  This email can remind your customers that they need to renew their advertisement on your site."
+msgstr "Amennyiben engedélyezett, automatikus figyelmeztető levelek küldhetőek a felhasználóknak a reklámok lejárata előtt. Ez a levél alkalmas az ügyfelek figyelmeztetésére, hogy a reklámok megújítása időszerűvé vált."
+
+#: banner.module:38
+msgid "Send reminder"
+msgstr "Figyelmeztetés küldése"
+
+#: banner.module:38
+msgid "Send the renewal reminder this long before the advertisement expires."
+msgstr "A reklám lejárata előtt ennyivel kerüljön elküldésre a figyelmeztetés."
+
+#: banner.module:39
+msgid "Body of renewal reminder e-mail"
+msgstr "Megújítási figyelmeztető levél törzse"
+
+#: banner.module:39
+msgid "Customize the body of the renewal reminder e-mail, only sent once to banner owners when their ad is about to expire."
+msgstr "A megújítási figyelmztető levél törzse akkor kerül elküldésre, amikor a reklám lejárti ideje közeledik."
+
+#: banner.module:40
+msgid "Renewal reminder settings"
+msgstr "Megújítási figyelmeztetés beállítások"
+
+#: banner.module:47;56
+msgid "banners"
+msgstr "reklámok"
+
+#: banner.module:47
+msgid "View your banners."
+msgstr "Reklámok megtekintése."
+
+#: banner.module:52
+msgid "my banners"
+msgstr "reklámjaim"
+
+#: banner.module:53;98
+msgid "upload banner"
+msgstr "reklám feltöltése"
+
+#: banner.module:57
+msgid "add new banner"
+msgstr "reklám hozzáadása"
+
+#: banner.module:58
+msgid "refresh cache"
+msgstr "gyorsítótár frissítése"
+
+#: banner.module:71;97
+msgid "Manage banners"
+msgstr "Reklámok kezelése"
+
+#: banner.module:74;101;491
+#msgid "Status"
+#msgstr ""
+
+#: banner.module:79
+msgid "all banners"
+msgstr "minden reklám"
+
+#: banner.module:91;114
+#msgid "Access denied"
+#msgstr ""
+
+#: banner.module:93;116
+#msgid "Help"
+#msgstr ""
+
+#: banner.module:110;142
+msgid "Upload a new banner"
+msgstr "Reklám felöltése"
+
+#: banner.module:138
+msgid "view my banners"
+msgstr "reklámjaim megtekintése"
+
+#: banner.module:138
+msgid "View your banners"
+msgstr "Reklámjaid megtekintése"
+
+#: banner.module:140
+msgid "view all banners"
+msgstr "minden reklám megtekintése"
+
+#: banner.module:140
+msgid "View all banners"
+msgstr "Minden reklám megtekintése"
+
+#: banner.module:142
+msgid "upload a new banner"
+msgstr "reklám feltöltése"
+
+#: banner.module:152;565
+#msgid "views"
+#msgstr ""
+
+#: banner.module:152;565
+#msgid "clicks"
+#msgstr ""
+
+#: banner.module:152;565
+msgid "max views"
+msgstr "maximális megjelenés"
+
+#: banner.module:152;565
+msgid "max clicks"
+msgstr "maximális kattintás"
+
+#: banner.module:152
+msgid "views left"
+msgstr "maradék megjelenés"
+
+#: banner.module:152
+msgid "clicks left"
+msgstr "maradék kattintás"
+
+#: banner.module:152
+msgid "notify"
+msgstr "figyelmeztetés"
+
+#: banner.module:152;565
+#msgid "status"
+#msgstr ""
+
+#: banner.module:155
+#msgid "today"
+#msgstr ""
+
+#: banner.module:161;162;184;185;208;209
+#msgid "unlimited"
+#msgstr ""
+
+#: banner.module:166;189;595
+#msgid "pending"
+#msgstr ""
+
+#: banner.module:169;193;214;217;220;266;271;595
+#msgid "enabled"
+#msgstr ""
+
+#: banner.module:172;196;214;217;220;266;271;595
+#msgid "disabled"
+#msgstr ""
+
+#: banner.module:178
+msgid "this week"
+msgstr "ezen a héten"
+
+#: banner.module:202
+msgid "all time"
+msgstr "összesítve"
+
+#: banner.module:217;220
+msgid "limit reached"
+msgstr "határt elérte"
+
+#: banner.module:231
+msgid "This advertisement is waiting approval."
+msgstr "Ez a reklám elfogadásra vár."
+
+#: banner.module:237
+msgid "This advertisement will be displayed until %date."
+msgstr "Ez a reklám a következő dátummal jár le: %date"
+
+#: banner.module:241
+msgid "This advertisement is expired."
+msgstr "Ez a reklám lejárt."
+
+#: banner.module:245
+#msgid "Update"
+#msgstr ""
+
+#: banner.module:283
+msgid "Banner '%banner' updated successfully."
+msgstr "'%banner' reklám sikeresen frissítve."
+
+#: banner.module:293
+msgid "Banner title"
+msgstr "Reklám címe"
+
+#: banner.module:293
+msgid "Please enter a name for this banner.  This field is only used for administrative purposes.  For example, you might enter 'banner-1'."
+msgstr "Adj meg egy nevet a reklám számára. Csak adminisztrációs célokra szükséges a mező megadása. Egy lehetséges név például 'reklam-1' (idézőjelek nélkül)."
+
+#: banner.module:294
+msgid "Click-through destination URL"
+msgstr "Kattintás célpontja"
+
+#: banner.module:294
+msgid "Please enter a complete URL where users will be sent that click on your banner.  For example, you might enter 'http://example.com/'."
+msgstr "Itt add meg azt a teljes URL-t, ahova a felhasználó kerül, amikor a reklámra kattint. Például megadhatod, hogy 'http://www.pelda.hu/' (idézőjelek nélkül)."
+
+#: banner.module:296;499
+msgid "Banner file"
+msgstr "Reklám állomány"
+
+#: banner.module:296
+msgid "Please enter the local path and filename of your banner, or click browse to locate your banner.  You can upload an image, a flash, or an html/text file."
+msgstr "Add meg a helyi állományrendszerben a reklám állomány nevét és elérési útját, vagy a böngésző gomb segítségével válaszd ki azt a rendszerben. Képet, Flash állományt, HTML illetve szöveges állományt is feltölthetsz."
+
+#: banner.module:298
+#msgid "Upload"
+#msgstr ""
+
+#: banner.module:323
+msgid "Your new banner has been uploaded.  Please check back later to see if it has been approved."
+msgstr "A reklám feltöltésre került. Később tudod ellenőrizni, hogy elfogadásra került-e."
+
+#: banner.module:341
+msgid "'%banner' banner daily notification"
+msgstr "'%banner' reklám napi összesítő"
+
+#: banner.module:350
+msgid "'%banner' banner expiring soon"
+msgstr "'%banner' reklám hamarosan lejár"
+
+#: banner.module:366
+msgid "'%banner' banner weekly notification"
+msgstr "'%banner' reklám heti összesítő"
+
+#: banner.module:447;501
+#msgid "Save"
+#msgstr ""
+
+#: banner.module:451;504
+#msgid "Delete"
+#msgstr ""
+
+#: banner.module:458
+msgid "Cache refreshed."
+msgstr "Gyorsítótár frissítve."
+
+#: banner.module:489
+#msgid "Title"
+#msgstr ""
+
+#: banner.module:489
+msgid "A name for this banner, used in administration only. e.g.: chinotto-1"
+msgstr "A reklám neve, melyet az adminisztráció során használhatsz majd, pl: 'reklam-1' (idézőjelek nélkül)."
+
+#: banner.module:490
+#msgid "URL"
+#msgstr ""
+
+#: banner.module:490
+msgid "Target URL for this banner."
+msgstr "A reklám cél URLje"
+
+#: banner.module:491
+msgid "Status of banner.  A 'pending' banner requires administrative approval before it will be displayed.  An 'enabled' banner is approved and actively being displayed. A 'disabled' banner is approved but disabled by the user.  A 'blocked' banner is approved but disabled by the admin, for example after being displayed 'max views' times.  A 'denied' banner was not approved by the admin."
+msgstr "A reklám állpota. A 'függőben' állapot adminisztrátori elfgoadásra vár megjelenése előtt. Az 'engedélyezett' reklám megjelenik az oldalon. A 'tiltott' reklámot az adminisztrátor elfogadta, de a felhasználó kikapcsolta. A 'blokkolt' reklámot az adminisztrátor elfogadta, de letiltotta (például a maximális megjelenés elérése után). A 'visszautasított' reklámot az adminisztrátor nem fogadta el."
+
+#: banner.module:492
+msgid "Owner"
+msgstr "Tulajdonos"
+
+#: banner.module:492
+msgid "Optional UID of site user that own this banner.  This user will be able to view banner statistics."
+msgstr "Opcionálisan megadható tulajdonosi felhasználói azonosító szám. Ez a felhasználó láthatja majd a reklám statisztikáit."
+
+#: banner.module:493
+#msgid "Position"
+#msgstr ""
+
+#: banner.module:493
+msgid "Position of this banner in the page."
+msgstr "A reklám helye az oldalon."
+
+#: banner.module:494
+msgid "Automatically publish banner"
+msgstr "Reklám automatikus bekapcsolása"
+
+#: banner.module:494
+msgid "The date at which this banner will be automatically published.  Leave empty if you don't want to schedule this banner, or fill out a string containing an English date format.  Example input:"
+msgstr "A reklám automatikus megjelenésének dátuma. Hagyd üresen, ha nem szeretnéd időzíteni a megjelenést, vagy angol dátumot formátumot használj. Példák:"
+
+#: banner.module:495
+msgid "Automatically unpublish banner"
+msgstr "Reklám automatikus kikapcsolása"
+
+#: banner.module:495
+msgid "The date at which this banner will be automatically unpublished.  Leave empty if you don't want to schedule this banner, or fill out a string containing an English date format.  Example input:"
+msgstr "A reklám automatikus eltűnésének dátuma. Hagyd üresen, ha nem szeretnéd időzíteni az eltűnést, vagy angol dátumot formátumot használj. Példák:"
+
+#: banner.module:496
+msgid "Chance"
+msgstr "Súlyozás"
+
+#: banner.module:496
+msgid "Chance of this banner to show, related to other banners. If a banner has chance 1 and another has chance 2, the second will show twice as much."
+msgstr "Más reklámokhoz képest megadott súlyzás a reklám fontosságát illetően. Ha egy reklám 1-es súlyt kap, egy másik 2-est, akkor az utóbbi kétszer annyi alkalommal fog megjelenni, mint az előbbi."
+
+#: banner.module:497
+msgid "Max views"
+msgstr "Maximális megjelenés"
+
+#: banner.module:497
+msgid "Maximum number of views this banner will have. After this the banner will be disabled. Set to 0 for unlimited."
+msgstr "A reklám maximális megjelenés száma, melyet követően tiltottá válik. Ha nullára állítod, akkor nem lesz ilyen korlát."
+
+#: banner.module:498
+msgid "Max clicks"
+msgstr "Maximális kattintás"
+
+#: banner.module:498
+msgid "Maximum number of clicks this banner will have. After this the banner will be disabled. Set to 0 for unlimited."
+msgstr "A reklám maximális kattintás száma, mely elérését követően tiltottá válik. Ha nullára állítod, akkor nem lesz ilyen korlát."
+
+#: banner.module:499
+msgid "The file to use for this banner.  You can upload an image, a flash or an html/txt file.  If you are editing the banner you don't need to re-upload the image."
+msgstr "A reklámhoz tartozó állomány (kép, Flash, HTML vagy szöveges). A reklám szerkesztésekor nem kell újra feltöltened az állományt."
+
+#: banner.module:532
+msgid "banner updated."
+msgstr "reklám felöltve."
+
+#: banner.module:545
+msgid "banner added."
+msgstr "reklám felvéve."
+
+#: banner.module:558
+msgid "banner deleted."
+msgstr "reklám törölve"
+
+#: banner.module:565
+#msgid "title"
+#msgstr ""
+
+#: banner.module:565
+#msgid "url"
+#msgstr ""
+
+#: banner.module:565
+#msgid "owner"
+#msgstr ""
+
+#: banner.module:565
+#msgid "position"
+#msgstr ""
+
+#: banner.module:565
+msgid "pub"
+msgstr "megjelenik"
+
+#: banner.module:565
+msgid "unpub"
+msgstr "eltűnik"
+
+#: banner.module:565
+msgid "chance"
+msgstr "súlyozás"
+
+#: banner.module:565
+#msgid "link"
+#msgstr ""
+
+#: banner.module:595
+#msgid "blocked"
+#msgstr ""
+
+#: banner.module:595
+#msgid "denied"
+#msgstr ""
+
+#: banner.module:595
+msgid "day's limit reached"
+msgstr "elérte a napi korlátot"
+
+#: banner.module:595
+msgid "week's limit reached"
+msgstr "elérte a heti korlátot"
+
+#: banner.module:601
+msgid "Hello %username,\n\n  Here is your daily summary for your '%bannername' banner on %sitename:\n\n  Today:\n    Views:  %day_views\n    Clicks: %day_clicks\n\n  This week:\n    Views:  %week_views\n    Clicks: %week_clicks\n\n  All time:\n    Views:  %total_views\n    Clicks: %total_clicks\n\n--\nThis email was automatically generated at your request.\nUnsubscribe here: %url"
+msgstr "Kedves %username,\n\n  Az alábbiakban olvashatod a '%bannername' reklámod napi összefoglalóját a %sitename webhelytől:\n\n  Mai:\n    Megjelenés:  %day_views\n    Kattintás: %day_clicks\n\n  Heti:\n    Megjelenés:  %week_views\n    Kattintás: %week_clicks\n\n  Összesített:\n    Megjelenés:  %total_views\n    Kattintás: %total_clicks\n\n--\nEz a levél automatikusan érkezett kérésedre.\nLeiratkozási lehetőség: %url"
+
+#: banner.module:603
+msgid "Hello %username,\n\n  Here is your weekly summary for your '%bannername' banner on %sitename:\n\n  Today:\n    Views:  %day_views\n    Clicks: %day_clicks\n\n  This week:\n    Views:  %week_views\n    Clicks: %week_clicks\n\n  All time:\n    Views:  %total_views\n    Clicks: %total_clicks\n\n--\nThis email was automatically generated at your request.\nUnsubscribe here: %url"
+msgstr "Kedves %username,\n\n  Az alábbiakban olvashatod a '%bannername' reklámod heti összefoglalóját a %sitename webhelytől:\n\n  Mai:\n    Megjelenés:  %day_views\n    Kattintás: %day_clicks\n\n  Heti:\n    Megjelenés:  %week_views\n    Kattintás: %week_clicks\n\n  Összesített:\n    Megjelenés:  %total_views\n    Kattintás: %total_clicks\n\n--\nEz a levél automatikusan érkezett kérésedre.\nLeiratkozási lehetőség: %url"
+
+#: banner.module:605
+msgid "Hello %username,\n\n Your advertisement '%bannername' on %sitename will expire on %expire.  Please let us know if you are interested in renewing.\n\n To date, this ad has been viewed %total_views times and clicked %total_clicks times.\n\nThank you!\n %sitename team"
+msgstr "Kedves %username,\n\n A '%bannername' hirdetésed a %sitename webhelyen lejár %expire dátummal. Arra kérünk, vedd fel velünk a kapcsolatot, amennyiben folytatni szeretnéd a hirdetést.\n\n Eddig a pillanatig a reklám %total_views alkalommal jelent meg, és %total_clicks alkalommal kattintotak rá.\n\nKöszönjük!\n %sitename csapat"
+
+#: banner.module:713
+msgid "Cache disabled"
+msgstr "Gyorsítótár letiltva"
+
+#: banner.module:14
+msgid "administer banners"
+msgstr "admin: reklámok"
+
+#: banner.module:14
+msgid "manage banners"
+msgstr "saját reklámok kezelése"
+
+#: banner.module:14
+msgid "don't show banners"
+msgstr "reklámok eljrejtése"
+
+#: banner.module:0
+msgid "banner"
+msgstr "reklám"

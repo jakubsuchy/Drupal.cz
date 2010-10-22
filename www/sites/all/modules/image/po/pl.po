@@ -1,0 +1,284 @@
+# Polish translation of Drupal's image, image_gallery and image_attach modules
+# Copyright 2006 archetwist <arche#letwist.net>
+msgid ""
+msgstr ""
+"Project-Id-Version: drupal PL arche\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-05-25 15:35+0100\n"
+"Last-Translator: Arche Twist <arche#letwist.net>\n"
+"Language-Team: archetwist\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+
+#: image.php:10
+msgid "The image module is used to create and administer images for your site. Each image is stored as a post, with thumbnails of the original generated automatically. There are two default thumbnail sizes, thumbnail and preview. The thumbnail size is shown as the preview for image posts and when browsing image galleries. The preview is the default size when first displaying an image node."
+msgstr "Moduł image wykorzystywany jest do tworzenia i zarządzania zdjęciami lub innymi plikami graficznymi. Każde zdjęcie zachowywane jest w postaci segmentu, wraz z automatycznie tworzonymi miniaturkami. Domyślnie tworzone są miniaturki w dwóch wielkościach. Miniaturki te wykorzystywane są w innych segmentach i w galeriach."
+
+#: image.php:11
+msgid ""
+"Image administration allows the image directory and the image sizes to be set.</p><p>\r\n"
+"Image galleries are used to organize and display images in galleries.   The list tab allows users to edit existing image gallery names, descriptions, parents and relative position, known as a weight.  The add galleries tab allows you to create a new image gallery defining name, description, parent and weight."
+msgstr ""
+"Na stronie zarządzania modułem image dostępne są ustawienia dotyczące katalogu służącego do przechowywania zdjęć oraz wymiarów zdjęć.</p><p>\r\n"
+"Galerie wykorzystywane są do porządkowania i wyświetlania zdjęć. Karta \"przeglądaj\" pozwala użytkownikom edytować nazwy i opisy istniejących galerii, przypisywać je do innych galerii nadrzędnych oraz zmieniać ich \"wagę\", czyli decydować o kolejności ich wyświetlania. Karta \"dodaj galerię\" umożliwia stworzenie nowej galerii."
+
+#: image.php:13
+msgid ""
+"<p>You can</p>\r\n"
+"<ul>\r\n"
+"<li>view image handling messages in <a href=\"%admin-settings\">administer &gt;&gt; settings</a>.</li>\r\n"
+"<li>configure image sizes and file directories at <a href=\"%admin-settings-image\">administer &gt;&gt; settings &gt;&gt; image</a>.</li>\r\n"
+"<li>use the <a href=\"%external-http-drupal-org-project-img_assist\">image assist module</a> to upload and insert images into posts.</li>\r\n"
+msgstr ""
+"<p>Możesz</p>\r\n"
+"<ul>\r\n"
+"<li>zapoznać się z komunikatami dotyczącymi przetwarzania plików graficznych na stronie <a href=\"%admin-settings\">zarządzaj &gt;&gt; ustawienia</a></li>\r\n"
+"<li>zmienić rozmiary zdjęć i katalogi, w których przechowywane są pliki, poprzez stronę <a href=\"%admin-settings-image\">zarządzaj &gt;&gt; ustawienia &gt;&gt; zdjęcie</a></li>\r\n"
+"<li>skorzystać z <a href=\"%external-http-drupal-org-project-img_assist\">modułu image_assist</a> do wysyłania i wstawiania zdjęć bezpośrednio do segmentów.</li>\r\n"
+
+#: image.php:19
+msgid "For more information please read the configuration and customization handbook <a href=\"%image\">Image page</a>."
+msgstr "By uzyskać więcej informacji, przeczytaj proszę <a href=\"%image\">stronę dotyczącą modułu image</a> w podręczniku konfiguracji."
+
+#: image.php:22
+msgid "Allows uploading of images."
+msgstr "Umożliwia wysyłanie zdjęć."
+
+#: image.php:24
+msgid "An image (with thumbnail). This is ideal for publishing photographs or screenshots."
+msgstr "Obrazek (wraz z miniaturką). Idealne do zamieszczania zdjęć lub zrzutów ekranu."
+
+#: image.php:32
+#: ;121;123;0
+msgid "image"
+msgstr "zdjęcie"
+
+#: image.php:69
+msgid "File paths"
+msgstr "Ścieżki plików"
+
+#: image.php:70
+msgid "Default image path"
+msgstr "Domyślna ścieżka zdjęcia"
+
+#: image.php:70
+msgid "Subdirectory in the directory \"%dir\" where pictures will be stored. Do not include trailing slash."
+msgstr "Podkatalog (znajdujący się w katalogu \"%dir\"), do którego trafiać będą pliki zdjęć. Nie uwzględniaj ukośnika."
+
+#: image.php:72
+msgid "Image sizes"
+msgstr "Rozmiary zdjęć"
+
+#: image.php:82
+msgid "Select various pixel dimensions, \"thumbnail\" and \"preview\" are required."
+msgstr "Wskaż różne rozdzielczości (w pikselach). Wprowadzenie rozdzielczości dla miniaturek i podglądu jest wymagane."
+
+#: image.php:99
+msgid "Label"
+msgstr "Etykieta"
+
+#: image.php:99
+msgid "Width"
+msgstr "Szerokość"
+
+#: image.php:99
+msgid "Height"
+msgstr "Wysokość"
+
+#: image.php:156
+msgid "Uploaded file is not a valid image"
+msgstr "Wysłany plik nie jest poprawnym plikiem graficznym"
+
+#: image.php:194
+msgid "original"
+msgstr "oryginał"
+
+#: image.php:209
+#: ;218
+msgid "Latest image"
+msgstr "Ostatnie zdjęcie"
+
+#: image.php:210
+#: ;223
+msgid "Random image"
+msgstr "Losowe zdjęcie"
+
+#: image.php:235
+#: ;627
+msgid "Thumbnail"
+msgstr "Miniaturka"
+
+#: image.php:268
+#: ;631
+msgid "Image"
+msgstr "Zdjęcie"
+
+#: image.php:268
+msgid "Click \"Browse...\" to select an image to upload."
+msgstr "Kliknij przycisk \"Wybierz\" by wybrać zdjęcie do wysłania."
+
+#: image.php:269
+msgid "Body"
+msgstr "Treść"
+
+#: image.php:450
+msgid "Make sure you have a working image toolkit installed and enabled, for more information see: %settings"
+msgstr "Upewnij się, że serwer wyposażony jest w działające narzędzie przetwarzania plików graficznych. By uzyskać więcej informacji, przejdź na stronę %settings"
+
+#: image.php:450
+msgid "the settings page"
+msgstr "strona ustawień"
+
+#: image.php:475
+msgid "Unable to create %label image"
+msgstr "Nie udało się utworzyć zdjęcia %label"
+
+#: image.php:585
+msgid "Allows easy attaching of image nodes to other content types."
+msgstr "Umożliwia łatwe załączanie segmentów ze zdjęciami do segmentów innego rodzaju."
+
+#: image.php:607
+msgid "Attach Images"
+msgstr "Załącz zdjęcie"
+
+#: image.php:610
+msgid "Should this node allows users to upload an image?"
+msgstr "Czy segmenty tego rodzaju mają umożliwiać użytkownikom załączanie zdjęć?"
+
+#: image.php:613
+msgid "The image module is not installed. The image_attach module will not function without it."
+msgstr "Moduł image, wymagany przez image_attach, nie jest zainstalowany."
+
+#: image.php:624
+msgid "Attached Images"
+msgstr "Załącz zdjęcie"
+
+#: image.php:632
+msgid "Image title"
+msgstr "Nazwa zdjęcia"
+
+#: image.php:733
+msgid "Allows sorting and displaying of image galleries based on categories"
+msgstr "Umożliwia porządkowania i wyświetlanie galerii zdjęć według kategorii"
+
+#: image.php:735
+msgid "Image galleries can be used to organize and present groups of images. Galleries may be nested. To add a new gallery click the \"add gallery\" tab."
+msgstr "Galerie zdjęć mogą być wykorzystywane do porządkowania i prezentowania zbiorów zdjęć. Galerie mogą być osadzone. By dodać jedną z nich, kliknij kartę \"dodaj galerię\""
+
+#: image.php:747
+msgid "Gallery settings"
+msgstr "Ustawienia galerii"
+
+#: image.php:748
+msgid "Images per page"
+msgstr "Zdjęć na stronę"
+
+#: image.php:748
+msgid "Sets the number of images to be displayed in a gallery page."
+msgstr "Zmienia liczbę zdjęć wyświetlanych na stronie galerii."
+
+#: image.php:757
+#: ;761
+msgid "image galleries"
+msgstr "galerie zdjęć"
+
+#: image.php:767
+msgid "add gallery"
+msgstr "dodaj galerię"
+
+#: image.php:829
+msgid "Image galleries"
+msgstr "Galerie zdjęć"
+
+#: image.php:870
+msgid "Are you sure you want to delete the gallery %name?"
+msgstr "Jesteś pewien, że chcesz usunąć galerię %name?"
+
+#: image.php:871
+msgid "Deleting a gallery will delete all sub-forums as well. However, the images will not be deleted. This action cannot be undone."
+msgstr "Usunięcie galerii spowoduje także nieodwracalne usunięcie wszystkich galerii podrzędnych. Zdjęcia nie zostaną usunięte."
+
+#: image.php:883
+msgid "Created new gallery %term."
+msgstr "Utworzono nową galerię %term."
+
+#: image.php:886
+msgid "The gallery %term has been updated."
+msgstr "Galeria %term została zaktualizowana."
+
+#: image.php:889
+msgid "The gallery %term has been deleted."
+msgstr "Galeria %term została usnięta."
+
+#: image.php:905
+msgid "edit gallery"
+msgstr "edytuj galerię"
+
+#: image.php:910
+msgid "No galleries available"
+msgstr "Bra galerii"
+
+#: image.php:919
+msgid "Gallery name"
+msgstr "Nazwa galerii"
+
+#: image.php:919
+msgid "The name is used to identify the gallery."
+msgstr "Tytuł galerii zdjęć."
+
+#: image.php:923
+msgid "Weight"
+msgstr "Waga"
+
+#: image.php:923
+msgid "When listing galleries, those with with light (small) weights get listed before containers with heavier (larger) weights. Galleries with equal weights are sorted alphabetically."
+msgstr "Podczas wyświetlania listy galerii, \"lżejsze\" galerie będą umieszczane wyżej, a \"cięższe\" niżej. Galerie o takiej samej \"wadze\" będą porządkowane alfabetycznie."
+
+#: image.php:955
+msgid "root"
+msgstr "brak"
+
+#: image.php:964
+msgid "Image galleries may be nested below other galleries."
+msgstr "Galerie mogą być umieszczane wewnątrz innych galerii."
+
+#: image.php:991
+msgid "Last updated: %date"
+msgstr "Ostatnio aktualizowano: %date"
+
+#: image.php:1011
+msgid "Posted by: %name"
+msgstr "Zamieszczone przez: %name"
+
+#: image.php:1041
+msgid "Image Galleries"
+msgstr "Galerie zdjęć"
+
+#: image.php:1069
+msgid "%file does not exist or is not executable."
+msgstr "%plik nie istnieje lub nie posiada uprawnień do uruchamiania."
+
+#: image.php:1072
+msgid "Location of the \"convert\" binary"
+msgstr "Lokalizacja konwertera"
+
+#: image.php:989
+#: ;1026
+msgid "There is 1 image in this gallery"
+msgid_plural "There are %count images in this gallery"
+msgstr[0] "W tej galerii znajduje się jedno zdjęcie"
+msgstr[1] "W tej galerii znajdują się %count zdjęcia"
+msgstr[2] "W tej galerii znajduje się %count zdjęć"
+
+#: image.php:39
+msgid "create images"
+msgstr "tworzenie zdjęć"
+
+#: image.php:39
+msgid "view original images"
+msgstr "wyświetlanie oryginałów"
+

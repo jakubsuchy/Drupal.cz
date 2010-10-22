@@ -1,0 +1,194 @@
+# translation of nl.po to Nederlands
+# LANGUAGE translation of Drupal (userpoints.module)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: userpoints.module,v 1.30.2.1 2006/05/16 14:45:18 kbahey
+#
+# Bèr Kessels <ber@webschuur.com>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: nl\n"
+"POT-Creation-Date: 2006-07-11 17:54+0200\n"
+"PO-Revision-Date: 2006-07-11 18:00+0200\n"
+"Last-Translator: Bèr Kessels <ber@webschuur.com>\n"
+"Language-Team: Nederlands <nl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#: userpoints.module:25;28
+#, fuzzy
+msgid "Users earn points as they post nodes, comments, and vote on nodes"
+msgstr "Gebruikers verdienen punten stemmen op nodes, of als ze nodes of commentaren plaatsen."
+
+#: userpoints.module:41
+msgid "users by points"
+msgstr "gebruikers per punten"
+
+#: userpoints.module:48
+msgid "reset points"
+msgstr "punten resetten"
+
+#: userpoints.module:62
+msgid "Reset all user points. This is useful in certain situations such as monthly contests. Enter YES without the quotes to reset"
+msgstr ""
+
+#: userpoints.module:65
+msgid "NO"
+msgstr "NEE"
+
+#: userpoints.module:69
+msgid "Reset"
+msgstr "Reset"
+
+#: userpoints.module:75
+msgid "YES"
+msgstr "Ja"
+
+#: userpoints.module:77
+msgid "All user points have been reset!"
+msgstr "Alle gebruikerspunten zijn ge-reset!"
+
+#: userpoints.module:87
+msgid "Points for each event"
+msgstr "Punten voor elke gebeurtenis"
+
+#: userpoints.module:93
+msgid "Points for posting an %node-name"
+msgstr "Punten voor het plaatsen van een %node-name"
+
+#: userpoints.module:102
+msgid "Points for posting a comment"
+msgstr "Punten voor het plaatsen van een opmerking"
+
+#: userpoints.module:110
+msgid "Points for moderating a comment"
+msgstr "Punten voor het bewerken van een opmerking"
+
+#: userpoints.module:119
+msgid "Points for voting on a node (requires nodevote module)"
+msgstr "Punten voor het stemmen op artikelen (vereist nodevote module) "
+
+#: userpoints.module:129
+msgid "Points for referring a user (requires the user_referral module)"
+msgstr "Punten voor het verwijzen naar een gebruiker (vereist user_referral module)"
+
+#: userpoints.module:139
+msgid "Points for inviting a user (requires the invite module)"
+msgstr "Punten voor het uitnodigen van een gebruiker (vereist invite module)"
+
+#: userpoints.module:149
+msgid "Points when invited user registers (requires the invite module)"
+msgstr "Punten wanneer een uitgenodigde gebruiker zich registreert (vereist invite module)"
+
+#: userpoints.module:162
+msgid "Ecommerce Options"
+msgstr "Ecommerce opties"
+
+#: userpoints.module:167
+msgid "Use points as form of payment?"
+msgstr ""
+
+#: userpoints.module:169
+msgid "Disable"
+msgstr "Uitzetten"
+
+#: userpoints.module:169
+msgid "Enable"
+msgstr "Aanzetten"
+
+#: userpoints.module:174
+msgid "Points multiplier for buying"
+msgstr ""
+
+#: userpoints.module:182
+msgid "Points to get on selling (for every dollar)"
+msgstr ""
+
+#: userpoints.module:190
+msgid "Minimum amount for purchase"
+msgstr ""
+
+#: userpoints.module:202
+msgid "Advanced Options"
+msgstr ""
+
+#: userpoints.module:206
+msgid "Reset points"
+msgstr "Punten resetten"
+
+#: userpoints.module:207
+msgid "Reset the points for all users."
+msgstr ""
+
+#: userpoints.module:221
+msgid "User points"
+msgstr "Gebruikerspunten"
+
+#: userpoints.module:224
+msgid "Points"
+msgstr "Punten"
+
+#: userpoints.module:231;288
+msgid "user"
+msgstr "gebruiker"
+
+#: userpoints.module:231;288
+msgid "points"
+msgstr "punten"
+
+#: userpoints.module:256;471
+msgid "User Points"
+msgstr "Gebruikerspunten"
+
+#: userpoints.module:257
+msgid "Highest Users"
+msgstr "Hoogst genoteerde gebruikers"
+
+#: userpoints.module:272
+msgid "You have %p %c"
+msgstr "U heeft %p %c"
+
+#: userpoints.module:275
+msgid "Points are visible to logged in users only"
+msgstr "Punten zijn enkel zichtbaar voor ingelogde gebruikers"
+
+#: userpoints.module:402
+msgid "lost"
+msgstr "verloren"
+
+#: userpoints.module:405
+msgid "earned"
+msgstr "gewonnen"
+
+#: userpoints.module:410
+msgid "User %uname %op %points points! Total now is %total points."
+msgstr "Gebruiker %uname heeft %points punten %op! Het totaal is nu %total punten."
+
+#: userpoints.module:478
+msgid "Minimum points for purchase is %min"
+msgstr ""
+
+#: userpoints.module:483
+msgid "You do not have enough points for this purchase"
+msgstr ""
+
+#: userpoints.module:485
+msgid "This purchase will cost you %points points"
+msgstr ""
+
+#: userpoints.module:526
+msgid "Your purchase using %points points has been completed"
+msgstr ""
+
+#: userpoints.module:272
+msgid "point"
+msgid_plural "points"
+msgstr[0] "punt"
+msgstr[1] "punten"
+
+#: userpoints.module:0
+msgid "userpoints"
+msgstr "gebruikerspunten"
+

@@ -1,0 +1,172 @@
+# $Id: de.po,v 1.1 2008/08/14 19:27:05 salvis Exp $
+#
+# German translation of Drupal (general)
+# Generated from files:
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Subscriptions V6.x\n"
+"POT-Creation-Date: 2008-08-12 16:59+0200\n"
+"PO-Revision-Date: 2008-08-12 18:25+0100\n"
+"Last-Translator: Frank Tartler <frank.tartler@googlemail.com>\n"
+"Language-Team: Frank Tartler <frank.tartler@googlemail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Country: ger\n"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:12
+msgid "Subscriptions notifications"
+msgstr "Abonnement-Benachrichtigungen"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:13
+msgid "Moderate new content to make sure that the subscriptions notifications do not contain spam."
+msgstr "Neuen Inhalt moderieren um sicherzustellen, dass Abonnements-Benachrichtigungen keinen Spam enthalten."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:19
+msgid "Content notifications (spam deterrent moderation)"
+msgstr "Inhalts-Benachrichtigungen (Spam-Abwehr-Moderation)"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:20
+msgid "Set which basic role is trusted not to spam."
+msgstr "Einstellen, welcher Rolle vertraut wird, keinen Spam zu versenden."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:74
+msgid "Update options"
+msgstr "Aktualisierungs-Optionen"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:78
+msgid "send notification"
+msgstr "Benachrichtigung versenden"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:79
+msgid "send notification and promote user"
+msgstr "Benachrichtigung senden und Benutzer befördern"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:80
+msgid "delete item from queue"
+msgstr "Element von der Warteschlange löschen"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:81
+msgid "delete item and block user"
+msgstr "Element löschen und Benutzer sperren"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:86
+msgid "You have not specified which basic role is trusted not to spam. <br />See the <a href=\"!url\">setting page</a> for more information."
+msgstr "Es ist nicht angegeben, welcher Rolle vertraut wird, keinen Spam zu versenden. Die <a href=\"!url\">Einstellungs-Seite</a> enthält weitere Informationen."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:91
+msgid "If you think that a user in this list can be trusted not to send spam via the subscriptions notifications service, you may chose to promote the user who will be given the role %role."
+msgstr "Falls einem Benutzer in dieser Liste vertraut werden kann, keinen Spam mit dem Abonnements-Benachrichtigungs-Dienst zu versenden, kann dem Benutzer hier die Rolle %role zugewiesen werden."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:96
+msgid "Update"
+msgstr "Aktualisieren"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:102
+msgid "Author"
+msgstr "Autor"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:103
+msgid "Node title"
+msgstr "Beitragstitel"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:104
+#, fuzzy
+msgid "Comment subject"
+msgstr "Kommentar-Betreff"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:105
+msgid "Time"
+msgstr "Zeit"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:158
+msgid "No content left to moderate."
+msgstr "Kein Inhalt zum Moderieren übrig."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:177
+msgid "Please select one or more items to perform the update on."
+msgstr "Ein oder mehrere Elemente müssen zum Aktualisieren ausgewählt werden."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:205
+msgid "The user has been promoted."
+msgstr "Der Benutzer wurde befördert."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:206
+msgid "%moderator gave %user the role %role."
+msgstr "%moderator hat %user die Rolle %role zugewiesen."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:207;224
+msgid "view"
+msgstr "anzeigen"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:222
+msgid "The user has been blocked."
+msgstr "Der Benutzer wurde gesperrt."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:223
+msgid "%moderator blocked the user %user."
+msgstr "%moderator hat den Benutzer %user gesperrt."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:228
+msgid "The content item has been removed from the notifications queue."
+msgstr "Das Inhaltselement wurde von der Benachrichtigungs-Warteschlange entfernt."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:236
+msgid "%nb items have been queued for sending to subscribers."
+msgstr "%nb Elemente wurden zum Versand an Abonnenten in die Warteschlange aufgenommen."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:248
+msgid ""
+"<p><strong>Select this setting with care!</strong> \n"
+"      The role you select should be a role with relatively few permissions: just those you would give users you only trust not to send spam via the subscriptions notifications service. <br />\n"
+"      The role should have the <em>trusted not to spam</em> permission. <br />\n"
+"      The moderators who have access to the <a href=\"!url\">notifications moderation page</a> will be able to promote users to that role.</p>"
+msgstr ""
+"<p><strong>Diese Einstellung mit Vorsicht auswählen!</strong> \n"
+"      Die ausgewählte Rolle sollte eine Rolle mit relativ wenigen Berechtigungen sein: genau die, die Benutzer erhalten würden, denen nur vertraut wird, mit dem Abonnements-Benachrichtigungs-Dienst keinen Spam zu versenden. <br />\n"
+"      Die Rolle sollte die Berechtigung <em>Vertraut, keinen Spam zu versenden</em> haben. <br />\n"
+"      Die Moderatoren mit Zugriff auf die Seite <a href=\"!url\">Inhaltsbenachrichtigungen moderieren</a> können Benutzern diese Rolle zuweisen.</p>"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:254
+#, fuzzy
+msgid "<select one>"
+msgstr "<einen auswählen>"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:266
+msgid ""
+"No role has the permission <em>trusted not to spam</em>. <br /> \n"
+"      You should check the settings in the <a href=\"!url_access\">Access Control</a> page.<br />\n"
+"      You may have to create a <a href=\"!url_role\">new role</a> which would have few, basic permissions."
+msgstr ""
+"Keine Rolle hat die Berechtigung <em>vertraut, keinen Spam zu versenden</em> <br /> \n"
+"      Die Einstellungen sollten auf der Seite<a href=\"!url_access\">Berechtigungen</a> geprüft werden.<br />\n"
+"      Es kann eine <a href=\"!url_role\">neue Rolle</a> erstellt werden, die nur wenige grundlegende Berechtigungen hat."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:277
+msgid "Choose the role with the fewest permissions but that you trust not to use your system to send spam."
+msgstr "Auswahl der Rolle mit den wenigsten Berechtigungen, der aber vertraut wird, das System nicht zum Versand von Spam zu verwenden."
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:34
+msgid "trusted not to spam"
+msgstr "vertraut, keinen Spam zu versenden"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:34
+msgid "moderate subscriptions notifications"
+msgstr "Abonnements-Benachrichtigungen moderieren"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.module:0
+msgid "moderate_content_notifications"
+msgstr "moderate_content_notifications"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.info:0
+msgid "Moderate Content Notifications"
+msgstr "Inhaltsbenachrichtigungen moderieren"
+
+#: contrib/moderate_content_notifications/moderate_content_notifications.info:0
+msgid "Spam deterrent: make sure no spam is sent from our web site."
+msgstr "Spam-Abwehr: stellt sicher, dass kein Spam von dieser Website gesendet wird."
+

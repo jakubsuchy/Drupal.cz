@@ -1,0 +1,126 @@
+# Czech translation of Drupal (modules/system/system.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: includes/file.inc:92
+msgid "The directory %directory has been created."
+msgstr "Adresář %directory byl vytvořen."
+
+#: includes/file.inc:106
+msgid ""
+"The permissions of directory %directory have been changed to make it "
+"writable."
+msgstr "Práva adresáře %directory byla upravena pro umožnění zápisu."
+
+#: includes/file.inc:109
+msgid "The directory %directory is not writable"
+msgstr "Do adresáře %directory nelze zapisovat"
+
+#: includes/file.inc:110
+msgid ""
+"The directory %directory is not writable, because it does not have the "
+"correct permissions set."
+msgstr ""
+"Do adresáře %directory nelze zapisovat, protože nemá nastavena správná práva."
+
+#: includes/file.inc:122
+msgid ""
+"Security warning: Couldn't write .htaccess file. Please create a .htaccess "
+"file in your %directory directory which contains the following lines: <code>!"
+"htaccess</code>"
+msgstr ""
+"Bezpečnostní upozornění: Nemohu zapsat soubor .htaccess. Prosím, vytvořte "
+"soubor .htaccess v adresáři %directory, který bude obsahovat následující "
+"řádky: <code>!htaccess</code>"
+
+#: includes/file.inc:208
+msgid ""
+"The file %file could not be saved, because it exceeds the maximum allowed "
+"size for uploads."
+msgstr ""
+"Soubor %file nelze uložit, protože překročil maximální povolenou velikost "
+"pro upload."
+
+#: includes/file.inc:213
+msgid "The file %file could not be saved, because the upload did not complete."
+msgstr "Soubor %file nelze uložit, protože upload neproběhl celý."
+
+#: includes/file.inc:218
+msgid "The file %file could not be saved. An unknown error has occurred."
+msgstr "Soubor %file nelze uložit. Došlo k neznámé chybě."
+
+#: includes/file.inc:241
+msgid "File upload error. Could not move uploaded file."
+msgstr "Chyba při uploadu souboru. Nelze přesunout uploadovaný soubor."
+
+#: includes/file.inc:242
+msgid ""
+"Upload Error. Could not move uploaded file (%file) to destination (%"
+"destination)."
+msgstr ""
+"Chyba při uploadu souboru. Nelze přesunout uploadovaný soubor (%file) na "
+"cílové místo (%destination)."
+
+#: includes/file.inc:322
+msgid ""
+"The selected file %file could not be uploaded, because the destination %"
+"directory is not properly configured."
+msgstr ""
+"Vybraný soubor %file nelze nahrát, protože cílový adresář %directory není "
+"správně nastaven."
+
+#: includes/file.inc:323
+msgid ""
+"The selected file %file could not be uploaded, because the destination %"
+"directory could not be found, or because its permissions do not allow the "
+"file to be written."
+msgstr ""
+"Vybraný soubor %file nelze nahrát, protože cílový adresář %directory nelze "
+"nalézt nebo práva neumožňují zápis do adresáře."
+
+#: includes/file.inc:338
+msgid ""
+"The selected file %file could not be copied, because no file by that name "
+"exists. Please check that you supplied the correct filename."
+msgstr ""
+"Vybraný soubor %file nelze zkopírovat, protože neexistuje soubor s tímto "
+"jménem. Zkontrolujte, zda byl zadán správný název souboru."
+
+#: includes/file.inc:370
+msgid ""
+"The selected file %file could not be copied, because a file by that name "
+"already exists in the destination."
+msgstr ""
+"Vybraný soubor %file nelze zkopírovat, protože soubor stejného názvu již v "
+"cílovém adresáři existuje."
+
+#: includes/file.inc:376
+msgid "The selected file %file could not be copied."
+msgstr "Vybraný soubor %file nelze zkopírovat."
+
+#: includes/file.inc:425
+msgid "The removal of the original file %file has failed."
+msgstr "Selhalo odstranění původního souboru %file."
+
+#: includes/file.inc:528
+msgid "The file could not be created."
+msgstr "Soubor nelze vytvořit."
+
+#: includes/file.inc:110;323
+msgid "file system"
+msgstr "systém souborů"
+
+#: includes/file.inc:242
+msgid "file"
+msgstr "soubor"

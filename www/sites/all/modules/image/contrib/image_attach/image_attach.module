@@ -1,0 +1,157 @@
+<?php
+// $Id: image_attach.module,v 1.2 2006/05/14 03:39:58 weitzman Exp $
+
+/**
+ * @file image_attach.module
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function image_attach_help($section) {
+  switch ($section) {
+    case 'admin/modules#description':
+      // This description is shown in the listing at admin/modules.
+      return t('Allows easy attaching of image nodes to other content types.');
+  }
+}
+
+/**
+ * implementation of hook_form_alter()
+ */
+function image_attach_form_alter($form_id, &$form) {
+  if (!isset($form['type']) || $form['type'] == 'image') {
+    return;
+  }
+  // Make a copy of the type to shorten up the code
+  $type =  $form['type']['#value'];
+  $enabled = variable_get('image_attach_'. $type, 0);
+  switch ($form_id) {
+     
+    // checkbox in the node's content type configuration page.
+    case $type .'_node_settings':
+      if(function_exists('_image_check_settings')){
+          _image_check_settings();
+        $form['workflow']['image_attach_'. $type] = array(
+          '#type' => 'radios',
+          '#title' => t('Attach Images'),
+          '#default_value' => $enabled,
+          '#options' => array(0 => t('Disabled'), 1 => t('Enabled')),
+          '#description' => t('Should this node allows users to upload an image?'),
+        );
+      } else {
+        drupal_set_message(t('The image module is not installed. The image_attach module will not function without it.'), 'error');
+      }
+      break;
+   
+    // if enabled adjust the form
+    case $type .'_node_form':
+      if ($enabled == 1 &&  function_exists('_image_check_settings')) {
+        _image_check_settings();
+        $node = $form['#node'];
+        $form['#attributes'] = array("enctype" => "multipart/form-data");
+
+        $form['image_attach'] = array('#type' => 'fieldset', '#title' => t('Attached Images'), '#collapsible' => TRUE);
+        if ($node->iid) {
+          $image = node_load($node->iid);
+          $form['image_attach']['image_thumbnail'] = array('#type' => 'item', '#title' => t('Thumbnail'), '#value' => image_display($image, 'thumbnail'));
+        }
+        $value = ($node->new_image) ? '#value' : '#default_value';
+        $form['image_attach']['iid'] = array('#type' => 'hidden' , $value => $node->iid);
+        $form['image_attach']['image'] = array('#type' => 'file', '#title' => t('Image'));
+        $form['image_attach']['image_title'] = array('#type' => 'textfield', '#title' => t('Image title'), '#default_value' => '');
+      }
+      break;
+  }
+}
+
+/**
+* Implementation of hook_nodeapi().
+*/
+function image_attach_nodeapi(&$node, $op, $teaser, $page) {
+  if(variable_get('image_attach_'. $node->type, 0) == 0){
+      return;
+  }
+  switch ($op) {
+    case 'prepare':
+      $image->title = $_POST['edit']['image_title'];
+      $image->uid = $node->uid;
+      $image->name = $node->name;
+      $image->created = $node->created;
+      $image->type = 'image';
+      image_prepare($image, 'image');
+      if ($image->images) {
+        node_validate($image);
+        if (!form_get_errors()) {
+          $image = node_submit($image);
+          node_save($image);
+          $node->iid = $image->nid;
+          $node->new_image = TRUE;
+        }
+      }
+      elseif ($_POST['edit']['iid']) {
+        $node->iid = $_POST['edit']['iid'];
+      }
+      break;
+    case 'insert':
+    case 'update':
+      if ($node->iid) {
+        db_query("DELETE FROM {image_attach} WHERE nid=%d", $node->nid);
+        db_query("INSERT INTO {image_attach} (nid, iid) VALUES (%d, %d)", $node->nid, $node->iid);
+      }
+      break;
+    case 'delete':
+      db_query("DELETE FROM {image_attach} WHERE nid=%d", $node->nid);
+      break;
+    case 'load':
+      $iid = db_result(db_query("SELECT iid FROM {image_attach} WHERE nid=%d", $node->nid));
+      return array('iid' => $iid);
+     
+    // Pass the body and teaser objects to the theme again to add the images
+    case 'view':
+      if($node->iid && function_exists('image_display')){
+        $node->body = theme('image_attach_body', $node);
+        if ($teaser){
+          $node->teaser = theme('image_attach_teaser', $node);
+        }
+      }
+  }
+}
+
+/**
+ * Theme the teaser.
+ *
+ * Override this in template.php to include a case statement if you want different node types to appear differently.
+ * If you have additional image sizes you defined in image.module, you can use them by theming this function as well.
+ */
+function theme_image_attach_teaser($node){
+  theme_add_style(drupal_get_path('module', 'image_attach') .'/image_attach.css');
+
+  $image = node_load($node->iid);
+  
+  $info = image_get_info(file_create_path($image->images['thumbnail']));
+  $output = '';
+  $output .= '<div style="width: '. $info['width'] .'px" class="image-attach-teaser">';
+  $output .= l(image_display($image, 'thumbnail'), "node/$node->nid", array(), NULL, NULL, FALSE, TRUE);
+  $output .= '</div>'."\n";
+  $output .= $node->teaser;
+  return $output;
+}
+
+/**
+ * Theme the body
+ */
+function theme_image_attach_body($node){
+  theme_add_style(drupal_get_path('module', 'image_attach') .'/image_attach.css');
+
+  $image = node_load($node->iid);
+  
+  $info = image_get_info(file_create_path($image->images['thumbnail']));
+  $output = '';
+  $output .= '<div style="width: '. $info['width'] .'px" class="image-attach-body">';
+  $output .= l(image_display($image, 'thumbnail'), "node/$node->nid", array(), NULL, NULL, FALSE, TRUE);
+  $output .= '</div>'."\n";
+  $output .= $node->body;
+  return $output;
+}
+

@@ -1,0 +1,14 @@
+; $Id: location_generate.info,v 1.2 2008/09/19 16:44:58 bdragon Exp $
+name = Location Generate
+description = Bulk assign random latitude and longitudes to nodes.
+package = Development
+core = 6.x
+dependencies[] = devel_generate
+dependencies[] = location
+
+; Information added by drupal.org packaging script on 2009-03-03
+version = "6.x-3.1-rc1"
+core = "6.x"
+project = "location"
+datestamp = "1236112547"
+

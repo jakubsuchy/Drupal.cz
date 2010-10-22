@@ -1,0 +1,547 @@
+# Translation of de.po to German
+# Gerhard Killesreiter <gerhard@killesreiter.de>, 2004.
+# Uwe Hermann <uwe@hermann-uwe.de>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: de\n"
+"POT-Creation-Date: 2003-12-08 21:11+0100\n"
+"PO-Revision-Date: 2006-02-27 20:56+0100\n"
+"Last-Translator: Peter Santo <drupalde.20.rzyom@recursor.net>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: image.module
+msgid "<p>Admins may create many image nodes at once by uploading all images to a folder on the server. This upload happens outside of Drupal, usually using an FTP client.</p>"
+msgstr "<p>Administratoren können mehrere Bilder-Knoten auf einmal erstellen, indem sie alle Bilder in ein Verzeichnis auf dem Server hochladen. Dies geschieht außerhalb von Drupal, normalerweise mit Hilfe eines FTP-Programms.</p>"
+
+#: image.module
+msgid "Below is a status of image module's current configuration."
+msgstr "Unten findet sich der Zustand der gegenwärtigen Konfiguration des Bilder-Modules."
+
+#: image.module
+msgid "Allow users to upload images and to display them in shared and personal photo galleries."
+msgstr "Benutzern das Hochladen von Bildern und die Anzeige in privaten und öffentlichen Bildergalerien gestatten."
+
+#: image.module
+msgid "Images can be uploaded into either shared or personal galleries. Once images are uploaded they can be manipulated.  The image system will auto-generate thumbnails for all images to be used in other nodes via filters and in gallery navigation.  These settings allow you to control where images are placed, how they are displayed, and any restrictions that should be enforced."
+msgstr "Bilder können entweder in private oder in öffentlichen Bildergalerien hochgeladen werden. Anschließend können sie bearbeitet werden. Das Bildersystem erzeugt für alle Bilder, die in anderen Knoten über Eingabeformate oder in einer Galerie-Navigation verwendet werden, automatisch Vorschaubilder. Mit diesen Einstellungen kann festgelegt werden, wo die Bilder abgelegt werden, wie sie angezeigt werden und welche Einschränkungen gelten."
+
+#: image.module, image.module, image.module
+msgid "image"
+msgstr "Bild"
+
+#: image.module
+msgid "An image you can insert into nodes, or see in photo galleries."
+msgstr "Ein Bild, das in anderen Beiträgen oder in Bildergalerien angezeigt werden kann."
+
+#: image.module
+msgid "Explanation or submission guidelines"
+msgstr "Erklärung oder Richtlinien für Autoren."
+
+#: image.module
+msgid "This text will be displayed at the top of the image submission form.  It is useful for helping or instructing your users."
+msgstr "Dieser Text wird oben auf der Seite zum Hochladen von Bilder angezeigt. Er kann verwendet werden, um Benutzern Anleitungen oder Hilfe zu geben."
+
+#: image.module
+msgid "Default image path"
+msgstr "Bilder-Pfad"
+
+#: image.module
+msgid "Default path for uploaded images relative to your Drupal installation; it must be writeable and visible from the web. Don't forget the slash (/) at the end."
+msgstr "Der Standardpfad für hochgeladene Bilder relativ zur Drupal-Installation. Er darf nicht schreibgeschützt sein, muss vom WWW aus und sichtbar sein und mit einem Schrägstrich („/“) enden."
+
+#: image.module
+msgid "Default thumb path"
+msgstr "Standard Vorschau-Pfad"
+
+#: image.module
+msgid "Default path for thumbnails relative to your Drupal installation; it must be writeable and visible from the web. Don't forget the slash (/) at the end."
+msgstr "Der Standardpfad für Vorschaubilder relativ zur Drupal-Installation. Er darf nicht schreibgeschützt sein, muss vom WWW aus und sichtbar sein und mit einem Schrägstrich („/“) enden."
+
+#: image.module
+msgid "Temporary image path"
+msgstr "Pfad für temporäre Bilder."
+
+#: image.module
+msgid "Path for working directory relative to your Drupal installation; it must be writeable and visible from the web. Don't forget the slash (/) at the end."
+msgstr "Pfad zum Arbeitsverzeichnis relativ zur Drupal Installation. Er darf nicht schreibgeschützt sein, muss vom WWW aus und sichtbar sein und mit einem Schrägstrich („/“) enden."
+
+#: image.module
+msgid "Maximum temporary image directory size"
+msgstr "Maximale Größe des temporären Bilderverzeichnisses"
+
+#: image.module
+msgid "MBytes."
+msgstr "MByte"
+
+#: image.module
+msgid "Stored images filenames"
+msgstr "Gespeicherte Dateinamen"
+
+#: image.module
+msgid "The filename of an image stored on the server could be based on an unique random string or include the original filename. In the later case, the node id will be appended to the filename."
+msgstr "Der Dateiname von auf dem Server gespeicherten Bildern kann auf einer eindeutigen, zufälligen Zeichenkette basieren oder den ursprünglichen Dateinamen beinhalten. Im letzteren Fall wird die Knoten-Nummer an den Dateinamen angehängt."
+
+#: image.module
+msgid "Default max image size"
+msgstr "Maximale Dateigröße"
+
+#: image.module
+msgid "KBytes."
+msgstr "KByte"
+
+#: image.module
+msgid "Default max image resolution"
+msgstr "Maximale Auflösung"
+
+#: image.module
+msgid "Example: 800x600."
+msgstr "Beispiel: 800x600"
+
+#: image.module
+msgid "Default thumbnail resolution"
+msgstr "Vorschau-Auflösung"
+
+#: image.module
+msgid "Default size of thumbnails: format will be the same as original image. Use just one dimension, and put a \"x\" to specify height. Examples: \"100\" for width of 100; \"x200\" for height of 200."
+msgstr "Standardgröße der Vorschaubilder. Das Bildformat ist dasselbe des ursprünglichen Bildes. Es ist nur entweder Höhe oder Breite anzugeben, wobei bei Höhenangaben ein „x“ voranzustellen ist. Beispiele: „100“ für eine Höhe von 100; „x200“ für eine Höhe von 200."
+
+#: image.module
+msgid "Image library"
+msgstr "Bild-Library"
+
+#: image.module
+msgid "Select the image library to be used during thumbnail generation and image manipulation.  Use ImageMagick if you can; GD produces worse thumbnails, might not support GIF and this module doesn't support image editing (rotate, crop etc) with it."
+msgstr "Wähle das Konvertierungsprogramm zur Vorschau-Generierung und Bildbearbeitung aus. Falls möglich, verwende Imagemagick. GD produziert schlechtere Vorschaubilder, unterstützt evtl. kein GIF-Format und kann nicht zum Drehen und Verkleinern verwendet werden."
+
+#: image.module
+msgid "Background Color"
+msgstr "Hintergrundfarbe"
+
+#: image.module
+msgid "Color used to fill in background when rotating images."
+msgstr "Farbe mit der der Hintergrund beim Drehen ausgefüllt wird."
+
+#: image.module
+msgid "Imagemagick Convert path"
+msgstr "Pfad zum Imagemagick-Programm \"convert\""
+
+#: image.module
+msgid "Absolute path to ImageMagick convert file. Include the 'convert.exe' (or other filename) at the end."
+msgstr "Absoluter Pfad zu ImageMagick. Der Pfad beinhaltet „convert.exe“ (bzw. einen anderen Dateinamen) am Ende."
+
+#: image.module
+msgid "jhead path"
+msgstr "Pfad zum jhead-Programm"
+
+#: image.module
+msgid "Absolute path of jhead, for EXIF parsing; blank to disable."
+msgstr "Absoluter Pfad zu jhead (für EXIF-Daten). Leerlassen zum Abschalten."
+
+#: image.module
+msgid "<none>"
+msgstr "<Keines>"
+
+#: image.module
+msgid "Gallery Navigation Vocabulary"
+msgstr "Galerien-Navigations-Vokabular"
+
+#: image.module
+#, fuzzy
+msgid "One of the taxonomy vocabularies will be the navigation tree. Select it here. Make sure that a term from this vocabulary is required."
+msgstr "Eines der Taxonomie-Vokabulare stellt den Navigationsbaum dar. Es kann hier ausgewählt werden. Stellen Sie sicher, dass ein Begriff dieses Vokabulars ausgewählt werden muss."
+
+#: image.module
+msgid "Gallery Thumbnails"
+msgstr "Galerie-Vorschau"
+
+#: image.module
+msgid "Set the thumbnail to be dislayed on the gallery page."
+msgstr "Wähle das Vorschaubild, das auf der Galerie-Seite angezeigt wird."
+
+#: image.module
+msgid "Specify how many rows of thumbnails in each page of the gallery."
+msgstr "Gib an wieviele Vorschaubilder auf jeder Seite einer Galerie zu sehen sein sollen."
+
+#: image.module
+msgid "Gallery Columns"
+msgstr "Spalten pro Galerie"
+
+#: image.module
+msgid "Specify how many columns of thumbnails in each page of the gallery."
+msgstr "Gibt an, wieviele Spalten von Vorschaubildern jede Galerieseite anzeigen soll."
+
+#: image.module
+msgid "Gallery Order"
+msgstr "Galerie-Anordnung"
+
+#: image.module
+msgid "Order of thumbnails within a gallery. Lighter and heavier refer to weight property."
+msgstr "Die Reihenfolge der Vorschaubilder innerhalb einer Bildergalerie. „Leichter“ und „schwerer“ beziehen sich auf die Wichtung der Bilder."
+
+#: image.module
+msgid "Personal Photo Galleries"
+msgstr "Private Bildergalerien"
+
+#: image.module
+msgid "Activate/deactivate personal photo galleries site-wide.  When enabled you can use the \"has personal image gallery\" permission to control which roles have personal galleries."
+msgstr "Private Bildergalerien für die Site aktivieren/deaktivieren. Wenn dies aktiviert ist kann mit der Berechtigung „besitzt private Bildergalerie“ festgelegt werden, welche Rollen private Bildergalerien besitzen."
+
+#: image.module
+msgid "Personal Gallery Picture Limit"
+msgstr "Grenzwert für private Bildergalerien."
+
+#: image.module
+msgid "Set how many pictures users are allowed."
+msgstr "Einstellen wieviele Bilder Benutzer haben dürfen."
+
+#: image.module
+msgid "Personal Gallery Picture Limit Per Role"
+msgstr "Bilderbeschränkung privater Bildergalerien pro Rolle."
+
+#: image.module
+msgid "Enabling this will allow for setting a maximum number of pictures per role."
+msgstr "Aktivieren dieser Einstellung ermöglicht es, eine Höchstzahl von Bildern pro Rolle festzulegen."
+
+#: image.module
+msgid "Personal Gallery Size Limit"
+msgstr "Größenlimit für private Galerie"
+
+#: image.module
+msgid "Set a maximum number of kilobytes allowed per user."
+msgstr "Maximale Kilobytes pro Benutzer einstellen."
+
+#: image.module
+msgid "Disable Image Caching"
+msgstr "Bilder-Caching deaktivieren"
+
+#: image.module
+msgid "Enabling this will add random parameters to image URIs which will prevent the browser from caching."
+msgstr "Aktivieren bewirkt, dass zufällige Parameter an Bilder-URIs angehängt werden, was Browser davon abhält, die Bilder zu cachen."
+
+#: image.module, image.module
+msgid "photo galleries"
+msgstr "Bildergalerien"
+
+#: image.module
+msgid "images"
+msgstr "Bilder"
+
+#: image.module
+#, fuzzy
+msgid "directory upload: slow"
+msgstr "Hochladen von Verzeichnissen: langsam"
+
+#: image.module
+msgid "directory upload: fast"
+msgstr "Hochladen von Verzeichnissen: schnell"
+
+#: image.module
+msgid "my photo gallery"
+msgstr "Meine Bildergalerie"
+
+#: image.module
+msgid "edit this image"
+msgstr "Bild bearbeiten"
+
+#: image.module
+msgid "Edit this image."
+msgstr "Bild bearbeiten."
+
+#: image.module
+msgid "%u's photo gallery"
+msgstr "%us Bildergalerie"
+
+#: image.module
+msgid "View %u's photo gallery."
+msgstr "%us Bildergalerie betrachten"
+
+#: image.module
+msgid "%t photo gallery"
+msgstr "%t Bildergalerie"
+
+#: image.module
+msgid "View %t photo gallery."
+msgstr "%t-Bildergalerie betrachten."
+
+#: image.module
+msgid "previous image"
+msgstr "vorheriges Bild"
+
+#: image.module
+msgid "next image"
+msgstr "nächstes Bild"
+
+#: image.module
+msgid "Photo gallery"
+msgstr "Bildergalerie"
+
+#: image.module
+msgid "view user's photo gallery"
+msgstr "Bildergalerie des Benutzers betrachten"
+
+#: image.module, image.module
+msgid "Thumbnail"
+msgstr "Vorschau"
+
+#: image.module
+msgid "EXIF data"
+msgstr "EXIF-Daten"
+
+#: image.module
+msgid "IPTC data"
+msgstr "IPTC-Daten"
+
+#: image.module
+msgid "Click \"Browse...\" to select an image to upload."
+msgstr "Klicken sie \"Browse...\" um ein Bild zum Hochladen auszuwählen."
+
+#: image.module
+msgid "Description"
+msgstr "Beschreibung"
+
+#: image.module
+msgid "Weight"
+msgstr "Gewicht"
+
+#: image.module
+msgid "Weight of image used to sort thumbnails.  Heavier thumbnails will fall to the bottom of the gallery."
+msgstr "Wichtung von Bildern, die zur Sortierung der Vorschaubilder verwendet wird. Schwerere Vorschaubilder sinken in der Bildergalerie nach unten."
+
+#: image.module
+msgid "Personal"
+msgstr "Privat"
+
+#: image.module
+msgid "A personal image can only be seen in the user's photo gallery."
+msgstr "Ein privates Bild kann nur in der Galerie des Autors angesehen werden."
+
+#: image.module, image.module
+msgid "The image file you are trying to upload is too big."
+msgstr "Das Bild das hochgeladen werden soll, ist zu groß."
+
+#: image.module
+msgid "The image file was only partially uploaded. Please try again."
+msgstr "Die Bilddatei wurde nur teilweise hochgeladen. Bitte nochmal versuchen."
+
+#: image.module
+msgid "You must select an image for upload."
+msgstr "Es muss ein Bild zum Hochladen ausgewählt werden."
+
+#: image.module, image.module
+msgid "Error processing image file."
+msgstr "Fehler beim Bearbeiten der Bilddatei."
+
+#: image.module
+msgid "Uploaded file was not an image."
+msgstr "Hochgeladene Datei war kein Bild."
+
+#: image.module
+msgid "image type '%type' is not supported."
+msgstr "Der Bildtyp „%type“ wird nicht unterstützt."
+
+#: image.module
+msgid "The uploaded image(%ax%b) is to large (max %cx%d)."
+msgstr "Das hochgeladene Bild (%ax%b) ist zu groß (max. %cx%d)."
+
+#: image.module
+msgid "Image filter"
+msgstr "Bilder-Filter"
+
+#: image.module
+msgid "When enabled, image codes will be replaced by thumb linked to real node. Syntax: [image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]; every param but node_id is optional."
+msgstr "Wenn diese Einstellung aktiviert ist, werden Bilder-Codes durch mit dem tatsächlichen Knoten verlinkten Vorschaubilder ersetzt. Syntax: [image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]; außer node_id sind alle parameter optional."
+
+#: image.module
+msgid "You may quickly link to image nodes using a special syntax. The image code(s) will be replaced by thumbnail linked to full size image node. Syntax: <i>[image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]</i>. Every parameter except node_id is <i>optional</i>."
+msgstr "Mit einer speziellen Systax kann bequem auf Bildknoten verlinkt werden. Die Bildercodes werden durch Vorschaubilder ersetzt, die mit Knoten mit dem Bild in voller Größe verlinkt sind. Syntax: <i>[image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]</i>. Außer node_id ist jeder parameter <i>optional</i>."
+
+#: image.module, image.module, image.module, image.module
+msgid "Cannot save image."
+msgstr "Das Bild kann nicht gespeichert werden."
+
+#: image.module
+msgid "Cannot delete old image."
+msgstr "Das Bild kann nicht gelöscht werden."
+
+#: image.module
+msgid "Cannot delete old thumb."
+msgstr "Kann alte Vorschau nicht löschen."
+
+#: image.module
+msgid "Cannot create thumbnail. Current GD library has no read support for '%type' image format."
+msgstr "Kann keine Vorschau erzeugen. Die verwendete GD-Bibliothek unterstützt Bilder vom Typ '%type' nicht."
+
+#: image.module
+#, fuzzy
+msgid "Cannot create thumbnail. Current GD library has no support for '%type' format image creation."
+msgstr "Das Vorschaubild kann nicht erzeugt werden. Die GD Library unterstützt nicht das Erstellen von Bildern im „%type“-Format."
+
+#: image.module
+msgid "Imagemagick: you have to set <code>convert</code> path."
+msgstr "ImageMagick: Der Pfad zu <code>convert</code> muss gesetzt werden."
+
+#: image.module
+msgid "You can have at most %a images in your gallery."
+msgstr "Sie können höchstens %a Bilder in Ihrer Galerie haben."
+
+#: image.module
+msgid "You have %a kb for your gallery."
+msgstr "Es stehen %a kB für Ihre Galerie zur Verfügung."
+
+#: image.module
+msgid "File is too big (max %a kbytes)"
+msgstr "Datei zu groß (max. %a kB)."
+
+#: image.module
+msgid "Upload directory is full."
+msgstr "Upload-Verzeichnis ist voll."
+
+#: image.module
+msgid "Resize/Crop"
+msgstr "Vergrößern/verkleinern"
+
+#: image.module
+msgid "keep prop"
+msgstr "Proportionen erhalten"
+
+#: image.module
+msgid "Rotate"
+msgstr "Drehen"
+
+#: image.module
+msgid "clockwise"
+msgstr "im Uhrzeigersinn"
+
+#: image.module
+msgid "background"
+msgstr "Hintergrund"
+
+#: image.module
+msgid "white"
+msgstr "weiß"
+
+#: image.module
+msgid "black"
+msgstr "schwarz"
+
+#: image.module
+msgid "Convert"
+msgstr "Konvertieren"
+
+#: image.module
+msgid "Quality (1-100)"
+msgstr "Qualität (1-100)"
+
+#: image.module
+msgid "%u's Photo Gallery"
+msgstr "%us Bildergalerie"
+
+#: image.module, image.module
+msgid "Photo galleries"
+msgstr "Bildergalerien"
+
+#: image.module
+msgid "Access Denied"
+msgstr "Zugriff verweigert."
+
+#: image.module
+msgid "There is 1 image in this album."
+msgstr "Es gibt ein Bild in diesem Album."
+
+#: image.module
+msgid "There are %a images in this album."
+msgstr "Es sind %a Bilder in diesem Album."
+
+#: image.module
+msgid "There are no images in this album."
+msgstr "Es gibt keine Bilder in diesem Album."
+
+#: image.module
+msgid "Last updated: "
+msgstr "Zuletzt bearbeitet: "
+
+#: image.module
+msgid "galleries"
+msgstr "Galerien"
+
+#: image.module
+msgid "in this album on"
+msgstr "in dieser Galerie am"
+
+#: image.module
+msgid "Directory to scan"
+msgstr "Verzeichnis zum absuchen"
+
+#: image.module
+msgid "The path to the directory which holds the source image files. This path should be relative to Drupal root directory - don't forget the slash (/) at the end."
+msgstr "Standardpfad für die ursprünglichen Bilddateien relativ zur Drupal-Installation. Er darf nicht schreibgeschützt sein, muss vom WWW aus und sichtbar sein und mit einem Schrägstrich („/“) enden."
+
+#: image.module
+#, fuzzy
+msgid "Show resized image. Use only if you have large bandwidth."
+msgstr "Skaliertes Bild anzeigen. Nur verwenden wenn große Bandbreite zur Verfügung steht."
+
+#: image.module
+msgid "Delete images after insert"
+msgstr "Dateien nach dem Hochladen löschen."
+
+#: image.module
+#, fuzzy
+msgid "If instructed, Drupal will delete all files in the above directory after creating the image nodes."
+msgstr "Drupal löscht alle Dateien in obigem Verzeichnis nach der Erstellung der Bilderknoten, wenn es dazu angewiesen wird."
+
+#: image.module
+msgid "Add new gallery"
+msgstr "Neue Galerie hinzufügen."
+
+#: image.module
+msgid "If needed, create a new term for this gallery by clicking on one of these vocabularies"
+msgstr "Durch Klick auf eines dieser Vokabulare einen neuen Taxonomie-Begriff für diese Bildergalerie erstellen."
+
+#: image.module
+msgid "Directory upload"
+msgstr "Verzeichnis-Upload"
+
+#: image.module
+msgid "is not a directory"
+msgstr "ist kein Verzeichnis."
+
+#: image.module
+msgid "is not writable. Change permissions on server"
+msgstr "Nicht schreibbar. Die Berechtigungen auf dem Server müssen geändert werden."
+
+#: image.module
+#, fuzzy
+msgid "You may wish to view your new images:"
+msgstr "Neue Bilder betrachten:"
+
+#: image.module
+msgid "gallery"
+msgstr "Galerie"
+
+#: image.module
+msgid "is not an image."
+msgstr "ist kein Bild."
+
+#: image.module
+msgid "image type is not supported."
+msgstr "Typ der Bilddatei wird nicht unterstützt."
+
+#: image.module
+msgid "Role"
+msgstr "Rolle"
+
+#: image.module
+msgid "Limit"
+msgstr "Grenzwert"
+
+#: image.module
+msgid "Set how many pictures each role listed above is allowed. \"Personal Gallery Picture Limit\" will be the default value for new roles."
+msgstr "Festlegen, wieviele Bilder jede oben aufgeführte Rolle besitzen darf. „Bilderhöchstzahl für private Bildergalerien“ ist der Standardwert für neue Rollen."
+

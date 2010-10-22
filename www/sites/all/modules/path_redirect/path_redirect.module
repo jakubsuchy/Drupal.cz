@@ -1,0 +1,379 @@
+<?php
+// $Id: path_redirect.module,v 1.3.2.7.2.49 2009/06/27 21:57:20 davereid Exp $
+
+if (!defined('REQUEST_TIME')) {
+  define('REQUEST_TIME', time());
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function path_redirect_help($path, $arg) {
+  switch ($path) {
+    case 'admin/build/path-redirect':
+    case 'admin/build/path-redirect/list':
+      return '<p>'. t('Here you can set up URL redirecting for this site. Any existing or non-existing path within this site can redirect to any internal or external URL.') .'</p>';
+    //case 'admin/build/path-redirect/add':
+    //case 'admin/build/path-redirect/edit/'. $arg[3]:
+    //case 'admin/build/path-redirect/settings':
+  }
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function path_redirect_perm() {
+  return array(
+    'administer redirects',
+  );
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function path_redirect_menu() {
+  $items['admin/build/path-redirect'] = array(
+    'title' => 'URL redirects',
+    'description' => 'Redirect users from one URL to another.',
+    'page callback' => 'path_redirect_admin',
+    'access arguments' => array('administer redirects'),
+    'file' => 'path_redirect.admin.inc',
+  );
+  $items['admin/build/path-redirect/list'] = array(
+    'title' => 'List',
+    'description' => 'List all URL redirects.',
+    'access arguments' => array('administer redirects'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -3,
+  );
+  $items['admin/build/path-redirect/add'] = array(
+    'title' => 'Add redirect',
+    'description' => 'Add a new URL redirect.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('path_redirect_edit'),
+    'access arguments' => array('administer redirects'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'path_redirect.admin.inc',
+  );
+  $items['admin/build/path-redirect/edit'] = array(
+    'title' => 'Edit',
+    'description' => 'Edit an existing URL redirect.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('path_redirect_edit'),
+    'access arguments' => array('administer redirects'),
+    'type' => MENU_CALLBACK,
+    'file' => 'path_redirect.admin.inc',
+  );
+  $items['admin/build/path-redirect/delete'] = array(
+    'title' => 'Delete redirect',
+    'description' => 'Delete an existing URL redirect.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('path_redirect_delete_confirm'),
+    'access arguments' => array('administer redirects'),
+    'type' => MENU_CALLBACK,
+    'file' => 'path_redirect.admin.inc',
+  );
+  $items['admin/build/path-redirect/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Configure behavior for URL redirects.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('path_redirect_settings_form'),
+    'access arguments' => array('administer redirects'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'path_redirect.admin.inc',
+  );
+  //$items['admin/build/path-redirect/import'] = array(
+  //  'title' => 'Import',
+  //  'description' => 'Import URL redirects.',
+  //  'page callback' => 'drupal_get_form',
+  //  'page arguments' => array('path_redirect_import_form'),
+  //  'access arguments' => array('administer redirects'),
+  //  'type' => MENU_LOCAL_TASK,
+  //  'weight' => 20,
+  //  'file' => 'path_redirect.admin.inc',
+  //);
+  $items['admin/build/path-redirect/export'] = array(
+    'title' => 'Export',
+    'description' => 'Export URL redirects.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('path_redirect_export_form'),
+    'access arguments' => array('administer redirects'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 30,
+    'file' => 'path_redirect.admin.inc',
+  );
+  //$items['admin/build/path-redirect/export/csv'] = array(
+  //  'page callback' => 'path_redirect_export_csv',
+  //  'access arguments' => array('administer redirects'),
+  //  'type' => MENU_CALLBACK,
+  //  'file' => 'path_redirect.admin.inc',
+  //);
+  //$items['admin/build/path-redirect/export/xml'] = array(
+  //  'page callback' => 'path_redirect_export_xml',
+  //  'access arguments' => array('administer redirects'),
+  //  'type' => MENU_CALLBACK,
+  //  'file' => 'path_redirect.admin.inc',
+  //);
+  $items['js/path_redirect/autocomplete_404'] = array(
+    'page callback' => 'path_redirect_js_autocomplete_404',
+    'access arguments' => array('administer redirects'),
+    'type' => MENU_CALLBACK,
+    'file' => 'path_redirect.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_init().
+ */
+function path_redirect_init() {
+  _path_redirect_check();
+}
+
+/**
+ * Implementation of hook_cron().
+ */
+function path_redirect_cron() {
+  // Purge inactive redirects from the database.
+  if ($purge = path_redirect_var('purge_inactive')) {
+    db_query("DELETE FROM {path_redirect} WHERE last_used < %d", array(':timestamp' => REQUEST_TIME - $purge));
+    if ($count = db_affected_rows()) {
+      watchdog('path_redirect', format_plural($count, 'Removed 1 inactive redirect from the database.', 'Removed @count inactive redirects from the database.'));
+    }
+  }
+}
+
+/**
+ * If a redirect is found for the current path, perform the redirect.
+ */
+function _path_redirect_check() {
+  global $language;
+
+  $where = array();
+  $args = array();
+  //$where = array("path = '%s'");
+  //$args = array(':path' => $_GET['q']);
+  $sort = array();
+
+  // Add query arguments.
+  $query = $_GET;
+  unset($query['q']); // Use array_diff or array_diff_assoc?
+  if ($query) {
+    $path = urldecode(request_uri());
+    $path = drupal_substr($path, drupal_strlen(base_path()));
+    // Remove ($language->language .'/') via preg_replace?
+    $path = _path_redirect_split_path($path);
+    $where[] = "(path = '%s' OR path = '%s')";
+    $args[':path'] = $_GET['q'];
+    $args[':path_query'] = $_GET['q'] .'?'. $path['query'];
+    $sort[] = 'path DESC';
+    //$where[] = "(path_query = '%s' OR path_query = '')";
+    //$args[':path_query'] = $path['query'];
+    //$sort[] = 'path_query DESC';
+  }
+  else {
+    $where[] = "path = '%s'";
+    $args[':path'] = $_GET['q'];
+    //$where[] = "path_query = ''";
+  }
+
+  // Add language arguments.
+  $where[] = "(language = '%s' OR language = '')";
+  $args[':language'] = $language->language;
+  $sort[] = 'language DESC';
+
+  $r = path_redirect_load($where, $args, $sort);
+
+  if ($r) {
+    // Update the last used timestamp so that unused redirects can be purged.
+    db_query("UPDATE {path_redirect} SET last_used = %d WHERE rid = %d", array(':last_used' => REQUEST_TIME, ':rid' => $r->rid));
+
+    $redirect = url($r->redirect, array('query' => $r->query, 'fragment' => $r->fragment, 'absolute' => TRUE));
+
+    if (url($r->redirect) == url($_GET['q'])) {
+      // Prevent infinite loop redirection.
+      watchdog('path_redirect', 'Redirect to <code>%redirect</code> is causing an infinite loop; redirect cancelled.', array('%redirect' => $r->redirect), WATCHDOG_WARNING, l(t('Edit'), 'admin/build/path-redirect/edit/'. $r->rid));
+    }
+    elseif (path_redirect_var('allow_bypass') && isset($_GET['redirect']) && $_GET['redirect'] === 'no') {
+      // If the user has requested not to be redirected, show a message.
+      drupal_set_message(t('This page has been moved to <a href="@redirect">@redirect</a>.', array('@redirect' => $redirect)));
+    }
+    elseif (path_redirect_var('redirect_warning')) {
+      // Show a message and automatically redirect after 10 seconds.
+      drupal_set_message(t('This page has been moved to <a href="@redirect">@redirect</a>. You will be automatically redirected in 10 seconds.', array('@redirect' => $redirect)), 'error');
+      drupal_set_html_head("<meta http-equiv=\"refresh\" content=\"10;url=$redirect\" />");
+    }
+    else {
+      // Perform the redirect.
+      unset($_REQUEST['destination']);
+      drupal_goto($r->redirect, $r->query, $r->fragment, $r->type);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_nodeapi().
+ * @todo Remove in Drupal 7.
+ */
+function path_redirect_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
+    case 'presave':
+      path_redirect_node_presave($node);
+      break;
+    case 'delete':
+      path_redirect_node_delete($node);
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_node_presave().
+ *
+ * Creates automatic redirects when URL aliases are manually changed.
+ */
+function path_redirect_node_presave($node) {
+  if (path_redirect_var('auto_redirect') && !empty($node->path)) {
+    $node_path = 'node/'. $node->nid;
+    $old_alias = drupal_get_path_alias($node_path, ($node->language ? $node->language : ''));
+    if ($old_alias != $node_path && $node->path != $old_alias) {
+      // If the user is manually changing the path alias, add a redirect from the old alias to the node.
+      path_redirect_save(array('path' => $old_alias, 'redirect' => $node_path));
+    }
+  }
+}
+
+/**
+ * Implementation of hook_node_presave().
+ */
+function path_redirect_node_delete($node) {
+  // When a node is deleted, also delete the redirects to it (they will result in a 404).
+  path_redirect_delete(array('redirect' => 'node/'. $node->nid));
+}
+
+/**
+ * Save an URL redirect to the database.
+ */
+function path_redirect_save($edit) {
+  // Merge default values.
+  $edit += array(
+    'type' => path_redirect_var('default_status'),
+    'last_used' => REQUEST_TIME,
+  );
+
+  // Remove beginning and trailing slashes from path.
+  // @todo Move to validation.
+  $edit['path'] = preg_replace('/^\/|\/\?|\/$/', '', $edit['path']);
+
+  if (empty($edit['rid'])) {
+    return drupal_write_record('path_redirect', $edit);
+  }
+  else {
+    return drupal_write_record('path_redirect', $edit, 'rid');
+  }
+}
+
+/**
+ * Retrieve a specific URL redirect from the database.
+ */
+function path_redirect_load($where = array(), $args = array(), $sort = array()) {
+  if (is_numeric($where)) {
+    $where = array('rid' => $where);
+  }
+
+  foreach ($where as $key => $value) {
+    if (is_string($key)) {
+      $args[] = $value;
+      $where[$key] = $key .' = '. (is_numeric($value) ? '%d' : "'%s'");
+    }
+  }
+
+  if ($where && $args) {
+    $sql = "SELECT * FROM {path_redirect} WHERE ". implode(' AND ', $where);
+    if ($sort) {
+      $sql .= ' ORDER BY '. implode(' ,', $sort);
+    }
+    return db_fetch_object(db_query_range($sql, $args, 0, 1));
+  }
+}
+
+/**
+ * Delete a specific URL redirect from the database.
+ */
+function path_redirect_delete($where = array(), $args = array()) {
+  if (is_numeric($where)) {
+    $where = array('rid' => $where);
+  }
+
+  // @todo Remove legacy path_redirect_delete support for pathauto.
+  if (is_string($where) && is_string($args)) {
+    $where = array('path' => $where, 'redirect' => $args);
+    $args = array();
+  }
+
+  foreach ($where as $key => $value) {
+    if (is_string($value)) {
+      $args[] = $value;
+      $where[$key] = $key .' = '. (is_numeric($value) ? '%d' : "'%s'");
+    }
+  }
+
+  if ($where && $args) {
+    return db_query("DELETE FROM {path_redirect} WHERE ". implode(' AND ', $where), $args);
+  }
+}
+
+/**
+ * Internal function to split a path string into path, query and fragment.
+ */
+function _path_redirect_split_path($path) {
+  //$path = strtr($path, array('<front>' => variable_get('site_frontpage', 'node')));
+  if (variable_get('clean_url', 0) && strpos($path, '?q=') === 0) {
+    $path = preg_replace('/^\?q=/', '', $path, 1);
+  }
+  if (strpos($path, '?') === FALSE && strpos($path, '&') !== FALSE) {
+    $path = preg_replace('/&/', '?', $path, 1);
+  }
+
+  $parsed = parse_url($path) + array('query' => NULL, 'fragment' => NULL);
+  $result = array(
+    'path' => preg_replace('/[\?\#].*$/', '', $path),
+    'query' => $parsed['query'],
+    'fragment' => $parsed['fragment'],
+  );
+  return $result;
+}
+
+/**
+ * Internal default variables for template_var().
+ */
+function path_redirect_variables() {
+  return array(
+    'path_redirect_redirect_warning' => 0,
+    'path_redirect_allow_bypass' => 0,
+    'path_redirect_auto_redirect' => 1,
+    'path_redirect_purge_inactive' => 4838400,
+    'path_redirect_default_status' => 301,
+    // Unused variables set to NULL so they will still be uninstalled.
+    'path_redirect_nodeapi_enabled' => NULL,
+  );
+}
+
+/**
+ * Internal implementation of variable_get().
+ */
+function path_redirect_var($name, $default = NULL) {
+  static $defaults = NULL;
+  if (!isset($defaults)) {
+    $defaults = path_redirect_variables();
+  }
+
+  $name = 'path_redirect_'. $name;
+
+  // @todo Remove when stable.
+  if (!isset($defaults[$name])) {
+    trigger_error(t('Default variable for %variable not found.', array('%variable' => $name)));
+  }
+
+  return variable_get($name, isset($default) || !isset($defaults[$name]) ? $default : $defaults[$name]);
+}

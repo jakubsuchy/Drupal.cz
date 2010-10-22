@@ -1,0 +1,38 @@
+ul.galleries { 
+  list-style-type : none;
+  margin : 0;
+  padding : 0;
+}
+
+ul.galleries li { 
+  background : #eeeeee;
+  border : 1px #cccccc solid;
+  margin : 1em 0;
+  padding : 1em;
+}
+
+ul.galleries li img { 
+  float : left;
+  padding-right : 4px;
+  margin-right : 4px;
+}
+
+ul.galleries li div.count { 
+  clear : both;
+}
+
+ul.galleries h3 { 
+  margin : 0;
+  padding : 0;
+}
+
+ul.images { 
+  list-style-type : none;
+  margin : 0;
+  padding : 0;
+}
+
+ul.images li { 
+  float : left;
+  margin : 1em;
+}

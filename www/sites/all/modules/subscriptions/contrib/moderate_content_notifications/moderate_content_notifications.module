@@ -1,0 +1,282 @@
+<?php
+// $Id: moderate_content_notifications.module,v 1.2 2008/05/18 19:32:02 salvis Exp $
+
+/**
+ * Implementation of hook_menu().
+ */
+function moderate_content_notifications_menu($may_cache) {
+
+  if ($may_cache) {
+    $items[] = array(
+      'path' => 'admin/content/moderate_content_notifications',
+      'title' => t('Subscriptions notifications'),
+      'description' => t('Moderate new content to make sure that the subscriptions notifications do not contain spam.'),
+      'callback' => 'moderate_content_notifications_list',
+      'access' => user_access('moderate subscriptions notifications'),
+    );
+    $items[] = array(
+      'path' => 'admin/settings/subscriptions/moderate_content_notifications',
+      'title' => t('Content notifications (spam deterrent moderation)'),
+      'description' => t('Set which basic role is trusted not to spam.'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => array('moderate_content_notifications_admin_settings_form'),
+      'access' => user_access('access administration pages'),
+    );
+  }
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm()
+ */
+function moderate_content_notifications_perm() {
+  return array('trusted not to spam', 'moderate subscriptions notifications');
+}
+
+/**
+ * Implementation of hook_subscriptions_queue_alter()
+ */
+function moderate_content_notifications_subscriptions_queue_alter(&$event) {
+
+  // Don't moderate anything if the user is trusted, 
+  // or if the content has already been moderated ($event['moderate_content_notifications_done'] == TRUE),
+  // or if the event is neither a node nor a comment.
+  if (!empty($event['moderate_content_notifications_done']) || user_access('trusted not to spam') || empty($event['node'])) {
+    return;
+  }
+
+  // Insert the event for later moderation.
+  $cid = empty($event['comment']->cid) ? 0 : $event['comment']->cid;
+  $data = serialize($event);
+  db_query("INSERT INTO {moderate_content_notifications} (uid, nid, cid, time_added, data) VALUES (%d, %d, %d, %d, '%s')",
+    $event['uid'], $event['node']->nid, $cid, time(), $data);
+
+  // Cancel the subscriptions for this event.
+  $event = NULL;
+}
+
+
+/**
+ * Menu callback for admin/content/moderate_content_notifications
+ *
+ * similar to comment_admin_overview().
+ */
+function moderate_content_notifications_list() {
+  return drupal_get_form('moderate_content_notifications_list_form');
+}
+
+function moderate_content_notifications_list_form() {
+  $form = array();
+
+  // build an 'Update options' form
+  $form['options'] = array(
+    '#type' => 'fieldset', '#title' => t('Update options'),
+    '#prefix' => '<div class="container-inline">', '#suffix' => '</div>'
+  );
+  $options = array( 
+    1 => t('send notification'), 
+    2 => t('send notification and promote user'), 
+    3 => t('delete item from queue'), 
+    4 => t('delete item and block user'));
+
+  $rid = variable_get('moderate_content_notifications_trusted_role', '');
+  if (empty($rid)) {
+    unset($options[2]);
+    drupal_set_message(t('You have not specified which basic role is trusted not to spam. <br />See the <a href="!url">setting page</a> for more information.', array('!url' => url('admin/settings/subscriptions/moderate_content_notifications'))));
+  }
+  else {
+    $role_name = db_result(db_query('SELECT name FROM {role} WHERE rid = %d', $rid));
+    $form['note'] = array(
+      '#value' => '<p>'. t('If you think that a user in this list can be trusted not to send spam via the subscriptions notifications service, you may chose to promote the user who will be given the role %role.', array('%role' => $role_name)) .'</p>',
+    );
+  }
+  
+  $form['options']['operation'] = array('#type' => 'select', '#options' => $options, '#default_value' => 'publish');
+  $form['options']['submit'] = array('#type' => 'submit', '#value' => t('Update'));
+
+
+  // Table header:
+  $form['header'] = array('#type' => 'value', '#value' => array(
+    theme('table_select_header_cell'),
+    array('data' => t('Author'), 'field' => 'uid', 'sort' => 'desc'),
+    array('data' => t('Node title'), 'field' => 'nid'),
+    array('data' => t('Comment subject'), 'field' => 'cid'),
+    array('data' => t('Time'), 'field' => 'time_added'),
+    //array('data' => t('Operations'))
+  ));
+  
+  // Load the content to moderate.
+  $result = pager_query('SELECT mm.*, u.name, n.title, c.subject
+    FROM {moderate_content_notifications} AS mm
+    JOIN {users} u ON u.uid = mm.uid
+    JOIN {node} n ON n.nid = mm.nid
+    LEFT JOIN {comments} c ON c.cid = mm.cid'.
+    tablesort_sql($form['header']['#value']), 50, 0);
+  
+  $destination = drupal_get_destination();
+  while ($content = db_fetch_object($result)) {
+    $data = unserialize($content->data);
+    $contents[$content->mcnid] = '';
+    $form['user'][$content->mcnid] = array('#value' => l($content->name, 'user/'. $content->uid .'/track', array('target' => '_blank')));
+    $form['node'][$content->mcnid] = array('#value' => l($content->title, 'node/'. $content->nid, array('target' => '_blank', 'title' => truncate_utf8($data['node']->body, 128)), NULL, NULL));
+    if (!empty($content->cid)) {
+      $form['comment'][$content->mcnid] = array('#value' => 
+        l($content->subject, 'node/'. $content->nid, 
+          array('target' => '_blank', 'title' => truncate_utf8($data['comment']->comment, 128)), 
+          NULL, 'comment-'. $content->cid));
+    }
+    else {
+      $form['comment'][$content->mcnid] = '';
+    }
+    $form['time'][$content->mcnid] = array('#value' => format_date($content->time_added, 'small'));
+    //$form['operations'][$content->mcnid] = array('#value' => l(t('edit'), 'comment/edit/'. $comment->cid, array(), $destination));
+  }
+
+  $form['contents'] = array('#type' => 'checkboxes', '#options' => $contents);
+  $form['pager'] = array('#value' => theme('pager', NULL, 50, 0));
+
+  return $form;
+}
+
+function theme_moderate_content_notifications_list_form($form) {
+  $output = drupal_render($form['options']);
+  $output .= drupal_render($form['note']);
+  if (isset($form['user']) && is_array($form['user'])) {
+    foreach (element_children($form['user']) as $key) {
+      $row = array();
+      $row[] = drupal_render($form['contents'][$key]);
+      $row[] = drupal_render($form['user'][$key]);
+      $row[] = drupal_render($form['node'][$key]);
+      $row[] = drupal_render($form['comment'][$key]);
+      $row[] = drupal_render($form['time'][$key]);
+      //$row[] = drupal_render($form['operations'][$key]);
+      $rows[] = $row;
+    }
+  }
+  else {
+    $rows[] = array(array('data' => t('No content left to moderate.'), 'colspan' => '6'));
+  }
+
+  $output .= theme('table', $form['header']['#value'], $rows);
+  if ($form['pager']['#value']) {
+    $output .= drupal_render($form['pager']);
+  }
+
+  $output .= drupal_render($form);
+
+  return $output;
+}
+
+/**
+ * We can't execute any 'Update options' if no contents were selected.
+ */
+function moderate_content_notifications_list_form_validate($form_id, $form_values) {
+  $form_values['contents'] = array_diff($form_values['contents'], array(0));
+  if (count($form_values['contents']) == 0) {
+    form_set_error('', t('Please select one or more items to perform the update on.'));
+    drupal_goto('admin/content/moderate_content_notifications');
+  }
+}
+
+/**
+ * Execute the chosen 'Update option' on the selected comments, such as
+ * publishing, unpublishing or deleting.
+ */
+function moderate_content_notifications_list_form_submit($form_id, $form_values) {
+  global $user;
+  $rid = variable_get('moderate_content_notifications_trusted_role', '');
+  $role_name = db_result(db_query('SELECT name FROM {role} WHERE rid = %d', $rid));
+  $queued_items = 0;
+  
+  // We keep track of users who have already been promoted / blocked.
+  $changed_users = array();
+  foreach ($form_values['contents'] AS $mcnid) {
+    if ($mcnid) {
+      $item = db_fetch_object(db_query('SELECT * FROM {moderate_content_notifications} WHERE mcnid = %d', $mcnid));
+      switch ($form_values['operation']) {
+        case '2': // send notification and promote user
+          // Promote user.
+          if (!isset($changed_users[$item->uid])) {
+            $user_to_promote = user_load(array('uid' => $item->uid));
+            $user_to_promote->roles[$rid] = $role_name;
+            user_save($user_to_promote, array('roles' => $user_to_promote->roles));
+            $changed_users[$item->uid] = TRUE;
+            drupal_set_message(t('The user has been promoted.'));
+            watchdog('moderation', t('%moderator gave %user the role %role.', 
+              array('%moderator' => $user->name, '%user' => $user_to_promote->name, '%role' => $role_name)), WATCHDOG_NOTICE, l(t('view'), 'user/'. $user_to_promote->uid));
+          }
+          // fallthrough
+        case '1': // send notification
+          $data = unserialize($item->data);
+          $data['moderate_content_notifications_done'] = TRUE;
+          subscriptions_queue($data);
+          $queued_items += 1;
+          break;
+        case '4': // delete item and block user
+          // block user.
+          if (!isset($changed_users[$item->uid])) {
+            $user_to_block = user_load(array('uid' => $item->uid));
+            user_save($user_to_block, array('status' => 0));
+            $changed_users[$item->uid] = TRUE;
+            drupal_set_message(t('The user has been blocked.'));
+            watchdog('moderation', t('%moderator blocked the user %user.', 
+              array('%moderator' => $user->name, '%user' => $user_to_block->name)), WATCHDOG_NOTICE, l(t('view'), 'user/'. $user_to_block->uid));
+          }
+          // fallthrough
+        case '3': // delete item from queue
+          drupal_set_message(t('The content item has been removed from the notifications queue.'));
+          break;
+      }
+      // In every case, the item must be deleted:
+      db_query('DELETE FROM {moderate_content_notifications} WHERE mcnid = %d', $mcnid);
+    }
+  }
+  if ($queued_items) {
+    drupal_set_message(t('%nb items have been queued for sending to subscribers.', array('%nb' => $queued_items)));
+  }
+  return 'admin/content/moderate_content_notifications';
+}
+
+/**
+ * Menu callback for admin/settings/subscriptions/moderate_content_notifications 
+ */
+function moderate_content_notifications_admin_settings_form() {
+  $form = array();
+
+  $form['warning'] = array(
+    '#value' => t('<p><strong>Select this setting with care!</strong> 
+      The role you select should be a role with relatively few permissions: just those you would give users you only trust not to send spam via the subscriptions notifications service. <br />
+      The role should have the <em>trusted not to spam</em> permission. <br />
+      The moderators who have access to the <a href="!url">notifications moderation page</a> will be able to promote users to that role.</p>',
+      array('!url' => url('admin/content/moderate_content_notifications'))),
+  );
+  $roles = array( 0 => t('<select one>'));
+
+  // Add only the roles who have the permission 'trusted not to spam'.
+  $added_role = FALSE;
+  foreach (user_roles(TRUE) AS $rid => $role) {
+    $perms = db_result(db_query('SELECT perm FROM {permission} WHERE rid = %d', $rid));
+    if (strstr($perms, 'trusted not to spam')) {
+      $roles[$rid] = $role;
+      $added_role = TRUE;
+    }
+  }
+  if (!$added_role) {
+    drupal_set_message(t('No role has the permission <em>trusted not to spam</em>. <br /> 
+      You should check the settings in the <a href="!url_access">Access Control</a> page.<br />
+      You may have to create a <a href="!url_role">new role</a> which would have few, basic permissions.', 
+      array('!url_access' => url('admin/user/access'), '!url_role' => url('admin/user/roles'))));
+  }
+
+  $form['moderate_content_notifications_trusted_role'] = array(
+    '#type' => 'select',
+    '#title' => 'Most basic trusted role',
+    '#default_value' => variable_get('moderate_content_notifications_trusted_role', ''),
+    '#options' => $roles,
+    '#description' => t('Choose the role with the fewest permissions but that you trust not to use your system to send spam.'),
+  );
+  
+  return system_settings_form($form);
+}
+

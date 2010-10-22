@@ -1,0 +1,13 @@
+; $Id: google.info,v 1.1.2.1 2008/06/24 20:15:06 mfb Exp $
+name = Google CSE search
+description = Integrates Google CSE with the Drupal search module API, which enables search logging and allows users to click between available search tabs.
+core = 6.x
+dependencies[] = search
+dependencies[] = google_cse
+
+; Information added by drupal.org packaging script on 2008-07-26
+version = "6.x-1.2"
+core = "6.x"
+project = "google_cse"
+datestamp = "1217103912"
+

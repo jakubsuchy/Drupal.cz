@@ -1,0 +1,12 @@
+; $Id: username_check.info,v 1.5 2009/01/22 14:10:03 duke Exp $
+name = "Username AJAX check"
+description = "Check username originality on registration or create user form via AJAX request."
+core = 6.x
+package = Registration
+dependencies[] = user
+; Information added by drupal.org packaging script on 2009-09-24
+version = "6.x-1.5"
+core = "6.x"
+project = "username_check"
+datestamp = "1253797896"
+

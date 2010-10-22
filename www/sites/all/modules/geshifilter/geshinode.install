@@ -1,0 +1,59 @@
+<?php
+// $Id: geshinode.install,v 1.4 2008/07/21 17:44:23 soxofaan Exp $
+
+/**
+ * @file
+ * Installation and uninstallation functions for the GeSHi node module.
+ */
+
+/**
+ * Implementation of hook_schema()
+ */
+function geshinode_schema() {
+  $schema['geshinode'] = array(
+    'description' => t('The table for geshinodes.'),
+    'fields' => array(
+      'nid' => array(
+        'description' => t('The primary identifier for a node.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'vid' => array(
+        'description' => t('The current {node_revisions}.vid version identifier.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'language' => array(
+        'description' => t('The source code language of the node.'),
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('nid'),
+    'unique keys' => array(
+      'vid' => array('vid'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Create tables on install
+ */
+function geshinode_install() {
+  // Create geshinode tables.
+  drupal_install_schema('geshinode');
+}
+
+/**
+ * Remove tables on uninstall.
+ */
+function geshinode_uninstall() {
+  // Drop geshinode tables.
+  drupal_uninstall_schema('geshinode');
+}

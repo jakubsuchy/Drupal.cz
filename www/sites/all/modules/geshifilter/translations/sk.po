@@ -1,0 +1,922 @@
+# Slovak translation of geshifilter (6.x-1.1)
+# Copyright (c) 2009 by the Slovak translation team
+# Generated from files:
+#  geshifilter.module,v 1.39 2008/05/01 20:26:14 soxofaan
+#  geshifilter.admin.inc,v 1.16 2008/05/01 20:26:14 soxofaan
+#  geshifilter.conflicts.inc,v 1.2 2008/01/31 10:30:37 soxofaan
+#  geshinode.module,v 1.7 2008/06/02 22:29:39 soxofaan
+#  geshifilter.info,v 1.4 2007/12/13 00:13:22 soxofaan
+#  geshinode.info,v 1.3 2008/01/07 01:20:40 soxofaan
+#  geshifilter.filtertips.inc,v 1.3 2008/03/02 19:52:39 soxofaan
+#  geshifilter.inc,v 1.4 2008/05/01 16:57:54 soxofaan
+#  geshifilter.install,v 1.5 2008/03/22 00:43:50 soxofaan
+#  geshinode.install,v 1.3 2008/01/07 01:20:40 soxofaan
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: geshifilter (6.x-1.1)\n"
+"POT-Creation-Date: 2009-02-22 22:36+0100\n"
+"PO-Revision-Date: 2009-02-22 22:34+0100\n"
+"Language-Team: Slovak\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((n==1)?(0):(((n>=2)&&(n<=4))?(1):2));\n"
+
+#: geshifilter.module:126
+msgid "Disabled"
+msgstr "Nepovolené"
+
+#: geshifilter.admin.inc:434; geshifilter.module:111
+msgid "Enabled"
+msgstr "Povolené"
+
+#: geshifilter.module:118
+msgid "All"
+msgstr "Všetky"
+
+#: geshifilter.admin.inc:370
+msgid "Language"
+msgstr "Jazyk"
+
+#: geshifilter.conflicts.inc:57
+msgid "Filter"
+msgstr "Filter"
+
+#: geshinode.module:39
+msgid "Title"
+msgstr "Názov"
+
+#: geshifilter.conflicts.inc:57
+msgid "Description"
+msgstr "Popis"
+
+#: geshifilter.info:0; geshinode.info:0
+msgid "Filters"
+msgstr "Filtre"
+
+#: geshinode.module:175
+msgid "Default language"
+msgstr "Predvolený jazyk"
+
+#: geshifilter.admin.inc:13
+msgid "GeSHi filter"
+msgstr "GeSHi filter"
+
+#: geshifilter.admin.inc:22
+msgid "Per language tags"
+msgstr "Značky podľa jazykov"
+
+#: geshifilter.admin.inc:29
+msgid ""
+"GeSHi filter is configured to use global tag settings. For separate "
+"settings per input format, enable this option in the <a "
+"href=\"!geshi_admin_url\">general GeSHi filter settings</a>."
+msgstr ""
+"GeSHi filter je nakonfigurovaný tak, aby používal globálne "
+"nastavenie značiek. Ak chcete použiť odlišné nastavenia v každom "
+"vstupnom formáte, povoľte túto možnosť vo <a "
+"href=\"!geshi_admin_url\">všeobecných nastaveniach filtra "
+"GeSHi</a>."
+
+#: geshifilter.admin.inc:48
+msgid "GeSHi library version @version detected"
+msgstr "Zistená knižnica GeSHi verzie @version"
+
+#: geshifilter.admin.inc:48
+msgid "GeSHi library"
+msgstr "Knižnica GeSHi"
+
+#: geshifilter.admin.inc:49
+msgid ""
+"The GeSHi filter requires the GeSHi library (which needs to be <a "
+"href=\"!geshi\">downloaded</a> and installed seperately)."
+msgstr ""
+"GeSHi filter vyžaduje GeSHi knižnicu (, ktorú je potrebné <a "
+"href=\"!geshi\">stiahnuť</a> a nainštalovať osobitne)."
+
+#: geshifilter.admin.inc:56
+msgid "Path to GeSHi library"
+msgstr "Cesta ku knižnici GeSHi"
+
+#: geshifilter.admin.inc:58
+msgid ""
+"Specify the path to the GeSHi library directory (which contains a file "
+"called <em>geshi.php</em>)."
+msgstr ""
+"Zadajte cestu ku priečinku s GeSHi knižnicou (, ktorá obsahuje "
+"súbor s názvom <em>geshi.php</em>)."
+
+#: geshifilter.admin.inc:67
+msgid "GeSHi filter tags and delimiters"
+msgstr "Značky a oddeľovače GeSHi filtra"
+
+#: geshifilter.admin.inc:73
+msgid "Use input format specific tag settings."
+msgstr "Použiť rozdielne nastavenia pre každý vstupný formát."
+
+#: geshifilter.admin.inc:75
+msgid ""
+"Enable seperate tag settings of the GeSHi filter for each <a "
+"href=\"!input_formats\">input format</a> instead of global tag "
+"settings."
+msgstr ""
+"Zapne rozdielne nastavenia GeSHi filtra pre každý <a "
+"href=\"!input_formats\">vstupný formát</a> miesto globálnych "
+"nastavení značiek."
+
+#: geshifilter.admin.inc:85
+msgid "Syntax highlighting options"
+msgstr "Možnosti zvýrazňovania syntaxe"
+
+#: geshifilter.admin.inc:92
+msgid "Default highlighting mode"
+msgstr "Základný mód zvýrazňovania"
+
+#: geshifilter.admin.inc:95
+msgid "No highlighting"
+msgstr "Bez zvýrazňovania"
+
+#: geshifilter.admin.inc:96
+msgid "Do nothing"
+msgstr "Nerobiť nič"
+
+#: geshifilter.admin.inc:97
+msgid "As plain text"
+msgstr "Ako obyčajný text"
+
+#: geshifilter.admin.inc:99; geshifilter.module:102
+msgid "Languages"
+msgstr "Jazyky"
+
+#: geshifilter.admin.inc:101
+msgid ""
+"Select the default highlighting mode to use when no language is "
+"defined with a language attribute in the tag."
+msgstr ""
+"Vyberte základný mód zvýrazňovania, ktorý sa použije ak nebude "
+"v značke žiaden atribút určujúci jazyk."
+
+#: geshifilter.admin.inc:106
+msgid "Default line numbering"
+msgstr "Základné číslovanie riadkov"
+
+#: geshifilter.admin.inc:109; geshifilter.filtertips.inc:98; geshinode.module:166
+msgid "no line numbers"
+msgstr "bez číslovania riadkov"
+
+#: geshifilter.admin.inc:110; geshifilter.filtertips.inc:101; geshinode.module:167
+msgid "normal line numbers"
+msgstr "normálne číslovanie riadkov"
+
+#: geshifilter.admin.inc:111,112,113; geshifilter.filtertips.inc:104; geshinode.module:168,169,170
+msgid "fancy line numbers (every @n lines)"
+msgstr "zvýrazniť každý @n riadok"
+
+#: geshifilter.admin.inc:115
+msgid ""
+"Select the default line numbering scheme: no line numbers, normal line "
+"numbers or fancy line numbers. With fancy line numbers every "
+"n<sup>th</sup> line number is highlighted. (GeSHi documentation: "
+"!link)."
+msgstr ""
+"Vyberte základnú schému číslovania riadkov: bez číslovania "
+"riadkov, normálne číslovanie riadkov alebo zvýraznené "
+"číslovanie riadkov. Pri zvýraznenom číslovaní sa každý n-té "
+"číslo riadka zvýrazní. (Dokumentácia GeSHi: !link)."
+
+#: geshifilter.admin.inc:121
+msgid ""
+"Use built-in PHP function <code>highlight_string()</code> for PHP "
+"source code."
+msgstr ""
+"Použiť zabudovanú PHP funkciu <code>highlight_string()</code> na "
+"zvýrazňovanie zdrojového kódu PHP."
+
+#: geshifilter.admin.inc:122
+msgid ""
+"When enabled, PHP source code will be syntax highlighted with the "
+"built-in PHP function <code>!highlight_string</code> instead of with "
+"the GeSHi library. GeSHi features like for example line numbering and "
+"usage of an external CSS stylesheet are not available."
+msgstr ""
+"Keď je zaškrtnuté, zdrojový kód PHP sa bude zvýrazňovať "
+"pomocou zabudovanej PHP funkcie <code>!highlight_string</code> miesto "
+"knižnice GeSHi. Funkcie GeSHi ako napríklad číslovanie riadkov a "
+"použitie externých CSS štýlov nebudú dostupné."
+
+#: geshifilter.admin.inc:128
+msgid "Enable GeSHi keyword URLs"
+msgstr "Povoliť vytváranie URL odkazov pri kľúčových slovách"
+
+#: geshifilter.admin.inc:129
+msgid ""
+"For some languages GeSHi can link language keywords (e.g. standard "
+"library functions) to their online documentation. (GeSHi "
+"documentation: !link)"
+msgstr ""
+"Pri niektorých jazykoch môže GeSHi prepojiť kľúčové slovo "
+"jazyka (napr.: funkcie štandardnej knižnice) na stránku s online "
+"dokumentáciou. (Dokumentácia GeSHi: !link)"
+
+#: geshifilter.admin.inc:137
+msgid "Styling, layout and CSS"
+msgstr "Štýlovanie, vzhľad a CSS"
+
+#: geshifilter.admin.inc:144
+msgid "CSS mode for syntax highlighting"
+msgstr "CSS mód pre zvýrazňovanie syntaxe"
+
+#: geshifilter.admin.inc:146
+msgid "Inline CSS style attributes."
+msgstr "Začlenené CSS atribúty"
+
+#: geshifilter.admin.inc:147
+msgid "Use CSS classes and an automatically managed external CSS style sheet."
+msgstr ""
+"Použiť CSS triedy a automaticky ich nastaviť pomocou externých CSS "
+"štýlov."
+
+#: geshifilter.admin.inc:148
+msgid "Only add CSS classes to the markup."
+msgstr "Iba pridať CSS triedy do značiek."
+
+#: geshifilter.admin.inc:151
+msgid ""
+"Inline CSS is easier to set up, does not depend on an external style "
+"sheets and is consequently more robust to copy/paste operations like "
+"content aggregation. However, usage of CSS classes and an external "
+"stylesheet requires much less markup code and bandwidth. The external "
+"style sheet can be managed automatically by the GeSHi filter module, "
+"but this feature requires the public <a href=\"!filesystem\">download "
+"method</a>. If the GeSHi filter is configured to only add the CSS "
+"classes to the markup, the administrator or themer is responsible for "
+"adding the appropriate CSS rules to the pages (e.g. based on <a "
+"href=\"!cssdefaults\">these defaults</a>). (GeSHi documentation: "
+"!geshidoc)."
+msgstr ""
+"Začlenené CSS atribúty sa ľahšie nastavujú, nie sú závislé na "
+"externých štýloch ale sú robustnejšie pri operáciach "
+"kopírovať/prilepiť napríklad pri zlučovaní kódu. Avšak "
+"použite CSS tried a externých štýlov vyžaduje oveľa menej "
+"značiek a zaťaženia. Externé štýly môže riadiť automaticky "
+"modul GeSHi filter, ale táto funkcia vyžaduje verejnú <a "
+"href=\"!filesystem\">metódu sťahovania</a>. Ak je GeSHi filter "
+"nastavený tak, aby iba pridal CSS triedy do značiek, administrátor "
+"alebo grafik bude musieť pridať príslušné CSS pravidlá do "
+"stránky (napr. založené na <a href=\"!cssdefaults\">týchto "
+"základných</a>). (Dokumentácia GeSHi: !geshidoc)."
+
+#: geshifilter.admin.inc:162
+msgid "Code container"
+msgstr "Kontainer kódu"
+
+#: geshifilter.admin.inc:163
+msgid ""
+"Define the container element to use for code blocks. (GeSHi "
+"documentation: !link)."
+msgstr ""
+"Definuje prvok kontajnera, ktorý sa použije pre bloky kódu. "
+"(Dokumentácia GeSHi: !link)."
+
+#: geshifilter.admin.inc:167
+msgid ""
+"Use @cnt container (efficient whitespace coding, no automatic line "
+"wrapping)"
+msgstr ""
+"Použiť @cnt kontajner (efektívny pri písaní medzier, riadky sa "
+"nebudú automaticky zalamovať)"
+
+#: geshifilter.admin.inc:168
+msgid "Use @cnt container (enables automatic line wrapping)"
+msgstr "Použiť @cnt kontajner (zapne automatické zalamovanie riadkov)"
+
+#: geshifilter.admin.inc:169
+msgid "Use no container"
+msgstr "Nepoužíť žiadny kontajner"
+
+#: geshifilter.admin.inc:199
+msgid ""
+"GeSHi filter can not automatically manage an external CSS style sheet "
+"when the download method is private."
+msgstr ""
+"GeSHi filter nebude môcť automaticky spravovať externé CSS "
+"štýly, pokým je metóda sťahovania súkromná."
+
+#: geshifilter.admin.inc:242
+msgid "Flush cache of available languages"
+msgstr "Vyprázdniť dočasnú pamäť dostupných jazykov"
+
+#: geshifilter.admin.inc:304
+msgid ""
+"The language tags should differ between languages and from the generic "
+"tags."
+msgstr ""
+"Značky jazykov by mali byť odlišné od jazykov a od všeobecných "
+"značiek."
+
+#: geshifilter.admin.inc:332
+msgid "Generic syntax highlighting tags"
+msgstr "Značky, v ktorých sa zvýrazní kód"
+
+#: geshifilter.admin.inc:334
+msgid ""
+"Tags that should activate the GeSHi syntax highlighting. Specify a "
+"space-separated list of tagnames."
+msgstr ""
+"Značky, ktoré by mali aktivovať zvýrazňovanie syntaxe. Zadajte "
+"zoznam značiek oddelených medzerou."
+
+#: geshifilter.admin.inc:339
+msgid "Tag style"
+msgstr "Štýl značiek"
+
+#: geshifilter.admin.inc:343
+msgid "!angle or !square"
+msgstr "!angle alebo !square"
+
+#: geshifilter.admin.inc:346
+msgid ""
+"Select which brackets should be used for the source code container "
+"tags."
+msgstr ""
+"Vyberte, aké zátvorky by sa mali použiť pri značkách "
+"ohraničujúcich zdrojový kód."
+
+#: geshifilter.admin.inc:351
+msgid ""
+"Also apply syntax highlighting to &lt;?php ... ?&gt; style PHP source "
+"code blocks."
+msgstr ""
+"Aplikuj zvýrazňovanie syntaxe aj na &lt;?php ... ?&gt; PHP bloky "
+"zdrojového kódu."
+
+#: geshifilter.admin.inc:352
+msgid ""
+"When enabled, PHP source code enclosed in &lt;?php...?&gt or "
+"&lt;%...%&gt; will also be processed."
+msgstr ""
+"AK je zaškrtnuté, zdrojový kód PHP uzatvorený do  &lt;?php...?&gt "
+"alebo &lt;%...%&gt; sa bude tiež zvýrazňovať."
+
+#: geshifilter.admin.inc:371
+msgid "GeSHi language code"
+msgstr "GeSHi kód jazyka"
+
+#: geshifilter.admin.inc:373
+msgid "Tag/language attribute value"
+msgstr "Značka/hodnota atribútu"
+
+#: geshifilter.admin.inc:463
+msgid ""
+"GeSHi filter cleared the filter cache for the appropriate input "
+"formats."
+msgstr ""
+"GeSHi filter vyprázdnil vyrovnávaciu pamäť pre príslušné "
+"vstupné formáty."
+
+#: geshifilter.admin.inc:498
+msgid "Error while generating CSS rules: could not load GeSHi library."
+msgstr ""
+"Chyba počas generovania CSS pravidiel: nedá sa načítať knižnica "
+"GeSHi."
+
+#: geshifilter.admin.inc:520
+msgid "Generated external CSS file %file."
+msgstr "Externý CSS súbor %file bol vygenerovaný."
+
+#: geshifilter.admin.inc:523
+msgid ""
+"Could not generate external CSS file. Check the settings of your "
+"!filesystem."
+msgstr ""
+"Nedá sa vygenerovať externý CSS súbor. Skontrolujte nastavenia "
+"!filesystem."
+
+#: geshifilter.admin.inc:524
+msgid "file system"
+msgstr "súborový systém"
+
+#: geshifilter.conflicts.inc:55
+msgid "No known filter conflicts were detected."
+msgstr "Neboli zistené žiadne známe konflikty."
+
+#: geshifilter.conflicts.inc:57
+msgid "Input format"
+msgstr "Vstupný formát"
+
+#: geshifilter.conflicts.inc:57
+msgid "Possible solutions"
+msgstr "Možné riešenia"
+
+#: geshifilter.conflicts.inc:71
+msgid ""
+"%cfilter should not come after %geshifilter to prevent loss of layout "
+"and highlighting."
+msgstr ""
+"%cfilter by nemal byť za %geshifilter aby sa nestratil vzhľad a "
+"zvýraznenie."
+
+#: geshifilter.conflicts.inc:73
+msgid "Rearrange filters"
+msgstr "Preusporiadajte filtre"
+
+#: geshifilter.conflicts.inc:79
+msgid ""
+"%cfilter is configured to \"%escape\", which is likely to cause "
+"propblems with %geshifilter."
+msgstr ""
+"%cfilter je nakonfigurovaný na \"%escape\", čo môže spôsobovať "
+"problémy s %geshifilter."
+
+#: geshifilter.conflicts.inc:80
+msgid "Escape all tags"
+msgstr "Ukončite všetky značky"
+
+#: geshifilter.conflicts.inc:81
+msgid "Configure HTML filtering to \"%strip\""
+msgstr "Nakonfigurujte HTML filtrovanie na \"%strip\""
+
+#: geshifilter.conflicts.inc:81
+msgid "Strip disallowed tags"
+msgstr "Odstráňte nedovolené značky"
+
+#: geshifilter.conflicts.inc:96
+msgid "%cfilter and %geshifilter trigger on the same tag \"&lt;code&gt;\"."
+msgstr ""
+"%cfilter a %geshifilter používajú rovnakú značku "
+"\"&lt;code&gt;\"."
+
+#: geshifilter.conflicts.inc:98
+msgid ""
+"Remove \"code\" as generic syntax highlighting tag for %geshifilter, "
+"limit %geshifilter to tag style \"[foo]\" only or disable %cfilter"
+msgstr ""
+"Odstráňte \"code\" ako značku zvýrazňujúcu syntax pre "
+"%geshifilter, obmedzte %geshifilter aby používal iba štýl značiek "
+"\"[foo]\" alebo vypnite %cfilter"
+
+#: geshifilter.filtertips.inc:28
+msgid ""
+"Syntax highlighting of source code can be enabled with the following "
+"tags:"
+msgstr ""
+"Zvýrazňovanie syntaxe zdrojového kódu môže byť zapnuté "
+"nasledujúcimi značkami:"
+
+#: geshifilter.filtertips.inc:35
+msgid "Generic syntax highlighting tags: !tags."
+msgstr "Značky, v ktorých sa zvýrazní kód: !tags."
+
+#: geshifilter.filtertips.inc:39
+msgid "for @lang source code"
+msgstr "pre zdrojový kód jazyka @lang"
+
+#: geshifilter.filtertips.inc:41
+msgid "Language specific syntax highlighting tags: !tags."
+msgstr "Značky zvýrazňujúce syntax špecifické pre jazyk: !tags."
+
+#: geshifilter.filtertips.inc:44
+msgid ""
+"PHP source code can also be enclosed in &lt;?php ... ?&gt; or &lt;% "
+"... %&gt;, but additional options like line numbering are not possible "
+"here."
+msgstr ""
+"Zdrojový kód jazyka PHP môže byť tiež uzatvorený v &lt;?php ... "
+"?&gt; alebo &lt;% ... %&gt;, ale ďalšie možnosti ako číslovanie "
+"nebude možné."
+
+#: geshifilter.filtertips.inc:50
+msgid "Options and tips:"
+msgstr "Možnosti a rady:"
+
+#: geshifilter.filtertips.inc:64
+msgid "\"<code>@langcode</code>\" (for @fullname)"
+msgstr "\"<code>@langcode</code>\" (pre @fullname)"
+
+#: geshifilter.filtertips.inc:66
+msgid ""
+"The language for the generic syntax highlighting tags can be specified "
+"with one of the attribute(s): %attributes. The possible values are: "
+"!languages."
+msgstr ""
+"Do značiek zvýrazňujúcich syntax je možné zadať jazyk pomocou "
+"jedného z týchto atribútov: %attributes. Možné hodnoty sú: "
+"!languages."
+
+#: geshifilter.filtertips.inc:69
+msgid ""
+"<em>Line numbering</em> can be enabled/disabled with the attribute "
+"\"%linenumbers\". Possible values are: \"%off\" for no line numbers, "
+"\"%normal\" for normal line numbers and \"%fancy\" for fancy line "
+"numbers (every n<sup>th</sup> line number highlighted). The start line "
+"number can be specified with the attribute \"%start\", which "
+"implicitly enables normal line numbering. For fancy line numbering the "
+"interval for the highlighted line numbers can be specified with the "
+"attribute \"%fancy\", which implicitly enables fancy line numbering."
+msgstr ""
+"<em>Číslovanie riadkov</em> môže byť zapnuté/vypnuté pomocou "
+"atribútu \"%linenumbers\". Možné hodnoty sú: \"%off\" - vypne "
+"čísla riadkov, \"%normal\" - normálne čísla riadkov a \"%fancy\" "
+"pre zvýraznené číslovanie (každého n-tého riadka). "
+"Počiatočné číslo riadka môže byť zadané pomocou atribútu "
+"\"%start\", ktorý implicitne zapne normálne číslovanie riadkov. "
+"Pre zvýraznené číslovanie môžete zadať interval pomocou "
+"atribútu \"%fancy\", ktorý implicitne zapne zvýraznené "
+"číslovanie riadkov."
+
+#: geshifilter.filtertips.inc:72
+msgid ""
+"If the source code between the tags contains a newline (e.g. "
+"immediatly after the opening tag), the highlighted source code will be "
+"displayed as a code block. Otherwise it will be displayed inline."
+msgstr ""
+"Ak zdrojový kód medzi značkami obsahuje nový riadok (napr. hneď "
+"za úvodnou značkou),  zvýrazňovaný zdrojový kód sa zobrazí ako "
+"blok kódu. V opačnom prípade sa zobrazí ako vložený do textu."
+
+#: geshifilter.filtertips.inc:75,162
+msgid ""
+"Beside the tag style \"!angle\" it is also possible to use "
+"\"!bracket\"."
+msgstr ""
+"Miesto štýlu značiek \"!angle\" je tiež možné použiť "
+"\"!bracket\"."
+
+#: geshifilter.filtertips.inc:80
+msgid "Defaults:"
+msgstr "Predvolené:"
+
+#: geshifilter.filtertips.inc:85
+msgid ""
+"when no language attribute is specified the code block won't be "
+"processed by the GeSHi filter"
+msgstr ""
+"ak nie je určený atribút jazyka, bloky kódu nebudú spracovávané "
+"GeSHi filtrom"
+
+#: geshifilter.filtertips.inc:88
+msgid ""
+"when no language attribute is specified, no syntax highlighting will "
+"be done"
+msgstr "ak nie je určený atribút jazyka, nebude sa zvýrazňovať syntax"
+
+#: geshifilter.filtertips.inc:91
+msgid "the default language used for syntax highlighting is \"%default_lang\""
+msgstr ""
+"predvoleným jazykom, ktorý sa použije na zvýraznenie syntaxe je  "
+"\"%default_lang\""
+
+#: geshifilter.filtertips.inc:94
+msgid ""
+"Default highlighting mode for generic syntax highlighting tags: "
+"!description."
+msgstr ""
+"Predvolený mód zvýrazňovania pre bežné značky zvýrazňujúce "
+"kód: !description."
+
+#: geshifilter.filtertips.inc:107
+msgid "Default line numbering: !description."
+msgstr "Predvolené číslovanie riadkov: !description."
+
+#: geshifilter.filtertips.inc:111
+msgid "Examples:"
+msgstr "Príklady:"
+
+#: geshifilter.filtertips.inc:112
+msgid "You type"
+msgstr "Zápis"
+
+#: geshifilter.filtertips.inc:112
+msgid "You get"
+msgstr "Vysvetlenie"
+
+#: geshifilter.filtertips.inc:121
+msgid "Inline code with the default syntax highlighting mode."
+msgstr "Kód v texte so základným módom zvýrazňovania syntaxe."
+
+#: geshifilter.filtertips.inc:125
+msgid "Code block with the default syntax highlighting mode."
+msgstr "Blok kódu so základným módom zvýrazňovania syntaxe."
+
+#: geshifilter.filtertips.inc:129
+msgid ""
+"Code block with syntax highlighting for @lang source code<br /> and "
+"normal line numbers."
+msgstr ""
+"Blok kódu so zvýrazňovaním kódu pre zdrojový kód jazyka @lang "
+"<br /> a normálnym číslovaním riadkov."
+
+#: geshifilter.filtertips.inc:133,144
+msgid ""
+"Code block with syntax highlighting for @lang source code,<br />line "
+"numbers starting from 23<br /> and highlighted line numbers every "
+"7<sup>th</sup> line."
+msgstr ""
+"Blok kód so zvýrazňovaním syntaxe pre zdrojový kód jazyka "
+"@lang,<br />číslovanie začína od 23. riadka<br /> a každý 7. "
+"riadok je zvýraznený."
+
+#: geshifilter.filtertips.inc:140
+msgid "Code block with syntax highlighting for @lang source code."
+msgstr "Blok kódu so zvýrazňovaním kódu pre zdrojový kód jazyka @lang."
+
+#: geshifilter.filtertips.inc:160
+msgid ""
+"You can enable syntax highlighting of source code with the following "
+"tags: !tags."
+msgstr ""
+"Zvýrazňovanie syntaxe zdrojového kódu môžete zapnúť pomocou "
+"nasledujúcich značiek: !tags."
+
+#: geshifilter.filtertips.inc:165
+msgid ""
+"PHP source code can also be enclosed in &lt;?php ... ?&gt; or &lt;% "
+"... %&gt;."
+msgstr ""
+"Zdrojový kód jazyka PHP môže byť tiež uzatvorený v &lt;?php ... "
+"?&gt; alebo &lt;% ... %&gt;."
+
+#: geshifilter.inc:27
+msgid "GeSHi library error: %dir is not a directory."
+msgstr "Chyba knižnice GeSHi: %dir nie je priečinok."
+
+#: geshifilter.inc:39
+msgid ""
+"GeSHi library error: The detected version of GeSHi library (%version) "
+"is not supported. A version from the 1.0.x branch is required."
+msgstr ""
+"Chyba knižnice GeSHi: Zistená verzia knižnice GeSHi (%version) nie "
+"je podporovaná. Je potrebná verzia 1.0.x."
+
+#: geshifilter.inc:48
+msgid ""
+"GeSHi library error: Could not find a known version of the GeSHi "
+"library at %dir."
+msgstr ""
+"Chyba knižnice GeSHi: Nedá sa nájsť známa verzia knižnice GeSHi "
+"v priečinku %dir."
+
+#: geshifilter.module:42
+msgid ""
+"The GeSHi filter module provides a filter for syntax highlighting of "
+"inline source code or blocks of source code based on the PHP library "
+"!GeSHi."
+msgstr ""
+"GeSHi filter poskytuje filter na zvýrazňovanie syntaxe blokov "
+"zdrojového kódu alebo zdrojového kódu vsunutého do textu "
+"založený na PHP knižnici !GeSHi."
+
+#: geshifilter.module:44
+msgid ""
+"The GeSHi filter module for Drupal requires the GeSHi library (version "
+"1.0.x) to work. The GeSHi filter is actually just a Drupal wrapper "
+"module around the GeSHi library. Because of <a "
+"href=\"!repositorypolicies\">drupal.org repository policies</a> "
+"however, the GeSHi library is not included in the GeSHi filter "
+"package, so you should <a href=\"!geshi\">download</a> and install the "
+"GeSHi library separately."
+msgstr ""
+"Aby modul GeSHi filtra pre Durpal správne pracoval potrebuje "
+"knižnicu GeSHi (verzia 1.0.x). GeSHi filter je momentálne iba "
+"obaľujúcim modulom pre knižnicu GeSHi. Kvôli <a "
+"href=\"!repositorypolicies\">politike zdroja drupal.org </a> nemôže "
+"byť GeSHi knižnica súčasťou balíka GeSHi filtra, preto ju "
+"musíte <a href=\"!geshi\">stiahnuť</a> a nainštalovať osobitne."
+
+#: geshifilter.module:48
+msgid ""
+"<p>Quick overview of how to set up and use the GeSHi "
+"filter:</p><ul><li>Install the GeSHi library and specify its path on "
+"the <a href=\"!geshifilter_settings\">GeSHi filter administration "
+"page</a>.</li><li>Configure the <a "
+"href=\"!geshifilter_settings\">general GeSHi filter "
+"settings</a>.</li><li><a href=\"!geshifilter_languages\">Enable the "
+"relevant languages</a> for your site.</li><li>Enable the GeSHi filter "
+"in the desired !inputformats.</li><li>Check for !filterconflicts and "
+"resolve them.</li><li>Use the input format during content submission "
+"as described in the !filtertips.</li></ul>"
+msgstr ""
+"<p>Rýchly návod ako nastaviť a používať GeSHi "
+"filter:</p><ul><li>Nainštalujte knižnicu GeSHi a zadajte ku nej "
+"cestu na stránke <a href=\"!geshifilter_settings\">GeSHi "
+"filter</a>.</li><li>Nastavte <a "
+"href=\"!geshifilter_settings\">všeobecné nastavenia GeSHi "
+"filtera</a>.</li><li><a href=\"!geshifilter_languages\">Povoľte "
+"príslušné jazyky</a> pre vašu stránku.</li><li>Povoľte GeSHi "
+"filter na stránke !inputformats.</li><li>Skontrolujte "
+"!filterconflicts a vyriešte ich.</li><li>Použite vstupný formát "
+"pred odoslaním príspevku tak, ako je to definované na stránke "
+"!filtertips.</li></ul>"
+
+#: geshifilter.module:51
+msgid "input formats"
+msgstr "vstupné formáty"
+
+#: geshifilter.module:52
+msgid "filter conflicts"
+msgstr "konflikty filtrov"
+
+#: geshifilter.module:53,62
+msgid "filter tips"
+msgstr "rady pre písanie"
+
+#: geshifilter.module:62
+msgid ""
+"Here you can enable/disable the desired languages to use. It is "
+"suggested to disable languages that are not relevant for you site not "
+"only to avoid unnecessary cluttering of the GeSHi filter configuration "
+"pages and the !filtertips, but also to make the GeSHi filter "
+"processing lighter."
+msgstr ""
+"Tu môžete povoliť/vypnúť používanie príslušných jazykov. "
+"Odporúčame aby ste vypli jazyky, ktoré nie sú relevantné pre "
+"vašu stránku aby ste predišli neporiadku na stránkach "
+"konfigurácie GeSHi filtra a na stránke !filtertips, ale tiež pre "
+"to, aby GeSHi filter pracoval jasnejšie."
+
+#: geshifilter.module:64
+msgid "You can also define the language specific tags here."
+msgstr "Môžete tu tiež definovať značky špecifické pre jazyk."
+
+#: geshifilter.module:135
+msgid "Clear available languages cache"
+msgstr "Vyprázdniť vyrovnávaciu pamäť dostupných jazykov"
+
+#: geshifilter.module:182
+msgid ""
+"Enables syntax highlighting of inline/block source code using the "
+"GeSHi engine"
+msgstr ""
+"Zapne zvýrazňovanie syntaxe blokov zdrojového kódu a zdrojového "
+"kódu vloženého do textu použitím GeSHi"
+
+#: geshifilter.module:227
+msgid "GeSHi library not found."
+msgstr "Knižnica GeSHi nebola nájdená."
+
+#: geshifilter.module:228
+msgid ""
+"You should install the GeSHi library and set its path in the "
+"!geshisettings."
+msgstr ""
+"Mali by ste nainštalovať knižnicu GeSHi a zadať ku nej cestu na "
+"stránke !geshisettings."
+
+#: geshifilter.module:236
+msgid "Found GeSHi library version %version"
+msgstr "Bola nájdená GeSHi knižnica verzie %version"
+
+#: geshifilter.module:246
+msgid ""
+"GeSHi filter can not automatically manage an external style sheet when "
+"the download method is private."
+msgstr ""
+"GeSHi filter nemôže automaticky riadiť externé štýly, pokiaľ je "
+"metóda sťahovania súkromná."
+
+#: geshifilter.module:248
+msgid ""
+"Change the CSS mode of the <a href=\"!geshi\">GeSHi filter</a> or "
+"change the <a href=\"!filesystem\">download mode</a> to public."
+msgstr ""
+"Zmeňte CSS mód <a href=\"!geshi\">GeSHi filtera</a> alebo zmeňte <a "
+"href=\"!filesystem\">mód sťahovania</a> na verejný."
+
+#: geshifilter.module:258
+msgid "Some filter conflicts were detected."
+msgstr "Boli zistené konflikty filtrov."
+
+#: geshifilter.module:259
+msgid "View and resolve the detected filter conflicts"
+msgstr "Zobraziť a vyriešiť zistené konflikty filtrov"
+
+#: geshifilter.module:77; geshifilter.info:0
+msgid "GeSHi Filter"
+msgstr "GeSHi filter"
+
+#: geshifilter.module:78
+msgid "Configure the GeSHi filter."
+msgstr "Konfigurovať GeSHi filter."
+
+#: geshifilter.module:86
+msgid "General settings"
+msgstr "Všeobecné nastavenia"
+
+#: geshifilter.module:87
+msgid "General GeSHi filter settings."
+msgstr "Všeobecné nastavenia GeSHi filtra."
+
+#: geshifilter.module:92
+msgid "Filter conflicts"
+msgstr "Konglikty filtrov"
+
+#: geshifilter.module:93
+msgid "Information on possible conflicts with other filters."
+msgstr "Informácie o možných konfliktoch s ostatnými filtrami."
+
+#: geshifilter.module:103
+msgid "Enable the desired languages and configure their settings."
+msgstr "Povolí príslušné jazyky a nakonfiguruje ich nastavenia."
+
+#: geshifilter.module:112
+msgid "Show the enabled languages"
+msgstr "Zobraziť povolené jazyky"
+
+#: geshifilter.module:119
+msgid "Show all the available languages"
+msgstr "Zobraziť všetky dostupné jazyky"
+
+#: geshifilter.module:127
+msgid "Show the disabled languages"
+msgstr "Zobraziť nepovolené jazyky"
+
+#: geshifilter.module:0
+msgid "geshifilter"
+msgstr "geshifilter"
+
+#: geshinode.module:25,11
+msgid "Settings of the GeSHi source code node type."
+msgstr "Nastavenia uzla so zdrojovým kódom."
+
+#: geshinode.module:35
+msgid "Source code node"
+msgstr "Zdrojový kód"
+
+#: geshinode.module:37
+msgid "Source code with GeSHi syntax highlighting."
+msgstr "Zdrojový kód so zvýrazňovaním syntaxe."
+
+#: geshinode.module:41
+msgid "Source code"
+msgstr "Zdrojový kód"
+
+#: geshinode.module:91
+msgid "Syntax highlighting mode"
+msgstr "Mód zvýrazňovania syntaxe"
+
+#: geshinode.module:94
+msgid "Select the syntax highlighting mode to use."
+msgstr "Vyberte mód zvýrazňovania syntaxe, ktorý sa má použiť."
+
+#: geshinode.module:163
+msgid "Line numbering"
+msgstr "Číslovanie riadkov"
+
+#: geshinode.module:50
+msgid "create source code node"
+msgstr "vytvoriť uzol so zdrojovým kódom"
+
+#: geshinode.module:50
+msgid "edit source code node"
+msgstr "upraviť ktorýkoľvek uzol so zdrojovým kódom"
+
+#: geshinode.module:50
+msgid "edit own source code node"
+msgstr "upraviť uzol s vlastným zdrojovým kódom"
+
+#: geshinode.module:10; geshinode.info:0
+msgid "GeSHi node"
+msgstr "Uzol GeSHi"
+
+#: geshinode.module:0
+msgid "geshinode"
+msgstr "geshinode"
+
+#: geshifilter.install:20
+msgid ""
+"GeSHi filter is installed. You should now <a "
+"href=\"!geshi_admin\">configure the GeSHi filter</a> and enable it in "
+"the desired <a href=\"!input_formats\">input formats</a>."
+msgstr ""
+"GeSHi filter je nainštalovaný. Teraz by ste mali <a "
+"href=\"!geshi_admin\">nakonfigurovať GeSHi filter</a> a zapnúť ho v "
+"príslušných <a href=\"!input_formats\">vstupných formátoch</a>."
+
+#: geshinode.install:9
+msgid "The table for geshinodes."
+msgstr "Tabuľka pre geshinodes."
+
+#: geshinode.install:12
+msgid "The primary identifier for a node."
+msgstr "Primárny identifikátor uzla."
+
+#: geshinode.install:18
+msgid "The current {node_revisions}.vid version identifier."
+msgstr "Aktuálna verzia identifikátora {node_revisions}.vid."
+
+#: geshinode.install:25
+msgid "The source code language of the node."
+msgstr "Jazyk zdrojového kódu uzla."
+
+#: geshifilter.info:0
+msgid ""
+"Provides a filter to highlight source code using the GeSHi library "
+"(Generic Syntax Highlighter)"
+msgstr ""
+"Poskytuje filter na zvýrazňovanie zdrojového kódu pomocou "
+"knižnice GeSHi (Generic Syntax Highlighter)."
+
+#: geshinode.info:0
+msgid "Provides source code node with GeSHi syntax highlighting."
+msgstr "Poskytuje uzol Zdrojový kód so zvýrazňovaním syntaxe GeSHi."

@@ -1,0 +1,69 @@
+<?php
+// $Id: fastpath_fscache.module,v 1.1 2006/08/26 05:06:20 mathias Exp $
+/**
+ * @file
+ * File-based caching mechanism
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function fastpath_fscache_help($section) {
+  switch ($section) {
+    case 'admin/settings/modules#description':
+      return t('Enables a file based caching mechanism for pages instead of database storage.');
+  }
+}
+
+/**
+ * Implementation of hook_cron().
+ */
+function fastpath_fscache_cron() {
+  $cache_lifetime = variable_get('cache_lifetime', 0);
+
+  // if using file-based caching, perform routine garbage collection
+  if (variable_get('page_cache_fastpath', 0)) {
+    // delete all files older than the last call to cache_flush_all()
+    if (variable_get('cache_files_expired', 0)) {
+      $files = file_scan_directory(variable_get('fastpath_fscache_path', FASTPATH_FSCACHE_PATH), '.', array('.', '..', 'CVS'));
+      foreach ($files as $file) {
+        if (filemtime($file->filename) < (time() - $cache_lifetime)) {
+          if ($fp = fopen($file->filename, 'r')) {
+            // We need an exclusive lock, but don't block if we can't get it as
+            // we can simply try again next time cron is run.
+            if (flock($fp, LOCK_EX|LOCK_NB)) {
+              unlink($file->filename);
+            }
+          }
+        }
+      }
+      variable_set('cache_files_expired', 0);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_exit().
+ */
+function fastpath_fscache_exit() {
+  global $base_url;
+
+  // if using fastpath caching, perform routine garbage collection
+  if (variable_get('page_cache_fastpath', 0)) {
+   $cache_file = cache_filename($base_url . request_uri());
+    if (file_exists($cache_file)) {
+      if ($cache_flush = variable_get('cache_flush', 0)) {
+        $cache_lifetime = variable_get('cache_lifetime', 0);
+        $mtime = filemtime($cache_file);
+        if (($mtime < $cache_flush) && $cache_lifetime &&
+             $mtime < (time() - $cache_lifetime)) {
+          if ($fp = fopen($cache_file, 'r')) {
+            if (flock($fp, LOCK_EX)) {
+              unlink($cache_file);
+            }
+          }
+        }
+      }
+    }
+  }
+}

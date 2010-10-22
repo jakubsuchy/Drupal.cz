@@ -1,0 +1,26 @@
+<?php
+// $Id: boost.test,v 1.1.2.1 2008/10/25 00:53:08 arto Exp $
+
+//////////////////////////////////////////////////////////////////////////////
+// Unit tests for Simpletest 2.x
+
+class BoostTestCase extends DrupalWebTestCase {
+  public function getInfo() {
+    return array(
+      'name'         => t('Caching'),
+      'description'  => t('Ensures that Boost\'s static page caching works.'),
+      'group'        => t('Boost'),
+    );
+  }
+
+  function test_configuration() {
+    $this->assertTrue(is_dir(BOOST_FILE_PATH), t('The cache directory exists.'), t('Configuration'));
+    $this->assertTrue(is_readable(BOOST_FILE_PATH), t('The cache directory is readable.'), t('Configuration'));
+    $this->assertTrue(is_writable(BOOST_FILE_PATH), t('The cache directory is writable.'), t('Configuration'));
+  }
+
+  // TODO: If you're reading this, consider what a lifesaver Boost has been
+  // (or will be) to you, and pay it forward by implementing a unit test or two.
+  // Submit your well-earned karmic ticket to contributorhood at:
+  //   <http://drupal.org/node/add/project-issue/boost>
+}

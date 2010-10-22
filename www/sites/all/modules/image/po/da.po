@@ -1,0 +1,733 @@
+# Danish translation of Drupal (image.module)
+# Copyright 2005-2006 Morten Wulff <wulff@psyke.org>
+msgid ""
+msgstr ""
+"Project-Id-Version: Danish translation of Drupal (image.module) $Id: da.po,v 1.3 2006/02/12 10:49:09 wulff Exp $\n"
+"POT-Creation-Date: 2005-05-16 17:12-0300\n"
+"PO-Revision-Date: 2006-01-13 13:32+0100\n"
+"Last-Translator: Morten Wulff <wulff@psyke.org>\n"
+"Language-Team: Danish <danish@psyke.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Danish\n"
+"X-Poedit-Country: DENMARK\n"
+
+#: image.module:7
+msgid "<p>Admins may create many image nodes at once by uploading all images to a folder on the server. This upload happens outside of Drupal, usually using an FTP client.</p>"
+msgstr "<p>Administratorer kan oprette mange billedelementer på én gang ved at overføre billederne til en mappe på serveren. Overførlsen foretages udenfor Drupal, typisk med en FTP klient.</p>"
+
+#: image.module:10
+msgid "Allows uploading of images and creating image galleries."
+msgstr "Gør det muligt at overføre billeder og oprette gallerier."
+
+#: image.module:12
+msgid "An image (with thumbnail). This is ideal for publishing photographs or screenshots."
+msgstr "Et billede (med miniature). Ideelt til offentliggørelse af fotografier eller skærmbilleder."
+
+#: image.module:14
+msgid "Image galleries can be used to organize and present groups of images. Galleries may be nested. To add a new gallery click the \"add gallery\" tab."
+msgstr "Billedgallerier kan bruges til at organisere eller præsentere grupper af billeder. Gallerier kan indlejres. Klik på \"tilføj galleri\" for at tilføje et nyt galleri."
+
+#: image.module:30
+msgid "Below is a status of image module's current configuration."
+msgstr "Herunder kan du se billedmodulets aktuelle indstillinger."
+
+#: image.module:33
+msgid ""
+"\n"
+"      <h4>Fast Mode</h4><ul>\n"
+"      <li>Creates all image nodes at once without user interaction.</li>\n"
+"      <li>Applies the same taxonomy term(s) to each node, thus creating a gallery.</li>\n"
+"      <li>If IPTC data is present in the image, the headline and caption fields are used to populate the title and body respectively.</li>\n"
+"      <li>If the image dimensions are bigger than the maximum allowed, the image is automatically scaled down.</li></ul>"
+msgstr ""
+"\n"
+"<h4>Hurtig måde</h4>\n"
+"<ul>\n"
+"<li>Opretter alle billedelementer på én gang uden indgriben fra brugeren.</li>\n"
+"<li>Tilknytter de samme taksonomiord til hvert element og opretter et galleri.</li>\n"
+"<li>Hvis IPTC data er til stede i billedet, bruges overskrift- og billedtekstfeltet til at udfylde overskrift og brødtekst.</li>\n"
+"<li>Hvis billedet er større end de tilladte dimensioner, skaleres det automatisk ned.</li>\n"
+"</ul>"
+
+#: image.module:41
+msgid ""
+"\n"
+"      <h4>Slow Mode</h4><ul>\n"
+"      <li>Manipulate each image individually (i.e. crop, rotate, etc.).</li>\n"
+"      <li>Add custom titles, descriptions, etc.</li></ul>"
+msgstr ""
+"\n"
+"<h4>Langsom måde</h4>\n"
+"<ul>\n"
+"<li>Manipuler hvert billeder individuelt (beskær, roter, osv.).</li>\n"
+"<li>Tilføj titler, beskrivelser, osv.</li>\n"
+"</ul>"
+
+#: image.module:47
+msgid "Allow users to upload images and to display them in shared and personal image galleries."
+msgstr "Gør det muligt at overføre billeder og vise dem i delte og personlige gallerier."
+
+#: image.module:50
+msgid "Images can be uploaded into either shared or personal galleries. Once images are uploaded they can be manipulated.  The image system will auto-generate thumbnails for all images to be used in other nodes via filters and in gallery navigation.  These settings allow you to control where images are placed, how they are displayed, and any restrictions that should be enforced."
+msgstr "Billeder kan overføres til enten delte eller personlige gallerier. Når billeder er overført kan de manipuleres. Systemet opretter automatisk miniaturer for hvert billede, der kan bruges i andre indholselementer via filtre og i gallerinavigationen. Indstillingerne lader dig bestemme hvor billeder placeres, hvordan de vises og hvilke begrænsninger der skal håndhæves."
+
+#: image.module:53
+msgid "An image you can insert into nodes, or see in image galleries."
+msgstr "Et billede du kan indsætte i indholdselementer eller se i gallerier."
+
+#: image.module:57
+msgid "You may link to images on this site <a href=\"%explanation-url\">using a special syntax</a>"
+msgstr "Du kan henvise til billeder på dette netsted med en <a href=\"%explanation-url\">bestemt syntaks</a>"
+
+#: image.module:59
+msgid "Default image path"
+msgstr "Standard billedsti"
+
+#: image.module:59
+msgid "Subdirectory in the directory \"%dir\" where pictures will be stored."
+msgstr "Undermappe i mappen \"%dir\" hvor billederne gemmes."
+
+#: image.module:60
+msgid "File paths"
+msgstr "Stier"
+
+#: image.module:61
+msgid "<p>You may quickly link to image nodes using a special syntax. The image code(s) will be replaced by thumbnail linked to full size image node. Syntax: <code>[image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]</code>. Every parameter except node_id is <em>optional</em>.</p>"
+msgstr "<p>Du kan nemt henvise til billedelementer med en speciel syntaks. Billedkoder erstattes med en miniature, der henviser til billedelementet. Syntaks: [image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]; alle parametre undtagen node_id er <em>valgfri</em>.</p>"
+
+#: image.module:72
+#: ;207;1550;0
+msgid "image"
+msgstr "billede"
+
+#: image.module:79
+msgid "Label"
+msgstr "Etiket"
+
+#: image.module:79
+msgid "Width"
+msgstr "Bredde"
+
+#: image.module:79
+msgid "Height"
+msgstr "Højde"
+
+#: image.module:80
+msgid "Select various pixel dimensions, \"thumbnail\" and \"preview\" are required."
+msgstr "Angiv mulige dimensioner, \"miniature\" og \"eksempel\" er påkrævet."
+
+#: image.module:81
+msgid "Allow users to view original image"
+msgstr "Tillad brugere at se originalt billede"
+
+#: image.module:82
+msgid "Image sizes"
+msgstr "Billedstørrelser"
+
+#: image.module:84
+msgid "Images per page"
+msgstr "Billeder pr. side"
+
+#: image.module:84
+msgid "Sets the number of images to be displayed in a gallery page."
+msgstr "Angiv hvor mange billeder der skal vises på en galleriside."
+
+#: image.module:85
+msgid "Gallery settings"
+msgstr "Galleriindstillinger"
+
+#: image.module:87
+msgid "Explanation or submission guidelines"
+msgstr "Forklaring eller retningslinjer"
+
+#: image.module:87
+msgid "This text will be displayed at the top of the image submission form.  It is useful for helping or instructing your users."
+msgstr "Denne tekst vises når nyt billeder indsendes. Den kan bruges til at hjælpe dine brugere."
+
+#: image.module:89
+msgid "Default path for uploaded images relative to your Drupal installation; it must be writeable and visible from the web. Don't forget the slash (/) at the end."
+msgstr "Standard sti for overførte billeder, relativt til din Drupal installation; den skal være skrivbar og tilgængelig via nettet. Husk skråstregen (/) til sidst."
+
+#: image.module:92
+msgid "Default thumb path"
+msgstr "Standard miniaturesti"
+
+#: image.module:92
+msgid "Default path for thumbnails relative to your Drupal installation; it must be writeable and visible from the web. Don't forget the slash (/) at the end."
+msgstr "Standard sti for miniaturer, relativt til din Drupal installation; den skal være skrivbar og tilgængelig via nettet. Husk skråstregen (/) til sidst."
+
+#: image.module:95
+msgid "Temporary image path"
+msgstr "Midlertidig sti"
+
+#: image.module:95
+msgid "Path for working directory relative to your Drupal installation; it must be writeable and visible from the web. Don't forget the slash (/) at the end."
+msgstr "Sti til arbejdsmappe relativt til din Drupal installation; den skal være skrivbar og tilgængelig via nettet. Husk skråstregen (/) til slut."
+
+#: image.module:96
+msgid "Maximum temporary image directory size"
+msgstr "Maksimal størrelse af mappe til midlertidige billeder"
+
+#: image.module:96
+msgid "MBytes."
+msgstr "MBytes."
+
+#: image.module:98
+msgid "Stored images filenames"
+msgstr "Gemte billeders filnavne"
+
+#: image.module:98
+msgid "The filename of an image stored on the server could be based on an unique random string or include the original filename. In the later case, the node id will be appended to the filename."
+msgstr "Navnet på en billedfil der gemmes på serveren kan enten være en unik, tilfældig tekst eller indeholde det oprindelige filnavn. I det sidste tilfælde tilføjes indholdselementets id til filnavnet."
+
+#: image.module:100
+msgid "Default max image size"
+msgstr "Standard maksimal billedstørrelse"
+
+#: image.module:100
+msgid "KBytes."
+msgstr "KBytes."
+
+#: image.module:101
+msgid "Default max image resolution"
+msgstr "Standard maksimal billedopløsning"
+
+#: image.module:101
+msgid "Example: 800x600."
+msgstr "Eksempel: 800x600."
+
+#: image.module:103
+msgid "Default thumbnail resolution"
+msgstr "Standard miniature opløsning"
+
+#: image.module:103
+msgid "Default size of thumbnails: format will be the same as original image. Use just one dimension, and put a \"x\" to specify height. Examples: \"100\" for width of 100; \"x200\" for height of 200."
+msgstr "Standard størrelse af miniaturer: formatet vil være det samme som det oprindelige billede. Angiv kun én dimension og brug et \"x\" til at angive højde. F.eks. \"100\" for en bredde på 100; \"x200\" for en højde på 200."
+
+#: image.module:110
+msgid "list"
+msgstr "liste"
+
+#: image.module:113
+msgid "add gallery"
+msgstr "tilføj galleri"
+
+#: image.module:116
+msgid "Image library"
+msgstr "Billedbibliotek"
+
+#: image.module:116
+msgid "Select the image library to be used during thumbnail generation and image manipulation.  Use ImageMagick if you can; GD produces worse thumbnails, might not support GIF and this module doesn't support image editing (rotate, crop etc) with it."
+msgstr "Vælg hvilket billedbibliotek der bruges til at oprette miniaturer og manipulere billeder. Brug Imagemagick hvis du kan; GD laver dårligere miniaturer, understøtter muligvis ikke GIF og understøtter ikke billedmanipulation (rotering, beskæring, osv.)."
+
+#: image.module:118
+msgid "Imagemagick Convert path"
+msgstr "Imagemagick convert sti"
+
+#: image.module:118
+msgid "Absolute path to ImageMagick convert file. Include the 'convert.exe' (or other filename) at the end. Leave it blank if you have selected GD library."
+msgstr "Absolut sti til Imagemagick convert filen. Inkluder 'convert.exe' (eller et andet filnavn) til sidst. Lad feltet være tomt hvis du har valgt GD biblioteket."
+
+#: image.module:121
+msgid "Background Color"
+msgstr "Baggrundsfarve"
+
+#: image.module:121
+msgid "Color used to fill in background when rotating images."
+msgstr "Baggrundsfarve når billeder roteres."
+
+#: image.module:128
+msgid "jhead path"
+msgstr "jpath sti"
+
+#: image.module:128
+msgid "Absolute path of jhead, for EXIF parsing; blank to disable."
+msgstr "Absolut sti til jhead, for EXIF fortolkning; lad feltet være tomt for at deaktivere."
+
+#: image.module:133
+msgid "<none>"
+msgstr "<ingen>"
+
+#: image.module:135
+msgid "Gallery Navigation Vocabulary"
+msgstr "Galleri navigation"
+
+#: image.module:135
+msgid "One of the taxonomy vocabularies will be the navigation tree. Select it here. Make sure that a term from this vocabulary is required."
+msgstr "Et af ordforrådene bruges til navigation. Vælg det her. Du skal sikre dig at et ord fra ordforrådet er påkrævet."
+
+#: image.module:137
+msgid "Gallery Thumbnails"
+msgstr "Galleri miniaturer"
+
+#: image.module:137
+msgid "Set the thumbnail to be dislayed on the gallery page."
+msgstr "Vælg miniaturen, der vises på gallerisiden."
+
+#: image.module:138
+msgid "Specify how many rows of thumbnails in each page of the gallery."
+msgstr "Angiv hvor mange rækker miniaturerne skal vises i på hver side af galleriet."
+
+#: image.module:139
+msgid "Gallery Columns"
+msgstr "Galleri kolonner"
+
+#: image.module:139
+msgid "Specify how many columns of thumbnails in each page of the gallery."
+msgstr "Angiv hvor mange kolonner miniaturerne skal vises i på hver side af galleriet."
+
+#: image.module:140
+msgid "Gallery Order"
+msgstr "Galleri rækkefølge"
+
+#: image.module:140
+msgid "Order of thumbnails within a gallery. Lighter and heavier refer to weight property."
+msgstr "Rækkefølgen af miniaturer i et galleri. Lettere og tungere refererer til egenskaben vægt."
+
+#: image.module:142
+msgid "Personal Image Galleries"
+msgstr "Personligt galleri"
+
+#: image.module:142
+msgid "Activate/deactivate personal image galleries site-wide.  When enabled you can use the \"has personal image gallery\" permission to control which roles have personal galleries."
+msgstr "Aktiver/deaktiver personlige gallerier for hele netstedet. Brug tilladelsen \"har personligt galleri\" til at styre hvilke roller der har personlige gallerier."
+
+#: image.module:144
+msgid "Personal Gallery Picture Limit"
+msgstr "Antal billeder i personligt galleri"
+
+#: image.module:144
+msgid "Set how many pictures users are allowed."
+msgstr "Angiv hvor mange billeder en bruger må have."
+
+#: image.module:145
+msgid "Uploaded file is not a valid image"
+msgstr "Den overførte fil er ikke et gyldigt billede"
+
+#: image.module:145
+msgid "Personal Gallery Picture Limit Per Role"
+msgstr "Antal billeder pr. rolle i personligt galleri"
+
+#: image.module:145
+msgid "Enabling this will allow for setting a maximum number of pictures per role."
+msgstr "Angiv det maksimale antal billeder en rolle må have."
+
+#: image.module:150
+msgid "Personal Gallery Size Limit"
+msgstr "Størrelse af personligt galleri"
+
+#: image.module:150
+msgid "Set a maximum number of kilobytes allowed per user."
+msgstr "Angiv hvor mange kilobytes hver bruger må benytte."
+
+#: image.module:153
+msgid "Disable Image Caching"
+msgstr "Deaktiver mellemlager for billederUploade logo"
+
+#: image.module:153
+msgid "Enabling this will add random parameters to image URIs which will prevent the browser from caching."
+msgstr "Tilføj tilfældige parametre til billed-URI'er for at forhindre mellemlagring i browseren."
+
+#: image.module:193
+#: ;216
+msgid "image galleries"
+msgstr "gallerier"
+
+#: image.module:198
+msgid "view original"
+msgstr "vis original"
+
+#: image.module:200
+msgid "images"
+msgstr "billeder"
+
+#: image.module:201
+msgid "directory upload: slow"
+msgstr "overfør mappe: langsom"
+
+#: image.module:202
+msgid "directory upload: fast"
+msgstr "overfør mappe: hurtig"
+
+#: image.module:212
+msgid "my image gallery"
+msgstr "mit galleri"
+
+#: image.module:213
+#: ;222
+msgid "Latest image"
+msgstr "Seneste billede"
+
+#: image.module:214
+#: ;227
+msgid "Random image"
+msgstr "Tilfældigt billede"
+
+#: image.module:224
+msgid "edit this image"
+msgstr "rediger billede"
+
+#: image.module:224
+msgid "Edit this image."
+msgstr "Rediger billede."
+
+#: image.module:229
+msgid "%u's image gallery"
+msgstr "%u's galleri"
+
+#: image.module:229
+msgid "View %u's image gallery."
+msgstr "Vis %u's galleri."
+
+#: image.module:254
+msgid "Thumbnail"
+msgstr "Miniature"
+
+#: image.module:258
+msgid "Image"
+msgstr "Billede"
+
+#: image.module:259
+#: ;471
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: image.module:259
+msgid "%t image gallery"
+msgstr "%t galleri"
+
+#: image.module:259
+msgid "View %t image gallery."
+msgstr "Vis %t galleri."
+
+#: image.module:288
+msgid "previous image"
+msgstr "forrige billede"
+
+#: image.module:292
+msgid "next image"
+msgstr "næste billede"
+
+#: image.module:307
+msgid "Image gallery"
+msgstr "Galleri"
+
+#: image.module:370
+msgid "EXIF data"
+msgstr "EXIF data"
+
+#: image.module:374
+msgid "IPTC data"
+msgstr "IPTC data"
+
+#: image.module:382
+msgid "Click \"Browse...\" to select an image to upload."
+msgstr "Klik på \"Gennemse...\" for at overføre et billede."
+
+#: image.module:388
+msgid "Weight"
+msgstr "Vægt"
+
+#: image.module:388
+msgid "Weight of image used to sort thumbnails.  Heavier thumbnails will fall to the bottom of the gallery."
+msgstr "Vægten bruges til at sortere miniaturer. Tunge miniature vises i bunden af galleriet."
+
+#: image.module:392
+msgid "Personal"
+msgstr "Personlig"
+
+#: image.module:392
+msgid "A personal image can only be seen in the user's image gallery."
+msgstr "Et personligt billede kan kun ses i brugerens galleri."
+
+#: image.module:439
+#: ;443
+msgid "The image file you are trying to upload is too big."
+msgstr "Filen, du forsøger at overføre, er for stor."
+
+#: image.module:447
+msgid "The image file was only partially uploaded. Please try again."
+msgstr "Filen blev kun delvist overført. Prøv venligst igen."
+
+#: image.module:451
+msgid "You must select an image for upload."
+msgstr "Du skal vælge et billede."
+
+#: image.module:464
+#: ;523
+msgid "Error processing image file."
+msgstr "Kan ikke behandle billede."
+
+#: image.module:486
+msgid "Uploaded file was not an image."
+msgstr "Den overførte fil er ikke et billede."
+
+#: image.module:489
+msgid "image type '%type' is not supported."
+msgstr "billedtypen '%type' understøttes ikke."
+
+#: image.module:496
+msgid "The uploaded image(%ax%b) is too large (max %cx%d)."
+msgstr "Det overførte billede (%ax%b) er for stort (maksimum %cx%d)."
+
+#: image.module:651
+#: ;666
+msgid "Image filter"
+msgstr "Billedfilter"
+
+#: image.module:665
+msgid "Image codes"
+msgstr "Billedkoder"
+
+#: image.module:665
+msgid "When enabled, image codes will be replaced by thumb linked to real node. Syntax: [image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]; every param but node_id is optional."
+msgstr "Billedkoder erstattes med en miniature, der henviser til billedelementet. Syntaks: [image:node_id,(left|right|top|middle|bottom|absmiddle|texttop|baseline),hspace,vspace,border]; alle parametre undtagen node_id er valgfri."
+
+#: image.module:715
+#: ;720;745;750
+msgid "Cannot save image."
+msgstr "Kan ikke gemme billede"
+
+#: image.module:734
+msgid "Cannot delete old image."
+msgstr "Kan ikke slette gammelt billede."
+
+#: image.module:737
+msgid "Cannot delete old thumb."
+msgstr "Kan ikke slette gammel miniature."
+
+#: image.module:934
+msgid "Cannot create thumbnail. Current GD library has no read support for '%type' image format."
+msgstr "Kan ikke oprette miniature. Nuværende GD bibliotek kan ikke læse formatet '%type'."
+
+#: image.module:965
+msgid "Cannot create thumbnail. Current GD library has no support for '%type' format image creation."
+msgstr "Kan ikke oprette miniature. Nuværende GD bibliotek kan ikke oprette billeder i formatet '%type'."
+
+#: image.module:978
+msgid "Imagemagick: you have to set <code>convert</code> path."
+msgstr "Imagemagick: du skal angive stien til <code>convert</code>."
+
+#: image.module:1032
+msgid "You can have at most %a images in your gallery."
+msgstr "Du kan højst have %a billeder i dit galleri."
+
+#: image.module:1038
+msgid "You have %a kb for your gallery."
+msgstr "Du har %a kB til rådighed i dit galleri."
+
+#: image.module:1045
+msgid "File is too big (max %a kbytes)"
+msgstr "Filen er for stor (maksimum %a kbytes)"
+
+#: image.module:1053
+msgid "Upload directory is full."
+msgstr "Mappen til overførsler er fuld."
+
+#: image.module:1102
+msgid "Resize/Crop"
+msgstr "Størrelse/beskæring"
+
+#: image.module:1112
+msgid "keep prop"
+msgstr "behold prop"
+
+#: image.module:1116
+msgid "Rotate"
+msgstr "Roter"
+
+#: image.module:1119
+msgid "clockwise"
+msgstr "med uret"
+
+#: image.module:1120
+msgid "background"
+msgstr "baggrund"
+
+#: image.module:1120
+msgid "white"
+msgstr "hvid"
+
+#: image.module:1120
+msgid "black"
+msgstr "sort"
+
+#: image.module:1124
+msgid "Convert"
+msgstr "Konverter"
+
+#: image.module:1125
+msgid "Quality (1-100)"
+msgstr "Kvalitet (1-100)"
+
+#: image.module:1161
+#: ;1196
+msgid "Home"
+msgstr "Hjem"
+
+#: image.module:1164
+msgid "%u's Image Gallery"
+msgstr "%u's galleriBilledhåndtering"
+
+#: image.module:1195
+msgid "Image galleries"
+msgstr "Gallerier"
+
+#: image.module:1204
+msgid "Access Denied"
+msgstr "Adgang nægtet"
+
+#: image.module:1327
+msgid "There is 1 image in this album."
+msgstr "Der er %count billede i galleriet."
+
+#: image.module:1327
+msgid "There are %a images in this album."
+msgstr "Der er %count billeder i galleriet."
+
+#: image.module:1329
+msgid "There are no images in this album."
+msgstr "Der er ingen billeder i galleriet."
+
+#: image.module:1332
+msgid "Last updated: "
+msgstr "Sidst opdateret:"
+
+#: image.module:1425
+msgid "Directory to scan"
+msgstr "Gennemse mappe:"
+
+#: image.module:1425
+msgid "The path to the directory which holds the source image files. This path should be relative to Drupal root directory - don't forget the slash (/) at the end."
+msgstr "Stien til mappen som indeholder billedernes kildefiler. Stien skal være relativ i forhold til Drupals rodmappe - husk skråstregen (/) til slut."
+
+#: image.module:1427
+msgid "Show resized image. Use only if you have large bandwidth."
+msgstr "Vis forstørret billede. Brug kun hvis du har stor båndbredde."
+
+#: image.module:1430
+msgid "Delete images after insert"
+msgstr "Slet billeder efter indsættelse"
+
+#: image.module:1430
+msgid "If instructed, Drupal will delete all files in the above directory after creating the image nodes."
+msgstr "Drupal kan slette alle filer i den ovennævnte mappe, når billederne er blevet importeret."
+
+#: image.module:1434
+msgid "Add new gallery"
+msgstr "Tilføj galleri"
+
+#: image.module:1434
+msgid "If needed, create a new term for this gallery by clicking on one of these vocabularies"
+msgstr "Opret et nyt ord for dette galleri ved at klikke på et af ordforrådene."
+
+#: image.module:1437
+msgid "Directory upload"
+msgstr "overfør mappe"
+
+#: image.module:1444
+msgid "is not a directory"
+msgstr "er ikke en mappe"
+
+#: image.module:1452
+msgid "is not writable. Change permissions on server"
+msgstr "er ikke skrivbar. Skift tilladelser på serveren"
+
+#: image.module:1542
+msgid "You may wish to view your new images:"
+msgstr "Du kan se dine nye billeder:"
+
+#: image.module:1545
+msgid "gallery"
+msgstr "galleri"
+
+#: image.module:1555
+msgid "is not an image."
+msgstr "er ikke et billede."
+
+#: image.module:1558
+msgid "image type is not supported."
+msgstr "billedtypen understøttes ikke."
+
+#: image.module:1705
+msgid "Role"
+msgstr "Rolle"
+
+#: image.module:1705
+msgid "Limit"
+msgstr "Grænse"
+
+#: image.module:1713
+msgid "Set how many pictures each role listed above is allowed. \"Personal Gallery Picture Limit\" will be the default value for new roles."
+msgstr "Vælg hvor mange billeder hver rolle må have. \"Grænse for personligt galleri\" er standardværdi for nye roller."
+
+#: image.module:79
+msgid "has personal image gallery"
+msgstr "har personligt galleri"
+
+#: image.module:79
+msgid "manipulate images"
+msgstr "manipuler billeder"
+
+#: image.module:79
+msgid "access images"
+msgstr "tilgå billeder"
+
+#: image.module:79
+msgid "create images"
+msgstr "opret billeder"
+
+#: image.module:79
+msgid "administer images"
+msgstr "administrer billeder"
+
+#: image.module:456
+msgid "edit gallery"
+msgstr "rediger galleri"
+
+#: image.module:461
+msgid "No galleries available"
+msgstr "Ingen tilgængelige gallerier"
+
+#: image.module:470
+msgid "Gallery name"
+msgstr "Galleri navn"
+
+#: image.module:470
+msgid "The name is used to identify the gallery."
+msgstr "Navnet bruges til at identificere galleriet."
+
+#: image.module:517
+msgid "Last updated: %date"
+msgstr "Sidst opdateret: %date"
+
+#: image.module:537
+msgid "Posted by: %name"
+msgstr "Indsendt af: %name"
+
+#: image.module:607
+msgid "Unable to create %label image"
+msgstr "Kan ikke oprette billedet %label"
+
+#: image.module:654
+msgid "thumbnail"
+msgstr "miniature"
+
+#: image.module:655
+msgid "preview"
+msgstr "eksempel"
+
+#: image.module:712
+msgid "Image Galleries"
+msgstr "Gallerier"
+
+#: image.module:515
+#: ;550
+msgid "There is 1 image in this gallery"
+msgid_plural "There are %count images in this gallery"
+msgstr[0] "Der er %count billede i galleriet"
+msgstr[1] "Der er %count billeder i galleriet"
+

@@ -1,0 +1,104 @@
+/* $Id: CHANGELOG.txt,v 1.3 2009/09/24 06:45:40 dww Exp $ */
+
+---------------------------
+6.x-1.0-alpha2 (2009-09-23)
+---------------------------
+This release requires Signup version 6.x-1.0-rc6 or later.  However,
+sites should install signup_status 6.x-1.0-alpha2 and visit update.php
+first, then install signup 6.x-1.0-rc6 and visit update.php again.
+
+The primary change in this release is the re-introduction of
+per-status limits by means of a new "Signup status limit" sub-module.
+There are also changes to both Signup and Signup status that make the
+"Modifies signup count" checkbox when configuring signup status
+options actually work.
+
+The basic status functionality is working better, but this is still
+not an "official" release meant for production sites.  New features
+will be added, APIs will probably change, and the database schema
+might change before the official 6.x-1.0 release.  Please do not
+install this and then come complaining that parts of it aren't working
+yet. ;)  We know.  Please check the issue queue on drupal.org
+(http://drupal.org/project/issues/signup_status) before reporting any
+problems or "missing" functionality.
+
+Bugs fixed since version 6.x-1.0-alpha1:
+= #581826 by dww: Fixed the "Modify signup count" checkbox when
+  configuring status codes to actually do something by means of
+  #581734 and #581652.
+= #581826 by dww: Fixed the status settings UI so that if an admin
+  changes the "Modify signup count" for any status values, or if the
+  status they reassign signups to when deleting a status has a
+  different value, we now use Batch API to update all the signups,
+  recompute the effective totals and check the signup limits on all
+  affected nodes.
+= #582250 by dww: Fixed bug where signups were left with bogus data
+  after deleting a signup status. If you delete a status that has some
+  signups using that status, the confirm form now asks you what status
+  you'd like to reassign the signups to, and there's a batching
+  function to update all the signups and invoke the signup status
+  change hooks.
+= #583010 by dww: Fixed bug where users that could not edit their own
+  signup could still toggle their signup status.
+= #581768 by dww: Added missing hook_schema_alter() implementation to
+  warn the world that we've modified the {signup_log} schema.
+
+New features since version 6.x-1.0-alpha1:
+= #581846 by dww: Cleaned up the admin settings UI and added status
+  weights, which allow an admin to reorder the status options visible
+  on the signup form.
+= #359412 by dww: Added the "Signup status limit" sub-module to
+  properly implement per-status limits. Includes major improvements to
+  the UI for configuring per-status limits (see #241869), and it
+  actually integrates properly with the limits enforced by the
+  Signup module.
+= #583154 by dww: Altered the node/N/signups/admin signup summary
+  fieldset (see #578592) to include per-status limit data.
+
+Other changes since version 6.x-1.0-alpha1:
+= #578344 by dww: Added a "Signup" group on the module administration
+  page (admin/build/modules) for all the signup-related modules.
+= #581734 by dww: Take advantage of the new Signup API to simplify the
+  code for writing the signup status value to the {signup_log} table.
+
+
+---------------------------
+6.x-1.0-alpha1 (2009-08-23)
+---------------------------
+
+Initial release compatible with Drupal 6 core. This release requires
+Signup 6.x-1.0-rc5 or later. Installing Views and Views Bulk
+Operations (VBO) is highly recommended, but not required.
+
+The basic status functionality is working fine, but this is not an
+"official" release meant for production sites. New features will be
+added, APIs will almost certainly change, and the database schema
+might change before the official 6.x-1.0 release. Please do not
+install this and then come complaining that parts of it aren't working
+yet. ;) We know. Please check the issue queue before reporting any
+problems or "missing" functionality.
+
+Some of the functionality in the D5 version has been removed. Some of
+it, in particular per-status limits will be restored in the future,
+and better integrated with the Signup module's own concept of signup
+limits. Other features have been moved into sub-modules.
+
+There are a handful of brand new sub-modules such as Signup Status
+Notifications (which automatically subscribes users to node
+notifications depending on their signup status) and Signup Status
+Invite (which lets users send invitations to other users and they are
+automatically signed up with a certain status -- intended for sites
+that use a signup status such as "Invited").
+
+The Signup Status Mailer module has been completely re-written to
+provide per-status and per-node email templates along with site-wide
+per-status defaults. Installing the Token module is highly recommended
+for sites that wish to use Signup Status Mailer.
+
+
+------------------------
+5.x-1.0 (2008-02-29)
+------------------------
+Initial release
+
+

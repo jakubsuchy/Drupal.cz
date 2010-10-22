@@ -1,0 +1,123 @@
+# $Id: texy-module.pot,v 1.4 2007/08/15 11:49:26 havran Exp $
+#
+# LANGUAGE translation of Drupal (texy.module)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: texy.module,v 1.8 2007/08/15 11:13:35 havran
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2007-08-15 13:44+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: texy.module:15
+msgid "<p>Texy! allows you to enter content using an easy to read Texy syntax which is filtered into structurally valid XHTML. No knowledge of HTML is required.</p><p>Texy! is one of the most complex formatting tools. It allows adding of images, links, nested lists, tables and has full support for CSS. Usage examples can be found at <a href=\"http://texy.info/en\">the Texy homepage</a>.</p><p>After enabling the Texy! filter a basic <a href=\"/filter/tips\">syntax help</a> becomes available.</p>"
+msgstr ""
+
+#: texy.module:17
+msgid "<p>Below is a list of basic settings for the Texy! module. You can enable extra Texy! funkcionality in Modules section...</p>"
+msgstr ""
+
+#: texy.module:39 texy.info:0
+msgid "Texy!"
+msgstr ""
+
+#: texy.module:40
+msgid "Customize the Texy! filter settings."
+msgstr ""
+
+#: texy.module:47
+msgid "Basic"
+msgstr ""
+
+#: texy.module:48
+msgid "Customize the Texy! basic filter settings."
+msgstr ""
+
+#: texy.module:64
+msgid "Basic settings"
+msgstr ""
+
+#: texy.module:71
+msgid "Highest heading level"
+msgstr ""
+
+#: texy.module:73
+msgid "Highest allowed heading level. Default is &lt;h2&gt;. Setting a higher level is not recommended."
+msgstr ""
+
+#: texy.module:79
+msgid "Maximum number of characters per line"
+msgstr ""
+
+#: texy.module:80
+msgid "Enter desired number of characters per line or \"0\" to disable line wrapping (default)."
+msgstr ""
+
+#: texy.module:85
+msgid "E-mail address obfuscation"
+msgstr ""
+
+#: texy.module:86
+msgid "Obfuscate emails from spambots? Enabled by default."
+msgstr ""
+
+#: texy.module:91
+msgid "Nofollow attribute"
+msgstr ""
+
+#: texy.module:92
+msgid "Applies the <i>rel=\"nofollow\"</i> attribute to all external links. Disabled by default."
+msgstr ""
+
+#: texy.module:98
+msgid "CSS settings"
+msgstr ""
+
+#: texy.module:105
+msgid "Allowed classes"
+msgstr ""
+
+#: texy.module:106
+msgid "Allow following CSS classes and IDs to appear in the text. Default value is empty - allow no classes. Specify <i>&lt;all&gt;</i> to allow all classes (not recommended). Use commas as separators."
+msgstr ""
+
+#: texy.module:111
+msgid "Allowed inline styles"
+msgstr ""
+
+#: texy.module:112
+msgid "Allow following CSS inline styles such as 'font-size', 'color', to appear in the text. Default value is empty - allow no styles. Specify <i>&lt;all&gt;</i> to allow all styles (not recommended). Use commas as separators."
+msgstr ""
+
+#: texy.module:125
+msgid "Texy! filter"
+msgstr ""
+
+#: texy.module:130 texy.info:0
+msgid "Filters an easy to read Texy! syntax into XHTML."
+msgstr ""
+
+#: texy.module:171
+msgid "\r\n      <p>This site uses <a href=\"http://texy.info\">Texy!</a> to format and alter entered content. Texy! provides an intuitive and easy to read syntax which is automatically filtered into XHTML upon content submission.</p>\r\n      <dl>\r\n        <dt>Paragraphs and line breaks</dt>\r\n          <dd>Just add two line breaks to create a paragraph. Put a space at the start of a new line to preserve a line break.</dd>\r\n        <dt>Emphasized</dt>\r\n          <dd>*Emphasized*</dd>\r\n          <dd><em>Emphasized</em></dd>\r\n        <dt>Strong</dt>\r\n          <dd>**Strong**</dd>\r\n          <dd><strong>Strong</strong></dd>\r\n        <dt>Hyperlink</dt>\r\n          <dd>\"Hyperlink\":http://drupal.org</dd>\r\n          <dd><a href=\"http://drupal.org\">Hyperlink</a></dd>\r\n        <dt>Block quoted</dt>\r\n          <dd>&gt; Block quoted</dd>\r\n          <dd><blockquote><p>Block quoted</p></blockquote></dd>\r\n        <dt>Quoted inline</dt>\r\n          <dd>&gt;&gt;Quoted inline&lt;&lt;</dd>\r\n          <dd><q>Quoted inline</q></dd>\r\n        <dt>Acronym</dt>\r\n          <dd>\"SLA\"((Some Lengthy Acronym))</dd>\r\n          <dd><acronym title=\"Some Lengthy Acronym\">SLA</acronym></dd>\r\n        <dt>Source code</dt>\r\n          <dd>/---code html<br />&lt;em&gt;Texy!&lt;/em&gt;<br />\\---code</dd>\r\n          <dd><pre><code>&lt;em&gt;Texy!&lt;/em&gt;</code></pre></dd>\r\n        <dt>Unordered list</dt>\r\n          <dd>- First item<br />- Second item</dd>\r\n          <dd><ul> <li>First item</li> <li>Second item</li> </ul></dd>\r\n        <dt>Ordered list</dt>\r\n          <dd>1) First item<br />2) Second item</dd>\r\n          <dd><ol> <li>First item</li> <li>Second item</li> </ol></dd>\r\n        <dt>Subscripted</dt>\r\n          <dd>Sub_scripted</dd>\r\n          <dd>Sub<sub>scripted</sub></dd>\r\n        <dt>Superscripted</dt>\r\n          <dd>Super^scripted</dd>\r\n          <dd>Super<sup>scripted</sup></dd>\r\n      </dl>\r\n      <p>More information can be found at <a href=\"http://texy.info\">the official Texy! page</a>.</p>\r\n    "
+msgstr ""
+
+#: texy.module:214
+msgid "You can use <a href=\"http://texy.info/en\">Texy!</a> to format and alter entered content."
+msgstr ""
+
+#: texy.module:325
+msgid "The texy.php (or texy.compact.php) library is missing. Drupal cannot use Texy! markup without this library. Please check the <a href=\"@url\">Texy! module INSTALL documentation</a> for information on how to download this."
+msgstr ""
+
+#: texy.module:0
+msgid "texy"
+msgstr ""
+

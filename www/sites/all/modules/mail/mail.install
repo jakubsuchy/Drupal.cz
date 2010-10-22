@@ -1,0 +1,6 @@
+<?php
+// $Id: mail.install,v 1.1 2006/10/16 17:04:46 nedjo Exp $
+
+function mail_install() {
+  variable_set('mail_mail', 1);
+}

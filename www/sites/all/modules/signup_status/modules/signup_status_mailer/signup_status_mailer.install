@@ -1,0 +1,133 @@
+<?php
+// $Id: signup_status_mailer.install,v 1.1 2009/08/17 23:16:09 dww Exp $
+
+/**
+ * @file
+ * Database installation and upgrade code for the Signup Status Mailer module.
+ */
+
+
+/**
+ * Implement hook_install().
+ */
+function signup_status_mailer_install() {
+  drupal_install_schema('signup_status_mailer');
+}
+
+/**
+ * Implement hook_uninstall().
+ */
+function signup_status_mailer_uninstall() {
+  drupal_uninstall_schema('signup_status_mailer');
+}
+
+/**
+ * Implement hook_schema().
+ */
+function signup_status_mailer_schema() {
+  return array(
+    'signup_status_mailer_settings' => array(
+      'description' => 'Stores signup status mailer e-mail text templates.',
+      'fields' => array(
+        'nid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'description' => 'Foreign Key: the {node}.nid that a given message is associated with, or 0 for the site-wide default message templates.',
+        ),
+        'cid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'description' => 'Foreign Key: the {signup_status_codes}.cid status code ID that a given message is for.',
+        ),
+        'action' => array(
+          'type' => 'varchar',
+          'length' => '255',
+          'not null' => TRUE,
+          'description' => "String that determines what status action the settings apply to, either 'add' when a status is first added to a signup, or 'update' when a status is modified.",
+        ),
+        'notification' => array(
+          'type' => 'varchar',
+          'length' => '255',
+          'not null' => TRUE,
+          'description' => "String that determines what kind of message notification to use for the given nid/cid pair. Can be 'none', 'default', or 'custom' for a per-node override.",
+        ),
+        'body' => array(
+          'type' => 'text',
+          'size' => 'big',
+          'not null' => FALSE,
+          'description' => 'The e-mail body template.',
+        ),
+        'subject' => array(
+          'type' => 'varchar',
+          'length' => '255',
+          'not null' => FALSE,
+          'description' => 'The e-mail subject template.',
+        ),
+
+      ),
+      'primary key' => array('nid', 'cid', 'action'),
+    ),
+  );
+}
+
+/**
+ * Add the {signup_status_mailer_settings} table for sites upgrading from D5.
+ */
+function signup_status_mailer_update_6000() {
+  $ret = array();
+
+  $table = array(
+    'description' => 'Stores signup status mailer e-mail text templates.',
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Foreign Key: the {node}.nid that a given message is associated with, or 0 for the site-wide default message templates.',
+      ),
+      'cid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Foreign Key: the {signup_status_codes}.cid status code ID that a given message is for.',
+      ),
+      'action' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'description' => "String that determines what status action the settings apply to, either 'add' when a status is first added to a signup, or 'update' when a status is modified.",
+      ),
+      'notification' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'description' => "String that determines what kind of message notification to use for the given nid/cid pair. Can be 'none', 'default', or 'custom' for a per-node override.",
+      ),
+      'body' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The e-mail body template.',
+      ),
+      'subject' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+        'description' => 'The e-mail subject template.',
+      ),
+    ),
+    'primary key' => array('nid', 'cid', 'action'),
+  );
+
+  db_create_table($ret, 'signup_status_mailer_settings', $table);
+
+  // These are stale now, and sites will need to reconfigure the defaults they
+  // want, anyway.
+  variable_del('signup_status_mailer_text_subject');
+  variable_del('signup_status_mailer_text_body');
+
+  return $ret;
+}
+

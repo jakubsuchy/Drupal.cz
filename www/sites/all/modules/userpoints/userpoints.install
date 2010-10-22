@@ -1,0 +1,28 @@
+<?php
+// $Id: userpoints.install,v 1.1.2.2 2006/05/24 00:23:59 kbahey Exp $
+
+/**
+ * Install the initial schema.
+ */
+function userpoints_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $result = db_query("
+        CREATE TABLE {userpoints} (
+          uid int(10) NOT NULL default '0',
+          points int(5) NOT NULL default '0',
+          last_update int(11) NOT NULL default '0',
+          PRIMARY KEY (uid)
+        ) TYPE=MyISAM /*!40100 DEFAULT CHARACTER SET utf8 */;"
+      );
+      
+      if ($result) {
+      	drupal_set_message(t('The database schema for the userpoints module has been successfully created'));
+      }
+      else {
+      	drupal_set_message(t('Problems occurred while creating the database schema for the userpoints module.'));
+      }
+      break;
+  }
+}

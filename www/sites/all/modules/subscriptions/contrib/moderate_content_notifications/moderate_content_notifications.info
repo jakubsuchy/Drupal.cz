@@ -1,0 +1,12 @@
+; $Id: moderate_content_notifications.info,v 1.2 2008/05/18 19:32:02 salvis Exp $
+name = Moderate Content Notifications
+description = Spam deterrent: make sure no spam is sent from our web site.
+package = "Subscriptions"
+dependencies = subscriptions_content
+
+; Information added by drupal.org packaging script on 2008-12-27
+version = "6.x-1.0-beta5"
+core = "6.x"
+project = "subscriptions"
+datestamp = "1230406238"
+

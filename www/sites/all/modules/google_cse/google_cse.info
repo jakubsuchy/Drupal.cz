@@ -1,0 +1,11 @@
+; $Id: google_cse.info,v 1.1.4.3 2008/06/24 20:15:06 mfb Exp $
+name = "Google CSE"
+description = "Use a Google Custom Search Engine to search your site and/or any other sites."
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-07-26
+version = "6.x-1.2"
+core = "6.x"
+project = "google_cse"
+datestamp = "1217103912"
+

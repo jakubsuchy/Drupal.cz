@@ -1,0 +1,20 @@
+<?php
+// $Id: vote_up_down.install,v 1.2 2007/02/17 10:19:07 frjo Exp $
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function vote_up_down_uninstall() {
+  variable_del('vote_up_down_node_types');
+  variable_del('vote_up_down_widget_style_node');
+  variable_del('vote_up_down_widget_node');
+  variable_del('vote_up_down_link_node');
+  variable_del('vote_up_down_widget_style_comment');
+  variable_del('vote_up_down_widget_comment');
+  variable_del('vote_up_down_link_comment');
+  variable_del('vote_up_down_tag');
+  variable_del('vote_up_down_anonymous_vote');
+  variable_del('vote_up_down_reset_vote');
+  variable_del('userpoints_vote_up_down');
+  variable_del('userpoints_actions');
+}

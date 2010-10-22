@@ -1,0 +1,402 @@
+August 9th, 2009 (6.x-1.0)
+ - spam.module
+    o bug #531528: simplify debug logic, cleanup code
+
+August 6th, 2009 (6.x-1.0-rc1)
+ - spam.module
+    o bug #531528: add additional debug when scanning spam content
+    o bug #531528: calculate spam score even if the content has no id
+ - spam_node.inc
+    o bug #541950: scan node content before it is posted
+ - spam_comment.inc
+    o bug #541950: scan comments before they are posted
+ - spam_user.inc
+    o bug #541950: scan users before they are created
+
+August 5th, 2009
+ - custom.module
+    o bug #531524: don't alter score if no matching custom filters
+ - spam.module
+    o bug #532158: log results of filter in normal logging mode
+    o feature #539508: display link to spam logs, if existing
+ - node_age.module
+    o bug #540830: don't log nid if no nid is found
+ - spam_node.inc
+    o feature #539508: display author of filtered node
+ - spam_comment.inc
+    o feature #539508: display author of filtered comment
+
+June 21, 2009
+ - spam_comment.inc
+    o bug #351280: comment admin pages wouldn't commit changes
+
+June 17, 2009
+ - spam.module
+    o bug #351250: anonymous access for /spam/denied
+    o bug #351245: incorrect breadcrumbs in spam logs
+    o bug #351141: couldn't commit changes to content types to filter
+    o bug #352185: errors in spam feedback form
+    o bug #404694: couldn't mark as not spam in /admin/content/spam
+    o bug #494502: let spam modules use spam_theme
+ - spam_node.inc
+    o bug #352255: node_operations_(un)publish functions no longer exist
+ - spam_user.inc
+    o bug #351138: remove dependency on profile module
+ - custom.module
+    o bug #351373: failed to load custom filter
+ - content modules
+    o bug #351247: missing url, custom, node age filter admin pages
+
+June 16, 2009
+ - spam.module
+    o bug #352719: bad "not spam" link
+
+February 13, 2009
+ - spam.module
+    o bug #362106: flush cache after manually marking content spam/notspam
+    o bug #342915: bulk updates not working due to kludge-loop prevention
+
+October 13, 2008
+ - spam.module
+    o bug #320550: make spam logs accessible to 'administer spam' permission
+
+October 11, 2008
+ - custom.module
+    o bug #319866: remove reference to non-existent "extra" field
+
+October 2, 2008
+ - custom.module
+    o bug #316158: rename custom module hook which clashed with spam hook
+
+October 1, 2008
+ - duplicate.module
+    o bug #1039032: do not block users if have 'bypass filters' permission
+
+September 29, 2008 (5.x-3.0-beta1)
+ - spam.module
+    o move log defines to top of file, report undesired looping
+ - custom.module
+    o feature #287759: implement back end for custom filter rules
+                       upgrade custom filters from 5.x-1.x spam module
+ - duplicate.install, bayesian.install
+    o bug #282062: cleanup PostgreSQL support (patches thanks to jaydub)
+
+September 26, 2008
+ - spam.module
+    o bug #313729: replace call to nonexistent db_log() with intended spam_log()
+ - custom.module
+    o feature #287759: initial support for custom filters, they can be created
+                       and managed, but they're not currently actually used
+
+September 20, 2008
+ - spam.module
+    o feature #248307 make it possible to customize spam comments in theme
+    o provide configuration option to automatically delete old spam logs
+
+September 20, 2008 (5.x-3.0-alpha8)
+ - spam.install
+    o bug #289164: support upgrades from the 5.x-1.x version of the spam module
+
+September 19, 2008 (5.x-3.0-alpha7)
+ - spam.install
+    o feature #302469: update spam_filters_errors table to support feedback
+ - spam.module
+    o feature #302469: introduce support for spam filter feedback
+    o ^^ bypass filter if admin submitted comment reviewing filter feedback
+    o ^^ introduce spam feedback administration pages
+    o ^^ fix link generation when custom message is set
+    o ^^ update spam overview page so can filter by feedback
+    o ^^ delay content creation by saving form data for review
+ - spam_comment.inc
+    o feature #302469: provide admin form for comment spam feedback
+ - spam_node.inc
+    o feature #302469: provide admin form for node spam feedback
+ - spam_user.inc
+    o feature #302469: provide admin form for user spam feedback
+ - bayesian.module
+ - duplicate.module
+ - url.module
+    o feature #302469: centralize loading of content to allow overloading
+
+September 17, 2008
+ - node_age.module
+    o bug #302472: call spam_range to support PHP4
+ - spam.module
+    o bug #287751: allow editing of visitor action and filtered message
+ - spam_user.inc
+    o feature #171780: scan user profile fields if filtering users
+
+July 24, 2008 (5.x-3.0-alpha6)
+ - spam.module
+    o bug #274209: support php4, implement form_alter outside of standard adapi
+    o bug #284336: only display spam links if filtering content type
+ - spam_comment.inc
+    o bug #274209: support php4, implement form_alter outside of standard adapi
+    o bug #284336: only display spam links if filtering content type
+ - spam_node.inc
+    o bug #284336: only display spam links if filtering content type
+ - spam_user.inc
+    o bug #284336: only display spam links if filtering content type
+ - bayesian.module
+    o bug #284389: validate that tokens exist before using them
+
+July 10, 2008
+ - bayesian.install
+    o bug #273398: file never got checked in, thus bayesian schema not created
+ - spam.module
+    o bug #275614: be sure that we don't divide by zero
+ - spam.install
+    o bug #275315: add missing {}'s 
+
+May 31, 2008
+ - spam.install
+    o bug #262618: called spam_install() when meant to call spam_upgrade_0()
+    o added index, addressing a query showing up in my slow query logs
+ 
+
+May 19, 2008 (5.x-3.0-alpha5)
+ - spam.module
+    o provide menu hook to spamapi
+    o allow modules to change forms within spamapi
+ - spam.install
+    o change all spam comments to a special status code
+ - spam_comment.inc
+    o change all spam comments to a special status code, so comments don't
+      appear in the administrative 'Approval queue'.
+    o provide administrative overview page for bulk editing spam comments
+    o add in-line spam-control options to other administrative comment pages
+
+April 30, 2008
+ - spam.install
+    o don't generate errors on upgrade from 2.x spam module
+    o properly install the spam_statistics table
+ - spam.module
+    o improved debugging when content type support is not properly implemented
+    o sort spam overview by lid, not timestamp
+ - spam_user.inc
+    o tell spam module to scan users when enabled
+
+April 30, 2008 (5.x-3.0-alpha4)
+ - spam.module
+    o provide spam statistics admin page
+    o implement 'bypass filters' permission
+ - spam.install
+    o first pass at supporting upgrades from 2.x version of module
+
+April 29, 2008
+ - spam.module
+    o introduce spam statistics
+ - spam.install
+    o introduce spam_statistics table
+
+April 29, 2008 (5.x-3.0-alpha3)
+ - spam.module
+    o implement spam overview page with filters and actions
+    o comment out unsupport content groups
+    o disable error reporting link, not yet fully functional
+ - spam_comment.inc
+    o implement spam comment overview filtering
+ - spam_user.inc
+    o implement spam user overview filtering
+ - spam_node.inc
+    o implement spam node overview filtering
+
+April 28, 2008
+ - spam.module
+    o provide ability to trace logs generated from a single page load
+    o cleanup paths and administration pages for viewing spam logs
+    o make log level configurable
+    o move tokenizer function into bayesian module
+ - spam.install
+    o introduce trid (trace id) column
+ - url.module
+    o always log type and id if available
+ - node_age.module
+    o improve configuration help text
+ - bayesian.module
+    o always log type and id if available
+    o define local tokenizer function
+    o allow usage of external tokenizer functions
+
+April 24, 2008
+ - spam.module
+    o implement administrative pages for viewing spam logs
+ - duplicate.module
+    o provide page for viewing blocked ip addresses
+    o include local implementation of arg() which isn't always available to us
+
+April 24, 2008 (5.x-3.0.alpha2)
+ - spam.install
+    o add PostgreSQL support, patch thanks to Roderik Muit
+ - duplicate.install
+    o add PostgreSQL support, patch thanks to Roderik Muit
+ - spam.module
+    o bug #200866, support PHP4, based on patch by Roderik Muit
+    o turn string extraction into function, usable by plug-ins
+ - bayesian.module
+    o remove unnecessary debug noise
+    o improve debug logging when updating tokens
+ - spam_comment.inc
+    o scan anonymous (name, mail, homepage) fields if set
+ - spam_user.inc
+    o add spam management interface when viewing users
+    o implement redirect, load, publish and unpublish spamapi hooks
+    o spam module now can filter user accounts
+
+April 22, 2008 (5.x-3.0.alpha1)
+ - spam.module
+    o add additional logging
+    o be sure content is blocked or updated when determined to be spam
+    o provide form for users to report when their content is mismarked as spam
+ - spam.install
+    o provide field for feedback on filter errors
+ - url.module
+    o don't throw errors if there are no urls in the post
+ - bayesian.module
+    o add additional logging
+ - spam_comment.inc
+    o implement improperly filtered comment report form
+ - spam_node.inc
+    o implement improperly filtered node report form
+    o filter nodes before they are inserted
+ - node_age.module
+    o new filter: comments posted to very old nodes are more likely to be spam
+    o implement configuration options
+
+April 21, 2008
+ - spam.module
+    o add tokenizer to spam module
+    o implement logging, add some debug logging
+    o allow filter to tell spam engine to skip it
+    o remove url extraction from tokenizer logic
+ - spam.install
+    o define proper spam_log table
+ - bayesian.module
+    o implement bayesian filter, integrate with spam module
+    o add some debug logging
+ - duplicate.module
+    o make it possible to register the module
+ - url.module
+    o implement url filter, integrate with spam and bayesian modules
+
+April 20, 2008
+ - spam.module
+    o only filter enabled content types
+    o only run enabled filters
+    o pass content type everywhere
+    o properly update tables if update applied to content not seen before
+    o properly update tables even if redirected away during scanning
+ - duplicate.module
+    o pass content type everywhere
+    o properly update tables if update applied to content not seen before
+ - spam_comment.inc
+    o cache the cid in a static so that it's always available
+    o introduce 'load' hook for loading comments
+    o introduce 'hostname' hook for loading IP of comment
+ - spam_node.inc
+    o initial support for filtering nodes, working
+ - spam_user.inc
+    o initial support for filtering users, partial
+
+December 2, 2007
+ - spam.module
+    o properly filter content that hasn't been posted yet
+    o support multiple levels of fields to support unposted content
+    o properly calculate spam score
+    o add "mark as spam" and "mark as not spam" links, menus and functions
+    o allow other filters to override spam_denied_page()
+    o hard coded spam actions for now, eventually will support actions module
+ - duplicate.install
+    o add "spam" field for easily tracking whether or not content is spam
+ - duplicate.module
+    o move defaults into defines at top of module source
+    o add configurable notification page for denied duplicate posts
+    o use spam_denied_page() to display deneid pages
+    o updated to support multiple levels of fields
+    o limit duplicate ip search to content previously determined to be spam
+    o implement 'mark_as_[not_]spam' hooks for tracking spam status
+    o call spam_mark_as_spam() when find too many identical postings
+ - spam_comment.inc
+    o updated to support multiple levels of fields
+    o implement 'link' hook for adding "mark as spam" type links to comments
+    o implement 'redirect' hook for redirecting to comment
+    o implement '[un]publish' hooks for publishing/unpublishing comments
+
+
+November 28, 2007
+ - spam.module
+    o add new SPAM_ACTION_HOLD action, holding potential spam in a special spam
+      queue for administrative review
+    o add spam_scan() API call for actual spam handling (still needs to support
+      all spam actions)
+    o pass sid and ip through $extra array, minimizing parameters and making it
+      possible to edit a spam comment as an admin without blocking your own IP
+    o add some watchdog logs
+    o implement spam_content_update() and spam_content_delete()
+ - spam_comment.inc
+    o add some comments
+    o support comment deletion
+    o simplify by offloading logic to spam api
+ - duplicate.module
+    o move sid and ip into $extra array
+    o add support content updates and deletes
+
+November 26, 2007
+ - spam.module
+    o remove debug code causing all submisisons to be spam
+    o don't throw ugly errors when now filters are enabled
+    o implement spam_content_insert() hook
+    o fix key mechanism for reporting mis-blocked content
+ - spam.install
+    o introduce table for storing mis-blocked content reports
+ - duplicate.module
+    o implement spamapi hook for tracking inserted content
+    o put content signing into function for re-use
+
+November 25, 2007
+ - spam.module
+    o implement simple spam_content_is_spam() API call for true/false filtering
+    o enhance spam_content_filter() API call for 1-99 filtering
+    o stub spam_content_insert() and spam_content_update() API calls
+    o re-arrange menus aiming to make them more logical
+    o introduce 'administer spam' and 'bypass filters' permissions
+    o implement _form_alter() hook for scanning form content
+    o stub content-type group setting page
+    o implement general spam settings page
+    o implement error page for reporting when content is blocked by spam
+    o implement mechanism for easily reporting mis-blocked content
+ - duplicate.install
+    o add field for expiring data without deleting it
+ - duplicate.module
+    o implement error page for reporting blacklisted IP addresses
+    o add ability to completely blacklist IP from website, not just from posting
+ - spam_comment.inc
+    o implement _comment() hook to catch comment API calls
+    o implement _spamapi() hook to support filtering comments
+
+
+November 24, 2007
+ - spam.install
+    o add support for content-type groups
+    o make weight signed to support negative weights
+    o remove duplicate information
+ - spam.module
+    o cleanup inline comments to match current development plan
+    o implement basic default content-type group filter overview page
+    o create generic functions for invoking the spamapi hook
+    o introduce filter_info hook for defining spam filters
+    o introduce filter_install hook for installing spam filters and setting
+      default configuration values
+    o begin to implement spam filter function which calls external filters in
+      the order they are defined for the appropriate content-type group.
+    o provide filter configuration submenu
+ - bayesion.module/.info
+    o module stub
+ - duplicate.module/.info
+    o replaced ip.module
+    o define configuration page
+    o begin to implement duplicate spam filter
+
+November 23, 2007
+ - spam.module
+    o branching 3.0 rewrite of spam module

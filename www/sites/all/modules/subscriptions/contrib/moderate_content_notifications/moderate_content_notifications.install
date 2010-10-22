@@ -1,0 +1,47 @@
+<?php
+// $Id: moderate_content_notifications.install,v 1.3 2008/07/24 18:07:05 salvis Exp $
+
+function moderate_content_notifications_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      db_query("CREATE TABLE {moderate_content_notifications} (
+        `mcnid` int(10) unsigned NOT NULL auto_increment,
+        `uid` int(10) unsigned NOT NULL default '0',
+        `nid` int UNSIGNED NOT NULL,
+        `cid` int UNSIGNED NOT NULL, 
+        `type` varchar(10) NOT NULL default '',
+        `time_added` int(11) UNSIGNED NOT NULL DEFAULT '0',
+        `data` text NOT NULL,
+        PRIMARY KEY (`mcnid`),
+        KEY `uid` (`uid`),
+        KEY `nid` (`nid`),
+        KEY `cid` (`cid`),
+        KEY `time_added` (`time_added`)
+        ) /*!40100 DEFAULT CHARACTER SET utf8 */");
+    break;
+    case 'pgsql':
+      db_query("CREATE TABLE {moderate_content_notifications} (
+        mcnid serial,
+        uid int_unsigned NOT NULL default '0',
+        nid int_unsigned NOT NULL,
+        cid int_unsigned NOT NULL,
+        type varchar(10) NOT NULL default '',
+        time_added int_unsigned NOT NULL DEFAULT '0',
+        data text NOT NULL,
+        PRIMARY KEY (mcnid)
+        )");
+      db_query("CREATE INDEX {moderate_content_notifications}_uid_idx ON {moderate_content_notifications} (uid)");
+      db_query("CREATE INDEX {moderate_content_notifications}_nid_idx ON {moderate_content_notifications} (nid)");
+      db_query("CREATE INDEX {moderate_content_notifications}_cid_idx ON {moderate_content_notifications} (cid)");
+      db_query("CREATE INDEX {moderate_content_notifications}_time_added_idx ON {moderate_content_notifications} (time_added)");
+      break;
+  }
+}
+
+function moderate_content_notifications_uninstall() {
+  if (db_table_exists('moderate_content_notifications')) {
+    db_query("DROP TABLE {moderate_content_notifications}");
+  }
+  variable_del('moderate_content_notifications_trusted_role');
+}

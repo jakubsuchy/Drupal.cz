@@ -1,0 +1,188 @@
+<?php
+// $Id: gmap_taxonomy.module,v 1.7 2009/02/04 20:34:18 bdragon Exp $
+
+/**
+ * @file
+ * GMap Taxonomy Markers
+ *
+ * Taxonomy based markers.
+ */
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function gmap_taxonomy_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'taxonomy_form_vocabulary') {
+    $form['gmap_taxonomy'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('GMap markers'),
+    );
+    $vid = isset($form['vid']) ? $form['vid']['#value'] : -1;
+    $temp = variable_get('gmap_taxonomy_vocabs', array());
+    if (!isset($temp[$vid])) {
+      $temp[$vid] = 0;
+    }
+    $form['gmap_taxonomy']['gmap_taxonomy_enable'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable'),
+      '#description' => t('Enable choosing a marker for terms in this vocabulary.'),
+      '#default_value' => $temp[$vid],
+    );
+  }
+  if ($form_id == 'taxonomy_form_term') {
+    $vid = $form['vid']['#value'];
+    $vocs = variable_get('gmap_taxonomy_vocabs', array());
+    if (isset($vocs[$vid]) && $vocs[$vid]) {
+      $temp = '';
+      if (isset($form['tid'])) {
+        if ($t = db_result(db_query('SELECT marker FROM {gmap_taxonomy_term} WHERE tid = %d', $form['tid']['#value']))) {
+          $temp = $t;
+        }
+      }
+      $form['gmap_taxonomy_marker'] = array(
+        '#title' => t('GMap Marker'),
+        '#type' => 'select',
+        '#options' => array('' => t('No Marker')) + gmap_get_marker_titles(),
+        '#description' => t('If you would like nodes tagged as this term to have a special marker, choose one here.'),
+        '#default_value' => $temp,
+      );
+    }
+  }
+
+  // Move the Save and Delete buttons down below our additions.
+  if ($form_id == 'taxonomy_form_vocabulary' || $form_id == 'taxonomy_form_term') {
+    if (isset($form['submit']['#weight'])) {
+      $form['submit']['#weight']++;
+    }
+    else {
+      $form['submit']['#weight'] = 1;
+    }
+    if (isset($form['delete'])) {
+      if (isset($form['delete']['#weight'])) {
+        $form['delete']['#weight']+=2;
+      }
+      else {
+        $form['delete']['#weight'] = 2;
+      }
+    }
+  }
+}
+
+/**
+ * Implementation of hook_taxonomy().
+ */
+function gmap_taxonomy_taxonomy($op, $type, $array = NULL) {
+  if ($type == 'vocabulary') {
+    switch ($op) {
+      case 'insert':
+      case 'update':
+        // This can get called in other places than vocabulary form submission.
+        // @@@ TODO move this to the form itself..
+        if (isset($array['gmap_taxonomy_enable'])) {
+          $status = variable_get('gmap_taxonomy_vocabs', array());
+          $status[$array['vid']] = $array['gmap_taxonomy_enable'];
+          variable_set('gmap_taxonomy_vocabs', $status);
+        }
+        break;
+      case 'delete':
+        $status = variable_get('gmap_taxonomy_vocabs', array());
+        unset($status[$array['vid']]);
+        variable_set('gmap_taxonomy_vocabs', $status);
+    }
+  }
+  else {
+    switch ($op) {
+      case 'insert':
+      case 'update':
+        $vocabs = variable_get('gmap_taxonomy_vocabs', array());
+        if (isset($vocabs[$array['vid']]) && $vocabs[$array['vid']]) {
+          db_query('DELETE FROM {gmap_taxonomy_term} WHERE tid = %d', $array['tid']);
+          // Do we have an assigned marker?
+          if (!empty($array['gmap_taxonomy_marker'])) {
+            db_query("INSERT INTO {gmap_taxonomy_term} (tid, marker) VALUES (%d, '%s')", $array['tid'], $array['gmap_taxonomy_marker']);
+            // Update name changes in the gmap_taxonomy_node table.
+            db_query("UPDATE {gmap_taxonomy_node} SET marker = '%s' WHERE tid = %d", $array['gmap_taxonomy_marker'], $array['tid']);
+          }
+
+          gmap_taxonomy_reassign_marker($array['tid']);
+        }
+        break;
+      case 'delete':
+        // Delete and reassign even if the term isn't currently gmap_taxonomy enabled.
+        db_query('DELETE FROM {gmap_taxonomy_term} WHERE tid = %d', $array['tid']);
+        // Use gmap_taxonomy_node for search because term_node rows are already gone.
+        gmap_taxonomy_reassign_marker($array['tid'], 'gmap_taxonomy_node');
+    }
+  }
+}
+
+/**
+ * Implementation of hook_nodeapi().
+ */
+function gmap_taxonomy_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
+    case 'insert':
+    case 'update':
+      // Remove the marker association if present. We'll readd it later if it's
+      // still applicable.
+      db_query('DELETE FROM {gmap_taxonomy_node} WHERE vid = %d', $node->vid);
+
+      $status = variable_get('gmap_taxonomy_vocabs', array());
+      $marker = '';
+      if (isset($node->taxonomy) && is_array($node->taxonomy)) {
+        foreach ($node->taxonomy as $voc => $terms) {
+          if (isset($status[$voc]) && $status[$voc]) {
+            $t = $terms;
+            if (!is_array($t)) {
+              $t = array($t);
+            }
+            foreach ($t as $term) {
+              $result = db_query('SELECT marker, tid FROM {gmap_taxonomy_term} WHERE tid = %d', $term);
+              if ($m = db_fetch_object($result)) {
+                $marker = $m->marker;
+                $markertid = $m->tid;
+              }
+            }
+          }
+        }
+        if (!empty($marker)) {
+          db_query("INSERT INTO {gmap_taxonomy_node} (nid, vid, tid, marker) VALUES (%d, %d, %d, '%s')", $node->nid, $node->vid, $markertid, $marker);
+        }
+      }
+      break;
+
+    case 'delete':
+      db_query('DELETE FROM {gmap_taxonomy_node} WHERE nid = %d', $node->nid);
+      break;
+    case 'delete revision':
+      db_query('DELETE FROM {gmap_taxonomy_node} WHERE vid = %d', $node->vid);
+      break;
+  }
+}
+
+/**
+ * Reassign markers associated with a term that's going away.
+ */
+function gmap_taxonomy_reassign_marker($tid, $table = 'term_node') {
+  $result = db_query('SELECT vid FROM {'. db_escape_table($table) .'} WHERE tid = %d', $tid);
+  while ($node = db_fetch_object($result)) {
+    $markers = db_query('SELECT t.tid, gt.marker FROM {term_node} r INNER JOIN {gmap_taxonomy_term} gt ON r.tid = gt.tid INNER JOIN {term_data} t ON r.tid = t.tid INNER JOIN {vocabulary} v ON t.vid = v.vid WHERE r.vid = %d ORDER BY v.weight DESC, t.weight DESC, t.name DESC', $node->vid);
+    if ($marker = db_fetch_object($markers)) {
+      // Fallback found.
+      db_query("UPDATE {gmap_taxonomy_node} SET tid = %d, marker = '%s' WHERE vid = %d", $marker->tid, $marker->marker, $node->vid);
+    }
+    else {
+      // No replacement marker, delete the row.
+      db_query("DELETE FROM {gmap_taxonomy_node} WHERE vid = %d", $marker->vid);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function gmap_taxonomy_views_api() {
+  return array(
+    'api' => 2,
+  );
+}

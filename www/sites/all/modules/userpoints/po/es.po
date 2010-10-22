@@ -1,0 +1,167 @@
+# LANGUAGE translation of Drupal (userpoints.module)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: userpoints.module,v 1.21 2005/10/30 02:23:02 kbahey
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal - Userpoints modules\n"
+"POT-Creation-Date: 2005-10-31 20:37+0100\n"
+"PO-Revision-Date: 2005-11-04 14:38+0100\n"
+"Last-Translator: Jorge Ferrer\n"
+"Language-Team: spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: French\n"
+
+#: userpoints.module:10;13
+msgid "Users earn points as they post nodes, comments, and vote on nodes"
+msgstr "Los usuarios ganan puntos según publican nodos, cometnarios o votan a nodos"
+
+#: userpoints.module:26
+msgid "users by points"
+msgstr "Usuarios por puntuación"
+
+#: userpoints.module:33
+msgid "Reset all user points"
+msgstr "Reinicializar todos los puntos de los usuarios"
+
+#: userpoints.module:47
+msgid "All user points have been reset"
+msgstr "Todos los puntos de los usuarios han sido reiniciados"
+
+#: userpoints.module:59
+msgid "Points for posting an %node-name"
+msgstr "Puntos por publicar un(a) %node-name "
+
+#: userpoints.module:63
+msgid "Points for posting a comment"
+msgstr "Puntos por publicar un comentario"
+
+#: userpoints.module:66
+msgid "Points for moderating a comment"
+msgstr "Puntos por moderar un comentario"
+
+#: userpoints.module:69
+msgid "Points for voting on a node"
+msgstr "Puntos por votar un nodo"
+
+#: userpoints.module:72
+msgid "Points for inviting a user"
+msgstr "Puntos por invitar a un usuario"
+
+#: userpoints.module:75
+msgid "Points when invited user registers"
+msgstr "Puntos cuando un usuario invitado se registra"
+
+#: userpoints.module:78
+msgid "Points for each event"
+msgstr "Puntos por cada evento"
+
+#: userpoints.module:80
+msgid "Use points as form of payment?"
+msgstr "¿Permitir usar los puntos como forma de pago?"
+
+#: userpoints.module:81
+msgid "Disable"
+msgstr "Desactivar"
+
+#: userpoints.module:81
+msgid "Enable"
+msgstr "Activar"
+
+#: userpoints.module:83
+msgid "Points multiplier for buying"
+msgstr "Coeficiente para convertir los puntos en dinero para comprar"
+
+#: userpoints.module:86
+msgid "Points to get on selling (for every dollar)"
+msgstr "Puntos ganados por una venta (por euro)"
+
+#: userpoints.module:89
+msgid "Minimum amount for purchase"
+msgstr "Minima cantidad de compra"
+
+#: userpoints.module:92
+msgid "Ecommerce Options"
+msgstr "Parámetros de comercio electrónico"
+
+#: userpoints.module:94
+msgid "You can %s. This is useful in certain situations such as monthly contests."
+msgstr "Usted puede %s. Esta opción es útil en ciertas situaciones como concursos mensuales."
+
+#: userpoints.module:97
+msgid "Advanced Options"
+msgstr "Parámetros avanzados"
+
+#: userpoints.module:112;112
+msgid "Points"
+msgstr "Puntos"
+
+#: userpoints.module:119;176
+msgid "user"
+msgstr "usuario"
+
+#: userpoints.module:119;176
+msgid "points"
+msgstr "puntos"
+
+#: userpoints.module:144;359
+msgid "User Points"
+msgstr "Puntos de usuario"
+
+#: userpoints.module:145
+msgid "Highest Users"
+msgstr "Usuarios con más puntos"
+
+#: userpoints.module:160
+msgid "You have %p %c"
+msgstr "Usted tiene %p %c"
+
+#: userpoints.module:163
+msgid "Points are visible to logged in users only"
+msgstr "Los puntos son visibles para usuarios autenticados únicamente"
+
+#: userpoints.module:290
+msgid "lost"
+msgstr "ha perdido"
+
+#: userpoints.module:293
+msgid "earned"
+msgstr "ha ganado"
+
+#: userpoints.module:298
+msgid "User %uname %op %points points! Total now is %total points."
+msgstr "%uname %op %points puntos! El total ahora es de %total puntos."
+
+#: userpoints.module:366
+msgid "Minimum points for purchase is %min"
+msgstr "El mínimo número de puntos para comprar es %min"
+
+#: userpoints.module:371
+msgid "You do not have enough points for this purchase"
+msgstr "No dispone de suficientes puntos para esta compra"
+
+#: userpoints.module:160
+msgid "point"
+msgid_plural "points"
+msgstr[0] "punto"
+msgstr[1] "pointos"
+
+#: userpoints.module:41
+msgid "view userpoints"
+msgstr "ver todos los puntos de usuario"
+
+#: userpoints.module:41
+msgid "use userpoints"
+msgstr "usar los puntos de usuario"
+
+#: userpoints.module:41
+msgid "admin userpoints"
+msgstr "administrar los puntos de usuario"
+
+#: userpoints.module:0
+msgid "userpoints"
+msgstr "puntos de usuario"
+

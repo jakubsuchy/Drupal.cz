@@ -1,0 +1,13 @@
+; $Id: taxonomy_menu.info,v 1.2.4.3 2009/02/20 17:49:51 indytechcook Exp $
+core          = "6.x"
+dependencies[] = taxonomy
+description   = "Adds links to taxonomy terms to a menu."
+name          = "Taxonomy Menu"
+package       = Taxonomy Menu
+
+; Information added by drupal.org packaging script on 2009-03-26
+version = "6.x-2.3"
+core = "6.x"
+project = "taxonomy_menu"
+datestamp = "1238036514"
+

@@ -1,0 +1,10 @@
+<?php
+// $Id: foo_captcha.install,v 1.1 2007/08/21 13:40:19 soxofaan Exp $
+
+/**
+ * On uninstall: remove module variables and clear variable cache
+ */
+function foo_captcha_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'foo_captcha_%'");
+  cache_clear_all('variables', 'cache');
+}

@@ -1,0 +1,326 @@
+# Czech translation of Drupal (modules/statistics/statistics.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: modules/statistics/statistics.module:15
+msgid ""
+"The statistics module keeps track of numerous statistics of site usage. It "
+"counts how many times, and from where each of your posts is viewed. The "
+"statistics module can be used to learn many useful things about how users "
+"are interacting with each other and with your site."
+msgstr ""
+"Modul statistics sleduje různé statistiky použití webu. Počítá kolikrát a "
+"odkud byly zobrazeny jednotlivé příspěvky. Tento modul můžete použít ke "
+"zjištění mnoha užitečných informací o chování uživatelů na Vašem webu."
+
+#: modules/statistics/statistics.module:16
+msgid ""
+"<p>Statistics module features</p>\n"
+"<ul>\n"
+"<li>Logs show statistics for how many times your site and specific content "
+"on your site has been accessed.</li>\n"
+"<li>Referrers tells you from where visitors came from (referrer URL).</li>\n"
+"<li>Top pages shows you what's hot, what is the most popular content on your "
+"site.</li>\n"
+"<li>Top users shows you the most active users for your site.</li>\n"
+"<li>Recent hits displays information about the latest activity on your site."
+"</li>\n"
+"<li>Node count displays the number of times a node has been accessed in the "
+"node's link section next to <em># comments</em>.</li>\n"
+"<li>Popular content block creates a block that can display the day's top "
+"viewed content, the all time top viewed content, and the last content viewed."
+"</li>\n"
+"</ul>\n"
+msgstr ""
+"<p>Vlastnosti modulu</p>\n"
+"<ul>\n"
+"<li>Zaznamenává statistiku o počtu přístupů k obsahu na Vašem webu.</li>\n"
+"<li>Seznam Odkazující stránky vám ukáží, odkud návštěvníci přišli (referrer "
+"URL).</li>\n"
+"<li>Seznam Nejlepší stránky zobrazí nejoblíbenější obsah Vašeho webu.</li>\n"
+"<li>Seznam Nej uživatelé zobrazí nejaktivnější uživatele Vašeho webu.</li>\n"
+"<li>Seznam Nedávná zobrazení ukazuje informace o poslední aktivitě na webu.</"
+"li>\n"
+"<li>Počítadlo u každého uzlu zobrazuje, kolikrát byl uzel zobrazen. Ukazuje "
+"se v části odkazů vedle <em>komentářů</em>.</li>\n"
+"<li>Blok Oblíbený obsah zobrazuje nejvíce zobrazovaný obsah v daném dni, "
+"celkově nejoblíbenější obsah a poslední zobrazený obsah.</li>\n"
+"</ul>\n"
+
+#: modules/statistics/statistics.module:27
+msgid ""
+"<p>Configuring the statistics module</p>\n"
+"<ul>\n"
+"<li>Enable access log allows you to turn the access log on and off. This log "
+"is used to store data about every page accessed, such as the remote host's "
+"IP address, where they came from (referrer), what node they've viewed, and "
+"their user name. Enabling the log adds one database call per page displayed "
+"by Drupal.</li>\n"
+"<li>Discard access logs older than allows you to configure how long an "
+"access log entry is saved, after which time it is deleted from the database "
+"table. To use this you need to run <em>cron.php</em></li>\n"
+"<li>Enable node view counter allows you to turn on and off the node-counting "
+"functionality of this module. If it is turned on, an extra database query is "
+"added for each node displayed, which increments a counter.</li>\n"
+"</ul>\n"
+msgstr ""
+"<p>Nastavení modulu</p>\n"
+"<ul>\n"
+"<li>'Povolit log přístupů' umožňuje zapnout nebo vypnout logování přístupů. "
+"V tomto logu se ukládají údaje o každé navštívené stránce, např. IP adresa "
+"návštěvníka, odkazující stránka, zobrazený uzel a uživatelské jméno. "
+"Povolení logu přidá jedno volání databáze na každou zobrazenou stránku.</"
+"li>\n"
+"<li>'Zahodit logy starší než' umožňuje nastavit, jak dlouho je log přístupů "
+"uložen v databázi. Po uplynutí této doby se vymaže. K tomu je potřeba "
+"spustit <em>cron.php</em></li>\n"
+"<li>'Počítadlo zobrazení obsahu' umožňuje zapnout nebo vypnout funkci pro "
+"počítání zobrazení uzlů. Pokud je zapnuta, znamená to jeden dotaz do "
+"databáze navíc při zobrazení každého uzlu.</li>\n"
+"</ul>\n"
+
+#: modules/statistics/statistics.module:34
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@statistics\">Statistics page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href="
+"\"@statistics\">stránce Statistics</a>."
+
+#: modules/statistics/statistics.module:37
+msgid ""
+"Settings for the statistical information that Drupal will keep about the "
+"site. See <a href=\"@statistics\">site statistics</a> for the actual "
+"information."
+msgstr ""
+"<p>Nastavení statistických informací, které bude Drupal sledovat. Aktuální "
+"informace najdete v části <a href=\"@statistics\">statistika</a>.</p>"
+
+#: modules/statistics/statistics.module:39
+msgid "This page shows you the most recent hits."
+msgstr "Tato stránka zobrazuje poslední zobrazené stránky."
+
+#: modules/statistics/statistics.module:41
+msgid ""
+"This page shows you all external referrers. These are links pointing to your "
+"web site from outside your web site."
+msgstr ""
+"Tato stránka zobrazuje všechny vnější odkazovače. Jsou to stránky na "
+"internetu, které odkazují na Váš web."
+
+#: modules/statistics/statistics.module:43
+msgid ""
+"When you ban a visitor, you prevent the visitor's IP address from accessing "
+"your site. Unlike blocking a user, banning a visitor works even for "
+"anonymous users. The most common use for this is to block bots/web crawlers "
+"that are consuming too many resources."
+msgstr ""
+"Když zakážete přístup návštěvníkovi, zakážete z jeho IP adresy přístup na "
+"svůj web. Narozdíl od zablokování uživatele funguje zákaz přístupu i pro "
+"anonymní uživatele. Nejčastěji se zákaz přístupu používá proti botům/web "
+"crawlerům, kteří spotřebovávají příliš mnoho zdrojů."
+
+#: modules/statistics/statistics.module:109
+msgid "Recent hits"
+msgstr "Nedávná zobrazení"
+
+#: modules/statistics/statistics.module:110
+msgid "View pages that have recently been visited."
+msgstr "Zobrazit stránky, které byly v poslední době zobrazeny."
+
+#: modules/statistics/statistics.module:115
+msgid "Top pages"
+msgstr "Nejlepší stránky"
+
+#: modules/statistics/statistics.module:116
+msgid "View pages that have been hit frequently."
+msgstr "Zobrazit stránky, které byly v poslední době nejnavštěvovanější."
+
+#: modules/statistics/statistics.module:122
+msgid "Top visitors"
+msgstr "Nejčastější návštěvníci"
+
+#: modules/statistics/statistics.module:123
+msgid "View visitors that hit many pages."
+msgstr ""
+"Zobrazit návštěvníky, kteří v poslední době navštívili nejvíce stránek."
+
+#: modules/statistics/statistics.module:129
+msgid "Top referrers"
+msgstr "Nejvíce odkazující stránky"
+
+#: modules/statistics/statistics.module:130
+msgid "View top referrers."
+msgstr "Zobrazit stránky, ze kterých návštěvníci na Váš web nejvíce chodí."
+
+#: modules/statistics/statistics.module:136
+msgid "View access log."
+msgstr "Zobrazit log přístupů."
+
+#: modules/statistics/statistics.module:142;367
+msgid "Access log settings"
+msgstr "Nastavení logu přístupů"
+
+#: modules/statistics/statistics.module:143
+msgid "Control details about what and how your site logs."
+msgstr "Upravit detaily o tom, jak Váš web loguje přístupy."
+
+#: modules/statistics/statistics.module:154
+msgid "Track page visits"
+msgstr "Sledovat návštěvy stránek"
+
+#: modules/statistics/statistics.module:216;242;274
+msgid "details"
+msgstr "detaily"
+
+#: modules/statistics/statistics.module:233;260
+msgid "Timestamp"
+msgstr "Časové razítko"
+
+#: modules/statistics/statistics.module:290;314;345
+msgid "Hits"
+msgstr "Zobrazení"
+
+#: modules/statistics/statistics.module:292
+msgid "Average page generation time"
+msgstr "Průměrná doba generování stránky"
+
+#: modules/statistics/statistics.module:293;316
+msgid "Total page generation time"
+msgstr "Celková doba generování stránky"
+
+#: modules/statistics/statistics.module:299
+msgid "%time ms"
+msgstr "%time ms"
+
+#: modules/statistics/statistics.module:302
+msgid "Top pages in the past %interval"
+msgstr "Nejlepší stránky za poslední %interval"
+
+#: modules/statistics/statistics.module:326
+msgid "unban"
+msgstr "povolit přístup"
+
+#: modules/statistics/statistics.module:326
+msgid "ban"
+msgstr "zakázat přístup"
+
+#: modules/statistics/statistics.module:330
+msgid "Top visitors in the past %interval"
+msgstr "Nejčastější návštěvníci za poslední %interval"
+
+#: modules/statistics/statistics.module:342
+msgid "Top referrers in the past %interval"
+msgstr "Nejlepší odkazovače za poslední %interval"
+
+#: modules/statistics/statistics.module:346
+msgid "Url"
+msgstr "Url"
+
+#: modules/statistics/statistics.module:347
+msgid "Last visit"
+msgstr "Poslední návštěva"
+
+#: modules/statistics/statistics.module:370
+msgid "Enable access log"
+msgstr "Povolit log přístupů"
+
+#: modules/statistics/statistics.module:373
+msgid "Log each page access. Required for referrer statistics."
+msgstr ""
+"Zaznamenávat všechny přístupy na stránky. Je potřebné pro statistiky "
+"odkazujících stránek."
+
+#: modules/statistics/statistics.module:377
+msgid "Discard access logs older than"
+msgstr "Zahodit logy starší než"
+
+#: modules/statistics/statistics.module:380
+msgid ""
+"Older access log entries (including referrer statistics) will be "
+"automatically discarded. Requires crontab."
+msgstr ""
+"Staré záznamy logu (včetně statistik odkazů) se automaticky odstraní. Je "
+"potřeba crontab."
+
+#: modules/statistics/statistics.module:385
+msgid "Content viewing counter settings"
+msgstr "Nastavení počítadla zobrazení obsahu"
+
+#: modules/statistics/statistics.module:388
+msgid "Count content views"
+msgstr "Počítadlo zobrazení obsahu"
+
+#: modules/statistics/statistics.module:391
+msgid "Increment a counter each time content is viewed."
+msgstr "Při každém zobrazení obsahu zvednout počítadlo."
+
+#: modules/statistics/statistics.module:463;502
+msgid "Popular content"
+msgstr "Oblíbený obsah"
+
+#: modules/statistics/statistics.module:470
+msgid "Number of day's top views to display"
+msgstr "Počet zobrazovaných denních návštěv"
+
+#: modules/statistics/statistics.module:470
+msgid "How many content items to display in \"day\" list."
+msgstr "Kolik položek se má zobrazovat v seznamu \"den\"."
+
+#: modules/statistics/statistics.module:471
+msgid "Number of all time views to display"
+msgstr "Počet zobrazovaných návštěv za celé období"
+
+#: modules/statistics/statistics.module:471
+msgid "How many content items to display in \"all time\" list."
+msgstr "Kolik položek se má zobrazovat v seznamu \"všechny příspěvky\"."
+
+#: modules/statistics/statistics.module:472
+msgid "Number of most recent views to display"
+msgstr "Počet zobrazovaných posledních návštěv"
+
+#: modules/statistics/statistics.module:472
+msgid "How many content items to display in \"recently viewed\" list."
+msgstr "Kolik položek se má zobrazovat v seznamu \"nedávno zobrazeno\"."
+
+#: modules/statistics/statistics.module:487
+msgid "Today's:"
+msgstr "Dnes:"
+
+#: modules/statistics/statistics.module:492
+msgid "All time:"
+msgstr "Za celé období:"
+
+#: modules/statistics/statistics.module:497
+msgid "Last viewed:"
+msgstr "Naposledy zobrazeno:"
+
+#: modules/statistics/statistics.module:92
+msgid "1 read"
+msgid_plural "@count reads"
+msgstr[0] "@count x přečteno"
+msgstr[1] "@count x přečteno"
+msgstr[2] "@count x přečteno"
+
+#: modules/statistics/statistics.module:79
+msgid "access statistics"
+msgstr "zobrazit statistiku přístupů"
+
+#: modules/statistics/statistics.module:79
+msgid "view post access counter"
+msgstr "zobrazit počítadlo přístupů"
+
+#: modules/statistics/statistics.module:0
+msgid "statistics"
+msgstr "statistika"

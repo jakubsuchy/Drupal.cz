@@ -1,0 +1,45 @@
+<?php
+// $Id: autologout.install,v 1.3 2009/04/17 14:05:51 jvandervort Exp $
+/**
+ * @file
+ * Install file for Automated Logout Module
+ *
+ * This file provides an install function (create database tables)
+ * with a schema for the tables
+ * and an uninstall function to remove the database tables
+ */
+/**
+ * Implementation of hook_install().
+ */
+function autologout_install() {
+  // Create tables.
+  drupal_install_schema('autologout');
+  
+  // sink module's weight to the deepest depths of the module_list()
+  db_query("UPDATE {system} SET weight = %d WHERE name = '%s'", 1000, 'autologout');
+}
+
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function autologout_uninstall() {
+  // Remove table.
+  drupal_uninstall_schema('autologout');
+}
+
+
+/**
+ * Implementation of hook_schema().
+ */
+function autologout_schema() {
+  $schema['autologout'] = array(
+    'fields' => array(
+      'uid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'setting'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'size' => 'small')
+    ),
+    'primary key' => array('uid'),
+  );
+
+  return $schema;
+}

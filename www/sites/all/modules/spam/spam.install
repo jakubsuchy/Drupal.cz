@@ -1,0 +1,145 @@
+<?php
+// $Id: spam.install,v 1.1.2.1.2.9.2.21.2.1 2008/12/25 05:42:09 jeremy Exp $
+
+/**
+ * @file
+ * Defines Spam module schema.
+ */
+
+/**
+ *
+ */
+function spam_schema() {
+  $schema['spam_tracker'] = array(
+    'fields' => array(
+      'sid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'content_type' => array('type' => 'varchar', 'length' => '128', 'not null' => TRUE, 'default' => ''),
+      'content_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'score' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '4'),
+      'hostname' => array('type' => 'varchar', 'length' => '15', 'not null' => TRUE, 'default' => ''),
+      'timestamp' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+    ),
+    'primary key' => array('sid'),
+    'unique keys' => array(
+      'content_id_content_type' => array('content_id', 'content_type'),
+    ),
+    'indexes' => array(
+      'content_type' => array('content_type'),
+      'hostname' => array('hostname'),
+      'score' => array('score'),
+      'timestamp' => array('timestamp'),
+    ),
+  );
+  $schema['spam_statistics'] = array(
+    'fields' => array(
+      'stid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'name' => array('type' => 'varchar', 'length' => '64', 'not null' => TRUE, 'default' => ''),
+      'count' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
+      'timestamp' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+    ),
+    'primary key' => array('stid'),
+    'unique keys' => array(
+      'name' => array('name'),
+    ),
+  );
+  $schema['spam_log'] = array(
+    'fields' => array(
+      'lid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'trid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
+      'level' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '2'),
+      'content_type' => array('type' => 'varchar', 'length' => '128', 'not null' => FALSE, 'default' => ''),
+      'content_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'uid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '10'),
+      'function' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
+      'message' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
+      'hostname' => array('type' => 'varchar', 'length' => '15', 'not null' => TRUE, 'default' => ''),
+      'timestamp' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+    ),
+    'primary key' => array('lid'),
+    'indexes' => array(
+      'content_type_content_id' => array('content_type', 'content_id'),
+      'hostname' => array('hostname'),
+      'message' => array('message'),
+      'timestamp' => array('timestamp'),
+      'trid' => array('trid'),
+      'uid' => array('uid'),
+    ),
+  );
+  $schema['spam_filters_groups_data'] = array(
+    'fields' => array(
+      'gid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'content_type' => array('type' => 'varchar', 'length' => '64', 'not null' => TRUE, 'default' => ''),
+    ),
+    'primary key' => array('gid', 'content_type'),
+    'indexes' => array(
+      'content_type' => array('content_type'),
+    ),
+  );
+  $schema['spam_filters_groups'] = array(
+    'fields' => array(
+      'gid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'name' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
+      'weight' => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0, 'disp-width' => '4'),
+    ),
+    'primary key' => array('gid'),
+    'indexes' => array(
+      'weight' => array('weight'),
+    ),
+  );
+  $schema['spam_filters_errors'] = array(
+    'fields' => array(
+      'bid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'uid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
+      'content_type' => array('type' => 'varchar', 'length' => '128', 'not null' => TRUE, 'default' => ''),
+      'content_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'content_hash' => array('type' => 'char', 'length' => '32', 'not null' => TRUE, 'default' => ''),
+      'content' => array('type' => 'text', 'not null' => TRUE),
+      'form' => array('type' => 'text', 'not null' => TRUE),
+      'feedback' => array('type' => 'text', 'not null' => TRUE),
+      'hostname' => array('type' => 'varchar', 'length' => '15', 'not null' => TRUE, 'default' => ''),
+      'timestamp' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+    ),
+    'primary key' => array('bid'),
+    'unique keys' => array(
+      'content_hash' => array('content_hash'),
+    ),
+    'indexes' => array(
+      'content_type' => array('content_type'),
+      'hostname' => array('hostname'),
+      'id_type' => array('content_id', 'content_type'),
+      'timestamp' => array('timestamp'),
+    ),
+  );
+  $schema['spam_filters'] = array(
+    'fields' => array(
+      'fid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'gid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
+      'name' => array('type' => 'varchar', 'length' => '128', 'not null' => TRUE, 'default' => ''),
+      'module' => array('type' => 'varchar', 'length' => '128', 'not null' => TRUE, 'default' => ''),
+      'status' => array('type' => 'int', 'unsigned' => TRUE, 'size' => 'tiny', 'not null' => TRUE, 'default' => 0, 'disp-width' => '3'),
+      'weight' => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0, 'disp-width' => '4'),
+      'gain' => array('type' => 'int', 'unsigned' => TRUE, 'size' => 'tiny', 'not null' => TRUE, 'default' => 0, 'disp-width' => '3'),
+    ),
+    'primary key' => array('fid'),
+    'indexes' => array(
+      'gid' => array('gid'),
+      'module' => array('module'),
+      'name' => array('name'),
+      'status' => array('status'),
+      'weight' => array('weight'),
+    ),
+  );
+  return $schema;
+}
+
+function spam_install() {
+  // Create my tables.
+  drupal_install_schema('spam');
+}
+
+function spam_uninstall() {
+  // Remove tables.
+  drupal_uninstall_schema('spam');
+  drupal_set_message(t('All spam module tables have been deleted.'));
+}
+

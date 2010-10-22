@@ -1,0 +1,25 @@
+/* $Id: printlinks.css,v 1.1.2.3 2009/03/05 00:45:29 jcnventura Exp $ */
+
+.print-link {
+  position:relative;
+  bottom: 0.5em;
+  float:right;
+  margin-left: 1em;
+}
+
+.print-syslink {
+  margin-right: 1em;
+}
+
+img.print-icon {
+  vertical-align: middle;
+}
+
+img.print-icon-margin {
+  padding-right: 4px;
+}
+
+label.printmail-label {
+  width: 175px;
+  float: left;
+}

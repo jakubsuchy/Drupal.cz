@@ -1,0 +1,32 @@
+<?php
+// $Id: signup_status_notifications.install,v 1.1 2009/01/30 18:40:47 miglius Exp $
+
+/**
+ * @file
+ * signup status notifications module installation and upgrade code.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_enable().
+ */
+function signup_status_notifications_enable() {
+  drupal_set_message(t('signup status notifications module successfully installed. Please review the available <a href="@settings">configuration settings</a>.', array('@settings' => url('admin/settings/signup_status_notifications'))));
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function signup_status_notifications_install() {
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function signup_status_notifications_uninstall() {
+  variable_del('signup_status_notifications_statuses');
+  variable_del('signup_status_notifications_delete');
+}
+

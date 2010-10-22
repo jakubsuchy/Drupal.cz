@@ -1,0 +1,405 @@
+<?php
+// $Id: location_cck.module,v 1.5.2.9 2009/02/25 17:42:14 bdragon Exp $
+
+/**
+ * @file
+ * Defines location field type.
+ */
+
+/**
+ * Implementation of hook_theme().
+ */
+function location_cck_theme() {
+  return array(
+    'location_cck_formatter_default' => array(
+      'arguments' => array('element'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_info().
+ */
+function location_cck_field_info() {
+  return array(
+    'location' => array(
+      'label' => t('Location'),
+      'description' => t('Store a location.module location.'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_settings().
+ */
+function location_cck_field_settings($op, $field) {
+  switch ($op) {
+    case 'form':
+      $form = array();
+      $settings = isset($field['location_settings']) ? $field['location_settings'] : FALSE;
+      $form['location_settings'] = location_settings($settings);
+
+      // Multiple is handled by CCK.
+      unset ($form['location_settings']['multiple']);
+      // CCK handles weight, and collapsibility is not changeable.
+      unset ($form['location_settings']['form']['weight']);
+      unset ($form['location_settings']['form']['collapsible']);
+      unset ($form['location_settings']['form']['collapsed']);
+      unset ($form['location_settings']['display']['weight']);
+      return $form;
+
+    case 'save':
+      return array('location_settings');
+
+    case 'database columns':
+      return array(
+        'lid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => FALSE,
+        ),
+      );
+
+    case 'arguments':
+/*      $arguments = content_views_field_arguments($field);
+      $alias = "content: $field[field_name]";
+      $argument = array(
+        'handler' => 'text_views_argument_handler',
+        'option' => 'string',
+        'help' => t('Set the option to the number of initial characters to filter by. Leave empty for full term; use 1 for an A/B/C style glossary.'),
+      );
+      $arguments[$alias] = array_merge($arguments[$alias], $argument);
+      return $arguments;*/return;
+
+    case 'filters':
+      /*
+      $allowed_values = text_allowed_values($field);
+       if (count($allowed_values)) {
+         return array(
+           'default' => array(
+            'list' => $allowed_values,
+             'list-type' => 'list',
+             'operator' => 'views_handler_operator_andor',
+             'value-type' => 'array',
+            ),
+          );
+        }
+      else {
+        return array(
+          'like' => array(
+            'operator' => 'views_handler_operator_like',
+            'handler' => 'views_handler_filter_like',
+          ),
+        );
+      }*/
+      break;
+
+    case 'views data':
+      // We want to for the most part use the CCK stuff, but we also want to
+      // patch in a relationship so location's views support can target
+      // cck fields directly.
+      $table = content_views_tablename($field);
+      $db_info = content_database_info($field);
+      $field_alias = $db_info['columns']['lid']['column'];
+      $data = content_views_field_views_data($field);
+      $data[$table][$field_alias]['relationship'] = array(
+        'base' => 'location',
+        'field' => 'lid',
+        'handler' => 'views_handler_relationship',
+        'label' => t('Location'), // @@@ Some sort of better name?
+      );
+      return $data;
+  }
+}
+
+/*
+
+function location_cck_views_argument_handler($op, &$query, $argtype, $arg = '') {
+  $name = explode(':', is_array($argtype) ? $argtype['type'] : $argtype);
+  $field_name = trim($name[1]);
+  $field      = content_fields($field_name);
+  $db_info    = content_database_info($field);
+  $value      = $db_info['columns']['value']['column'];
+  $table      = 'node_data_'. $field['field_name'];
+
+  switch($op) {
+    case 'summary':
+      $query->ensure_table($table);
+      $query->add_field($value, $table);
+
+      $length = intval($arg);
+      $fieldinfo['field'] = $length <= 0 ? "$table.$value" : "LEFT($table.$value, $length)";
+      $fieldinfo['fieldname'] = 'letter';
+      return $fieldinfo;
+
+    case 'sort':
+      break;
+
+    case 'filter':
+      $query->ensure_table($table);
+      $query->add_field($value, $table);
+
+      $length = intval($argtype['options']);
+      $where = $length <= 0 ? "$table.$value = '%s'" : "LEFT($table.$value, $length) = '%s'";
+      $query->add_where($where, $arg);
+      break;
+
+    case 'link':
+      return l(strtoupper($query->letter), "$arg/$query->letter");
+
+    case 'title':
+      return check_plain(strtoupper($query));
+  }
+}
+*/
+
+/**
+ * Implementation of hook_field().
+ */
+function location_cck_field($op, &$node, $field, &$items, $teaser, $page) {
+  switch ($op) {
+    case 'validate':
+      /*
+      if (is_array($items)) {
+        foreach ($items as $delta => $item) {
+          $error_field = $field['field_name'] .']['. $delta .'][value';
+          if ($item['value'] != '') {
+            if (count($allowed_values) && !array_key_exists($item['value'], $allowed_values)) {
+              form_set_error($error_field, t('Illegal value for %name.', array('%name' => t($field['widget']['label']))));
+            }
+          }
+        }
+      }
+      */
+      break;
+
+    case 'insert':
+    case 'update':
+      // Store instances of locations by field name and vid.
+      $genid = 'cck:'. $field['field_name'] .':'. $node->vid;
+      location_save_locations($items, array('genid' => $genid));
+      // CCK automatically picks up the new lids and stores them in its own tables.
+      break;
+
+    case 'load':
+      $locations = array();
+      // Locations are being cached by CCK now. Load the full location.
+      foreach ($items as $item) {
+        $locations[] = location_load_location($item['lid']);
+      }
+      return array($field['field_name'] => $locations);
+
+    case 'delete':
+      // Run through the revisions and clean up all applicable references.
+      $result = db_query('SELECT vid FROM {node_revisions} WHERE nid = %d', $node->nid);
+      while ($row = db_fetch_object($result)) {
+        $genid = 'cck:'. $field['field_name'] .':'. $row->vid;
+        $locs = array();
+        location_save_locations($locs, array('genid' => $genid));
+      }
+      break;
+
+    case 'delete revision':
+      $genid = 'cck:'. $field['field_name'] .':'. $node->vid;
+      $locs = array();
+      location_save_locations($locs, array('genid' => $genid));
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function location_cck_field_formatter_info() {
+  return array(
+    'default' => array(
+      'label' => t('Default'),
+      'field types' => array('location'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_formatter().
+ *
+ * The $node argument is necessary so that filter access can be checked on
+ * node preview.
+ */
+function location_cck_field_formatter($field, $item, $formatter, $node) {
+  if (empty($item)) {
+    return '';
+  }
+  $item = location_load_location($item['lid']);
+  return theme('location', $item);
+}
+
+
+/**
+ * Implementation of hook_widget_info().
+ */
+function location_cck_widget_info() {
+  return array(
+    'location' => array(
+      'label' => t('Location Field'),
+      'field types' => array('location'),
+      'callbacks' => array(
+//        'default value' => CONTENT_CALLBACK_CUSTOM,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_widget_settings().
+ */
+function location_cck_widget_settings($op, $widget) {
+
+}
+
+/**
+ * Implementation of hook_widget().
+ */
+function location_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
+  if ($field['widget']['type'] == 'location') {
+    $settings = $field['location_settings'];
+
+    // Initialize empty location.
+    $location = location_empty_location($settings);
+
+    // Load location data for existing locations.
+    if (isset($items[$delta]['lid']) && $items[$delta]['lid']) {
+      // Are we in a node preview?
+      // If we aren't, then we only have the lid, because that's all cck
+      // actually knows about internally. So, we have to pull in the location
+      // at this point.
+      if (empty($items[$delta]['cck_preview_in_progress'])) {
+        $location = location_load_location($items[$delta]['lid']);
+      }
+      else {
+        // Otherwise, the data was already populated and we're running
+        // off the form state.
+        $location = $items[$delta];
+      }
+    }
+    // Load location data passed by cck.
+    else if (isset($items[$delta]) && is_array($items[$delta]) && !empty($items[$delta])) {
+
+      foreach ($items[$delta] as $k => $v) {
+        $location[$k] = $v;
+      }
+
+      // We can't trust that CCK is giving us the right information.
+      // It can't tell us whether $items is defaults or multistep values.
+      // Location *needs* the defaults to match the initial field values,
+      // so we re-calculate the defaults here and stash them into the settings.
+      // @@@ There is still a bug here!
+      // If you go back and edit something, and you hadn't set a location the
+      // first time, CCK fails to set up the defaults properly!
+      // I'm just going to leave it like that for now, because I don't know how
+      // to work around it.
+      $temp = content_default_value($form, $form_state, $field, 0);
+      if (is_array($temp) && isset($temp[$delta]) && is_array($temp[$delta])) {
+        foreach ($temp[$delta] as $k => $v) {
+          $settings['form']['fields'][$k]['default'] = $v;
+        }
+      }
+//      unset($location['location_settings']);
+//      unset($location['locpick']);
+    }
+
+    $element = array(
+      '#type' => 'location_element',
+      '#title' => t($field['widget']['label']),
+      '#description' => t($field['widget']['description']),
+      '#required' => $field['required'],
+      '#location_settings' => $settings,
+      '#default_value' => $location,
+    );
+    // This is used to determine whether we are in a preview or not, because
+    // several pieces of code work differently when previewing.
+    $element['cck_preview_in_progress'] = array(
+      '#type' => 'value',
+      '#value' => TRUE,
+    );
+    return $element;
+  }
+}
+
+/**
+ * CCK Emptiness check.
+ */
+function location_cck_content_is_empty($item, $field) {
+  // @@@ Bug:
+  // There is a suspect check here from content_set_empty().
+  // It's calling this function with raw cck defaults.
+  // I think it's causing a minimum of two fieldsets to be shown when using
+  // cck default values.
+
+  // Empty check
+  $fields = array();
+  if (location_is_empty($item, $fields)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+function theme_location_cck_formatter_default($element) {
+  $field = content_fields($element['#field_name'], $element['#type_name']);
+  $hide = array_keys(array_filter($field['location_settings']['display']['hide']));
+  $location = $element['#item'];
+  if (!empty($location['cck_preview_in_progress'])) {
+    // Our canary field is in place, we are in a node preview.
+    $fields = array();
+    // If the delete location checkbox isn't checked, and the location isn't
+    // "empty", then theme it based on the current state of the item.
+    if (!location_is_empty($location, $fields) && empty($location['delete_location'])) {
+      return theme('location', $location, $hide);
+    }
+  }
+  else if (isset($location['lid']) && $location['lid']) {
+    // "normal" viewing.
+    // Location is already cached by CCK, so no need to load it.
+    return theme('location', $location, $hide);
+  }
+}
+
+function location_cck_token_list($type = 'all') {
+  if ($type == 'field') {
+    $tokens = array();
+
+    $fields = location_field_names(TRUE);
+    // @@@ We really need to rethink fields in location..
+    unset($fields['locpick']);
+    foreach ($fields as $k => $v) {
+      $tokens['location'][$k] = $v;
+    }
+
+    return $tokens;
+  }
+}
+
+function location_cck_token_values($type, $object = NULL) {
+  if ($type == 'field') {
+    $item = $object[0];
+    $location = array(
+      'hide' => array_keys(array_filter($item['location_settings']['display']['hide'])),
+      'location' => location_load_location($item['lid']),
+    );
+
+    // @@@ This is rather silly, but I can't think of anything better at the moment.
+    template_preprocess_location($location);
+
+    $fields = location_field_names(TRUE);
+    // @@@ We really need to rethink fields in location..
+    unset($fields['locpick']);
+    foreach ($fields as $k => $v) {
+      if (isset($location[$k])) {
+        $tokens[$k] = $location[$k];
+      }
+      else {
+        $tokens[$k] = '';
+      }
+    }
+    return $tokens;
+  }
+}

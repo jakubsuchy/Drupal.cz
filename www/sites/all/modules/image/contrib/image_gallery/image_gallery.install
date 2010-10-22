@@ -1,0 +1,18 @@
+<?php
+// $Id: image_gallery.install,v 1.1 2006/05/02 06:54:35 walkah Exp $
+
+function image_gallery_version($type) {
+  switch ($type) {
+    case SCHEMA:
+      return 1;
+  }
+}
+
+function image_gallery_install() {
+  if ($vid = variable_get('image_nav_vocabulary', '')) {
+    db_query("UPDATE {vocabulary} SET module='image_gallery' WHERE vid=%d", $vid);
+  }
+  else {
+    db_query("UPDATE {vocabulary} SET module='image_gallery' WHERE module='image'");
+  }
+}  

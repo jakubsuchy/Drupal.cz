@@ -1,0 +1,47 @@
+# $Id: vote_up_down.pot,v 1.2 2007/03/02 10:43:11 frjo Exp $
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: vote_up_down_actions.inc,v 1.2 2006/12/22 07:19:19 frjo
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2007-03-02 11:33+0100\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: node-storylink.tpl.php:11 alternative/node-example.tpl.php:11 alternative/node-storylink.tpl.php:10
+msgid "Tags"
+msgstr ""
+
+#: vote_up_down_actions.inc:96
+msgid "Award userpoint to node author (Vote up/down)"
+msgstr ""
+
+#: vote_up_down_actions.inc:97;120
+msgid "Node"
+msgstr ""
+
+#: vote_up_down_actions.inc:103
+msgid "Awarded userpoint to author of node id %id"
+msgstr ""
+
+#: vote_up_down_actions.inc:119
+msgid "Deduct userpoint from node author (Vote up/down)"
+msgstr ""
+
+#: vote_up_down_actions.inc:126
+msgid "Deducted userpoint from author of node id %id"
+msgstr ""
+
+#: vote_up_down_actions.inc:103;126
+msgid "action"
+msgstr ""
+

@@ -1,0 +1,15 @@
+<?php
+// $Id: location_user.install,v 1.1.2.2 2009/02/25 18:49:31 bdragon Exp $
+
+/**
+ * @file
+ * Installation / uninstallation routines for location_user.module.
+ */
+
+/**
+ * Implentation of hook_uninstall().
+ */
+function location_user_uninstall() {
+  // Delete user settings.
+  variable_del('location_settings_user');
+}

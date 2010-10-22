@@ -1,0 +1,189 @@
+# $Id: autologout.pot,v 1.2 2009/04/17 14:05:52 jvandervort Exp $
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  autologout.module,v 1.5.2.5.2.18 2008/03/14 20:05:41 jvandervort
+#  autologout.info,v 1.2.2.1 2008/02/15 17:41:19 jvandervort
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-04-05 15:47+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: autologout.module:48
+msgid "Automated logout"
+msgstr ""
+
+#: autologout.module:50;331
+msgid "Manage the automated logout features"
+msgstr ""
+
+#: autologout.module:97
+msgid "automated logout info"
+msgstr ""
+
+#: autologout.module:107
+msgid "Countdown Timer admin settings"
+msgstr ""
+
+#: autologout.module:107
+msgid "  for Javascript load options should be set to EVERY PAGE or this block will not display properly."
+msgstr ""
+
+#: autologout.module:111
+msgid "Javascript Countdown Timer"
+msgstr ""
+
+#: autologout.module:111
+msgid " must be installed for the block to be visable."
+msgstr ""
+
+#: autologout.module:128
+msgid "autologout block called and Countdown Timer admin settings is not set for EVERY PAGE"
+msgstr ""
+
+#: autologout.module:271
+msgid "Disable inactivity automated logout"
+msgstr ""
+
+#: autologout.module:330
+msgid "Automatic logout"
+msgstr ""
+
+#: autologout.module:360
+msgid "auto logout settings"
+msgstr ""
+
+#: autologout.module:369
+msgid "Enable module"
+msgstr ""
+
+#: autologout.module:371
+msgid "Uncheck this and save settings to disable auto logout"
+msgstr ""
+
+#: autologout.module:375
+msgid "Timeout value in seconds"
+msgstr ""
+
+#: autologout.module:379
+msgid "The length of inactivity time, in seconds, before auto logout"
+msgstr ""
+
+#: autologout.module:383
+msgid "Enable watchdog auto-logout logging"
+msgstr ""
+
+#: autologout.module:385
+msgid "Enable logging of automatically logged out users"
+msgstr ""
+
+#: autologout.module:389
+msgid "Block title"
+msgstr ""
+
+#: autologout.module:392
+msgid "The title of the block"
+msgstr ""
+
+#: autologout.module:404
+msgid "Enforce"
+msgstr ""
+
+#: autologout.module:404
+msgid "Exclude"
+msgstr ""
+
+#: autologout.module:404
+msgid "By user"
+msgstr ""
+
+#: autologout.module:410
+msgid "Enforce : all users in this role will be auto-logged out"
+msgstr ""
+
+#: autologout.module:411
+msgid "Exclude : all users in this role are excluded from auto-logout functionality"
+msgstr ""
+
+#: autologout.module:412
+msgid "By user : all users in this role can select to switch off this functionality"
+msgstr ""
+
+#: autologout.module:414
+msgid "Policy description"
+msgstr ""
+
+#: autologout.module:415
+msgid "Please note, if a user is found to be in a role that allows disabling this feature, this overrides any enforcement"
+msgstr ""
+
+#: autologout.module:425
+msgid "Redirect URL at logout"
+msgstr ""
+
+#: autologout.module:428
+msgid "If you want to redirect users to another page when they are logged out. (FULL http:// path)"
+msgstr ""
+
+#: autologout.module:432
+msgid "Display a message box at logout"
+msgstr ""
+
+#: autologout.module:435
+msgid "If you want to display a message to the users when they are logged out."
+msgstr ""
+
+#: autologout.module:442
+msgid "Browser refresh delay"
+msgstr ""
+
+#: autologout.module:446
+msgid "The length of time, in seconds, after a timeout that a browser refresh is forced. Setting this to 0 (zero) disables the browser refresh facility. Using this facility will force a browser refresh and expire the session thus sending the user's browser to the homepage, in a logged out state."
+msgstr ""
+
+#: autologout.module:583
+msgid "Set-up your site policy by role:-"
+msgstr ""
+
+#: autologout.module:585
+msgid "WARNING, user with ID = 1 (initial admin user) is never auto-logged out"
+msgstr ""
+
+#: autologout.module:223
+msgid "user"
+msgstr ""
+
+#: autologout.module:223
+msgid "automatic logout activated"
+msgstr ""
+
+#: autologout.module:62
+msgid "autologout_perm()"
+msgstr ""
+
+#: autologout.module:64
+msgid "administer autologout"
+msgstr ""
+
+#: autologout.module:0
+msgid "autologout"
+msgstr ""
+
+#: autologout.info:0
+msgid "Autologout"
+msgstr ""
+
+#: autologout.info:0
+msgid "Adds automated timed logout"
+msgstr ""
+

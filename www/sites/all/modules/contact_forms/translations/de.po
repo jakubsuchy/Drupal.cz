@@ -1,0 +1,59 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: drupal contact_forms module 5.x-1.7\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-05 11:40+0100\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@mms-dresden.de>\n"
+"Language-Team: German Drupal translation team\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: contact_forms.module:87
+msgid "Additional information"
+msgstr "Weitere Informationen"
+
+#: contact_forms.module:88
+msgid "You can send !category a message using the contact form below."
+msgstr "Sie können mit dem folgenden Formular eine Nachricht an !category schicken."
+
+#: contact_forms.module:89
+msgid "Information to show on the <a href=\"!form\">contact page</a>. Can be anything from submission guidelines to your postal address or telephone number. To place the category name in your message use the wildcard \"!category\" e.g. You can send !category a message using the contact form below."
+msgstr "Information die auf der <a href=\"!form\">Kontaktseite</a> angezeigt werden soll. Kann alles von Richtlinien für Beiträge bis zu Ihrer Postanschrift oder Telefonnummer sein. Um den Kategorienamen in Ihrer Nachricht einzufügen, nutzen Sie den Platzhalter \"!category\" z.B. Sie können mit dem folgenden Formular eine Nachricht an !category schicken."
+
+#: contact_forms.module:94
+msgid "Contact Form redirect"
+msgstr "Kontaktformularumleitung"
+
+#: contact_forms.module:98
+msgid "The page you would like to redirect to if a contact/category path is entered that doesn't exist."
+msgstr "Die Seite auf die umgeleitet werden soll, wenn ein contact/category-Pfad eingegeben wird, der nicht existiert."
+
+#: contact_forms.module:104
+msgid "Contact Form Title"
+msgstr "Kontaktformular-Titel"
+
+#: contact_forms.module:108
+msgid "The title you would like displayed on the <a href=\"!form\">contact page</a>. To place the category name in the title use the wildcard \"!category\"."
+msgstr "Der Title der auf der <a href=\"!form\">Kontakt-Seite</a> angezeigt werden soll. Um den Kategorienamen im Titel einzufügen, kann der Platzhalter \"!category\" verwendet werden."
+
+#: contact_forms.module:0
+msgid "contact_forms"
+msgstr "contact_forms"
+
+#: contact_forms.install:14
+msgid "Contact Forms module has been enabled. You can edit it's settings at !link"
+msgstr "Das Kontaktformulare-Modul wurde aktiviert. Sie können seine Einstellungen unter !link bearbeiten."
+
+#: contact_forms.install:11;13;35
+#: contact_forms.info:0
+msgid "Contact Forms"
+msgstr "Kontaktformulare"
+
+#: contact_forms.info:0
+msgid "Creates individual contact pages from contact form categories."
+msgstr "Erstellt individuelle Kontakt-Seiten aus Kontaktformular-Kategorien."
+

@@ -1,0 +1,13 @@
+; $Id: subscriptions_ui.info,v 1.3 2008/05/18 20:43:03 salvis Exp $
+name = Subscriptions UI
+description = Provides a UI to Subscriptions.
+package = "Subscriptions"
+dependencies[] = subscriptions
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-12-27
+version = "6.x-1.0-beta5"
+core = "6.x"
+project = "subscriptions"
+datestamp = "1230406238"
+

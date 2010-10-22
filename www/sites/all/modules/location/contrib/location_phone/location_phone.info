@@ -1,0 +1,13 @@
+; $Id: location_phone.info,v 1.5 2008/09/10 21:23:09 bdragon Exp $
+name = Location Phone
+package = Location
+description = Allows you to add a phone number to a location.
+dependencies[] = location
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-03-03
+version = "6.x-3.1-rc1"
+core = "6.x"
+project = "location"
+datestamp = "1236112547"
+

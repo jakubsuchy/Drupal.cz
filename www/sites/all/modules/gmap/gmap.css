@@ -1,0 +1,34 @@
+/* $Id: gmap.css,v 1.7 2009/02/12 18:23:12 bdragon Exp $ */
+
+/**
+ * @file
+ * GMap CSS rules.
+ */
+
+.gmap-popup {
+
+}
+
+.gmap-tooltip {
+   padding: 2px;
+   margin: 0;
+   border: solid black 1px;
+}
+
+.gmap-left {
+  float: left;
+}
+
+.gmap-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gmap-right {
+  float: right;
+}
+
+.gmap-map {
+  /* Don't let long copyright texts stick out the side of the map div. */
+  overflow: hidden;
+}

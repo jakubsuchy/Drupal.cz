@@ -1,0 +1,1177 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Pathauto 5.x-1.1\n"
+"POT-Creation-Date: 2008-06-24 18:52+0200\n"
+"PO-Revision-Date: 2007-03-20 12:30+0300\n"
+"Last-Translator: SadhooKlay <sadhoo@mail.ru>\n"
+"Language-Team: SadhooKlay <klay@sadhoo.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?"
+"(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));"
+"\\n\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: pathauto.admin.inc:22
+msgid ""
+"It appears that the <a href=\"@token_link\">Token module</a> is not "
+"installed. Please ensure that you have it installed so that Pathauto can "
+"work properly. You may need to disable Pathauto and re-enable it to get "
+"Token enabled."
+msgstr ""
+
+#: pathauto.admin.inc:38
+msgid "General settings"
+msgstr "Основные настройки"
+
+#: pathauto.admin.inc:46
+msgid "Verbose"
+msgstr "Подробности"
+
+#: pathauto.admin.inc:48
+msgid "Display alias changes (except during bulk updates)."
+msgstr ""
+"Отобразить изменения синонимов (за исключением ситуации больших объемов "
+"обновлений)"
+
+#: pathauto.admin.inc:53
+msgid "Separator"
+msgstr "Разделитель"
+
+#: pathauto.admin.inc:57
+#, fuzzy
+msgid ""
+"Character used to separate words in titles. This will replace any spaces and "
+"punctuation characters. Using a space or + character can cause unexpected "
+"results."
+msgstr ""
+"Символ для разделения слов в строке. Им будут заменены пробелы и символы "
+"пунктуации."
+
+#: pathauto.admin.inc:62
+msgid "Character case"
+msgstr ""
+
+#: pathauto.admin.inc:64
+msgid "Leave case the same as source token values."
+msgstr ""
+
+#: pathauto.admin.inc:64
+msgid "Change to lower case"
+msgstr ""
+
+#: pathauto.admin.inc:69
+msgid "Maximum alias length"
+msgstr "Максимальная длина синонима"
+
+#: pathauto.admin.inc:73
+#, fuzzy
+msgid ""
+"Maximum length of aliases to generate. 100 is recommended. See <a href="
+"\"@pathauto-help\">Pathauto help</a> for details."
+msgstr ""
+"Максимальная длина генерируемого синонима. Рекомендуемое значение 100. "
+"Подробнее смотрите в <a href=\"@pathauto-help\">справке по автопсевдонимам</"
+"a>."
+
+#: pathauto.admin.inc:78
+msgid "Maximum component length"
+msgstr "Максимальная длина компонента"
+
+#: pathauto.admin.inc:82
+msgid ""
+"Maximum text length of any component in the alias (e.g., [title]). 100 is "
+"recommended. See <a href=\"@pathauto-help\">Pathauto help</a> for details."
+msgstr ""
+"Максимальная длина текста любого компонента в синониме (например [title])."
+"Рекомендуемое значение 100. Подробнее смотрите в <a href=\"@pathauto-help"
+"\">справке по синонимам</a>."
+
+#: pathauto.admin.inc:87
+msgid "Maximum number of objects to alias in a bulk update"
+msgstr ""
+
+#: pathauto.admin.inc:91
+msgid ""
+"Maximum number of objects of a given type which should be aliased during a "
+"bulk update. The default is 50 and the recommended number depends on the "
+"speed of your server. If bulk updates \"time out\" or result in a \"white "
+"screen\" then reduce the number."
+msgstr ""
+
+#: pathauto.admin.inc:95
+#, fuzzy
+msgid "Do nothing. Leave the old alias intact."
+msgstr "Ничего не делать, оставив в старый синоним без изменений"
+
+#: pathauto.admin.inc:96
+#, fuzzy
+msgid "Create a new alias. Leave the existing alias functioning."
+msgstr "Создать новый синоним, заменяя старый"
+
+#: pathauto.admin.inc:97
+#, fuzzy
+msgid "Create a new alias. Delete the old alias."
+msgstr "Создать новый синоним в дополнение к уже существующим"
+
+#: pathauto.admin.inc:100
+#, fuzzy
+msgid "Create a new alias. Redirect from old alias."
+msgstr "Создать новый синоним в дополнение к уже существующим"
+
+#: pathauto.admin.inc:110
+msgid "Update action"
+msgstr "Обновить действие"
+
+#: pathauto.admin.inc:113
+msgid ""
+"What should pathauto do when updating an existing content item which already "
+"has an alias?"
+msgstr ""
+"Что предпринять при обновлении существующего материала, если он имеет "
+"синоним?"
+
+#: pathauto.admin.inc:118
+msgid ""
+"When a pattern includes certain characters (such as those with accents) "
+"should Pathauto attempt to transliterate them into the ASCII-96 alphabet? "
+"Transliteration is determined by the i18n-ascii.txt file in the Pathauto "
+"directory. <strong>This option is disabled on your site because you do not "
+"have an i18n-ascii.txt file in the Pathauto directory.</strong>"
+msgstr ""
+
+#: pathauto.admin.inc:121
+msgid ""
+"When a pattern includes certain characters (such as those with accents) "
+"should Pathauto attempt to transliterate them into the ASCII-96 alphabet? "
+"Transliteration is determined by the i18n-ascii.txt file in the Pathauto "
+"directory."
+msgstr ""
+
+#: pathauto.admin.inc:129
+msgid "Transliterate prior to creating alias"
+msgstr ""
+
+#: pathauto.admin.inc:136
+msgid "Reduce strings to letters and numbers from ASCII-96"
+msgstr ""
+
+#: pathauto.admin.inc:138
+msgid ""
+"Filters the new alias to only letters and numbers found in the ASCII-96 set."
+msgstr ""
+
+#: pathauto.admin.inc:143
+msgid "Strings to Remove"
+msgstr "Строки для удаления"
+
+#: pathauto.admin.inc:144
+msgid ""
+"Words to strip out of the URL alias, separated by commas. Do not place "
+"punctuation in here and do not use WYSIWYG editors on this field."
+msgstr ""
+
+#: pathauto.admin.inc:150
+#, fuzzy
+msgid "Punctuation settings"
+msgstr "Основные настройки"
+
+#: pathauto.admin.inc:161
+msgid "Remove"
+msgstr "Удалить"
+
+#: pathauto.admin.inc:161
+msgid "Replace by separator"
+msgstr "Заменять разделителем"
+
+#: pathauto.admin.inc:161
+msgid "No action (do not replace)"
+msgstr ""
+
+#: pathauto.admin.inc:239
+#, fuzzy
+msgid "Replacement patterns"
+msgstr "Заменять разделителем"
+
+#: pathauto.admin.inc:243
+msgid "Use -raw replacements for text to avoid problems with HTML entities."
+msgstr ""
+
+#: pathauto.admin.inc:276
+msgid "Internal feed alias text (leave blank to disable)"
+msgstr ""
+
+#: pathauto.admin.inc:280
+msgid ""
+"The text to use for aliases for RSS feeds. Examples are \"feed\" and \"0/feed"
+"\"."
+msgstr ""
+
+#: pathauto.admin.inc:335
+msgid ""
+"You are using the token [%token] which is not valid within the scope of "
+"tokens where you are using it."
+msgstr ""
+
+#: pathauto.admin.inc:343
+msgid ""
+"You are using the token [%token] which has a -raw companion available [%"
+"raw_token]. For Pathauto patterns you should use the -raw version of tokens "
+"unless you really know what you are doing. See the <a href=\"@pathauto-help"
+"\">Pathauto help</a> for more details."
+msgstr ""
+
+#: pathauto.admin.inc:353
+msgid "NOTE: This field contains potentially incorrect patterns. "
+msgstr ""
+
+#: pathauto.admin.inc:355
+msgid "%problems"
+msgstr ""
+
+#: pathauto.admin.inc:374
+msgid ""
+"You have configured the @name to be the separator and to be removed when "
+"encountered in strings. This can cause problems with your patterns and "
+"especially with the catpath and termpath patterns. You should probably set "
+"the action for @name to be \"replace by separator\""
+msgstr ""
+
+#: pathauto.admin.inc:399
+msgid "Choose Aliases to Delete"
+msgstr ""
+
+#: pathauto.admin.inc:408
+#, fuzzy
+msgid "all aliases"
+msgstr "Создавать синонимы лент"
+
+#: pathauto.admin.inc:410
+msgid "Delete all aliases. Number of aliases which will be deleted: %count."
+msgstr ""
+
+#: pathauto.admin.inc:421
+msgid ""
+"Delete aliases for all @label. Number of aliases which will be deleted: %"
+"count."
+msgstr ""
+
+#: pathauto.admin.inc:426
+msgid ""
+"<p><strong>Note:</strong> there is no confirmation. Be sure of your action "
+"before clicking the \"Delete aliases now!\" button.<br />You may want to "
+"make a backup of the database and/or the url_alias table prior to using this "
+"feature.</p>"
+msgstr ""
+
+#: pathauto.admin.inc:429
+msgid "Delete aliases now!"
+msgstr ""
+
+#: pathauto.admin.inc:443
+msgid "All of your path aliases have been deleted."
+msgstr ""
+
+#: pathauto.admin.inc:448
+msgid "All of your %type path aliases have been deleted."
+msgstr ""
+
+#: pathauto.admin.inc:287
+#, fuzzy
+msgid "Bulk generation of index aliases completed, one alias generated."
+msgid_plural ""
+"Bulk generation of index aliases completed, @count aliases generated."
+msgstr[0] ""
+"Массовое обновление индекса синонимов завершено, @count синоним сгенерирован."
+msgstr[1] ""
+"Массовое обновление индекса синонимов завершено, @count синонима "
+"сгенерировано."
+msgstr[2] ""
+"Массовое обновление индекса синонимов завершено, @count[2] синонимов "
+"сгенерировано."
+
+#: pathauto.admin.inc:354
+msgid "Problem token: "
+msgid_plural "Problem tokens: "
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: pathauto.inc:315
+msgid ""
+"The automatically generated alias %original_alias conflicted with an "
+"existing alias. Alias changed to %alias."
+msgstr ""
+
+#: pathauto.inc:381
+#, fuzzy
+msgid "Ignoring alias %dst due to existing path conflict."
+msgstr " из-за существующих конфликтов путей"
+
+#: pathauto.inc:388
+msgid "Ignoring alias %dst because it is the same as the internal path."
+msgstr ""
+
+#: pathauto.inc:408
+#, fuzzy
+msgid ""
+"Created new alias %dst for %src, replacing %old_alias. %old_alias now "
+"redirects to %dst"
+msgstr "Создан новый синоним %dst для %src, заменя %oldalias"
+
+#: pathauto.inc:411
+#, fuzzy
+msgid "Created new alias %dst for %src, replacing %old_alias"
+msgstr "Создан новый синоним %dst для %src, заменя %oldalias"
+
+#: pathauto.inc:414
+msgid "Created new alias %dst for %src"
+msgstr "Создан новый синоним %dst для %src"
+
+#: pathauto.inc:477
+msgid "Double quotes \""
+msgstr ""
+
+#: pathauto.inc:478
+msgid "Single quotes (apostrophe) '"
+msgstr ""
+
+#: pathauto.inc:479
+msgid "Back tick `"
+msgstr ""
+
+#: pathauto.inc:480
+msgid "Comma ,"
+msgstr ""
+
+#: pathauto.inc:481
+msgid "Period ."
+msgstr ""
+
+#: pathauto.inc:482
+msgid "Hyphen -"
+msgstr ""
+
+#: pathauto.inc:483
+msgid "Underscore _"
+msgstr ""
+
+#: pathauto.inc:484
+msgid "Colon :"
+msgstr ""
+
+#: pathauto.inc:485
+msgid "Semicolon ;"
+msgstr ""
+
+#: pathauto.inc:486
+msgid "Pipe |"
+msgstr ""
+
+#: pathauto.inc:487
+msgid "Left curly bracket {"
+msgstr ""
+
+#: pathauto.inc:488
+msgid "Left square bracket ["
+msgstr ""
+
+#: pathauto.inc:489
+msgid "Right curly bracket }"
+msgstr ""
+
+#: pathauto.inc:490
+msgid "Right square bracket ]"
+msgstr ""
+
+#: pathauto.inc:491
+msgid "Plus +"
+msgstr ""
+
+#: pathauto.inc:492
+msgid "Equal ="
+msgstr ""
+
+#: pathauto.inc:493
+msgid "Asterisk *"
+msgstr ""
+
+#: pathauto.inc:494
+msgid "Ampersand &"
+msgstr ""
+
+#: pathauto.inc:495
+msgid "Percent %"
+msgstr ""
+
+#: pathauto.inc:496
+msgid "Caret ^"
+msgstr ""
+
+#: pathauto.inc:497
+msgid "Dollar $"
+msgstr ""
+
+#: pathauto.inc:498
+msgid "Hash #"
+msgstr ""
+
+#: pathauto.inc:499
+msgid "At @"
+msgstr ""
+
+#: pathauto.inc:500
+msgid "Exclamation !"
+msgstr ""
+
+#: pathauto.inc:501
+msgid "Tilde ~"
+msgstr ""
+
+#: pathauto.inc:502
+msgid "Left parenthesis ("
+msgstr ""
+
+#: pathauto.inc:503
+msgid "right parenthesis )"
+msgstr ""
+
+#: pathauto.inc:504
+#, fuzzy
+msgid "Question mark ?"
+msgstr "Использование кавычек"
+
+#: pathauto.inc:505
+msgid "Less than <"
+msgstr ""
+
+#: pathauto.inc:506
+msgid "Greater than >"
+msgstr ""
+
+#: pathauto.inc:507
+msgid "Back slash \\"
+msgstr ""
+
+#: pathauto.inc:437 pathauto.info:0
+msgid "Pathauto"
+msgstr "Синонимы"
+
+#: pathauto.inc:437
+msgid ""
+"It appears that you have installed Pathauto, which depends on token, but "
+"token is either not installed or not installed properly."
+msgstr ""
+
+#: pathauto_node.inc:20
+msgid "Node path settings"
+msgstr "Настройки адреса материала"
+
+#: pathauto_node.inc:21
+msgid ""
+"Default path pattern (applies to all node types with blank patterns below)"
+msgstr ""
+"Шаблон адреса по умолчанию (будет применено ко всем типам материалов ниже, "
+"для которых шаблоны не определены)"
+
+#: pathauto_node.inc:22
+msgid "content/[title-raw]"
+msgstr ""
+
+#: pathauto_node.inc:23
+#, fuzzy
+msgid "Bulk generate aliases for nodes that are not aliased"
+msgstr ""
+"Сгенерировать синонимы для всех существующих материалов не имеющих синонимы"
+
+#: pathauto_node.inc:24
+msgid ""
+"Generate aliases for all existing nodes which do not already have aliases."
+msgstr ""
+"Сгенерировать синонимы для всех существующих материалов не имеющих синонимы"
+
+#: pathauto_node.inc:37;79
+msgid "Language neutral"
+msgstr ""
+
+#: pathauto_node.inc:44
+#, fuzzy
+msgid ""
+"Default path pattern for @node_type (applies to all @node_type node types "
+"with blank patterns below)"
+msgstr ""
+"Шаблон адреса по умолчанию (будет применено ко всем типам материалов ниже, "
+"для которых шаблоны не определены)"
+
+#: pathauto_node.inc:47
+#, fuzzy
+msgid "Pattern for all @node_type paths in @language"
+msgstr "Шаблон для все адресов типа \"%vocab-name\""
+
+#: pathauto_node.inc:50
+#, fuzzy
+msgid "Pattern for all language neutral @node_type paths"
+msgstr "Шаблон для все адресов типа \"%vocab-name\""
+
+#: pathauto_node.inc:55
+#, fuzzy
+msgid "Pattern for all @node_type paths"
+msgstr "Шаблон для адресов страницы блога"
+
+#: pathauto_node.inc:121
+#, fuzzy
+msgid "Bulk generation of nodes completed, one alias generated."
+msgid_plural "Bulk generation of nodes completed, @count aliases generated."
+msgstr[0] ""
+"Массовое обновление материалов завершено, @count синоним сгенерирован."
+msgstr[1] ""
+"Массовое обновление материалов завершено, @count синонима сгенерированно."
+msgstr[2] ""
+"Массовое обновление материалов завершено, @count[2] синонимов сгенерированно."
+
+#: pathauto_taxonomy.inc:20
+#, fuzzy
+msgid "Taxonomy term path settings"
+msgstr "Настройки адреса категории"
+
+#: pathauto_taxonomy.inc:21
+msgid ""
+"Default path pattern (applies to all vocabularies with blank patterns below)"
+msgstr ""
+"Шаблон адреса по умолчанию (применяется ко всем словарям ниже, для которых "
+"шаблоны не определены)"
+
+#: pathauto_taxonomy.inc:22
+#, fuzzy
+msgid "category/[vocab-raw]/[catpath-raw]"
+msgstr "[vocab]/[catpath]"
+
+#: pathauto_taxonomy.inc:32
+#, fuzzy
+msgid "Bulk generate aliases for terms that are not aliased"
+msgstr "Генерировать синонимы также и для RSS лент"
+
+#: pathauto_taxonomy.inc:33
+#, fuzzy
+msgid ""
+"Generate aliases for all existing terms which do not already have aliases."
+msgstr ""
+"Сгенерировать синонимы для всех существующих материалов не имеющих синонимы"
+
+#: pathauto_taxonomy.inc:42
+msgid "Pattern for all %vocab-name paths"
+msgstr "Шаблон для все адресов типа \"%vocab-name\""
+
+#: pathauto_taxonomy.inc:134
+#, fuzzy
+msgid "Forum path settings"
+msgstr "Настройки адреса материала"
+
+#: pathauto_taxonomy.inc:135
+#, fuzzy
+msgid "Pattern for forums and forum containers"
+msgstr "Шаблон для адресов пользовательских страниц"
+
+#: pathauto_taxonomy.inc:136
+#, fuzzy
+msgid "[vocab-raw]/[catpath-raw]"
+msgstr "[vocab]/[catpath]"
+
+#: pathauto_taxonomy.inc:146
+#, fuzzy
+msgid "Bulk generate forum paths"
+msgstr "Массовое обновление адресов материалов"
+
+#: pathauto_taxonomy.inc:147
+#, fuzzy
+msgid ""
+"Generate aliases for all existing forums and forum containers which do not "
+"already have aliases."
+msgstr ""
+"Сгенерировать синонимы для всех существующих пользоветелей которые не имеют "
+"синонимов."
+
+#: pathauto_taxonomy.inc:92
+#, fuzzy
+msgid "Bulk generation of terms completed, one alias generated."
+msgid_plural "Bulk generation of terms completed, @count aliases generated."
+msgstr[0] ""
+"Массовое обновление терминов завершено, @count синоним сгенерирован."
+msgstr[1] ""
+"Массовое обновление терминов завершено, @count синонима сгенерированно."
+msgstr[2] ""
+"Массовое обновление терминов завершено, @count синонимов сгенерированно."
+
+#: pathauto_taxonomy.inc:168
+#, fuzzy
+msgid ""
+"Bulk update of forums and forum containers completed, one alias generated."
+msgid_plural ""
+"Bulk update of forums and forum containers completed, @count aliases "
+"generated."
+msgstr[0] ""
+"Массовое обновление пользователей завершено, @count синоним сгенерирован."
+msgstr[1] ""
+"Массовое обновление пользователей завершено, @count синонима сгенерировано."
+msgstr[2] ""
+"Массовое обновление пользователей завершено, @count синонимов сгенерировано."
+
+#: pathauto_user.inc:20
+msgid "User path settings"
+msgstr "Настройки адреса пользователя"
+
+#: pathauto_user.inc:21
+msgid "Pattern for user account page paths"
+msgstr "Шаблон для адресов пользовательских страниц"
+
+#: pathauto_user.inc:22
+#, fuzzy
+msgid "users/[user-raw]"
+msgstr "user/[user]"
+
+#: pathauto_user.inc:32
+#, fuzzy
+msgid "Bulk generate aliases for users that are not aliased"
+msgstr "Генерировать синонимы также и для RSS лент"
+
+#: pathauto_user.inc:33
+msgid ""
+"Generate aliases for all existing user account pages which do not already "
+"have aliases."
+msgstr ""
+"Сгенерировать синонимы для всех существующих пользоветелей которые не имеют "
+"синонимов."
+
+#: pathauto_user.inc:49
+msgid "Blog path settings"
+msgstr "Настройки адреса блога"
+
+#: pathauto_user.inc:50
+msgid "Pattern for blog page paths"
+msgstr "Шаблон для адресов страницы блога"
+
+#: pathauto_user.inc:51
+#, fuzzy
+msgid "blogs/[user-raw]"
+msgstr "blog/[user]"
+
+#: pathauto_user.inc:57
+#, fuzzy
+msgid "Bulk generate aliases for blogs that are not aliased"
+msgstr "Генерировать синонимы также и для RSS лент"
+
+#: pathauto_user.inc:58
+msgid ""
+"Generate aliases for all existing blog pages which do not already have "
+"aliases."
+msgstr ""
+"Сгенирировать синонимы для всех существующих страниц блогов которые не имеют "
+"синонимов."
+
+#: pathauto_user.inc:74
+msgid "User-tracker path settings"
+msgstr "Настройки адреса пользовательского трекера"
+
+#: pathauto_user.inc:75
+msgid "Pattern for user-tracker page paths"
+msgstr "Шаблон для адреса страницы пользовательского трекера"
+
+#: pathauto_user.inc:76
+#, fuzzy
+msgid "users/[user-raw]/track"
+msgstr "user/[user]/track"
+
+#: pathauto_user.inc:82
+#, fuzzy
+msgid "Bulk generate aliases for user-tracker paths that are not aliased"
+msgstr ""
+"Сгенерировать синонимы для всех существующих пользоветельских трекеров "
+"которые не имеют синонимов."
+
+#: pathauto_user.inc:83
+msgid ""
+"Generate aliases for all existing user-tracker pages which do not already "
+"have aliases."
+msgstr ""
+"Сгенерировать синонимы для всех существующих пользоветельских трекеров "
+"которые не имеют синонимов."
+
+#: pathauto_user.inc:107
+#, fuzzy
+msgid "Bulk generation of users completed, one alias generated."
+msgid_plural "Bulk generation of users completed, @count aliases generated."
+msgstr[0] ""
+"Массовое обновление пользователей завершено, @count синоним сгенерирован."
+msgstr[1] ""
+"Массовое обновление пользователей завершено, @count синонима сгенерировано."
+msgstr[2] ""
+"Массовое обновление пользователей завершено, @count синонимов сгенерировано."
+
+#: pathauto_user.inc:129
+#, fuzzy
+msgid "Bulk generation of user blogs completed, one alias generated."
+msgid_plural ""
+"Bulk generation of user blogs completed, @count aliases generated."
+msgstr[0] ""
+"Массовое обновление пользовательских блогов завершено, @count синоним "
+"сгенерирован."
+msgstr[1] ""
+"Массовое обновление пользовательских блогов завершено, @count синонима "
+"сгенерировано."
+msgstr[2] ""
+"Массовое обновление пользовательских блогов завершено, @count синонимов "
+"сгенерировано."
+
+#: pathauto_user.inc:153
+#, fuzzy
+msgid "Bulk generation of user tracker pages completed, one alias generated."
+msgid_plural ""
+"Bulk generation of user tracker pages completed, @count aliases generated."
+msgstr[0] ""
+"Массовое обновление страниц пользовательских трекеров завершено, @count "
+"синоним сгенерирован."
+msgstr[1] ""
+"Массовое обновление страниц пользовательских трекеров завершено, @count "
+"синонима сгенерировано."
+msgstr[2] ""
+"Массовое обновление страниц пользовательских трекеров завершено, @count "
+"синонимов сгенерировано."
+
+#: pathauto.module:27
+#, fuzzy
+msgid ""
+"<p>Provides a mechanism for modules to automatically generate aliases for "
+"the content they manage.</p>\n"
+"                  <h2>Settings</h2>\n"
+"                  <p>The <strong>Maximum Alias Length</strong> and "
+"<strong>Maximum component length</strong> values\n"
+"                  default to 100 and have a limit of 128 from pathauto. This "
+"length is limited by the length of the dst\n"
+"                  column of the url_alias database table. The default "
+"database schema for this column is 128. If you\n"
+"                  set a length that is equal to that of the one set in the "
+"dst column it will cause problems in situations\n"
+"                  where the system needs to append additional words to the "
+"aliased URL. For example... URLs generated\n"
+"                  for feeds will have \"/feed\" added to the end. You should "
+"enter a value that is the length of the dst\n"
+"                  column minus the length of any strings that might get "
+"added to the end of the URL. The length of\n"
+"                  strings that might get added to the end of your URLs "
+"depends on which modules you have enabled and\n"
+"                  on your Pathauto settings. The recommended and default "
+"value is 100.</p>\n"
+"                  <p><strong>Raw Tokens</strong> In Pathauto it is "
+"appropriate to use the -raw form of tokens. Paths are\n"
+"                  sent through a filtering system which ensures that raw "
+"user content is filtered. Failure to use -raw\n"
+"                  tokens can cause problems with the Pathauto punctuation "
+"filtering system.</p>"
+msgstr ""
+"<p>Модуль pathauto позволяет использовать функцию автоматического создания "
+"синонимов (alias) для других модулей, на основании указанных критериев, с "
+"централизованной настройкой путей для администраторов сайта.</"
+"p><p>Поддерживаются базовые типы материалов: узлы, термы таксономии, "
+"пользователи, и блоги.</p><p>Помимо создания более осмысленного адреса "
+"страницы, говорящего о его содержимом, чем просто \"node/138\", также важно "
+"знать, что современные механизмы поиска придают большое значение словам, "
+"появляющимся в URL страницы. Автоматическое использование ключевых слов, "
+"берущихся из самого содержания страницы в URL, значительно увеличивают "
+"соответствующие индексы популярности в механизмах поиска для вашей страницы."
+"</p>\n"
+"<h2>Настройки</h2>\n"
+"<p><strong>Максимальная длина синонима</strong> и <strong>Максимальная длина "
+"компонента</strong> по умолчанию установленны в 100 символов, лимит этих "
+"значений равен 128 символам. Эти значения ограничены величиной колонки dts в "
+"таблице url_alias. Если вы установите это значение равное максимальному в "
+"базе данных могут появиться проблемы в ситуации, когда системе потребуется "
+"добавить дополнительные слова в адресную строку, построенную из синонимаа. "
+"Например, адрес сгенерированный для лент новостей будет иметь добавленное "
+"окончание '/feed'. Вы должны указать это значение  исходя из простой "
+"формулы: <em>Длина поля dst минус длина любой строки, которая может быть "
+"добавлена в конце, как в случае с окончанием '/feed'.</em> Длина строки, "
+"которая может быть добавлена в конце, зависит от того, какие модули у вас "
+"включены и от настроек Pathauto.</p><p><strong>Рекомендуется оставить "
+"значение по умолчанию в виде 100 символов.</strong></p>"
+
+#: pathauto.module:164
+#, fuzzy
+msgid "As [cat], but including its supercategories separated by /."
+msgstr "Как и  [cat], но в том числе с супер категориями."
+
+#: pathauto.module:165
+#, fuzzy
+msgid ""
+"As [cat-raw], but including its supercategories separated by /. WARNING - "
+"raw user input."
+msgstr "Как и  [cat], но в том числе с супер категориями."
+
+#: pathauto.module:166;171
+msgid "URL alias for the term."
+msgstr ""
+
+#: pathauto.module:169
+#, fuzzy
+msgid "As [term], but including its supercategories separated by /."
+msgstr "Как и  [cat], но в том числе с супер категориями."
+
+#: pathauto.module:170
+#, fuzzy
+msgid ""
+"As [term-raw], but including its supercategories separated by /. WARNING - "
+"raw user input."
+msgstr "Как и  [cat], но в том числе с супер категориями."
+
+#: pathauto.module:176
+msgid "URL alias for the parent book."
+msgstr ""
+
+#: pathauto.module:188
+#, fuzzy
+msgid "users"
+msgstr "[user]"
+
+#: pathauto.module:188
+msgid "content"
+msgstr ""
+
+#: pathauto.module:190
+msgid "user blogs"
+msgstr ""
+
+#: pathauto.module:193
+msgid "vocabularies and terms"
+msgstr ""
+
+#: pathauto.module:196
+#, fuzzy
+msgid "user trackers"
+msgstr "user/[user]/track"
+
+#: pathauto.module:199
+msgid "forums"
+msgstr ""
+
+#: pathauto.module:284
+msgid ""
+"An alias will be generated for you. If you wish to create your own alias "
+"below, untick this option."
+msgstr ""
+
+#: pathauto.module:286
+#, fuzzy
+msgid ""
+" To control the format of the generated aliases, see the <a href=\"@pathauto"
+"\">Pathauto settings</a>."
+msgstr ""
+"Для контролирования и понимания формата генерирования синонимов смотрите <a "
+"href=\"admin/settings/pathauto\">справку по автопсевдонимам</a>."
+
+#: pathauto.module:294
+msgid "Automatic alias"
+msgstr ""
+
+#: pathauto.module:319
+#, fuzzy
+msgid "Update path alias"
+msgstr "Обновить действие"
+
+#: pathauto.module:49
+msgid "administer pathauto"
+msgstr "управлять синонимами"
+
+#: pathauto.module:49
+msgid "notify of path changes"
+msgstr ""
+
+#: pathauto.module:57
+#, fuzzy
+msgid "Automated alias settings"
+msgstr "Настройки адреса материала"
+
+#: pathauto.module:68
+#, fuzzy
+msgid "Delete aliases"
+msgstr "Создавать синонимы лент"
+
+#: pathauto.module:0
+msgid "pathauto"
+msgstr "pathauto"
+
+#: pathauto.info:0
+msgid ""
+"Provides a mechanism for modules to automatically generate aliases for the "
+"content they manage."
+msgstr ""
+"Предоставляет модулям механизм автоматического генерирования синонимов "
+"(alias) для управляемого модулями содержимого."
+
+#~ msgid "You are not authorized to access the pathauto settings."
+#~ msgstr "Авторизируйтесь, чтобы получить доступ к настройкам синонимов."
+
+#~ msgid "Create index aliases"
+#~ msgstr "Создать индекс синонимов"
+
+#~ msgid ""
+#~ "When a pattern generates a hierarchical alias (i.e., any alias containing "
+#~ "a slash), generate aliases for each step of the hierarchy which can be "
+#~ "used to list content within that hierarchy. For example, if a node alias "
+#~ "\"music/concert/beethoven\" is created, also create an alias \"music/"
+#~ "concert\" which will list all concert nodes, and an alias \"music\" which "
+#~ "will list all music nodes."
+#~ msgstr ""
+#~ "Если шаблон генерирует иерархические синонимы  (т.е. каждый синоним "
+#~ "разделен слэшем), будут созданы синонимы для каждой ступени иерархии, "
+#~ "которая может быть использована для отображения в списке этой иерархии. "
+#~ "Например, если синоним материала  создан как \"music/concert/beethoven\", "
+#~ "так же создастся синоним \"music/concert\", в котором будут перечислены "
+#~ "все материалы типа \"концерт\" , и синоним  \"music\", который будет "
+#~ "адресовать всё перечисление музыкальных материалов."
+
+#~ msgid "Bulk generate index aliases"
+#~ msgstr "Массовое создание индекса синонимов"
+
+#~ msgid "Generate index aliases based on all pre-existing aliases."
+#~ msgstr "Создать индекс синонимов на основе всех ранее существовавших."
+
+#~ msgid "Words to strip out of the URL alias, separated by commas"
+#~ msgstr "Слова, разделенные запятой, не включаемые в синоним адреса."
+
+#~ msgid "Ignoring alias "
+#~ msgstr "Игнорирование синонима"
+
+#~ msgid "Configure how pathauto generates clean URLs for your content."
+#~ msgstr ""
+#~ "Настроить как будут генерироваться чистые ссылки для содержимого сайта."
+
+#~ msgid "[title]"
+#~ msgstr "[title]"
+
+#~ msgid ""
+#~ "The title of the node, with spaces and punctuation replaced by the "
+#~ "separator."
+#~ msgstr ""
+#~ "Заголовок материала. Пробельные символы и знаки пунктуации будут заменены "
+#~ "разделителем."
+
+#~ msgid "[nid]"
+#~ msgstr "[nid]"
+
+#~ msgid "The id number of the node."
+#~ msgstr "Идентификационный номер (ID) материала."
+
+#~ msgid "The name of the user who created the node."
+#~ msgstr "Имя пользователя, создавшего материал."
+
+#~ msgid "[type]"
+#~ msgstr "[type]"
+
+#~ msgid "The node type (e.g., \"page\", \"story\", etc.)."
+#~ msgstr "Тип материала (например \"page\", \"story\" и т.д.)"
+
+#~ msgid "[yyyy]"
+#~ msgstr "[yyyy]"
+
+#~ msgid "The year the node was created."
+#~ msgstr "Год создания материала"
+
+#~ msgid "[mm]"
+#~ msgstr "[mm]"
+
+#~ msgid "The two-digit month (01-12) the node was created."
+#~ msgstr "Месяц создания материала, состоящий из двух цифр  (01-12)"
+
+#~ msgid "[mon]"
+#~ msgstr "[mon]"
+
+#~ msgid "The three-letter month (jan-dec) the node was created."
+#~ msgstr "Трехбуквенный (янв-дек) месяц создания материала."
+
+#~ msgid "[dd]"
+#~ msgstr "[dd]"
+
+#~ msgid "The two-digit day of the month (00-31) the node was created."
+#~ msgstr "День создания материала, состоящий из двух цифр (00-31)"
+
+#~ msgid "[day]"
+#~ msgstr "[day]"
+
+#~ msgid ""
+#~ "The three-letter day of the week (sun-sat) that the node was created."
+#~ msgstr "Трехбуквенный (пон-вос) день недели создания материала."
+
+#~ msgid "[hour]"
+#~ msgstr "[hour]"
+
+#~ msgid "The two-digit hour (00-23) the node was created."
+#~ msgstr "Час создания материала, состоящий из двух цифр  (00-23)"
+
+#~ msgid "[min]"
+#~ msgstr "[min]"
+
+#~ msgid "The two-digit minute (00-59) the node was created."
+#~ msgstr "Минута создания материала, состоящяя из двух цифр (00-59)"
+
+#~ msgid "[sec]"
+#~ msgstr "[sec]"
+
+#~ msgid "The two-digit second (00-59) the node was created."
+#~ msgstr "Секунда создания материала, состоящяя из двух цифр (00-59)"
+
+#~ msgid "[week]"
+#~ msgstr "[week]"
+
+#~ msgid "The week number (1-52) of the year the node was created."
+#~ msgstr "Номер недели (1-52) создания материала."
+
+#~ msgid "The name of the lowest-weight category that the page belongs to."
+#~ msgstr ""
+#~ "Синоним для самой легкой по весу категории, к которой принадлежит "
+#~ "страница."
+
+#~ msgid "[catalias]"
+#~ msgstr "[catalias]"
+
+#~ msgid ""
+#~ "The alias for the lowest-weight category that the page belongs to. This "
+#~ "is useful for long category names. You must first set up aliases for your "
+#~ "categories."
+#~ msgstr ""
+#~ "Синоним для самой легкой по весу категории, к которой принадлежит "
+#~ "страница. Это полезно для категорий с длинными именами. Сперва вы должны "
+#~ "назначить вес для категорий."
+
+#~ msgid "[book]"
+#~ msgstr "[book]"
+
+#~ msgid "For book pages, the title of the top-level book."
+#~ msgstr "Для страниц подшивок, заголовок верхнего уровня подшивки."
+
+#~ msgid "[bookpath]"
+#~ msgstr "[bookpath]"
+
+#~ msgid "For book pages, the full hierarchy from the top-level book."
+#~ msgstr "Для страниц подшивок, полная иерархия с верхнего уровня подшивки."
+
+#~ msgid "Pattern for all "
+#~ msgstr "Шаблон адреса для всех материалов типа \""
+
+#~ msgid " paths"
+#~ msgstr "\""
+
+#~ msgid ""
+#~ "An alias will be automatically generated from the title and other node "
+#~ "attributes, in addition to any alias manually provided above."
+#~ msgstr ""
+#~ "Синоним будет автоматически сгенерирован из заголовка и атрибутов "
+#~ "материала, в дополнение к всем синонимам настраиваемым вручную выше."
+
+#~ msgid "[eventyyyy]"
+#~ msgstr "[eventyyyy]"
+
+#~ msgid "The year the event starts."
+#~ msgstr "Год старта события."
+
+#~ msgid "[eventmm]"
+#~ msgstr "[eventmm]"
+
+#~ msgid "The two-digit month (01-12) the event starts."
+#~ msgstr "Месяц старта события, состоящий из двух цифр (01-12)."
+
+#~ msgid "[eventmon]"
+#~ msgstr "[eventmon]"
+
+#~ msgid "The three-letter month (jan-dec) the event starts."
+#~ msgstr "Трехбуквенный месяц  (янв-дек) старта события."
+
+#~ msgid "[eventdd]"
+#~ msgstr "[eventdd]"
+
+#~ msgid "The two-digit day of the month (00-31) the event starts."
+#~ msgstr "День месяца старта события, состоящий из двух цифр (01-12)."
+
+#~ msgid "[eventday]"
+#~ msgstr "[eventday]"
+
+#~ msgid "The three-letter day of the week (sun-sat) the event starts."
+#~ msgstr "Трехбуквенный день недели (пон-вос) старта события."
+
+#~ msgid "[eventweek]"
+#~ msgstr "[eventweek]"
+
+#~ msgid "The week number (1-52) of the year the event starts."
+#~ msgstr "Номер недели (1-52) старта события."
+
+#~ msgid "The name of the category."
+#~ msgstr "Имя категории"
+
+#~ msgid "[tid]"
+#~ msgstr "[tid]"
+
+#~ msgid "The id number of the category."
+#~ msgstr "Идентификационный номер категории"
+
+#~ msgid "Bulk update category paths"
+#~ msgstr "Массовое обновление адресов категорий"
+
+#~ msgid ""
+#~ "Generate aliases for all existing categories which do not already have "
+#~ "aliases."
+#~ msgstr ""
+#~ "Сгенерировать синонимы для всех существующих категорий у которых еще нет "
+#~ "синонимов."
+
+#~ msgid "The name of the user."
+#~ msgstr "Имя пользователя."
+
+#~ msgid "[uid]"
+#~ msgstr "[uid]"
+
+#~ msgid "The id number of the user."
+#~ msgstr "Идентификационный номер пользователя."
+
+#~ msgid "Bulk update user paths"
+#~ msgstr "Массовое обновление адресов пользователей"
+
+#~ msgid "Bulk update blog paths"
+#~ msgstr "Массовое обновление адресов блогов"
+
+#~ msgid "Bulk update user-tracker paths"
+#~ msgstr "Массовое обновление адресов пользовательских трекеров"
+
+#~ msgid "[vocab]"
+#~ msgstr "[vocab]"
+
+#~ msgid "The vocabulary that the page's first category belongs to."
+#~ msgstr "Словарь страницы, к которой принадлежит первая категория."
+
+#~ msgid "[cat]"
+#~ msgstr "[cat]"
+
+#~ msgid "[catpath]"
+#~ msgstr "[catpath]"
+
+#~ msgid "[menu]"
+#~ msgstr "[menu]"
+
+#~ msgid "The name of the menu the node belongs to."
+#~ msgstr "Имя меню к которому пренадлежит материал."
+
+#~ msgid "[menupath]"
+#~ msgstr "[menupath]"
+
+#~ msgid ""
+#~ "The menu path (as reflected in the breadcrumb), not including Home or "
+#~ "[menu]."
+#~ msgstr ""
+#~ "Путь меню (как это отражено в breadcrumb), исключая  главную страницу "
+#~ "сайта или [menu]."
+
+#~ msgid "[lang]"
+#~ msgstr "[lang]"
+
+#~ msgid "Language code of the document"
+#~ msgstr "Языковой код документа"

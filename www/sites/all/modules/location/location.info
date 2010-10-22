@@ -1,0 +1,12 @@
+; $Id: location.info,v 1.3 2008/07/24 19:44:00 bdragon Exp $
+name = Location
+package = Location
+description = The location module allows you to associate a geographic location with content and users. Users can do proximity searches by postal code.  This is useful for organizing communities that have a geographic presence.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-03-03
+version = "6.x-3.1-rc1"
+core = "6.x"
+project = "location"
+datestamp = "1236112547"
+

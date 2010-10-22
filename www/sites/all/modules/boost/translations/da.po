@@ -1,0 +1,300 @@
+# Dansk translation of boost (6.x-1.0-alpha4)
+# Copyright (c) 2009 by the Dansk translation team
+# Generated from files:
+# boost.admin.inc,v 1.1.2.1.2.3.2.14 2009/05/01 23:13:31 mikeytown2
+# boost.module,v 1.3.2.2.2.5.2.34 2009/05/02 20:36:39 mikeytown2
+# boost.info,v 1.1.2.1.2.3.2.1 2008/10/24 23:10:23 arto
+# boost.install,v 1.2.2.1.2.3.2.4 2008/10/25 15:16:21 arto
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: boost (6.x-1.0-alpha4)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-28 07:28-0700\n"
+"PO-Revision-Date: 2009-05-28 16:28+0200\n"
+"Last-Translator: Morten Wulff <wulff@ratatosk.net>\n"
+"Language-Team: Dansk <dansk@klid.dk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);"
+
+#: boost.admin.inc:28,87
+msgid "Disabled"
+msgstr "Deaktiveret"
+
+#: boost.admin.inc:28,87
+msgid "Enabled"
+msgstr "Aktiveret"
+
+#: boost.admin.inc:71
+msgid "Pages"
+msgstr "Sider"
+
+#: boost.admin.inc:19,26
+msgid "Static page cache"
+msgstr "Statisk caching af sider"
+
+#: boost.admin.inc:34
+msgid "Cache file path"
+msgstr "Cache-katalog"
+
+#: boost.admin.inc:51
+msgid "Cache every page except the listed pages."
+msgstr "Alle sider undtagen de nævnte."
+
+#: boost.admin.inc:51
+msgid "Cache only the listed pages."
+msgstr "Kun de nævnte sider."
+
+#: boost.admin.inc:52
+msgid ""
+"Enter one page per line as Drupal paths. The '*' character is a "
+"wildcard. Example paths are '%blog' for the blog page and "
+"%blog-wildcard for every personal blog. %front is the front page."
+msgstr ""
+"Indtast én Drupal-sti pr. linje. Brug '*'-tegnet som joker. Indtast "
+"f.eks. '%blog' for blogsiden og %blog-wildcard for alle personlige "
+"blogs. %front er forsiden."
+
+#: boost.admin.inc:54
+msgid ""
+"Cache pages for which the following PHP code returns <code>TRUE</code> "
+"(PHP-mode, experts only)."
+msgstr ""
+"Sider hvor følgende PHP-kode returnerer <code>SAND</code> (kun for "
+"erfarne brugere)."
+
+#: boost.admin.inc:55
+msgid ""
+"If the PHP-mode is chosen, enter PHP code between %php. Note that "
+"executing incorrect PHP-code can severely break your Drupal site."
+msgstr ""
+"Hvis du vælger PHP skal du indtaste PHP-kode herover i %php. Vær "
+"opmærksom på at ugyldig PHP kode kan ødelægge dit site."
+
+#: boost.admin.inc:59
+msgid "Cacheability settings"
+msgstr "Indstillinger"
+
+#: boost.admin.inc:65
+msgid "Cache specific pages"
+msgstr "Gem specifikke sider i cachen"
+
+#: boost.admin.inc:79
+msgid "Advanced settings"
+msgstr "Avancerede indstillinger"
+
+#: boost.admin.inc:92
+msgid "Cache file extension"
+msgstr "Cache filendelse"
+
+#: boost.admin.inc:97
+msgid ""
+"The file extension to append to the file name of the generated cache "
+"files. Note that this setting is of no relevance to any public URLs, "
+"and it is strongly recommended to leave this as the default '.html' "
+"unless you know what you are doing. If you change this, you must also "
+"change the URL rewrite rules in your web server configuration "
+"(.htaccess for Apache, lighttpd.conf for Lighttpd), or caching will "
+"not work."
+msgstr ""
+"Filendelsen der sættes på alle filer i cachen. Indstillingen har "
+"ikke betydning for offentlige URLer, og det anbefales kraftigt at "
+"beholde standardinstillingen '.html', medmindre du har en god grund "
+"til at ændre den. Hvis du ændrer indstillingen, skal du også ændre "
+"omskrivningsreglerne i din webserverkonfiguration "
+"(.htaccess/lighttpd.conf) for at få cachen til at virke."
+
+#: boost.admin.inc:108
+msgid "Pre-process function"
+msgstr "Funktion til forbehandling"
+
+#: boost.admin.inc:111
+msgid ""
+"The name of a PHP function used to pre-process the contents of each "
+"page before writing them out to static files. The function is called "
+"with the contents of the page passed as a string argument, and its "
+"return value is used as the data written out to the disk."
+msgstr ""
+"Navnet på en PHP-funktion, der forbehandler hver side, før den "
+"skrives til en statisk fil. Funktionen kaldes med sidens indhold som "
+"argument, og dens returværdi skrives til disken."
+
+#: boost.module:536,547
+msgid "Unable to write file: %file"
+msgstr "Kan ikke skrive til filen: %file"
+
+#: boost.module:189,536,547,562,0
+msgid "boost"
+msgstr "boost"
+
+#: boost.info:0
+msgid ""
+"Provides a performance and scalability boost through caching Drupal "
+"pages as static HTML files."
+msgstr ""
+"Forbedrer ydelsen eller skalabiliteten ved at cache Drupal-sider som "
+"statiske HTML-filer."
+
+#: boost.info:0
+msgid "Boost"
+msgstr "Boost"
+
+#: boost.module:189
+msgid "Expired stale files from static page cache."
+msgstr "Udløbne sider fjernet fra cachen."
+
+#: boost.info:0
+msgid "Caching"
+msgstr "Caching"
+
+#: boost.admin.inc:29
+msgid ""
+"Static page caching is a mechanism that stores dynamically generated "
+"web pages as HTML files in a special cache directory located under the "
+"Drupal installation directory. By caching a web page in this manner, "
+"the web server can serve it out in the fastest possible manner, "
+"without invoking PHP or Drupal at all. While this does provide a "
+"significant performance and scalability boost, you should note that it "
+"could have negative usability side-effects unless your site is "
+"targeted at an audience consisting mostly of \"anonymous\" visitors."
+msgstr ""
+"Statisk caching af sider er en mekanisme, som gemmer dynamisk "
+"genererede websider som HTML-filer i en speciel cachemappe i "
+"Drupal-mappen. Ved at cache en webside på denne måde kan webserveren "
+"servere den langt hurtigere, uden at skulle starte PHP og Drupal. Selv "
+"om det kan give en betydeligt forøget ydelse, skal du være "
+"opmærksom på, at det kan have negativ indflydelse på "
+"brugervenligheden, medmindre dit site er rettet mod et publikum af "
+"fortrinsvist anonyme brugere."
+
+#: boost.admin.inc:39
+msgid ""
+"A file system path where the static cache files will be stored. This "
+"directory has to exist and be writable by Drupal. The default setting "
+"is to store the files in a directory named %default-path under the "
+"Drupal installation directory. If you change this, you must also "
+"change the URL rewrite rules in your web server configuration "
+"(.htaccess for Apache, lighttpd.conf for Lighttpd), or caching will "
+"not work."
+msgstr ""
+"En filsystemsti hvor de statiske filer gemmes. Denne mappe skal "
+"eksistere og Drupal skal kunne skrive til den. Standardindstillingen "
+"er at gemme filerne i mappen %default-path under Drupal's "
+"installationsmappe. Hvis du ændrer denne sti, skal du også ændre "
+"reglerne for URL-omskrivning i din webserverkonfiguration (.htaccess "
+"under Apache, lighttpd.conf under Lighttpd), ellers vil cachen ikke "
+"virke."
+
+#: boost.admin.inc:85
+msgid "Purge expired cache files on cron runs"
+msgstr "Ryd op i udløbne cachefiler når cron køres"
+
+#: boost.admin.inc:88
+msgid ""
+"Whether to perform a purge of all expired content from the static page "
+"cache on cron runs. How often your cron runs works together with the "
+"minimum cache lifetime setting, further above, to determine the "
+"<strong>effective</strong> minimum lifetime for items in the static "
+"page cache. If you don't enable this setting, you will need to put in "
+"place some other custom mechanism for purging expired files, or else "
+"they will never be removed (unless manually cleared from the "
+"administrative interface)."
+msgstr ""
+"Hvorvidt alt udløbet indhold skal fjernes fra den statiske sidecache "
+"når cron køres. Hvor ofte cron kører og den mindste cachelevetid "
+"angivet ovenfor bestemmer den <strong>effektive</strong> mindste "
+"levetid for siderne i den statiske sidecache. Hvis du ikke aktiverer "
+"denne indstilling skal du selv sørge for en mekanisme, som kan slette "
+"udløbne filer, ellers vil de aldrig blive fjernet (medmindre de "
+"fjernes manuelt via administrationssiden)."
+
+#: boost.admin.inc:141
+msgid "Cache file extension %extension must begin with a period."
+msgstr "Filendelsen %extension skal begynde med et punktum."
+
+#: boost.admin.inc:145
+msgid "Pre-process function %function() does not exist."
+msgstr "Præprocessorfunktionen %function() findes ikke."
+
+#: boost.admin.inc:158,172; boost.install:31
+msgid "Static page cache cleared."
+msgstr "Statisk sidecache ryddet."
+
+#: boost.admin.inc:166
+msgid "Static page cache and all other caches cleared."
+msgstr "Statisk sidecache og alle andre cacher ryddet"
+
+#: boost.module:299
+msgid "Boost page cache status"
+msgstr "Status for Boost sidecache"
+
+#: boost.module:312
+msgid ""
+"This page is being served <strong>live</strong> to anonymous visitors, "
+"as it is not currently in the static page cache."
+msgstr ""
+"Siden bliver sendt <strong>live</strong> til anonyme brugere, da den "
+"ikke findes i den statiske sidecache i øjeblikket."
+
+#: boost.module:316
+msgid ""
+"This page is being served to anonymous visitors from the static page "
+"cache."
+msgstr "Siden bliver sendt til anonyme brugere fra den statiske sidecache."
+
+#: boost.install:16
+msgid ""
+"Boost successfully installed. Please review the available <a "
+"href=\"@settings\">configuration settings</a>."
+msgstr ""
+"Installationen af Boost lykkedes. Gennemse venligst de tilgængelige "
+"<a href=\"@settings\">indstillinger</a>."
+
+#: boost.install:21
+msgid "Drupal's standard page caching disabled by Boost."
+msgstr "Drupal's indbyggede sidecaching deaktiveret af Boost."
+
+#: boost.admin.inc:44
+msgid "Gzip cached pages"
+msgstr "Gzip cachede sider"
+
+#: boost.admin.inc:46
+msgid ""
+"This reduces bandwith used and allows for faster page loads. The full "
+"effects of this setting do no take place until the cache has been "
+"cleared and .htaccess has the correct set of rules in place."
+msgstr ""
+"Dette reducerer den anvendte båndbredde og giver hurtigere "
+"sideindlæsning. Den fulde effekt af denne indstilling fås ikke før "
+"cachen er blevet ryddet og de korrekte regler er tilføjet til "
+".htaccess."
+
+#: boost.admin.inc:123
+msgid "Only allow ASCII characters in path"
+msgstr "Tillad kun ASCII-tegn i stien"
+
+#: boost.admin.inc:125
+msgid ""
+"Only allowing ACSII characters is a safe way to cache pages. It "
+"severely limits i18n support so this can be turned off. Fair warning, "
+"disabling this may cause \"page not found\" errors depending on your "
+"url structure (spaces are bad, ect...). If you follow RFC 3986 you "
+"should be ok."
+msgstr ""
+"Kun at tillade ASCII-tegn er en sikker metode til caching af sider. "
+"Det er en stor begrænsning af I18N-understøttelse, så det kan slås "
+"fra. Deaktivering kan resultere i \"side ikke fundet\"-fejl afhængigt "
+"af din URL-struktur (undgå mellemrum, osv.). Hvis du følger RFC 3986 "
+"kan det ikke gå helt galt."
+
+#: boost.module:562
+msgid ""
+"base_url is not set in your settings.php file. Please read #7 in "
+"boosts INSTALL.txt file."
+msgstr ""
+"base_url er ikke angivet i din settings.php-fil. Læs venligst #7 i "
+"boost's INSTALL.txt-fil."
+

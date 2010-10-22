@@ -1,0 +1,168 @@
+# $Id: boost.pot,v 1.1.2.1 2008/10/28 10:48:45 arto Exp $
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  boost.admin.inc,v 1.1.2.1.2.1 2007/08/06 14:48:24 arto
+#  boost.api.inc,v 1.3.2.1.2.1 2007/08/06 14:48:24 arto
+#  boost.module,v 1.3.2.2.2.1 2007/08/06 14:48:24 arto
+#  boost.info,v 1.1.2.1.2.1 2007/08/06 14:48:24 arto
+#  boost.install,v 1.2.2.1.2.1 2007/08/06 14:48:24 arto
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2007-12-03 20:55+0100\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: boost.admin.inc:21
+msgid "Static page cache"
+msgstr ""
+
+#: boost.admin.inc:23
+msgid "Disabled"
+msgstr ""
+
+#: boost.admin.inc:24
+msgid "Enabled"
+msgstr ""
+
+#: boost.admin.inc:25
+msgid "Static page caching is a mechanism which stores dynamically generated web pages as HTML files in a special cache directory located under the Drupal installation directory. By caching a web page in this manner, the web server can serve it out in the fastest possible manner, without invoking PHP or Drupal at all. While this does provide a significant performance and scalability boost, you should note that it could have negative usability side-effects unless your site is targeted at an audience consisting mostly of \"anonymous\" visitors."
+msgstr ""
+
+#: boost.admin.inc:28
+msgid "On high-traffic sites it can become necessary to enforce a minimum cache lifetime. The minimum cache lifetime is the minimum amount of time that will go by before the cache is emptied and recreated. A larger minimum cache lifetime offers better performance, but users will not see new content for a longer period of time."
+msgstr ""
+
+#: boost.admin.inc:33
+msgid "Cache file path"
+msgstr ""
+
+#: boost.admin.inc:38
+msgid "A file system path where the cache files will be stored. This directory has to exist and be writable by Drupal. The default setting is to store the files in a directory named 'cache' under the Drupal installation directory. If you change this, you must also change the URL rewrite rules in your web server configuration (.htaccess for Apache, lighttpd.conf for Lighttpd), or caching will not work."
+msgstr ""
+
+#: boost.admin.inc:54
+msgid "Cache every page except the listed pages."
+msgstr ""
+
+#: boost.admin.inc:54
+msgid "Cache only the listed pages."
+msgstr ""
+
+#: boost.admin.inc:55
+msgid "Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are '%blog' for the blog page and %blog-wildcard for every personal blog. %front is the front page."
+msgstr ""
+
+#: boost.admin.inc:57
+msgid "Cache pages for which the following PHP code returns <code>TRUE</code> (PHP-mode, experts only)."
+msgstr ""
+
+#: boost.admin.inc:58
+msgid "If the PHP-mode is chosen, enter PHP code between %php. Note that executing incorrect PHP-code can severely break your Drupal site."
+msgstr ""
+
+#: boost.admin.inc:62
+msgid "Cacheability settings"
+msgstr ""
+
+#: boost.admin.inc:67
+msgid "Cache specific pages"
+msgstr ""
+
+#: boost.admin.inc:73
+msgid "Pages"
+msgstr ""
+
+#: boost.admin.inc:94
+msgid "Advanced settings"
+msgstr ""
+
+#: boost.admin.inc:100
+msgid "Cache file extension"
+msgstr ""
+
+#: boost.admin.inc:105
+msgid "The file extension to append to the file name of the generated cache files. Note that this setting is of no relevance to any public URLs, and it is strongly recommended to leave this as the default '.html' unless you know what you are doing. If you change this, you must also change the URL rewrite rules in your web server configuration (.htaccess for Apache, lighttpd.conf for Lighttpd), or caching will not work."
+msgstr ""
+
+#: boost.admin.inc:109
+msgid "Page fetch method"
+msgstr ""
+
+#: boost.admin.inc:111
+msgid "PHP fopen() wrapper"
+msgstr ""
+
+#: boost.admin.inc:111
+msgid "Wget shell command"
+msgstr ""
+
+#: boost.admin.inc:111
+msgid "curl shell command"
+msgstr ""
+
+#: boost.admin.inc:112
+msgid "The method used to retrieve the contents of the Drupal pages to be cached. The default should work in most cases."
+msgstr ""
+
+#: boost.admin.inc:116
+msgid "Pre-process function"
+msgstr ""
+
+#: boost.admin.inc:119
+msgid "The name of a PHP function used to pre-process the contents of each page before writing them out to static files. The function is called with the contents of the page passed as a string argument, and its return value is used as the data written out to the disk."
+msgstr ""
+
+#: boost.api.inc:138
+msgid "Unable to write file: %file"
+msgstr ""
+
+#: boost.api.inc:150
+msgid "Unable to create symlink: %link to %target"
+msgstr ""
+
+#: boost.api.inc:138;150 boost.module:52;192;0
+msgid "boost"
+msgstr ""
+
+#: boost.module:54 boost.info:0
+msgid "Provides a performance and scalability boost through caching Drupal pages as static HTML files."
+msgstr ""
+
+#: boost.module:81 boost.info:0
+msgid "Boost"
+msgstr ""
+
+#: boost.module:82
+msgid "Enable or disable page caching for anonymous users and set CSS and JS bandwidth optimization options."
+msgstr ""
+
+#: boost.module:192
+msgid "Expired stale files from static page cache."
+msgstr ""
+
+#: boost.module:69
+msgid "administer cache"
+msgstr ""
+
+#: boost.install:21
+msgid "Drupal standard page caching disabled by Boost."
+msgstr ""
+
+#: boost.install:24
+msgid "Boost module successfully installed."
+msgstr ""
+
+#: boost.info:0
+msgid "Caching"
+msgstr ""
+

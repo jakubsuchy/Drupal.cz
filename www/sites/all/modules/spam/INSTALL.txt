@@ -1,0 +1,55 @@
+-------------
+Requirements:
+-------------
+ - Drupal 6.x
+
+
+----------
+Upgrading:
+----------
+If upgrading from the 5.x-1.x or 5.x-2.x versions of the spam module, you MUST
+FIRST upgrade to 5.x-3.0-beta1 BEFORE upgrading to the 6.x-1.x version of the
+spam module.  If you neglect this step, the spam module will not work correctly
+and the only solution will be to completely uninstall it and reinstall it.
+After uninstalling the spam module and before reinstalling it, you should verify
+that there are no tables starting with the name 'spam'.  If any still exist,
+you should manually drop them.
+
+After upgrading from one version of the 6.x-1.x spam module to another, be sure
+to always visit update.php to perform any necessary schema updates.
+
+
+-------------
+Installation:
+-------------
+1) Extra the spam tarball.  Move the resulting 'spam/' subdirectory within the
+   appropriate 'sites/*/modules' directory.  Be sure the web server has read
+   permissions to this directory and the files within it.
+
+2) Log into your website and enabled the spam module.
+
+   Visit "Administer >> Site building >> Modules" and scroll down to the spam
+   section.  Put a check mark next to "Spam API" and any spam filters you'd
+   like to enable.  For now, we'll assume you are enabling all spam filter
+   modules.  Click 'Save configuration' to enable the modules.
+
+3) Finish enabling and configuring your spam filters.
+
+   Visit "Administer >> Site configuration >> Spam" and put a checkbox next to
+   all content types you'd like to filter.  By default the spam module will
+   only scan comments.  Skip the "Actions" and "Advanced configuration" sections
+   for now and click "Save configuration" if you have made any changes.
+
+   Next, you must also click the "Filters" tab on this page to finish enabling
+   your spam filters.  (Until http://drupal.org/node/541876 is fixed, you
+   must visit the page any time you enable a new spam filter module.)
+
+4) Optionally disable spam scanning for certain roles.
+
+   Visit "Administer >> User management >> Permissions" and enable "bypass
+   filters" permissions for any roles that you trust to never post spam.
+
+
+The spam module is now enabled and scanning new content as it is posted on your
+website.  Continue on to README.txt to learn more about configuring and using
+the spam module.

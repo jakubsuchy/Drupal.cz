@@ -1,0 +1,188 @@
+# LANGUAGE translation of Drupal (general)
+# Copyright 2008 Michał Mańko <drupal@kula.waw.pl>
+# Generated from files:
+#  autologout.module,v 1.5.2.5.2.18 2008/03/14 20:05:41 jvandervort
+#  autologout.info,v 1.2.2.1 2008/02/15 17:41:19 jvandervort
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: autologout.module\n"
+"POT-Creation-Date: 2008-04-05 15:47+0200\n"
+"PO-Revision-Date: 2008-04-18 23:28+0100\n"
+"Last-Translator: Michał Mańko <drupal@kula.waw.pl>\n"
+"Language-Team:  <drupal@kula.waw.pl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+
+#: autologout.module:48
+msgid "Automated logout"
+msgstr "Automatyczne wylogowanie"
+
+#: autologout.module:50;331
+msgid "Manage the automated logout features"
+msgstr "Zarządzaj ustawieniami automatycznego wylogowania"
+
+#: autologout.module:97
+msgid "automated logout info"
+msgstr "Informacja o automatycznym wylogowaniu"
+
+#: autologout.module:107
+msgid "Countdown Timer admin settings"
+msgstr "Ustawienia stopera"
+
+#: autologout.module:107
+msgid "  for Javascript load options should be set to EVERY PAGE or this block will not display properly."
+msgstr " powinien być włączony dla wszystkich stron, albo ten blok nie będzie wyświetlany poprawnie."
+
+#: autologout.module:111
+msgid "Javascript Countdown Timer"
+msgstr "Stoper Javascript"
+
+#: autologout.module:111
+msgid " must be installed for the block to be visable."
+msgstr "musi być zainstalowany, aby blok był widoczny."
+
+#: autologout.module:128
+msgid "autologout block called and Countdown Timer admin settings is not set for EVERY PAGE"
+msgstr "Blok automatycznego wylogowania i Stoper nie są ustawione na wszystkich stronach"
+
+#: autologout.module:271
+msgid "Disable inactivity automated logout"
+msgstr "Wyłącz automatyczne wylogowanie"
+
+#: autologout.module:330
+msgid "Automatic logout"
+msgstr "Automatycznie wylogowanie"
+
+#: autologout.module:360
+msgid "auto logout settings"
+msgstr "Ustawienia automatycznego wylogowania"
+
+#: autologout.module:369
+msgid "Enable module"
+msgstr "Włącz moduł"
+
+#: autologout.module:371
+msgid "Uncheck this and save settings to disable auto logout"
+msgstr "Odznacz to i zapisz konfigurację aby wyłączyć moduł"
+
+#: autologout.module:375
+msgid "Timeout value in seconds"
+msgstr "Czas wylogowania w sekundach"
+
+#: autologout.module:379
+msgid "The length of inactivity time, in seconds, before auto logout"
+msgstr "Czas bezaktywności użytkownika po jakiej zostanie wylogowany."
+
+#: autologout.module:383
+msgid "Enable watchdog auto-logout logging"
+msgstr "Raportowanie automatycznych wylogowań"
+
+#: autologout.module:385
+msgid "Enable logging of automatically logged out users"
+msgstr "Włącz zapisywanie do dziennika automatyczne wylogowania użytkowników"
+
+#: autologout.module:389
+msgid "Block title"
+msgstr "Tytuł bloku"
+
+#: autologout.module:392
+msgid "The title of the block"
+msgstr "Tytuł bloku"
+
+#: autologout.module:404
+msgid "Enforce"
+msgstr "Wymuś"
+
+#: autologout.module:404
+msgid "Exclude"
+msgstr "Wyłącz"
+
+#: autologout.module:404
+msgid "By user"
+msgstr "Przez użytkownika"
+
+#: autologout.module:410
+msgid "Enforce : all users in this role will be auto-logged out"
+msgstr "Wymyś: wszyscy użytkownicy z tą rangą będą automatycznie wylogowywani"
+
+#: autologout.module:411
+msgid "Exclude : all users in this role are excluded from auto-logout functionality"
+msgstr "Wyłącz: wszyscy użytkownicy z tą rolą będą wyłączeni z automatycznego wylogowywania"
+
+#: autologout.module:412
+msgid "By user : all users in this role can select to switch off this functionality"
+msgstr "Przez użytkownika: użytkownik może decydować czy chce być automatycznie wylogowywany"
+
+#: autologout.module:414
+msgid "Policy description"
+msgstr "Opis"
+
+#: autologout.module:415
+msgid "Please note, if a user is found to be in a role that allows disabling this feature, this overrides any enforcement"
+msgstr "Zauważ, że jeśli użytkownik należy do kilku rang, to w ustawieniach automatycznego wylogowania priorytet jest taki sam jak kolejność na liście powyżej."
+
+#: autologout.module:425
+msgid "Redirect URL at logout"
+msgstr "Przekierowanie po wylogowaniu"
+
+#: autologout.module:428
+msgid "If you want to redirect users to another page when they are logged out. (FULL http:// path)"
+msgstr "Jeśli chcesz przekierować użytkownika na inna stronę po automatycznym wylogowaniu. (Pełna ścieżka z http://)"
+
+#: autologout.module:432
+msgid "Display a message box at logout"
+msgstr "Wiadomość po wylogowaniu"
+
+#: autologout.module:435
+msgid "If you want to display a message to the users when they are logged out."
+msgstr "Jeśli chcesz wyświetlić użytkownikowi wiadomość po wylogowaniu."
+
+#: autologout.module:442
+msgid "Browser refresh delay"
+msgstr "Czas odświeżenia przeglądarki"
+
+#: autologout.module:446
+msgid "The length of time, in seconds, after a timeout that a browser refresh is forced. Setting this to 0 (zero) disables the browser refresh facility. Using this facility will force a browser refresh and expire the session thus sending the user's browser to the homepage, in a logged out state."
+msgstr "Czas, w sekundach, po jakim przeglądarka zostanie odświeżona po automatycznym wylogowaniu. Ustawienie 0 (zero) wyłączy odświeżenie."
+
+#: autologout.module:583
+msgid "Set-up your site policy by role:-"
+msgstr ""
+
+#: autologout.module:585
+msgid "WARNING, user with ID = 1 (initial admin user) is never auto-logged out"
+msgstr "UWAGA, użytkownik z ID = 1 (pierwszy administrator) nigdy nie zostanie wylogowany automatycznie"
+
+#: autologout.module:223
+msgid "user"
+msgstr "użytkownik"
+
+#: autologout.module:223
+msgid "automatic logout activated"
+msgstr "automatyczne wylogowanie aktywne"
+
+#: autologout.module:62
+msgid "autologout_perm()"
+msgstr "autologout_perm()"
+
+#: autologout.module:64
+msgid "administer autologout"
+msgstr "zarządzanie automatycznym wylogowaniem"
+
+#: autologout.module:0
+msgid "autologout"
+msgstr "automatyczne wylogowanie"
+
+#: autologout.info:0
+msgid "Autologout"
+msgstr "Automatyczne wylogowanie"
+
+#: autologout.info:0
+msgid "Adds automated timed logout"
+msgstr "Dodaje automatyczne wylogowanie użytkowników"
+

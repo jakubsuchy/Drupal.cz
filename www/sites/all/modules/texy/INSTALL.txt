@@ -1,0 +1,16 @@
+Installation
+-----------------------------
+1) Extract the 'texy/' directory from inside the module package to the
+   'sites/all/modules/' directory of your Drupal installation. This package
+   includes also the needed Texy! library, and auto-detects the correct
+   version, so no additional downloads needed. But however, you might want
+   to check the official website http://texy.info/en/download for possible
+   updates (replace files inside the 'sites/all/modules/texy/texy'
+   subdirectory).
+
+2) Enable the module at admin/build/modules.
+
+3) Create a new data format at admin/settings/filters/add and assign the Texy!
+   filter to it. Give your users permission to use the new format.
+
+You're done!

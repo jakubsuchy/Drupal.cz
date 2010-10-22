@@ -1,0 +1,12 @@
+; $Id: geshifilter.info,v 1.4 2007/12/13 00:13:22 soxofaan Exp $
+name = "GeSHi Filter"
+description = "Provides a filter to highlight source code using the GeSHi library (Generic Syntax Highlighter)"
+package = "Filters"
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-02-23
+version = "6.x-1.2"
+core = "6.x"
+project = "geshifilter"
+datestamp = "1235348121"
+

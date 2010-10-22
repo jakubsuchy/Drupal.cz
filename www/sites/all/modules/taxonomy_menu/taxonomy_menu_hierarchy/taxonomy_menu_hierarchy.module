@@ -1,0 +1,62 @@
+<?php
+// $Id: taxonomy_menu_hierarchy.module,v 1.1.2.2 2009/03/14 21:21:06 indytechcook Exp $
+
+/**
+ * @file
+ *  Enables Hierarchy path to Taxonomy Menu
+ */
+
+/**
+ * Implementation of hook_taxonomy_menu_path.
+ *
+ * @return array
+ *  function name => Display Title
+ *  a list of the path options.
+ */
+function taxonomy_menu_hierarchy_taxonomy_menu_path() {
+  return array('taxonomy_menu_hierarchy_path_hierarchy' => t('Hierarchy'));
+}
+
+/**
+ * Callback for hook_taxonomy_menu_path
+ */
+function taxonomy_menu_hierarchy_path_hierarchy($vid, $tid) {
+  //setup the base path of category/vid
+  $path =  variable_get('taxonomy_menu_hierarchy_base_'. $vid, 'category') .'/'. $vid;
+
+  //if tid = 0 then we are getting the vocab item path
+  if ($tid == 0) {
+    return $path;
+  }
+
+  //get the parents of the term
+  $parents = taxonomy_get_parents_all($tid);
+  //cycle through the parents and add them as an item on the menu
+  foreach ($parents as $parent) {
+    $path_tids = '/'. $parent->tid . $path_tids; 
+  }
+
+  return $path . $path_tids;
+}
+
+/**
+ * Implementation of hook_taxonomy_menu_options().
+ * 
+ * @return array
+ *  Uses the value to set the variable taxonomy_menu_<value>_$vid
+ *  $options[value]
+ *   default - optional.  this is what will be used if the varialbe is not set.  if empty then FALSE is used
+ *   #title - required.
+ *   any other form element
+ */
+function taxonomy_menu_hierarchy_taxonomy_menu_options() {
+  $options['hierarchy_base'] = array(
+    '#title' => t('Base Path for Hierarchy Path'),
+    '#description' => t('Only used when the Hierarchy path type is selected'),
+    'default' => 'category',
+    '#type' => 'textfield',
+    '#weight' => -5,
+  );
+  
+  return $options;
+}

@@ -1,0 +1,26 @@
+Readme
+------
+
+This is a simple filter module. It automatically converts URLs (http, ftp,
+e-mail, ...) into hyperlinks.
+Send comments to unconed@drupal.org.
+
+
+Installation
+------------
+
+1. Copy the urlfilter.module to the Drupal modules/ directory.
+
+2. Go to 'administer > modules', and enable the urlfilter.module
+
+3. Go to 'administer > configuration > input formats' and enable the filter in
+   the desired input formats.
+
+4. (optional) Rearrange the filters on the input format's 'rearrange' tab to
+   resolve conflicts with other filters.
+
+Author
+------
+
+Steven Wittens <unconed@drupal.org>
+

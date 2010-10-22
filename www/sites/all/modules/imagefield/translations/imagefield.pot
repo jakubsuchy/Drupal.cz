@@ -1,0 +1,188 @@
+# $Id: imagefield.pot,v 1.2 2008/12/14 14:16:42 hass Exp $
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  imagefield_field.inc: n/a
+#  imagefield_widget.inc: n/a
+#  imagefield.module,v 1.71 2008/08/27 15:03:06 drewish
+#  imagefield.install,v 1.14 2008/09/08 19:26:46 drewish
+#  imagefield.info,v 1.11 2008/08/14 23:08:26 drewish
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-12-14 15:08+0100\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: imagefield_field.inc:17
+msgid "Default image"
+msgstr ""
+
+#: imagefield_field.inc:23
+msgid "Use default image"
+msgstr ""
+
+#: imagefield_field.inc:25
+msgid "Check here if you want to use a image as default."
+msgstr ""
+
+#: imagefield_field.inc:35
+msgid "Upload image"
+msgstr ""
+
+#: imagefield_field.inc:36
+msgid "Choose a image that will be used as default."
+msgstr ""
+
+#: imagefield_field.inc:62
+msgid "Has Image"
+msgstr ""
+
+#: imagefield_field.inc:80
+msgid "The default image could not be uploaded. The destination(%d) does not exist or is not writable by the webserver."
+msgstr ""
+
+#: imagefield_widget.inc:25
+msgid "Maximum resolution for Images"
+msgstr ""
+
+#: imagefield_widget.inc:30
+msgid "The maximum allowed image size expressed as WIDTHxHEIGHT (e.g. 640x480). Set to 0 for no restriction. If a larger image is uploaded, it will be resized to reflect the given width and height."
+msgstr ""
+
+#: imagefield_widget.inc:35
+msgid "Minimum resolution for Images"
+msgstr ""
+
+#: imagefield_widget.inc:40
+msgid "The minimum allowed image size expressed as WIDTHxHEIGHT (e.g. 640x480). Set to 0 for no restriction. If an image that is smaller than these dimensions is uploaded it will be rejected."
+msgstr ""
+
+#: imagefield_widget.inc:46
+msgid "Permitted upload file extensions."
+msgstr ""
+
+#: imagefield_widget.inc:50
+msgid "Extensions a user can upload to this field. Seperate extensions with a space and do not include the leading dot."
+msgstr ""
+
+#: imagefield_widget.inc:56
+msgid "ALT text settings"
+msgstr ""
+
+#: imagefield_widget.inc:63
+msgid "Enable custom alternate text"
+msgstr ""
+
+#: imagefield_widget.inc:65
+msgid "Enable user input alternate text for images."
+msgstr ""
+
+#: imagefield_widget.inc:70
+msgid "Default ALT text"
+msgstr ""
+
+#: imagefield_widget.inc:72
+msgid "This value will be used for alternate text by default."
+msgstr ""
+
+#: imagefield_widget.inc:78
+msgid "Title text settings"
+msgstr ""
+
+#: imagefield_widget.inc:85
+msgid "Enable custom title text"
+msgstr ""
+
+#: imagefield_widget.inc:87
+msgid "Enable user input title text for images."
+msgstr ""
+
+#: imagefield_widget.inc:93
+msgid "Default Title text"
+msgstr ""
+
+#: imagefield_widget.inc:95
+msgid "This value will be used as the image title by default."
+msgstr ""
+
+#: imagefield_widget.inc:135
+msgid "Alternate Text"
+msgstr ""
+
+#: imagefield_widget.inc:146
+msgid "Title"
+msgstr ""
+
+#: imagefield.module:103
+msgid "Changes made to the attachments are not permanent until you save this post."
+msgstr ""
+
+#: imagefield.module:120;162;228
+msgid "Image"
+msgstr ""
+
+#: imagefield.module:121
+msgid "Store an image file and optionally text for alt and title tags."
+msgstr ""
+
+#: imagefield.module:170
+msgid "An edit widget for image files, including a preview of the image."
+msgstr ""
+
+#: imagefield.module:232;239;246;253;260
+msgid "Displays image files in their original size."
+msgstr ""
+
+#: imagefield.module:235
+msgid "Image linked to node"
+msgstr ""
+
+#: imagefield.module:242
+msgid "Image linked to file"
+msgstr ""
+
+#: imagefield.module:249
+msgid "Path to file"
+msgstr ""
+
+#: imagefield.module:256
+msgid "URL to file"
+msgstr ""
+
+#: imagefield.module:342
+msgid "The image %filename was resized to fit within the maximum allowed resolution of %resolution pixels"
+msgstr ""
+
+#: imagefield.module:24
+msgid "view imagefield uploads"
+msgstr ""
+
+#: imagefield.module:0
+msgid "imagefield"
+msgstr ""
+
+#: imagefield.install:164
+msgid "Migrating filefield values"
+msgstr ""
+
+#: imagefield.info:0
+msgid "ImageField"
+msgstr ""
+
+#: imagefield.info:0
+msgid "Defines an image field type."
+msgstr ""
+
+#: imagefield.info:0
+msgid "CCK"
+msgstr ""
+

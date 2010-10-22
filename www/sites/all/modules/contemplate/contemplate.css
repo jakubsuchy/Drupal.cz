@@ -1,0 +1,14 @@
+div.contemplate-input .form-textarea {
+  height: 200px;
+  border: 1px solid #666;
+  font-family: Profont, 'lucida console', Monaco, monospace;
+}
+
+div.contemplate-scroller {
+  padding: 0 1em;
+  height: 150px;
+  overflow: auto;
+  border: 1px solid #666;
+  max-width: 900px;
+  min-width: 300px;
+}

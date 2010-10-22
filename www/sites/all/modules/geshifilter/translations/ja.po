@@ -1,0 +1,627 @@
+# $Id: ja.po,v 1.3 2008/09/04 09:13:15 soxofaan Exp $
+#
+# Japanese translation of Drupal (geshifilter)
+# Copyright 2008 0829 <hixarg+0829@gmail.com>
+# Generated from files:
+#  geshifilter.admin.inc,v 1.15 2008/04/28 22:52:17 soxofaan Exp
+#  geshifilter.conflicts.inc,v 1.2 2008/01/31 10:30:37 soxofaan Exp
+#  geshifilter.filtertips.inc,v 1.3 2008/03/02 19:52:39 soxofaan Exp
+#  geshifilter.inc,v 1.3 2008/04/13 19:27:45 soxofaan Exp
+#  geshifilter.info,v 1.4 2007/12/13 00:13:22 soxofaan Exp
+#  geshifilter.install,v 1.5 2008/03/22 00:43:50 soxofaan Exp
+#  geshifilter.module,v 1.38 2008/04/07 22:40:22 soxofaan Exp
+#  geshinode.info,v 1.3 2008/01/07 01:20:40 soxofaan Exp
+#  geshinode.install,v 1.3 2008/01/07 01:20:40 soxofaan Exp
+#  geshinode.module,v 1.6 2008/01/18 15:49:19 soxofaan Exp
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal 6.x\n"
+"POT-Creation-Date: 2008-05-01 15:03+0900\n"
+"PO-Revision-Date: 2008-05-01 16:35+0900\n"
+"Last-Translator: 0829 <hixarg+0829@gmail.com>\n"
+"Language-Team: DRUPAL*DRUPAL <hixarg+0829@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: modules/geshifilter/geshifilter.admin.inc:13
+msgid "GeSHi filter"
+msgstr "GeSHi フィルタ"
+
+#: modules/geshifilter/geshifilter.admin.inc:22
+msgid "Per language tags"
+msgstr "各言語のタグ"
+
+#: modules/geshifilter/geshifilter.admin.inc:29
+msgid "GeSHi filter is configured to use global tag settings. For separate settings per input format, enable this option in the <a href=\"!geshi_admin_url\">general GeSHi filter settings</a>."
+msgstr "GeSHi フィルタはグローバルタグ設定を利用するよう設定されています。 入力書式ごとに別の設定を行うためには <a href=\"!geshi_admin_url\">GeSHi フィルタの全般設定</a>で入力書式で特定のタグ設定を使用するためのオプションを有効にしてください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:48
+msgid "GeSHi library version @version detected"
+msgstr "GeSHi ライブラリのバージョン @version が見つかりました。"
+
+#: modules/geshifilter/geshifilter.admin.inc:48
+msgid "GeSHi library"
+msgstr "GeSHi ライブラリ"
+
+#: modules/geshifilter/geshifilter.admin.inc:49
+msgid "The GeSHi filter requires the GeSHi library (which needs to be <a href=\"!geshi\">downloaded</a> and installed seperately)."
+msgstr "GeSHi フィルタは GeSHi ライブラリを必要とします。 別途<a href=\"!geshi\">ダウンロード</a>およびインストールする必要があります。"
+
+#: modules/geshifilter/geshifilter.admin.inc:56
+msgid "Path to GeSHi library"
+msgstr "GeSHi ライブラリのパス"
+
+#: modules/geshifilter/geshifilter.admin.inc:58
+msgid "Specify the path to the GeSHi library directory (which contains a file called <em>geshi.php</em>)."
+msgstr "GeSHi ライブラリのディレクトリ（<em>geshi.php</em> ファイルを含むディレクトリ）のパスを指定してください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:67
+msgid "GeSHi filter tags and delimiters"
+msgstr "GeSHi フィルタ（タグと区切り記号）"
+
+#: modules/geshifilter/geshifilter.admin.inc:73
+msgid "Use input format specific tag settings."
+msgstr "入力書式で特定のタグ設定を使用する。"
+
+#: modules/geshifilter/geshifilter.admin.inc:75
+msgid "Enable seperate tag settings of the GeSHi filter for each <a href=\"!input_formats\">input format</a> instead of global tag settings."
+msgstr "グローバルなタグの設定に代えて、それぞれの<a href=\"!input_formats\">入力書式</a>ごとに GeSHi フィルタのセパレートタグ設定を行ってください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:85
+msgid "Syntax highlighting options"
+msgstr "構文ハイライトオプション"
+
+#: modules/geshifilter/geshifilter.admin.inc:92
+msgid "Default highlighting mode"
+msgstr "デフォルトのハイライトモード"
+
+#: modules/geshifilter/geshifilter.admin.inc:95
+msgid "No highlighting"
+msgstr "ハイライトしない"
+
+#: modules/geshifilter/geshifilter.admin.inc:96
+msgid "Do nothing"
+msgstr "何もしない"
+
+#: modules/geshifilter/geshifilter.admin.inc:97
+msgid "As plain text"
+msgstr "プレーンテキスト"
+
+#: modules/geshifilter/geshifilter.admin.inc:99
+#: modules/geshifilter/geshifilter.module:97
+msgid "Languages"
+msgstr "言語"
+
+#: modules/geshifilter/geshifilter.admin.inc:101
+msgid "Select the default highlighting mode to use when no language is defined with a language attribute in the tag."
+msgstr "タグに language 属性が明確に指定されていない場合に、それらの言語で使用するデフォルトのハイライトモードを選択してください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:106
+msgid "Default line numbering"
+msgstr "デフォルトの行番号"
+
+#: modules/geshifilter/geshifilter.admin.inc:109
+#: modules/geshifilter/geshifilter.filtertips.inc:98
+#: modules/geshifilter/geshinode.module:165
+msgid "no line numbers"
+msgstr "行番号なし"
+
+#: modules/geshifilter/geshifilter.admin.inc:110
+#: modules/geshifilter/geshifilter.filtertips.inc:101
+#: modules/geshifilter/geshinode.module:166
+msgid "normal line numbers"
+msgstr "行番号あり（ノーマル）"
+
+#: modules/geshifilter/geshifilter.admin.inc:111;112;113
+#: modules/geshifilter/geshifilter.filtertips.inc:104
+#: modules/geshifilter/geshinode.module:167;168;169
+msgid "fancy line numbers (every @n lines)"
+msgstr "行番号あり（@n 行毎に装飾）"
+
+#: modules/geshifilter/geshifilter.admin.inc:115
+msgid "Select the default line numbering scheme: no line numbers, normal line numbers or fancy line numbers. With fancy line numbers every n<sup>th</sup> line number is highlighted. (GeSHi documentation: !link)."
+msgstr "デフォルトの行番号スキーマを 行番号なし, 行番号あり（ノーマル）, 行番号あり（装飾） から選択してください。 行番号あり（装飾）では、指定行おきに行番号がハイライトされます。 （GeSHi ドキュメンテーション： !link）"
+
+#: modules/geshifilter/geshifilter.admin.inc:121
+msgid "Use built-in PHP function <code>highlight_string()</code> for PHP source code."
+msgstr "PHP コードのために PHP のビルトイン機能である <code>highlight_string()</code> 関数を使用する"
+
+#: modules/geshifilter/geshifilter.admin.inc:122
+msgid "When enabled, PHP source code will be syntax highlighted with the built-in PHP function <code>!highlight_string</code> instead of with the GeSHi library. GeSHi features like for example line numbering and usage of an external CSS stylesheet are not available."
+msgstr "有効にした場合、PHP ソースコードの構文は GeSHi ライブラリを使用する代わりに、PHP のビルトイン機能である <code>!highlight_string</code> 関数を使ってハイライトされます。 行番号の表示や外部 CSS の利用のような GeSHi の機能は利用できません。"
+
+#: modules/geshifilter/geshifilter.admin.inc:128
+msgid "Enable GeSHi keyword URLs"
+msgstr "GeSHi キーワードの URL リンクを有効にする"
+
+#: modules/geshifilter/geshifilter.admin.inc:129
+msgid "For some languages GeSHi can link language keywords (e.g. standard library functions) to their online documentation. (GeSHi documentation: !link)"
+msgstr "いくつかの言語で GeSHi は、キーワード（例：標準的なライブラリ関数）に対してその言語のオンラインドキュメンテーションへのリンクを作成することができます。 （GeSHi ドキュメンテーション： !link）"
+
+#: modules/geshifilter/geshifilter.admin.inc:137
+msgid "Styling, layout and CSS"
+msgstr "スタイル, レイアウト, CSS"
+
+#: modules/geshifilter/geshifilter.admin.inc:145
+msgid "CSS mode for syntax highlighting"
+msgstr "構文ハイライトのための CSS モード"
+
+#: modules/geshifilter/geshifilter.admin.inc:146
+msgid "Inline CSS is easier to set up, does not depend on an external style sheets and is consequently more robust to copy/paste operations like content aggregation. However, usage of CSS classes and an external stylesheet (requires the public <a href=\"!filesystem\">download method</a>) is generally considered to be the better way of styling and requires much less HTML code and bandwith. (GeSHi documentation: !link)."
+msgstr "インライン CSS は簡単にセットアップでき、外部スタイルシートに依存しないため、コンテンツを収集するようなコピー/ペースト作業に効果的です。 しかし、class 属性によって外部スタイルシートを利用する方法（<a href=\"!filesystem\">ファイルシステム</a>でダウンロード方法がパブリックに設定されている必要があります）は、通常、スタイルシートの適切な使用方法だと考えられており、HTML コードやバンドワイズ（帯域幅）の要求はより少なくなります。 （GeSHi ドキュメンテーション： !link）"
+
+#: modules/geshifilter/geshifilter.admin.inc:154
+msgid "Inline CSS style attributes."
+msgstr "style 属性によるインライン CSS を使用する"
+
+#: modules/geshifilter/geshifilter.admin.inc:155
+msgid "CSS classes and external CSS style sheet."
+msgstr "class 属性による外部 CSS を使用する"
+
+#: modules/geshifilter/geshifilter.admin.inc:161
+msgid "Code container"
+msgstr "コードコンテナ"
+
+#: modules/geshifilter/geshifilter.admin.inc:162
+msgid "Define the container element to use for code blocks. (GeSHi documentation: !link)."
+msgstr "コードブロックとして使用する HTML エレメントを指定してください。 （GeSHi ドキュメンテーション： !link）"
+
+#: modules/geshifilter/geshifilter.admin.inc:166
+msgid "Use @cnt container (efficient whitespace coding, no automatic line wrapping)"
+msgstr "@cnt コンテナを使用する（コードの可読性を高めるためのホワイトスペースが有効、自動改行なし）"
+
+#: modules/geshifilter/geshifilter.admin.inc:167
+msgid "Use @cnt container (enables automatic line wrapping)"
+msgstr "@cnt コンテナを使用する（自動改行が有効）"
+
+#: modules/geshifilter/geshifilter.admin.inc:168
+msgid "Use no container"
+msgstr "コンテナを使用しない"
+
+#: modules/geshifilter/geshifilter.admin.inc:228
+msgid "Flush cache of available languages"
+msgstr "利用可能な言語のキャッシュをリフレッシュする"
+
+#: modules/geshifilter/geshifilter.admin.inc:290
+msgid "The language tags should differ between languages and from the generic tags."
+msgstr "言語タグは他の言語タグおよび一般的なタグと重複しないように設定してください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:318
+msgid "Generic syntax highlighting tags"
+msgstr "一般的な構文ハイライトタグ"
+
+#: modules/geshifilter/geshifilter.admin.inc:320
+msgid "Tags that should activate the GeSHi syntax highlighting. Specify a space-separated list of tagnames."
+msgstr "GeSHi 構文ハイライトを動作させるタグです。 タグ名をスペースで区切って指定してください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:325
+msgid "Tag style"
+msgstr "タグのスタイル"
+
+#: modules/geshifilter/geshifilter.admin.inc:329
+msgid "!angle or !square"
+msgstr "!angle または !square"
+
+#: modules/geshifilter/geshifilter.admin.inc:332
+msgid "Select which brackets should be used for the source code container tags."
+msgstr "ソースコードのコンテナタグとして使用するカッコの形式を選択してください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:337
+msgid "Also apply syntax highlighting to &lt;?php ... ?&gt; style PHP source code blocks."
+msgstr "&lt;?php ... ?&gt; で括られた PHP のソースコードブロックにも構文ハイライトを適用する。"
+
+#: modules/geshifilter/geshifilter.admin.inc:338
+msgid "When enabled, PHP source code enclosed in &lt;?php...?&gt; or &lt;%...%&gt; will also be processed."
+msgstr "この設定を有効にした場合、&lt;?php...?&gt; または &lt;%...%&gt; で括られた PHP ソースコードも同様に処理されます。"
+
+#: modules/geshifilter/geshifilter.admin.inc:356
+msgid "Language"
+msgstr "言語"
+
+#: modules/geshifilter/geshifilter.admin.inc:357
+msgid "GeSHi language code"
+msgstr "GeSHi 言語コード"
+
+#: modules/geshifilter/geshifilter.admin.inc:359
+msgid "Tag/language attribute value"
+msgstr "タグ/言語の属性値"
+
+#: modules/geshifilter/geshifilter.admin.inc:420
+#: modules/geshifilter/geshifilter.module:106
+msgid "Enabled"
+msgstr "有効"
+
+#: modules/geshifilter/geshifilter.admin.inc:449
+msgid "GeSHi filter cleared the filter cache for the appropriate input formats."
+msgstr "入力書式を適切に動作させるため、フィルタのキャッシュをクリアしました。"
+
+#: modules/geshifilter/geshifilter.admin.inc:486
+msgid "Generated external CSS file %file."
+msgstr "外部 CSS ファイル %file を生成しました。"
+
+#: modules/geshifilter/geshifilter.admin.inc:489
+msgid "Could not generate external CSS file. Check the settings of your !filesystem."
+msgstr "外部 CSS ファイルを生成できませんでした。 !filesystem の設定を確認してください。"
+
+#: modules/geshifilter/geshifilter.admin.inc:490
+msgid "file system"
+msgstr "ファイルシステム"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:55
+msgid "No known filter conflicts were detected."
+msgstr "既知のフィルタコンフリクトは見つけられませんでした。"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:57
+msgid "Input format"
+msgstr "入力書式"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:57
+msgid "Filter"
+msgstr "フィルタ"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:57
+msgid "Description"
+msgstr "説明"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:57
+msgid "Possible solutions"
+msgstr "可能な解決方法"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:71
+msgid "%cfilter should not come after %geshifilter to prevent loss of layout and highlighting."
+msgstr "レイアウトやハイライトの損失を防ぐため、%cfilter が %geshifilter の後にならないようにしてください。"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:73
+msgid "Rearrange filters"
+msgstr "フィルタの並べ替え順序を再構成してください"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:79
+msgid "%cfilter is configured to \"%escape\", which is likely to cause propblems with %geshifilter."
+msgstr "%cfilter は \"%escape\" の処理が行われるため、%geshifilter で問題の原因となる可能性があります。"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:80
+msgid "Escape all tags"
+msgstr "全タグをエンティティ（&xxx;）表記に変換"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:81
+msgid "Configure HTML filtering to \"%strip\""
+msgstr "HTML フィルタの設定を \"%strip\" に変更してください"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:81
+msgid "Strip disallowed tags"
+msgstr "未許可のタグを除去"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:96
+msgid "%cfilter and %geshifilter trigger on the same tag \"&lt;code&gt;\"."
+msgstr "%cfilter と %geshifilter の両方で、\"&lt;code&gt;\" タグがトリガとして設定されています。"
+
+#: modules/geshifilter/geshifilter.conflicts.inc:98
+msgid "Remove \"code\" as generic syntax highlighting tag for %geshifilter, limit %geshifilter to tag style \"[foo]\" only or disable %cfilter"
+msgstr "%geshifilter の一般的な構文ハイライトタグから \"code\" を削除する、%geshifilter で使用するタグスタイルを \"[foo]\" のみにする、または %cfilter を無効にするの何れかを行ってください"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:28
+msgid "Syntax highlighting of source code can be enabled with the following tags:"
+msgstr "次のタグを使用してソースコード構文をハイライトすることができます："
+
+#: modules/geshifilter/geshifilter.filtertips.inc:35
+msgid "Generic syntax highlighting tags: !tags."
+msgstr "一般的な構文ハイライトタグ： !tags"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:39
+msgid "for @lang source code"
+msgstr "@lang ソースコード"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:41
+msgid "Language specific syntax highlighting tags: !tags."
+msgstr "言語特有の構文ハイライトタグ： !tags"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:44
+msgid "PHP source code can also be enclosed in &lt;?php ... ?&gt; or &lt;% ... %&gt;, but additional options like line numbering are not possible here."
+msgstr "PHP ソースコードは &lt;?php ... ?&gt; または &lt;% ... %&gt; で括ることも可能ですが、その場合は行番号の表示などの追加オプションは使用できません。"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:50
+msgid "Options and tips:"
+msgstr "オプションと使用のヒント："
+
+#: modules/geshifilter/geshifilter.filtertips.inc:64
+msgid "\"<code>@langcode</code>\" (for @fullname)"
+msgstr "\"<code>@langcode</code>\" (@fullname コード)"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:66
+msgid "The language for the generic syntax highlighting tags can be specified with one of the attribute(s): %attributes. The possible values are: !languages."
+msgstr "一般的な構文ハイライトを行う言語では、タグの属性として %attributes のいずれかを指定できます。 指定した属性に設定できる値は !languages です。"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:69
+msgid "<em>Line numbering</em> can be enabled/disabled with the attribute \"%linenumbers\". Possible values are: \"%off\" for no line numbers, \"%normal\" for normal line numbers and \"%fancy\" for fancy line numbers (every n<sup>th</sup> line number highlighted). The start line number can be specified with the attribute \"%start\", which implicitly enables normal line numbering. For fancy line numbering the interval for the highlighted line numbers can be specified with the attribute \"%fancy\", which implicitly enables fancy line numbering."
+msgstr "<strong>行番号の表示/非表示</strong>は \"%linenumbers\" 属性を使用して設定します。 行番号の表示方法として選択できる値は、\"%off\" （行番号を表示しない）、\"%normal\" （一般的な行番号を表示）、\"%fancy\" （指定行毎に行番号を装飾）です。 開始番号を指定する場合は \"%start\" 属性を使用します。 開始番号を設定した場合、行番号の表示指定をしていなくても自動的にノーマルタイプの行番号が表示されます。 また、指定行毎に行番号の装飾を行う場合は、何行毎に装飾するかの行数を \"%fancy\" 属性の値として設定します。 行番号の装飾を設定した場合、行番号の表示指定をしていなくても自動的に装飾された行番号が表示されます。 "
+
+#: modules/geshifilter/geshifilter.filtertips.inc:72
+msgid "If the source code between the tags contains a newline (e.g. immediatly after the opening tag), the highlighted source code will be displayed as a code block. Otherwise it will be displayed inline."
+msgstr "タグとタグで括られたコンテナ内のソースコードに改行が含まれる場合（例： 開始タグの直後など）、ハイライトされたソースコードはコードブロックとして表示され、そうでない場合はインラインコードとして表示されます。"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:75;162
+msgid "Beside the tag style \"!angle\" it is also possible to use \"!bracket\"."
+msgstr "タグスタイルの \"!angle\" だけでなく \"!bracket\" を使用することも可能です。"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:80
+msgid "Defaults:"
+msgstr "デフォルト："
+
+#: modules/geshifilter/geshifilter.filtertips.inc:85
+msgid "when no language attribute is specified the code block won't be processed by the GeSHi filter"
+msgstr "language 属性が指定されていない場合、コードブロックでは GeSHi フィルタによる処理は行われません。"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:88
+msgid "when no language attribute is specified, no syntax highlighting will be done"
+msgstr "language 属性が指定されていない場合、構文のハイライトは行われません。"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:91
+msgid "the default language used for syntax highlighting is \"%default_lang\""
+msgstr "\"%default_lang\" がデフォルトの構文ハイライト言語として使用されます。"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:94
+msgid "Default highlighting mode for generic syntax highlighting tags: !description."
+msgstr "一般的な構文ハイライトタグのためのデフォルトのハイライトモード： !description"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:107
+msgid "Default line numbering: !description."
+msgstr "デフォルトの行番号表示： !description"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:111
+msgid "Examples:"
+msgstr "例："
+
+#: modules/geshifilter/geshifilter.filtertips.inc:112
+msgid "You type"
+msgstr "入力"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:112
+msgid "You get"
+msgstr "出力"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:121
+msgid "Inline code with the default syntax highlighting mode."
+msgstr "デフォルトモードで構文ハイライトされたインラインコード"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:125
+msgid "Code block with the default syntax highlighting mode."
+msgstr "デフォルトモードで構文ハイライトされたコードブロック"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:129
+msgid "Code block with syntax highlighting for @lang source code<br /> and normal line numbers."
+msgstr "@lang ソースコードとして構文ハイライトされたコードブロック<br />ノーマルタイプの行番号を表示"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:133;144
+msgid "Code block with syntax highlighting for @lang source code,<br />line numbers starting from 23<br /> and highlighted line numbers every 7<sup>th</sup> line."
+msgstr "@lang ソースコードとして構文ハイライトされたコードブロック<br />23 から開始される行番号を表示<br />7 行毎に行番号を装飾"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:140
+msgid "Code block with syntax highlighting for @lang source code."
+msgstr "@lang ソースコードとして構文ハイライトされたコードブロック"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:160
+msgid "You can enable syntax highlighting of source code with the following tags: !tags."
+msgstr "次のタグを使用してソースコード構文をハイライトすることができます。： !tags"
+
+#: modules/geshifilter/geshifilter.filtertips.inc:165
+msgid "PHP source code can also be enclosed in &lt;?php ... ?&gt; or &lt;% ... %&gt;."
+msgstr "PHP ソースコードは &lt;?php ... ?&gt; または &lt;% ... %&gt; で括ることも可能です。"
+
+#: modules/geshifilter/geshifilter.inc:27
+msgid "GeSHi library error: %dir is not a directory."
+msgstr "GeSHi ライブラリエラー： %dir はディレクトリではありません。"
+
+#: modules/geshifilter/geshifilter.inc:39
+msgid "GeSHi library error: The detected version of GeSHi library (%version) is not supported. A version from the 1.0.x branch is required."
+msgstr "GeSHi ライブラリエラー： 見つかった GeSHi ライブラリのバージョン（%version）はサポートされていません。 1.0.x ブランチのバージョンが必要です。"
+
+#: modules/geshifilter/geshifilter.inc:48
+msgid "GeSHi library error: Could not find a known version of the GeSHi library at %dir."
+msgstr "GeSHi ライブラリエラー： %dir 内に既知のバージョンの GeSHi ライブラリを見つけることができませんでした。"
+
+#: modules/geshifilter/geshifilter.info:0
+#: modules/geshifilter/geshifilter.module:72
+msgid "GeSHi Filter"
+msgstr "GeSHi フィルタ"
+
+#: modules/geshifilter/geshifilter.info:0
+msgid "Provides a filter to highlight source code using the GeSHi library (Generic Syntax Highlighter)"
+msgstr "GeSHi ライブラリ（Generic Syntax Highlighter）を使用してソースコードをハイライトするためのフィルタを提供します。"
+
+#: modules/geshifilter/geshifilter.info:0
+#: modules/geshifilter/geshinode.info:0
+msgid "Filters"
+msgstr "フィルタ"
+
+#: modules/geshifilter/geshifilter.install:20
+msgid "GeSHi filter is installed. You should now <a href=\"!geshi_admin\">configure the GeSHi filter</a> and enable it in the desired <a href=\"!input_formats\">input formats</a>."
+msgstr "GeSHi フィルタがインストールされました。 <a href=\"!geshi_admin\">GeSHi フィルタの構成</a>を行い、適切な<a href=\"!input_formats\">入力書式</a>で有効化する必要があります。"
+
+#: modules/geshifilter/geshifilter.module:37
+msgid "The GeSHi filter module provides a filter for syntax highlighting of inline source code or blocks of source code based on the PHP library !GeSHi."
+msgstr "GeSHi フィルタモジュールは、PHP ライブラリの !GeSHi をベースとしたインラインソースコードやソースコードブロックの構文をハイライトするためのフィルタを提供します。"
+
+#: modules/geshifilter/geshifilter.module:39
+msgid "The GeSHi filter module for Drupal requires the GeSHi library (version 1.0.x) to work. The GeSHi filter is actually just a Drupal wrapper module around the GeSHi library. Because of <a href=\"!repositorypolicies\">drupal.org repository policies</a> however, the GeSHi library is not included in the GeSHi filter package, so you should <a href=\"!geshi\">download</a> and install the GeSHi library separately."
+msgstr "GeSHi フィルタモジュールでは GeSHi ライブラリ（バージョン 1.0.x）が動作している環境が必要です。 GeSHi フィルタは実際には Drupal で GeSHi ライブラリを使用するためのモジュールです。 しかし、drupal.org のリポジトリポリシーによると GeSHi フィルタモジュールのパッケージに GeSHi ライブラリを含めることができないので、別途、GeSHi ライブラリをダウンロードし、インストールする必要があります。"
+
+#: modules/geshifilter/geshifilter.module:43
+msgid "<p>Quick overview of how to set up and use the GeSHi filter:</p><ul><li>Install the GeSHi library and specify its path on the <a href=\"!geshifilter_settings\">GeSHi filter administration page</a>.</li><li>Configure the <a href=\"!geshifilter_settings\">general GeSHi filter settings</a>.</li><li><a href=\"!geshifilter_languages\">Enable the relevant languages</a> for your site.</li><li>Enable the GeSHi filter in the desired !inputformats.</li><li>Check for !filterconflicts and resolve them.</li><li>Use the input format during content submission as described in the !filtertips.</li></ul>"
+msgstr "<p>GeSHi フィルタのセットアップと使用方法：</p><ul><li>GeSHi ライブラリをインストールし、<a href=\"!geshifilter_settings\">GeSHi フィルタの管理ページ</a>で GeSHi ライブラリのパスを指定します。</li><li><a href=\"!geshifilter_settings\">全般設定</a>で必要な設定を行います。</li><li>関連のあるまたは適切な<a href=\"!geshifilter_languages\">言語</a>を有効にします。</li><li>任意の !inputformats で GeSHi フィルタを有効にします。</li><li>!filterconflicts を確認し、問題があれば解決します。</li><li>コンテンツ作成時に !filtertips に記載されているようなフォーマットを使用して入力を行います。</li></ul>"
+
+#: modules/geshifilter/geshifilter.module:46
+msgid "input formats"
+msgstr "入力書式"
+
+#: modules/geshifilter/geshifilter.module:47
+msgid "filter conflicts"
+msgstr "フィルタコンフリクト"
+
+#: modules/geshifilter/geshifilter.module:48;57
+msgid "filter tips"
+msgstr "フィルタ使用のヒント"
+
+#: modules/geshifilter/geshifilter.module:57
+msgid "Here you can enable/disable the desired languages to use. It is suggested to disable languages that are not relevant for you site not only to avoid unnecessary cluttering of the GeSHi filter configuration pages and the !filtertips, but also to make the GeSHi filter processing lighter."
+msgstr "ここでは使用したい言語の 有効/無効 を切り替えることができます。 サイトに関連のない言語は無効にすることをお勧めします。 これは GeSHi フィルタの設定ページや !filtertips での不必要な混乱を回避するだけでなく、GeSHi フィルタの処理も軽快にします。"
+
+#: modules/geshifilter/geshifilter.module:59
+msgid "You can also define the language specific tags here."
+msgstr "ここで言語特有のタグを定義することもできます。"
+
+#: modules/geshifilter/geshifilter.module:130
+msgid "Clear available languages cache"
+msgstr "利用可能な言語のキャッシュをクリアする"
+
+#: modules/geshifilter/geshifilter.module:179
+msgid "Enables syntax highlighting of inline/block source code using the GeSHi engine"
+msgstr "GeSHi エンジンを使用してインラインまたはブロック内のソースコード構文をハイライトします。"
+
+#: modules/geshifilter/geshifilter.module:224
+msgid "GeSHi library not found."
+msgstr "GeSHi ライブラリが見つかりません。"
+
+#: modules/geshifilter/geshifilter.module:225
+msgid "You should install the GeSHi library and set its path in the !geshisettings."
+msgstr "GeSHi ライブラリをインストールし !geshisettings で GeSHi ライブラリのパスを設定する必要があります。"
+
+#: modules/geshifilter/geshifilter.module:233
+msgid "Found GeSHi library version %version"
+msgstr "GeSHi ライブラリのバージョン %version が見つかりました。"
+
+#: modules/geshifilter/geshifilter.module:243
+msgid "Some filter conflicts were detected."
+msgstr "いくつかのフィルタコンフリクトが見つかりました。"
+
+#: modules/geshifilter/geshifilter.module:244
+msgid "View and resolve the detected filter conflicts"
+msgstr "見つかったフィルタコンフリクトを確認し、解決してください。"
+
+#: modules/geshifilter/geshifilter.module:73
+msgid "Configure the GeSHi filter."
+msgstr "GeSHi フィルタの設定を行います。"
+
+#: modules/geshifilter/geshifilter.module:81
+msgid "General settings"
+msgstr "全般の設定"
+
+#: modules/geshifilter/geshifilter.module:82
+msgid "General GeSHi filter settings."
+msgstr "GeSHi フィルタの全般設定です。"
+
+#: modules/geshifilter/geshifilter.module:87
+msgid "Filter conflicts"
+msgstr "フィルタコンフリクト"
+
+#: modules/geshifilter/geshifilter.module:88
+msgid "Information on possible conflicts with other filters."
+msgstr "他のフィルタとコンフリクトを起こす可能性についての情報です。"
+
+#: modules/geshifilter/geshifilter.module:98
+msgid "Enable the desired languages and configure their settings."
+msgstr "言語の有効化とその設定です。"
+
+#: modules/geshifilter/geshifilter.module:107
+msgid "Show the enabled languages"
+msgstr "有効な言語を表示"
+
+#: modules/geshifilter/geshifilter.module:113
+msgid "All"
+msgstr "すべて"
+
+#: modules/geshifilter/geshifilter.module:114
+msgid "Show all the available languages"
+msgstr "使用可能なすべての言語を表示"
+
+#: modules/geshifilter/geshifilter.module:121
+msgid "Disabled"
+msgstr "無効"
+
+#: modules/geshifilter/geshifilter.module:122
+msgid "Show the disabled languages"
+msgstr "無効な言語を表示"
+
+#: modules/geshifilter/geshifilter.module:0
+msgid "geshifilter"
+msgstr "GeSHi フィルタ"
+
+#: modules/geshifilter/geshinode.info:0
+#: modules/geshifilter/geshinode.module:10
+msgid "GeSHi node"
+msgstr "GeSHi コンテンツ"
+
+#: modules/geshifilter/geshinode.info:0
+msgid "Provides source code node with GeSHi syntax highlighting."
+msgstr "GeSHi 構文ハイライターが組み込まれたコンテンツタイプであるソースコードコンテンツを提供します。"
+
+#: modules/geshifilter/geshinode.install:9
+msgid "The table for geshinodes."
+msgstr "geshinode のためのテーブル"
+
+#: modules/geshifilter/geshinode.install:12
+msgid "The primary identifier for a node."
+msgstr "ノード用基本識別子"
+
+#: modules/geshifilter/geshinode.install:18
+msgid "The current {node_revisions}.vid version identifier."
+msgstr "カレント{node_revisions}.vidバージョン識別子"
+
+#: modules/geshifilter/geshinode.install:25
+msgid "The source code language of the node."
+msgstr "コンテンツのソースコード言語"
+
+#: modules/geshifilter/geshinode.module:24;11
+msgid "Settings of the GeSHi source code node type."
+msgstr "GeSHi ソースコードコンテンツタイプの設定です。"
+
+#: modules/geshifilter/geshinode.module:34
+msgid "Source code node"
+msgstr "ソースコードコンテンツ"
+
+#: modules/geshifilter/geshinode.module:36
+msgid "Source code with GeSHi syntax highlighting."
+msgstr "GeSHi 構文ハイライターを利用したソースコードページを作成します。"
+
+#: modules/geshifilter/geshinode.module:38
+msgid "Title"
+msgstr "タイトル"
+
+#: modules/geshifilter/geshinode.module:40
+msgid "Source code"
+msgstr "ソースコード"
+
+#: modules/geshifilter/geshinode.module:90
+msgid "Syntax highlighting mode"
+msgstr "構文ハイライトモード"
+
+#: modules/geshifilter/geshinode.module:93
+msgid "Select the syntax highlighting mode to use."
+msgstr "使用する構文ハイライトモードを選択してください。"
+
+#: modules/geshifilter/geshinode.module:162
+msgid "Line numbering"
+msgstr "行番号表示"
+
+#: modules/geshifilter/geshinode.module:174
+msgid "Default language"
+msgstr "デフォルトの言語"
+
+#: modules/geshifilter/geshinode.module:49
+msgid "create source code node"
+msgstr "ソースコードコンテンツの作成"
+
+#: modules/geshifilter/geshinode.module:49
+msgid "edit source code node"
+msgstr "ソースコードコンテンツの編集"
+
+#: modules/geshifilter/geshinode.module:49
+msgid "edit own source code node"
+msgstr "ユーザ別ソースコードコンテンツの編集"
+
+#: modules/geshifilter/geshinode.module:0
+msgid "geshinode"
+msgstr "GeSHi コンテンツ"
+

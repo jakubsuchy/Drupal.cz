@@ -1,0 +1,18 @@
+Img_assist module
+
+May 4, 2005
+------------
+  * Made changes to image_display() (http://drupal.org/node/60126)
+  * Fixed default size bug (img_assist_default_label variable)
+  * Moved br clear to a themeable function ()
+  * Fixed clean URLs popup bug (http://drupal.org/node/55832)
+  * Fixed "No images were found" bug (http://drupal.org/node/59123)
+
+March 23, 2005
+--------------
+  * Removed tinymce.module from distribution.
+  * Addded install file and removed img_assist.mysql and img_assist.pgsql
+
+March 15, 2005
+--------------
+  * Completely rewritten by BenShell for Drupal 4.7

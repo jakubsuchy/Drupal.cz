@@ -1,0 +1,19 @@
+INSTALL.txt file
+================
+$Id: INSTALL.txt,v 1.2 2009/04/17 14:05:51 jvandervort Exp $
+
+1. Place the autologout folder in your drupal/modules folder (or if multisite and this 
+  module is meant to be available to just one site in drupal/sites/www.YOURSITE.com/modules)
+
+2. Enable the autologout module at administer > modules
+
+3. Ensure the correct admin users have permissions to administer the autologout module at
+  administer > access control
+
+4. Set-up the module at administer > settings > autologout
+
+5. If you want the autologout block displayed go to administer > blocks and enable it 
+  somewhere on the page, you must have JS Countdown timer 
+  <http://drupal.org/project/countdowntimer> installed to use the countdown block
+
+

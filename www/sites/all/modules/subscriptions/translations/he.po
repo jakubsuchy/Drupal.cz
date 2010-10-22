@@ -1,0 +1,734 @@
+# $Id: he.po,v 1.5 2008/08/17 19:43:55 salvis Exp $
+#
+# Hebrew translation of Drupal (general)
+# Generated from files:
+#  subscriptions.admin.inc,v 1.1.2.14 2008/02/02 01:47:35 chx
+#  subscriptions_ui.module,v 1.1.2.6 2008/02/02 01:47:35 chx
+#  subscriptions.module,v 1.62.2.45.2.37 2008/01/18 21:47:25 chx
+#  subscriptions_taxonomy.module,v 1.1.2.6 2008/02/02 01:47:35 chx
+#  subscriptions.info,v 1.1.4.3 2008/01/18 21:47:25 chx
+#  subscriptions_blog_ui.info,v 1.1.2.1 2007/12/26 17:24:22 chx
+#  subscriptions_content.info,v 1.1.2.1 2007/11/30 20:19:37 chx
+#  subscriptions_mail.info,v 1.1.2.4 2008/01/18 21:47:25 chx
+#  subscriptions_taxonomy.info,v 1.1.2.1 2007/11/30 20:19:37 chx
+#  subscriptions_ui.info,v 1.1.2.2 2008/01/18 21:47:25 chx
+#  subscriptions_blog_ui.module,v 1.1.2.4 2008/02/02 01:47:35 chx
+#  subscriptions_content.module,v 1.1.2.9 2008/02/02 01:47:35 chx
+#  subscriptions_mail.templates.inc,v 1.1.2.2 2008/02/02 01:47:35 chx
+#  subscriptions_mail.module,v 1.1.2.8 2008/02/02 01:47:35 chx
+#  subscriptions.install,v 1.3.2.1.2.14 2008/01/18 21:47:25 chx
+#
+# Yuval Hager <yuval@avramzon.net>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: he\n"
+"POT-Creation-Date: 2008-02-18 01:37+0100\n"
+"PO-Revision-Date: 2008-03-12 22:25+0200\n"
+"Last-Translator: Yuval Hager <yuval@avramzon.net>\n"
+"Language-Team: Hebrew <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: subscriptions.admin.inc:10
+msgid "General settings"
+msgstr "הגדרות כלליות "
+
+#: subscriptions.admin.inc:15
+msgid "Display watchdog entries for successful mailings"
+msgstr "כתוב הודעות ביומן הפעילות על משלוחי הודעות מוצלחים"
+
+#: subscriptions.admin.inc:17
+msgid "Logs successful mailings to the watchdog log.  Default is ON, but with many subscribers this will generate a huge number of log entries."
+msgstr ""
+
+#: subscriptions.admin.inc:45;286;327;431
+msgid "Send interval"
+msgstr "מרווח משלוח"
+
+#: subscriptions.admin.inc:48 subscriptions_ui.module:164
+msgid "On&nbsp;updates"
+msgstr "בעדכונים"
+
+#: subscriptions.admin.inc:51 subscriptions_ui.module:165
+msgid "On&nbsp;comments"
+msgstr "בתגובות"
+
+#: subscriptions.admin.inc:114;461
+msgid "Your subscription was activated."
+msgstr "המנוי שלך הופעל."
+
+#: subscriptions.admin.inc:121
+msgid "Your subscription was deactivated."
+msgstr "המנוי שלך בוטל."
+
+#: subscriptions.admin.inc:145
+msgid "The selected subscriptions will be given to newly created users:"
+msgstr "רשימת המנויים הנבחרת תנתן למשתמשים חדשים:"
+
+#: subscriptions.admin.inc:145
+msgid "Current subscriptions:"
+msgstr "רשימת מנויים נוכחית:"
+
+#: subscriptions.admin.inc:164
+msgid "If a user has one or more roles assigned at creation time, then she will receive the additional subscriptions defined for these roles."
+msgstr ""
+
+#: subscriptions.admin.inc:169
+msgid "Role(s)"
+msgstr "תפקיד(ים)"
+
+#: subscriptions.admin.inc:172
+msgid "Select the role to load or role(s) to save."
+msgstr ""
+
+#: subscriptions.admin.inc:177
+msgid "Load"
+msgstr "טען"
+
+#: subscriptions.admin.inc:189;224 subscriptions.module:13;57;76 subscriptions_taxonomy.module:119 subscriptions_ui.module:32 subscriptions.info:0;0 subscriptions_blog_ui.info:0 subscriptions_content.info:0 subscriptions_mail.info:0 subscriptions_taxonomy.info:0 subscriptions_ui.info:0
+msgid "Subscriptions"
+msgstr "מנויים"
+
+#: subscriptions.admin.inc:205
+msgid "Number"
+msgstr "מספר"
+
+#: subscriptions.admin.inc:241
+msgid "These settings are used by those users that haven't (yet) saved their own settings."
+msgstr ""
+
+#: subscriptions.admin.inc:251
+msgid "Auto-subscribe to new content"
+msgstr "הרשם אוטומטית עבור תוכן חדש"
+
+#: subscriptions.admin.inc:253
+msgid "Automatically subscribes you to items that you create."
+msgstr ""
+
+#: subscriptions.admin.inc:257
+msgid "Auto-subscribe to updated content"
+msgstr "הרשם אוטומטית לתוכן מעודכן"
+
+#: subscriptions.admin.inc:259
+msgid "Automatically subscribes you to items that you update (if you have that permission)."
+msgstr ""
+
+#: subscriptions.admin.inc:263
+msgid "Auto-subscribe to comments"
+msgstr "הרשם אוטומטית לתגובות"
+
+#: subscriptions.admin.inc:265
+msgid "Automatically subscribes you to items that you comment on (or where you update a comment, if you have that permission)."
+msgstr ""
+
+#: subscriptions.admin.inc:270
+msgid "Notify poster of own posts"
+msgstr "הודע לכותב על הודעות של עצמו"
+
+#: subscriptions.admin.inc:272
+msgid "Sends you notifications about your own posts (if you're subscribed)."
+msgstr ""
+
+#: subscriptions.admin.inc:276
+msgid "Digest mode"
+msgstr "מצב עלון"
+
+#: subscriptions.admin.inc:278
+msgid "Merges your notifications into a single email, sent at the interval you specify."
+msgstr ""
+
+#: subscriptions.admin.inc:282
+msgid "Preferences"
+msgstr "העדפות"
+
+#: subscriptions.admin.inc:290
+msgid "The frequency of notifications; it may take longer, but notifications will not be sent more frequently than indicated."
+msgstr ""
+
+#: subscriptions.admin.inc:293
+msgid "On updates"
+msgstr "בעדכונים"
+
+#: subscriptions.admin.inc:296
+msgid "Sends a notification when an item is updated."
+msgstr "הודע כשהפריט מתעדכן."
+
+#: subscriptions.admin.inc:299
+msgid "On comments"
+msgstr "בתגובות"
+
+#: subscriptions.admin.inc:302
+msgid "Sends a notification when an item receives a comment or reply."
+msgstr "הודע כשמתקבלת תגובה או תשובה."
+
+#: subscriptions.admin.inc:305
+msgid "Any changes you make here will only apply to newly created subscriptions."
+msgstr ""
+
+#: subscriptions.admin.inc:309
+msgid "Visibility of controls"
+msgstr ""
+
+#: subscriptions.admin.inc:314;319
+msgid "Visible"
+msgstr "נראה"
+
+#: subscriptions.admin.inc:314;319
+msgid "Hidden"
+msgstr "חבוי"
+
+#: subscriptions.admin.inc:316
+msgid "Permanently hidden, except for the %preferences"
+msgstr "חבוי לתמיד, מלבד ב %preferences"
+
+#: subscriptions.admin.inc:317
+msgid "Completely inaccessible to the user"
+msgstr "לא נגיש כלל למשתמש"
+
+#: subscriptions.admin.inc:319
+msgid "%visible and %hidden are only defaults; with either option the users can change the visibility."
+msgstr ""
+
+#: subscriptions.admin.inc:328
+msgid "Send updates"
+msgstr "שלח עדכונים"
+
+#: subscriptions.admin.inc:328
+msgid "Send comments"
+msgstr "שלח תגובות"
+
+#: subscriptions.admin.inc:345;408 subscriptions_blog_ui.module:123 subscriptions_content.module:674;750 subscriptions_taxonomy.module:256 subscriptions_ui.module:149
+msgid "Save"
+msgstr "שמור"
+
+#: subscriptions.admin.inc:350
+msgid "Reset to site defaults"
+msgstr "שחזר הגדרות ברירת המחדל"
+
+#: subscriptions.admin.inc:361
+msgid "The site defaults were restored."
+msgstr "ברירות המחדל שוחזרו."
+
+#: subscriptions.admin.inc:391
+msgid "The changes have been saved."
+msgstr "השינויים נשמרו."
+
+#: subscriptions.admin.inc:404
+msgid "Every line has the format of seconds|human readable text"
+msgstr ""
+
+#: subscriptions.admin.inc:451 subscriptions_ui.module:44;117;230
+msgid "Subscribe"
+msgstr "הרשם"
+
+#: subscriptions.admin.inc:464
+msgid "Your subscription could not be activated."
+msgstr "לא ניתן להפעיל את בקשת הרישום."
+
+#: subscriptions.admin.inc:473
+msgid "As soon as possible"
+msgstr "בהקדם האפשרי"
+
+#: subscriptions.admin.inc:474
+msgid "Every 15 minutes"
+msgstr "כל רבע שעה"
+
+#: subscriptions.admin.inc:475
+msgid "Hourly"
+msgstr "כל שעה"
+
+#: subscriptions.admin.inc:476
+msgid "Every three hours"
+msgstr "כל שלוש שעות"
+
+#: subscriptions.admin.inc:477
+msgid "Daily"
+msgstr "כל יום"
+
+#: subscriptions_mail.templates.inc:6
+msgid "[!site] !subs_type subscription for !name: !title"
+msgstr "[!site] מנוי !subs_type עבור !name: !title"
+
+#: subscriptions_mail.templates.inc:8
+msgid "| This is an automated message. Please do NOT reply to the sender address!\n| To manage your subscriptions go to\n| !manage_url\n"
+msgstr "| זוהי הודעה אוטומטית. נא לא לשלוח תשובות לשולח!\n| לניהול המנויים שלך, עבור לכתובת \n| !manage_url\n"
+
+#: subscriptions_mail.templates.inc:13
+msgid "| Greetings, !name.\n|\n| Your subscription on !site\n| notifies you of {{!is_new==0?:a new post:\n}}{{!is_updated==0?:an updated post:\n}}{{!is_old==0?:new comments:\n}}|\n{{!is_published==1?:| ***** This post is unpublished! *****\n}}{{!term_name==!term_name?:| Category: !term_name\n}}{{!sender_name==!sender_name?:| Author: !sender_name\n}}| Subject: !title\n{{!is_old==1?:\n!teaser\n\n}}| Link: !url\n| Direct unsubscribe link (!subs_type):\n| !unsubscribe_url\n{{!has_new_comments==1?!SEPARATOR!comments:}}!SEPARATOR!FOOTER"
+msgstr "| ברכות, !name.\n|\n| המנוי שלך באתר !site\n| מבקש להודיע לך על  {{!is_new==0?:הודעה חדשה:\n}}{{!is_updated==0?:הודעה שעודכנה:\n}}{{!is_old==0?:תגובות חדשות:\n}}|\n{{!is_published==1?:| ***** הודעה זו לא פורסמה! *****\n}}{{!term_name==!term_name?:| סיווג: !term_name\n}}{{!sender_name==!sender_name?:| מאת: !sender_name\n}}| נושא: !title\n{{!is_old==1?:\n!teaser\n\n}}| קישור: !url\n| ביטול הרישום (!subs_type):\n| !unsubscribe_url\n{{!has_new_comments==1?!SEPARATOR!comments:}}!SEPARATOR!FOOTER"
+
+#: subscriptions_mail.templates.inc:39
+msgid "| {{!comment_is_new==1?New:Updated}} {{!comment_is_published==1?:UNPUBLISHED }}comment:\n| Author: !comment_name\n| Title: !comment_title\n\n!comment_text\n\n| Link: !comment_url\n"
+msgstr "| {{!comment_is_new==1?חדשה:מעודכנת}} {{!comment_is_published==1?:לא פורסמה }}comment:\n| מאת: !comment_name\n| נושא: !comment_title\n\n!comment_text\n\n| קישור: !comment_url\n"
+
+#: subscriptions_mail.templates.inc:50
+msgid "[!site] Subscription Digest for !name"
+msgstr "[!site] יומן הודעות עבור !name"
+
+#: subscriptions_mail.templates.inc:51
+msgid "| Greetings, !name.\n|\n| Your subscriptions on !site\n| notify you of the following changes since the previous digest:\n|\n!bodies!SEPARATOR!FOOTER"
+msgstr "| ברכות, !name.\n|\n| הרישום שלך באתר !site\n| מבקש להודיעך על השינויים הבאים מאז היומן האחרון:\n|\n!bodies!SEPARATOR!FOOTER"
+
+#: subscriptions_mail.templates.inc:63
+msgid "!title\n{{!is_new==0?:\n!teaser\n}}| Link: !url\n| Direct unsubscribe link (!subs_type):\n| !unsubscribe_url\n{{!has_new_comments!=1?:!comments}}"
+msgstr "!title\n{{!is_new==0?:\n!teaser\n}}| קישור: !url\n| קישור ישיר להסרת המנוי (!subs_type):\n| !unsubscribe_url\n{{!has_new_comments!=1?:!comments}}"
+
+#: subscriptions_mail.templates.inc:72
+msgid "| Comment: !comment_title\n"
+msgstr "| תגובה: !comment_title\n"
+
+#: subscriptions.module:14
+msgid "Enables site settings for user subscriptions."
+msgstr "הפעל הגדרות אתר לרישומים."
+
+#: subscriptions.module:21
+msgid "Site settings"
+msgstr "הגדרות אתר"
+
+#: subscriptions.module:27
+msgid "User defaults"
+msgstr "ברירת המחדל למשתמש"
+
+#: subscriptions.module:35
+msgid "Interval"
+msgstr "מרווח"
+
+#: subscriptions.module:42
+msgid "(unavailable to regular users)"
+msgstr "(לא זמין למשתמשים רגילים)"
+
+#: subscriptions.module:64;83
+msgid "Overview"
+msgstr ""
+
+#: subscriptions.module:111
+msgid "administer user subscriptions"
+msgstr "נהל רישומי משתמשים"
+
+#: subscriptions.module:112 subscriptions_content.module:255
+msgid "subscribe to all content types"
+msgstr "רישום לכל סוגי התכנים"
+
+#: subscriptions.module:255
+msgid "Are you sure you want to unsubscribe?"
+msgstr "האמנם להסיר את הרישום?"
+
+#: subscriptions.module:255
+msgid "Unsubscribe"
+msgstr "הסר רישום"
+
+#: subscriptions.module:340;366
+msgid "Add subscription"
+msgstr "הוסף רישום "
+
+#: subscriptions_blog_ui.module:32
+msgid "subscribe to blogs"
+msgstr "הרשם לבלוגים"
+
+#: subscriptions_blog_ui.module:72
+msgid "There are no active blogs."
+msgstr "אין בלוגים פעילים."
+
+#: subscriptions_content.module:47
+msgid "thread"
+msgstr "שרשור"
+
+#: subscriptions_content.module:55;716
+msgid "content type"
+msgstr "סוג תוכן"
+
+#: subscriptions_content.module:71
+msgid "Subscribe to this post"
+msgstr "הרשם להודעה זו"
+
+#: subscriptions_content.module:89
+msgid "To %type posts"
+msgstr "להודעות מסוג %type"
+
+#: subscriptions_content.module:95
+msgid "To %type posts by %name"
+msgstr "להודעות מסוג %type מאת %name"
+
+#: subscriptions_content.module:120
+msgid "Threads"
+msgstr "שרשורים"
+
+#: subscriptions_content.module:134
+msgid "subscribe to content"
+msgstr "הרשם לתוכן"
+
+#: subscriptions_content.module:135
+msgid "subscribe to content types"
+msgstr "הרשם לסוגי תוכן"
+
+#: subscriptions_content.module:225 subscriptions_taxonomy.module:109
+msgid "none"
+msgstr "כלום"
+
+#: subscriptions_content.module:232
+msgid "Content settings"
+msgstr "הגדרות תוכן"
+
+#: subscriptions_content.module:238
+msgid "Unlisted content types"
+msgstr "סוגי תוכן שאינם רשומים"
+
+#: subscriptions_content.module:241
+msgid "Select content types which should be <strong>removed from subscription listings</strong>.<br />The content may still be available for subscribing via different kinds of subscriptions, but subscribing by content type will be unavailable for the selected types."
+msgstr ""
+
+#: subscriptions_content.module:246
+msgid "Blocked content types"
+msgstr "סוגי תוכן חסומים"
+
+#: subscriptions_content.module:249
+msgid "Select content types which should be <strong>completely unavailable for subscribing</strong>, i.e. content of the selected types will never trigger notifications for regular users."
+msgstr ""
+
+#: subscriptions_content.module:254
+msgid "Note"
+msgstr "הערה חשובה"
+
+#: subscriptions_content.module:255
+msgid "The %permission permission grants normal access to unlisted and blocked content types; this is intended as an administrative function, and the content types will be marked with a !symbol symbol (and appear in !red_ON red !red_OFF in the case of blocked types)."
+msgstr ""
+
+#: subscriptions_content.module:267
+msgid "The name of the site."
+msgstr "שם האתר."
+
+#: subscriptions_content.module:268
+msgid "The URL where the user can manage her subscriptions."
+msgstr "כתובת ה URL שבה המשתמש יכול לנהל את הרישומים שלו."
+
+#: subscriptions_content.module:274
+msgid "The digested items (separated by a separator), as defined below:"
+msgstr "הפריטים שמופיעים ביומן (מופרדים בעזרת המפריד), כפי שמוגד להלן:"
+
+#: subscriptions_content.module:289
+msgid "Digest item body"
+msgstr "גוף היומן"
+
+#: subscriptions_content.module:290
+msgid "The body of each item in the digest."
+msgstr "גוף כל פריט ביומן."
+
+#: subscriptions_content.module:303
+msgid "The type of the subscription, like '!thread' or '!category'."
+msgstr "סוג המנוי, כמו '!thread' או '!category'."
+
+#: subscriptions_content.module:304
+msgid "The type of the node, like '!forum' or '!story'."
+msgstr "סוג פריט התוכן, כמו '!forum' או '!story'."
+
+#: subscriptions_content.module:305
+msgid "The title of the subscriptions item."
+msgstr "כותרת."
+
+#: subscriptions_content.module:306
+msgid "An excerpt of the subscriptions item."
+msgstr "תקציר מהתוכן."
+
+#: subscriptions_content.module:307
+msgid "The body of the subscriptions item."
+msgstr "גוף התוכן."
+
+#: subscriptions_content.module:308
+msgid "The URL of the item."
+msgstr "כתובת ה URL."
+
+#: subscriptions_content.module:309
+msgid "The user can unsubscribe by clicking this link."
+msgstr "המשתמש יכול לבטל את הרישום ע\"י לחיצה על קישור זה."
+
+#: subscriptions_content.module:314;361
+msgid "The comments state: 1 = comments are available in !comments, 0 = no comments."
+msgstr "מצב התגובות: 1 = ישנן תגובות זמינות ב!comments, 0 = אין תגובות."
+
+#: subscriptions_content.module:315
+msgid "One or more comments if available, otherwise empty.<br />The rendering of the comments is defined by the following template:"
+msgstr ""
+
+#: subscriptions_content.module:321
+msgid "Digest item comment"
+msgstr "תגובה"
+
+#: subscriptions_content.module:323
+msgid "The comments inside a digest item body."
+msgstr "התגובות בתוך גוף ההודעה."
+
+#: subscriptions_content.module:334
+msgid "Digest item separator"
+msgstr "מפריד פריטים ביומן"
+
+#: subscriptions_content.module:336
+msgid "The separator between digest items (if needed)."
+msgstr "המפריד בין פריטים בהודעת היומן (אם נדרש)."
+
+#: subscriptions_content.module:346
+msgid "The name of the forum."
+msgstr "שם הפורום."
+
+#: subscriptions_content.module:351
+msgid "The name of the term."
+msgstr "שם המושג."
+
+#: subscriptions_content.module:357
+msgid "The type of notification: 1 = new item, 0 = otherwise."
+msgstr "סוג ההודעה: 1 = פריט חדש, 0 = אחרת."
+
+#: subscriptions_content.module:358
+msgid "The type of notification: 1 = updated (possibly new and already updated) item, 0 = otherwise."
+msgstr "סוג ההודעה: 1 = פריט מעודכן (או חדש שכבר עודכן), 0 = אחרת."
+
+#: subscriptions_content.module:359
+msgid "The type of notification: 1 = neither new nor updated item, 0 = otherwise."
+msgstr "סוג ההודעה: 1 = פריט שאינו חדש או מעודכן, 0 = אחרת."
+
+#: subscriptions_content.module:360
+msgid "The publication state: 1 = published, 0 = unpublished.<br />(Unpublished nodes are sent to users with the %administer_nodes permission only.)"
+msgstr ""
+
+#: subscriptions_content.module:368
+msgid "Comment body"
+msgstr "גוף התגובה"
+
+#: subscriptions_content.module:370
+msgid "The body of each comment."
+msgstr "גוף כל אחת מהתגובות."
+
+#: subscriptions_content.module:381
+msgid "Comment separator"
+msgstr "מפריד תגובות"
+
+#: subscriptions_content.module:383
+msgid "The separator between comments (if needed)."
+msgstr "מפריד בין תגובות (אם צריך)."
+
+#: subscriptions_content.module:388
+msgid "One or more comments if available, otherwise empty.<br />The rendering of the comments is defined by the following templates:"
+msgstr ""
+
+#: subscriptions_content.module:393
+msgid "One or more comments if available, otherwise empty.<br />The rendering of the comments is defined by the <a href=\"subscriptions-node-nid#edit-comment-body\">comment templates</a>."
+msgstr ""
+
+#: subscriptions_content.module:410
+msgid "The name of the comment author."
+msgstr "שם כותב התגובה."
+
+#: subscriptions_content.module:411
+msgid "The title of the comment."
+msgstr "כותרת התגובה."
+
+#: subscriptions_content.module:412
+msgid "The body text of the comment."
+msgstr "גוף ההודעה."
+
+#: subscriptions_content.module:413
+msgid "The direct URL of the comment."
+msgstr "כתובת URL של התגובה."
+
+#: subscriptions_content.module:414
+msgid "The type of comment notification: 1 = new comment, 0 = updated comment."
+msgstr "סוג ההודעה על תגובה: 1 = תגובה חדשה, 0 = תגובה שעודכנה."
+
+#: subscriptions_content.module:415
+msgid "The comment publication state: 1 = published, 0 = unpublished.<br />(Unpublished comments are sent to users with the %administer_comments permission only.)"
+msgstr ""
+
+#: subscriptions_content.module:426
+msgid "Send subscriptions notifications"
+msgstr "שלח הודעות עדכון"
+
+#: subscriptions_content.module:427
+msgid "You may want to turn this OFF if you only change %Promoted_to_front_page or %Sticky_at_top_of_lists, otherwise Subscriptions will send out \"update\" notifications.<br />Subscriptions does not send notifications for unpublished nodes (except to users who have the %administer_nodes permission), but when you set %Published to ON, Subscriptions will send out \"new\" notifications, unless you turn this off here."
+msgstr ""
+
+#: subscriptions_content.module:488
+msgid "image on website"
+msgstr "תמונה באתר"
+
+#: subscriptions_content.module:678
+msgid "There are no subscribed threads."
+msgstr "אין שרשורים רשומים."
+
+#: subscriptions_content.module:716
+msgid "This !content_type is blocked."
+msgstr "הודעות מסוג !content_type חסומות."
+
+#: subscriptions_content.module:754 subscriptions_taxonomy.module:160
+msgid "There are no available !subs_types."
+msgstr "אין !sub_types זמינים."
+
+#: subscriptions_content.module:754
+msgid "content types"
+msgstr "סוגי תוכן"
+
+#: subscriptions_mail.module:155
+msgid "notification for @name at @to"
+msgstr "הודעות עבור @name ב@to"
+
+#: subscriptions_mail.module:163
+msgid "error mailing notification for @name at @to"
+msgstr ""
+
+#: subscriptions_mail.module:155;163
+msgid "subscriptions"
+msgstr "מנויים"
+
+#: subscriptions_taxonomy.module:70
+msgid "To posts in %term"
+msgstr "הודעות תחת %term"
+
+#: subscriptions_taxonomy.module:75
+msgid "To posts in %term by %name"
+msgstr "הודעות תחת %term מאת %name"
+
+#: subscriptions_taxonomy.module:94
+msgid "subscribe to taxonomy terms"
+msgstr "הרשם לסיווגים"
+
+#: subscriptions_taxonomy.module:103
+msgid "Taxonomy settings"
+msgstr "הגדרות סיווגים"
+
+#: subscriptions_taxonomy.module:116
+msgid "Restricted vocabularies"
+msgstr "מילונים מוגבלים"
+
+#: subscriptions_taxonomy.module:119
+msgid "Select vocabularies for which only the subscribed terms should be listed on the %Subscriptions | %Categories page.<br />This helps to reduce the size of the listing, especially for free-tagging vocabularies with large numbers of terms."
+msgstr ""
+
+#: subscriptions_taxonomy.module:124
+msgid "Omitted vocabularies"
+msgstr "מילונים שהושמטו"
+
+#: subscriptions_taxonomy.module:127
+msgid "Select vocabularies which should be <strong>omitted</strong> from subscription listings; this means the terms of those vocabularies will be unlisted, i.e. they will be removed from subscription listings.<br />The content may still be available for subscribing via different kinds of subscriptions, but subscribing by category will be unavailable for the terms in the selected vocabularies."
+msgstr ""
+
+#: subscriptions_taxonomy.module:160
+msgid "category groups"
+msgstr "קבוצות סיווגים"
+
+#: subscriptions_taxonomy.module:203
+msgid "This is a restricted category group; to subscribe to an unlisted category, go to a post in that category and subscribe from there."
+msgstr ""
+
+#: subscriptions_taxonomy.module:238
+msgid "This is a restricted category group; only subscribed categories show up in this list.<br />To subscribe to a category in this group, go to a post in that category and subscribe from there."
+msgstr ""
+
+#: subscriptions_taxonomy.module:248
+msgid "There are no active categories."
+msgstr "אין סיווגים זמינים."
+
+#: subscriptions_ui.module:25;220
+msgid "Subscriptions interface"
+msgstr "ממשק המנויים"
+
+#: subscriptions_ui.module:211
+msgid "Display settings"
+msgstr "הצג הגדרות"
+
+#: subscriptions_ui.module:217
+msgid "Node form position"
+msgstr ""
+
+#: subscriptions_ui.module:219
+msgid "Fieldset above node links (and comments)"
+msgstr ""
+
+#: subscriptions_ui.module:220
+msgid "Fieldset in %block block (below the comments)"
+msgstr ""
+
+#: subscriptions_ui.module:223
+msgid "How to display the subscriptions sub-form on node pages.  Default is the first option.<br />To use the block, <b>you must enable the block</b> !here; put it into the %content region and set the %block_title to !none."
+msgstr ""
+
+#: subscriptions_ui.module:223
+msgid "here"
+msgstr "כאן"
+
+#: subscriptions_ui.module:227
+msgid "Node form visibility"
+msgstr ""
+
+#: subscriptions_ui.module:229
+msgid "Always display the fieldset"
+msgstr ""
+
+#: subscriptions_ui.module:230
+msgid "Display only a @subscribe link that makes the fieldset visible"
+msgstr ""
+
+#: subscriptions_ui.module:233
+msgid "What to display.  Default is the first option."
+msgstr ""
+
+#: subscriptions_ui.module:237
+msgid "Expand the node form fieldset"
+msgstr ""
+
+#: subscriptions_ui.module:239
+msgid "Displays the fieldset with the node page subscriptions sub-form in expanded state.  Default is OFF."
+msgstr ""
+
+#: subscriptions.install:132
+msgid "Note: For standard Subscriptions functionality you need to enable the following modules:"
+msgstr ""
+
+#: subscriptions.install:134
+msgid "(requires !mail_edit for customizing the templates)"
+msgstr ""
+
+#: subscriptions.info:0
+msgid "The basic Subscriptions framework."
+msgstr "תשתית בסיסית לרישום להודעות."
+
+#: subscriptions_blog_ui.info:0
+msgid "Blog Subscriptions UI"
+msgstr "ממשק משתמש לרישום הודעות"
+
+#: subscriptions_blog_ui.info:0
+msgid "Provides a separate blogs subscriptions page."
+msgstr "הצג עמוד נפרד לרישום לבלוגים."
+
+#: subscriptions_content.info:0
+msgid "Content Subscriptions"
+msgstr "רישום להודעות תוכן"
+
+#: subscriptions_content.info:0
+msgid "Allows users to subscribe to nodes."
+msgstr "אפשר למשתמשים להרשם לפריטי תוכן."
+
+#: subscriptions_mail.info:0
+msgid "Subscriptions Mail"
+msgstr "שולח הודעות מנויים בדוא\"ל"
+
+#: subscriptions_mail.info:0
+msgid "Sends out mails with drupal_mail, customizable with the separate mail_edit module."
+msgstr ""
+
+#: subscriptions_taxonomy.info:0
+msgid "Taxonomy Subscriptions"
+msgstr "רישום להודעות סיווגים"
+
+#: subscriptions_taxonomy.info:0
+msgid "Allows users to subscribe to taxonomy terms."
+msgstr ""
+
+#: subscriptions_ui.info:0
+msgid "Subscriptions UI"
+msgstr ""
+
+#: subscriptions_ui.info:0
+msgid "Provides a UI to Subscriptions."
+msgstr ""
+

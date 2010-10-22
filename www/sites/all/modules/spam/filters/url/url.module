@@ -1,0 +1,182 @@
+<?php
+// $Id: url.module,v 1.1.2.4.2.1 2008/12/25 05:42:11 jeremy Exp $
+
+/**
+ * @file
+ * URL filter plug in for the spam module.
+ * Copyright(c) 2007-2008
+ *  Jeremy Andrews <jeremy@tag1consulting.com>.  All rights reserved.
+ *
+ */
+
+function url_spamapi($op, $type = NULL, $content = array(), $fields = array(), $extra = NULL) {
+  // Don't both with this hook unless the filter is actually enabled.
+
+  switch ($op) {
+    case 'filter':
+      if (!module_invoke('spam', 'filter_enabled', 'url', $type, $content, $fields, $extra)) return;
+      return url_spam_filter($content, $type, $fields, $extra);
+
+    case 'filter_module':
+      return 'url';
+
+    case 'filter_info':
+      return array(
+        'name' => t('URL filter'),
+        'module' => t('url'),
+        'description' => t('A spam url filter.'),
+        'help' => t('The url filter blocks posts containing spam-URLs, automatically learned with the bayesian filter module.'),
+      );
+      break;
+
+    case 'filter_install':
+      return array(
+        'status' => SPAM_FILTER_ENABLED,
+        'gain' => 250,
+        'weight' => -6,
+      );
+
+    case 'mark_as_spam':
+    case 'mark_as_not_spam':
+      if (!module_invoke('spam', 'filter_enabled', 'url', $type, $content, $fields, $extra)) return;
+      spam_log(SPAM_DEBUG, 'url_spamapi', t('@op', array('@op' => $op)), $type, $extra['id']);
+      $fields = spam_invoke_module($type, 'filter_fields', $extra['content']);
+      $urls = _url_extract($extra['content'], $type, $fields, $extra);
+      url_update($urls, ($op == 'mark_as_spam' ? TRUE : FALSE), $type, $extra['id']);
+      break;
+  }
+}
+
+function _url_extract($content, $type, $fields, $extra = array()) {
+  static $urls = array();
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+
+  if (is_object($content)) {
+    $content = (array)$content;
+  }
+
+  if (!isset($urls["$type-$id"])) {
+    $string = '';
+    foreach ($fields['main'] as $field) {
+      $string .= $content["$field"] .' ';
+    }
+    if (is_array($fields['other'])) {
+      foreach ($fields['other'] as $field) {
+        $string .= $content["$field"] .' ';
+      }
+    }
+
+    // TODO: Improve this matching.  We don't actually extract mailto: urls.
+    $URI = "(http://|https://|ftp://|mailto:)";
+    // Find all urls in content.
+    preg_match_all("!(<p>|[ \n\r\t\(]*)($URI([a-zA-Z0-9@:%_~#?&=.,/;-]*[a-zA-Z0-9@:%_~#&=/;-]))([.,?]?)(?=(</p>|[ \n\r\t\)]*))!i", $string, $matches);
+    foreach ($matches[2] as $url) {
+      $url = preg_replace("'$URI'", '', $url);
+      // get full domain (ie www.sample.com)
+      preg_match("/^()?([^\/\"\']+)/i", $url, $domain);
+      // get root domain (ie sample.com)
+      preg_match("/[^\.\/]+\.[^\.\/]+$/", $domain[2], $root);
+      $url = htmlspecialchars(drupal_strtolower($root[0]));
+      _url_count($url);
+      $u[] = $url;
+    }
+    $urls["$type-$id"] = $u;
+  }
+
+  return $urls["$type-$id"];
+}
+
+/**
+ * Search for known spam urls in content.
+ */
+function url_spam_filter($content, $type, $fields, $extra = array(), $filter_test = FALSE) {
+  $action = array();
+
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  $spam = FALSE;
+
+  $urls = _url_extract($content, $type, $fields, $extra);
+
+  if (is_array($urls) && !empty($urls)) {
+    $count = _url_count();
+
+    $limit = variable_get('url_limit_total', 10);
+    if ($limit > -1 && $count['total'] > $limit) {
+      spam_log(SPAM_VERBOSE, 'url_spam_filter', t('total urls(@total) > url_limit_total(@limit)', array('@total' => $count['total'], '@limit' => variable_get('url_limit_total', 10))), $type, $id);
+      $action['url'][] = array(
+        'limit' => 'total',
+        'total' => $count['total'],
+      );
+      $action['total'] = 99;
+      return $action;
+    }
+    $limit = variable_get('url_limit_repeat', 5);
+    if ($limit > -1) {
+      // Sort urls from most repeated to least repeated.
+      asort($count);
+
+      // skip count['total']
+      array_pop($count);
+
+      $max = array_pop($count);
+      if ($max > $limit) {
+        spam_log(SPAM_VERBOSE, 'url_spam_filter', t('repeated urls(@total) > url_limit_repeat(@limit)', array('@total' => $max, '@limit' => variable_get('url_limit_repeat', 5))), $type, $id);
+        $action['url'][] = array(
+          'limit' => 'repeat',
+          'total' => $max,
+        );
+        $action['total'] = 99;
+      }
+    }
+
+    foreach ($urls as $url) {
+      $p = db_fetch_object(db_query("SELECT probability FROM {bayesian_tokens} WHERE class = 'url' AND token = '%s'", $url));
+      $action['url'][] = array(
+        'url' => $url,
+        'probability' => $p->probability,
+      );
+      if ($p->probability >= variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD)) {
+        spam_log(SPAM_VERBOSE, 'url_spam_filter', t('found spam url(@url) probability(@probability)', array('@url' => $url, '@probability' => $p->probability)), $type, $id);
+        $spam = TRUE;
+        break;
+      }
+      spam_log(SPAM_DEBUG, 'url_spam_filter', t('not spam url(@url) probability(@probability)', array('@url' => $url, '@probability' => $p->probability)), $type, $id);
+    }
+  }
+
+  if ($spam) {
+    $action['total'] = 99;
+  }
+  else {
+    $action['total'] = 0;
+  }
+
+  return $action;
+}
+
+/**
+ * Update url probabilities in database.
+ */
+function url_update($urls, $yes, $type, $id) {
+  module_invoke('bayesian', 'tokens_update', 'url', $urls, $yes, $type, $id);
+}
+
+/**
+ * Keep track of the total number of URLs found in the current content.
+ *
+ * @param $url  A URL to be added to a static array.
+ * @return      Array of URLs showing how many times each URL is present, and
+ *              the total number of arrays.
+ */
+function _url_count($url = NULL) {
+  // build up an array of all URLs seen in current content
+  static $urls = array();
+
+  if ($url != NULL) {
+    $urls["$url"]++;
+    $urls['total']++;
+  }
+
+  return $urls;
+}
+

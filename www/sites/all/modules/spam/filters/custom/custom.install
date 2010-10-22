@@ -1,0 +1,43 @@
+<?php
+// $Id: custom.install,v 1.1.2.2.2.1 2008/12/25 05:42:10 jeremy Exp $
+
+/**
+ * @file
+ * Defines Custom module schema.
+ */
+
+function custom_schema() {
+  $schema['spam_custom'] = array(
+    'fields' => array(
+      'cid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'filter' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
+      'style' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+      'status' => array('type' => 'int', 'not null' => FALSE, 'default' => 0, 'disp-width' => '2'),
+      'scan' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+      'action' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+      'matches' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'last' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'weight' => array('type' => 'int', 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+    ),
+    'primary key' => array('cid'),
+    'indexes' => array(
+      'filter' => array('filter'),
+      'last' => array('last'),
+      'matches' => array('matches'),
+      'weight' => array('weight'),
+    ),
+  );
+
+  return $schema;
+}
+
+function custom_install() {
+  // Create my tables.
+  drupal_install_schema('custom');
+}
+
+function custom_uninstall() {
+  // Remove tables.
+  drupal_uninstall_schema('custom');
+  drupal_set_message('The spam_custom table has been dropped.');
+}

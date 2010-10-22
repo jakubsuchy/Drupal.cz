@@ -1,0 +1,2072 @@
+<?php
+// $Id: banner.module,v 1.70.2.7 2006/09/26 08:50:12 wulff Exp $
+
+/**
+ * TOC
+ * Defines
+ * Hook implementations
+ * Page handlers
+ * Menu callbacks
+ * Public functions
+ * Validation functions
+ * Utility functions
+ * Form functions
+ * Theme functions
+ */
+
+// FIXME: we need a way to update the internal banner cache ($node->cache)
+// FIXME: call _banner_refresh_cache when updating nodes
+// FIXME: add admin notification on new banner submission
+// FIXME: check that 'administer banners' role can delete/edit all banners.
+// FIXME: check: only show stats to admin or banner owner
+// FIXME: try to get size of remote banners / make width/height editable?
+// FIXME: add banner type to admin overviews?
+// FIXME: test availability of remote banner (do it when trying to get size)?
+// FIXME: add help text on  admin/banner and admin/help/banner
+
+// TODO: 'text banner', 'image banner', etc. as individual node types
+
+// die('<pre>'. print_r($foo, true) .'</pre>');
+// die('<pre>'. $foo .'</pre>');
+
+/**
+ * @file
+ * Banner system for rotating ads and other content.
+ */
+
+define('BANNER_PENDING', 0);
+define('BANNER_ENABLED', 1);
+define('BANNER_DAY_LIMIT', 2);
+define('BANNER_WEEK_LIMIT', 3);
+define('BANNER_DISABLED', 4);
+define('BANNER_BLOCKED', 5);
+define('BANNER_DENIED', 6);
+
+define('BANNER_UPLOAD', 0);
+define('BANNER_TEXT', 1);
+define('BANNER_JAVASCRIPT', 2);
+define('BANNER_REMOTE', 3);
+
+define('BANNER_CACHE_DB', 0);
+define('BANNER_CACHE_FILE', 1);
+
+/**
+ * Hook implementations
+ */
+
+/**
+ * Implementation of hook_access().
+ */
+function banner_access($op, $node) {
+  global $user;
+
+  if ($op == 'view') {
+    // if the user owns this banner, let them see it
+    // this is necessary because publishing status is set according to workflow
+    if ($user->uid == $node->uid) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'create') {
+    return user_access('create banners');
+  }
+
+  if ($op == 'update' || $op == 'delete') {
+    if (user_access('administer banners') || ($user->uid == $node->uid)) {
+      return TRUE;
+    }
+  }
+}
+
+/**
+ * Implementation of hook_block().
+ */
+function banner_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+    case 'list':
+      $vid = variable_get('banner_vocabulary', 0);
+      $terms = taxonomy_get_tree($vid);
+      foreach($terms as $term) {
+        $blocks[$term->tid]['info'] = $term->name;
+      }
+      return $blocks;
+    case 'configure':
+      $form['banner_block_'. $delta .'_count'] = array(
+        '#type' => 'select',
+        '#title' => t('Banner count'),
+        '#default_value' => variable_get('banner_block_'. $delta .'_count', 1),
+        '#options' => drupal_map_assoc(range(1, 5)),
+        '#description' => t('Number of banners to show from the selected banner group.'),
+      );
+      return $form;
+    case 'save':
+      variable_set('banner_block_'. $delta .'_count', $edit['banner_block_'. $delta .'_count']);
+      return;
+    case 'view':
+      $count = variable_get('banner_block_'. $delta .'_count', 1);
+      $block['subject'] = variable_get('banner_block_'. $delta .'_title', '');
+      $block['content'] = banner_display($delta, $count);
+      return $block;
+  }
+}
+
+/**
+ * Implementation of hook_cron().
+ */
+function banner_cron() {
+  $notifications = array();
+  $time = time();
+
+  // reset 1 day counters (1 day minus 5 minutes to prevent loosing an hour)
+  if (($time - variable_get('banner_timestamp_day', '0')) >= 86100) {
+    variable_set('banner_timestamp_day', $time);
+    $param['reset_day_counters'] = 1;
+
+    // add notification e-mails to the queue
+    $result = db_query('SELECT n.nid, n.title, b.views_day, b.views_week, b.views, b.clicks_day, b.clicks_week, b.clicks, n.uid, b.notify_failed FROM {node} n INNER JOIN {banner} b ON n.vid = b.vid WHERE notify_day = 1 AND workflow < 4');
+    while ($banner = db_fetch_object($result)) {
+      $notifications[] = array(
+        'subject' => variable_get('site_name', 'drupal') .':'. t("'%banner' banner daily notification", array('%banner' => "$banner->title")),
+        'message' => variable_get('banner_daily_notification', _banner_get_body('daily_notify')),
+        'banner' => $banner,
+      );
+    }
+
+    // FIXME: only run this if the scheduler module is enabled
+/*
+    if (variable_get('banner_renewal', 0)) {
+      // add renewal reminder e-mails to the queue
+      $result = db_query('SELECT title, day_views, week_views, views, day_clicks, week_clicks, clicks, uid, unpublish_date, failed_notify, id FROM {banner} WHERE reminder_sent = 0 AND unpublish_date > 0 AND unpublish_date <= %d AND (status = 1 OR status = 2 OR status = 3 OR status = 4)', ($time + variable_get('banner_renewal_time', 0)));
+      while ($banner = db_fetch_object($result)) {
+        $notifications[] = array(
+          'subject' => variable_get('site_name', 'drupal') .': '. t("'%banner' banner expiring soon", array('%banner' => "$banner->title")),
+          'message' => variable_get('banner_renewal_message', _banner_get_body('renewal')),
+          'banner' => $banner,
+        );
+        db_query('UPDATE {banner} SET notify_sent = 1 WHERE nid = '. $banner->nid);
+      }
+    }
+*/
+  }
+
+  // reset 7 day counters (1 week minus 5 minutes to prevent loosing an hour)
+  if (($time - variable_get('banner_timestamp_week', '0')) >= 604500) {
+    variable_set('banner_timestamp_week', $time);
+    $param['reset_week_counters'] = 1;
+
+    // add notification e-mails to the queue
+    $result = db_query('SELECT n.nid, n.title, b.views_day, b.views_week, b.views, b.clicks_day, b.clicks_week, b.clicks, n.uid FROM {node} n INNER JOIN {banner} b ON n.vid = b.vid WHERE notify_day = 1 AND workflow < 4');
+    while ($banner = db_fetch_object($result)) {
+      $notifications[] = array(
+        'subject' => variable_get('site_name', 'drupal') .': '. t("'%banner' banner weekly notification", array('%banner' => "$banner->title")),
+        'message' => variable_get('banner_weekly_notification', _banner_get_body('weekly_notify')),
+        'banner' => $banner,
+      );
+    }
+  }
+
+  // limit general cron functionality to once every 5 minutes
+  if (($time - variable_get('banner_timestamp_gc', '0')) >= 300) {
+    variable_set('banner_timestamp_gc', $time);
+    $param['refresh_cache'] = true; // we set this because we do an isset check below
+  }
+
+  // reset counters
+  if (isset($param)) {
+    _banner_refresh_cache($param);
+  }
+
+  // send notification e-mails
+  foreach ($notifications as $notification) {
+    _banner_mail($notification['subject'], $notification['message'], $notification['banner']);
+  }
+}
+
+/**
+ * Implementation of hook_delete().
+ */
+function banner_delete($node) {
+  db_query('DELETE FROM {banner} WHERE nid=%d', $node->nid);
+}
+
+/**
+ * Implementation of hook_form().
+ */
+function banner_form(&$node) {
+  // general settings
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#description' => t("A name for this banner, used in administration only, e.g. 'job opening', 'product launch'."),
+    '#required' => TRUE,
+    '#weight' => -9,
+  );
+  $form['body'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Description'),
+    '#default_value' => $node->body,
+    '#rows' => 5,
+    '#description' => t('Enter a description of the banner. This will be shown in the administrator overview and on banner comment pages.'),
+    '#weight' => -8,
+  );
+  $form['format'] = filter_form($node->format);
+  $form['format']['#weight'] = -7;
+
+  // add forms for banner settings
+  $form['banner'] = _banner_form_banner($node);
+  $form['notifications'] = _banner_form_notifications($node);
+  $form['limits'] = _banner_form_limits($node);
+  if (user_access('administer banners') && $node->nid) {
+    $form['statistics'] = _banner_form_statistics($node);
+  }
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function banner_form_alter($form_id, &$form) {
+  if ($form_id == 'banner_node_form') {
+    // hide 'published' checkbox, status is set in hook_validate
+    $form['options']['status']['#type'] = 'hidden';
+  }
+
+  // hide options from banner vocabulary editing form
+  if ($form_id == 'taxonomy_form_vocabulary') {
+    if ($form['vid']['#value'] == variable_get('banner_vocabulary', '')) {
+      $form['help_forum_vocab'] = array(
+        '#value' => t('This is the designated banner group vocabulary. Some of the normal vocabulary options have been removed.'),
+        '#weight' => -1,
+      );
+      $form['nodes']['banner'] = array('#type' => 'checkbox', '#value' => 1, '#title' => t('banner'), '#attributes' => array('disabled' => '' ));
+      unset($form['hierarchy']);
+      unset($form['relations']);
+      unset($form['tags']);
+      unset($form['multiple']);
+      $form['required'] = array('#type' => 'value', '#value' => 1);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function banner_help($section) {
+  switch ($section) {
+    case 'admin/help#banner':
+      return t("
+<h2>Banner modes</h2>
+<dl>
+<dt>Upload</dt><dd>Use the upload mode if you want to use an uploaded image or a text file
+as a banner. Enter the basic banner information and click 'File attachments' on
+the node edit form. You can add as many files as you wish to your banner, but
+only the first file on the list will be used. If you are uploading a text file,
+the text '%url' is replaced by the banner URL (e.g. banner/7) when the banner
+is displayed.</dd>
+<dt>Text</dt><dd>Use the text mode if you wish to enter the banner text directly on the
+node edit form. Enter the banner text in the 'Content' field. The text '%url'
+is replaced by the banner URL (e.g. banner/7) when the banner is displayed.</dd>
+<dt>JavaScript</dt><dd>Use the JavaScript mode if you wish to use a piece of JavaScript to
+display your banner. Enter the JavaScript in the 'Content' field. This won't
+support Google ads without manual modification of your site template to include
+Google's JavaScript.</dd>
+<dt>Remote</dt><dd>Use the remote mode to use a remote image as a banner. Enter the URL of
+the remote image in the 'Content' field.</dd>
+</dl>
+      ");
+    case 'admin/modules#description':
+      return t('An advertising system.');
+    case 'node/add#banner':
+      return t('Banners are texts or images which are shown in fixed locations on each page.');
+    case 'admin/banner':
+      return '<p>'. t('This is a list of your banners.') .'</p>';
+    case 'admin/settings/banner':
+      return '<p>'. t('Choose banner cache and notification settings.') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_insert().
+ */
+function banner_insert($node) {
+  $fields = _banner_get_fields();
+  $keys = array_keys($fields);
+  foreach ($node as $key => $value) {
+    if ($value && in_array($key, $keys)) {
+      // this is a banner field, insert it
+      $k[] = $key;
+      $v[] = $value;
+      $s[] = is_int($fields[$key]) ? '%d' : "'%s'";
+    }
+  }
+
+  $status = _banner_get_status($node->workflow);
+
+  // FIXME: this and the code in _menu() has race condition written all over it...
+  $cache_todo = variable_get('banner_cache_todo', array());
+  array_push($cache_todo, $node->nid);
+  variable_set('banner_cache_todo', $cache_todo);
+
+  db_query('INSERT INTO {banner} ('. implode(',', $k) .') VALUES ('. implode(',', $s) .')', $v);
+  db_query('UPDATE {node} SET status = %d WHERE nid = %d', $status, $node->nid);
+}
+
+/**
+ * Implementation of hook_load().
+ */
+function banner_load($node) {
+  $fields = array_keys(_banner_get_fields());
+
+  // remove nid and vid from field list
+  unset($fields[0]);
+  unset($fields[1]);
+
+  $banner = db_fetch_object(db_query('SELECT '. implode(',', $fields) .' FROM {banner} WHERE vid=%d', $node->vid));
+  return $banner;
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function banner_menu($may_cache) {
+  $items = array();
+
+  if ($may_cache) {
+    // create content
+    $items[] = array(
+      'path' => 'node/add/banner',
+      'title' => t('banner'),
+      'access' => user_access('create banners'),
+    );
+
+    // 'my banners' page
+    $items[] = array(
+      'path' => 'banner/view',
+      'title' => t('my banners'),
+      'access' => user_access('create banners'),
+      'callback' => 'banner_page',
+      'weight' => 1,
+    );
+    $items[] = array(
+      'path' => 'banner/view/mine',
+      'title' => t('all'),
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => 1,
+    );
+    $items[] = array(
+      'path' => 'banner/view/active',
+      'title' => t('active'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 2,
+    );
+    $items[] = array(
+      'path' => 'banner/view/enabled',
+      'title' => t('enabled'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 3,
+    );
+    $items[] = array(
+      'path' => 'banner/view/pending',
+      'title' => t('pending'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 4,
+    );
+    $items[] = array(
+      'path' => 'banner/view/blocked',
+      'title' => t('blocked'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 5,
+    );
+
+    // admin menu
+    $items[] = array(
+      'path' => 'admin/banner',
+      'title' => t('banners'),
+      'access' => user_access('administer banners'),
+      'callback' => 'banner_admin',
+    );
+    $items[] = array(
+      'path' => 'admin/banner/list',
+      'title' => t('list'),
+      'access' => user_access('administer banners'),
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => -1,
+    );
+    $items[] = array(
+      'path' => 'admin/banner/refresh',
+      'title' => t('refresh cache'),
+      'access' => user_access('administer banners'),
+      'type' => MENU_LOCAL_TASK,
+      'callback' => 'banner_admin',
+    );
+  }
+  else {
+    if (arg(0) == 'banner' && is_numeric(arg(1))) {
+      // redirect
+      $items[] = array(
+        'path' => 'banner/'. arg(1),
+        'title' => t('banner'),
+        'access' => user_access('view banners'),
+        'type' => MENU_CALLBACK,
+        'callback' => 'banner_redirect',
+        'callback arguments' => array(arg(1)),
+      );
+    }
+
+    // from http://drupal.org/node/35739
+    $stylesheet = drupal_get_path('theme', $GLOBALS['theme_key'] .'/banner.css');
+    if (!file_exists($stylesheet)) {
+      $stylesheet = drupal_get_path('module', 'banner') .'/banner.css';
+    }
+//    theme_add_style($stylesheet);
+  }
+
+  // render cache content for new banners
+  // FIXME: simply re-render cache for banners with empty caches (with a limit of <n> per run)
+  //        this should also make it simple to add a 'clear cache' function
+  $cache_todo = variable_get('banner_cache_todo', array());
+  foreach ($cache_todo as $nid) {
+    $node = node_load($nid);
+    $cache = "document.write('". str_replace(array("'", "\n", "\r"), array("\"", " ", " "), _banner_view($node)) ."');";
+    db_query("UPDATE {banner} SET cache='%s' WHERE vid=%d", $cache, $node->vid);
+  }
+  variable_del('banner_cache_todo');
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_node_info().
+ */
+function banner_node_info() {
+  return array('banner' => array('name' => t('banner'), 'base' => 'banner'));
+}
+
+/**
+ * Implementation of hook_nodeapi().
+ */
+function banner_nodeapi(&$node, $op, $teaser, $page) {
+  switch ($op) {
+    case 'delete revision':
+      db_query('DELETE FROM {banner} WHERE vid=%d', $node->vid);
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function banner_perm() {
+  return array('administer banners', 'create banners', 'view banners');
+}
+
+/**
+ * Implementation of hook_settings().
+ */
+function banner_settings() {
+  // FIXME: reset number of cache files (see original module) -- but do it in a _validate function
+
+  // check for required modules
+  $requirements = '';
+  if (!module_exist('upload')) {
+    $requirements .= '<p>'. t('The <a href="%url">upload module</a> must be enabled and configured if you wish to use uploaded images or text files as banners.', array('%url' => 'http://drupal.org/handbook/modules/upload')) .'</p>';
+  }
+  if (!module_exist('scheduler')) {
+    $requirements .= '<p>'. t('The <a href="%url">scheduler module</a> must be installed and configured if you wish to set publishing and unpublishing dates for banners.', array('%url' => 'http://drupal.org/project/scheduler')) .'</p>';
+  }
+  if (!module_exist('taxonomy')) {
+    $requirements .= '<p>'. t('The <a href="%url">taxonomy module</a> must be installed and configured.', array('%url' => 'http://drupal.org/handbook/modules/taxonomy')) .'</p>';
+  }
+
+  if (!empty($requirements)) {
+    $form['requirements'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Requirements'),
+    );
+    $form['requirements']['scheduler'] = array(
+      '#type' => 'markup',
+      '#value' => $requirements,
+    );
+  }
+
+  $mail_variables = '%username, %bannername, %sitename, %day_views, %day_clicks, %week_views, %week_clicks, %total_views, %total_clicks, %url, %expire';
+
+  // cache settings
+  $form['cache'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Cache settings'),
+  );
+  $form['cache']['banner_cache'] = array(
+    '#type' => 'radios',
+    '#title' => t('Cache handler'),
+    '#default_value' => variable_get('banner_cache', 0),
+    '#options' => array(
+       BANNER_CACHE_DB   => t('database'),
+       BANNER_CACHE_FILE => t('file'),
+    ),
+    '#description' => t('Choose a cache handler. Database caching has lower performance but always works.'),
+    '#validate' => array('_banner_validate_cache' => array()),
+  );
+  $form['cache']['banner_cache_max'] = array(
+    '#type' => 'select',
+    '#title' => t('Maximum cache files'),
+    '#default_value' => variable_get('banner_cache_max', 1),
+    '#options' => drupal_map_assoc(array(1, 2, 3, 4, 5, 10, 25)),
+    '#description' => t('If you are using the file cache handler, you can specify the maximum number of cache files that should be created. Using only one cache file guarantees that banners will be disabled exactly when they reach a limit (eg. being viewed e specific number of times). On busier sites, it can boost performance to use multiple cache files.'),
+  );
+
+  // user notification settings
+  $form['notification'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('User notification settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['notification']['banner_daily_notification'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Body of daily notification e-mail'),
+    '#default_value' => variable_get('banner_daily_notification', _banner_get_body('daily_notify')),
+    '#cols' => 70,
+    '#rows' => 10,
+    '#description' => t('Customize the body of the daily notification e-mail, only sent to banner owners when they enable daily notification. Available variables are: %mail_variables.', array('%mail_variables' => $mail_variables)),
+  );
+  $form['notification']['banner_weekly_notification'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Body of weekly notification e-mail'),
+    '#default_value' => variable_get('banner_weekly_notification', _banner_get_body('weekly_notify')),
+    '#cols' => 70,
+    '#rows' => 10,
+    '#description' => t('Customize the body of the weekly notification e-mail, only sent to banner owners when they enable weekly notification. Available variables are: %mail_variables.', array('%mail_variables' => $mail_variables)),
+  );
+  $form['notification']['banner_failed_notify'] = array(
+    '#type' => 'select',
+    '#title' => t('Disable notifications'),
+    '#default_value' => variable_get('banner_failed_notify', 5),
+    '#options' => array(t('Disabled'), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20),
+    '#description' => t('Disable notifications to user after this many failed mail attempts.'),
+  );
+
+  // reminder settings
+  $form['reminder'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Renewal reminder settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['reminder']['banner_renewal'] = array(
+    '#type' => 'radios',
+    '#title' => t('Automatic renewal reminder'),
+    '#default_value' => variable_get('banner_renewal', 0),
+    '#options' => array(t('Disabled'), t('Enabled')),
+    '#description' => t('If enabled, an automatic reminder can be e-mailed when an advertisement is about to expire. This e-mail can remind your customers that they need to renew their advertisement on your site.'),
+  );
+  $form['reminder']['banner_renewal_time'] = array(
+    '#type' => 'select',
+    '#title' => t('Send reminder'),
+    '#default_value' => variable_get('banner_renewal_time', 0),
+    '#options' => _banner_get_periods(),
+    '#description' => t('Send the renewal reminder this long before the advertisement expires.'),
+  );
+  $form['reminder']['banner_renewal_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Body of renewal reminder e-mail'),
+    '#default_value' => variable_get('banner_renewal_message', _banner_get_body('renewal')),
+    '#cols' => 70,
+    '#rows' => 10,
+    '#description' => t('Customize the body of the renewal reminder e-mail, only sent once to banner owners when their ad is about to expire. Available variables are: %mail_variables', array('%mail_variables' => $mail_variables)),
+  );
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_taxonomy().
+ */
+function banner_taxonomy($op, $type, $term = NULL) {
+  if ($op == 'delete' && $term['vid'] == variable_get('banner_vocabulary', '')) {
+    switch ($type) {
+      case 'vocabulary':
+        variable_del('banner_vocabulary');
+    }
+  }
+}
+
+/**
+ * Implementation of hook_validate().
+ */
+function banner_validate(&$node, $form) {
+  // check target url
+  if ($node->mode != BANNER_JAVASCRIPT) {
+    if (!valid_url($node->url, TRUE)) {
+      form_set_error('url', t('You must enter a valid target URL for the banner.'));
+    }
+  }
+
+  // check that required content for selected mode is present
+  switch ($node->mode) {
+    case BANNER_UPLOAD:
+      if (!is_array($node->files)) {
+        form_set_error('upload', t('You need to upload at least one file to use the selected mode.'));
+      }
+      break;
+    case BANNER_TEXT:
+      if (empty($node->content)) {
+        form_set_error('content', t('You need to enter the banner text in the content field to use the selected mode.'));
+      }
+      break;
+    case BANNER_JAVASCRIPT:
+      if (empty($node->content)) {
+        form_set_error('content', t('You need to enter the script in the content field to use the selected mode.'));
+      }
+      break;
+    case BANNER_REMOTE:
+      if (valid_url($node->content, TRUE)) {
+        // FIXME: check that remote image exists!
+        // FIXME: only do this if allow_url_fopen = On
+        if (!(list($node->width, $node->height) = getimagesize($node->content))) {
+          drupal_set_message(t('Could not determine size of remote image.'), 'error');
+        }
+      }
+      else {
+        form_set_error('content', t('You need to enter a valid URL in the content field to use the selected mode.'));
+      }
+      break;
+  }
+
+  // get information from uploaded file
+  if ($node->files) {
+    foreach ($node->files as $file) {
+      $file = (object)$file;
+
+      if (!isset($active)) {
+        // we use the first file on the list...
+        $active = $file;
+      }
+
+      // ...and make sure that no files are listed
+      $file->list = 0;
+    }
+
+    switch (_banner_type($file->filemime)) {
+      case 'image':
+      case 'swf':
+        list($width, $height) = getimagesize($file->filepath);
+        form_set_value($form['banner']['width'], $width);
+        form_set_value($form['banner']['height'], $height);
+        break;
+      case 'text':
+        break;
+      default:
+        form_set_error('upload', t('Unsupported file type.'));
+    }
+  }
+}
+
+/**
+ * Implementation of hook_view().
+ */
+function banner_view(&$node, $teaser = FALSE, $page = FALSE) {
+  global $user;
+
+  $node = node_prepare($node, $teaser);
+
+  $output = '';
+  switch ($node->mode) {
+    case BANNER_UPLOAD:
+      $output .= theme('banner_view_upload', $node);
+      break;
+    case BANNER_TEXT:
+      $output .= '<blockquote>';
+      $output .= theme('banner_view_text', $node);
+      $output .= '</blockquote>';
+      break;
+    case BANNER_JAVASCRIPT:
+      $output .= theme('banner_view_javascript', $node); // FIXME: theme function missing?
+      break;
+    case BANNER_REMOTE:
+      $output .= theme('banner_view_remote', $node);
+  }
+
+  if ($teaser == TRUE) {
+    if (user_access('administer banners') || (user_access('create banners') && $user->uid == $node->uid)) {
+      $output .= _banner_view_statistics($node);
+    }
+
+    $node->teaser .= $output;
+  }
+  else {
+    if (user_access('administer banners') || (user_access('create banners') && $user->uid == $node->uid)) {
+      // don't show full info on node preview
+      if ($node->nid) {
+        $output .= _banner_view_overview($node);
+        $output .= _banner_view_statistics($node);
+        $output .= _banner_view_limits($node);
+
+        // if (module_exist('scheduler')) {} // FIXME: display scheduling information
+
+        $output .= _banner_view_notifications($node);
+      }
+    }
+
+    $node->body .= $output;
+  }
+}
+
+/**
+ * Implementation of hook_update().
+ */
+function banner_update($node) {
+  // FIXME: if limits have changed, update workflow & status to match - do it here to catch revisions
+
+  if ($node->revision) {
+    banner_insert($node);
+  }
+  else {
+    $fields = _banner_get_fields();
+    $keys = array_keys($fields);
+
+    $node->cache = "document.write('". str_replace(array("'", "\n", "\r"), array("\"", " ", " "), _banner_view($node)) ."');";
+
+    foreach ($node as $key => $value) {
+      if (in_array($key, $keys)) {
+        // this is a banner field, update it
+        $param = $key;
+        $param .= is_int($fields[$key]) ? '=%d' : "='%s'";
+        $q[] = $param;
+        if ($value) {
+          $v[] = $value;
+        }
+        else {
+          $v[] = $fields[$key];
+        }
+      }
+    }
+    $v[] = $node->vid;
+
+    $status = _banner_get_status($node->workflow);
+
+    db_query('UPDATE {banner} SET '. implode(',', $q) .' WHERE vid=%d', $v);
+    db_query('UPDATE {node} SET status = %d WHERE nid = %d', $status, $node->nid);
+
+    // reset stats if requested
+    if ($node->reset_day) {
+      db_query('UPDATE {banner} SET views_day=0, clicks_day=0 WHERE vid=%d', $v, $node->vid);
+    }
+    if ($node->reset_week) {
+      db_query('UPDATE {banner} SET views_week=0, clicks_week=0 WHERE vid=%d', $v, $node->vid);
+    }
+    if ($node->reset_total) {
+      db_query('UPDATE {banner} SET views=0, clicks=0 WHERE vid=%d', $v, $node->vid);
+    }
+  }
+}
+
+/**
+ * Page handlers
+ */
+
+/**
+ * Page handler for admin page
+ */
+function banner_admin() {
+  $op = arg(2);
+
+  switch ($op) {
+    case 'refresh':
+      $output = _banner_admin_refresh();
+      break;
+    default: // list
+      $output = _banner_admin_overview();
+  }
+
+  return $output;
+}
+
+/**
+ * Page handler for 'my banners' page
+ */
+function banner_page() {
+  global $user;
+
+  // get latest versions of the banner node
+  $query = 'SELECT n.nid FROM {node} n INNER JOIN {banner} b ON n.vid=b.vid WHERE n.uid='. $user->uid;
+  switch (arg(2)) {
+    case 'active':
+      $active = array(BANNER_PENDING, BANNER_ENABLED, BANNER_DAY_LIMIT, BANNER_WEEK_LIMIT, BANNER_DISABLED);
+      $query .= ' AND b.workflow IN ('. implode(',', $active) .')';
+      break;
+    case 'enabled':
+      $query .= ' AND b.workflow='. BANNER_ENABLED;
+      break;
+    case 'pending':
+      $query .= ' AND b.workflow='. BANNER_PENDING;
+      break;
+    case 'blocked':
+      $query .= ' AND b.workflow='. BANNER_BLOCKED;
+      break;
+    default: // 'mine'
+  }
+  $query .= ' ORDER BY n.sticky DESC, n.created DESC';
+
+  $result = pager_query(db_rewrite_sql($query), variable_get('default_nodes_main', 10));
+
+  $output = '';
+  if (db_num_rows($result)) {
+    while ($node = db_fetch_object($result)) {
+      $output .= node_view(node_load($node->nid), TRUE);
+    }
+    $output .= theme('pager', NULL, variable_get('default_nodes_main', 10));
+  }
+  else {
+    $output .= theme('box', t('No banners found.'), '');
+  }
+
+  return $output;
+}
+
+/**
+ * Menu callbacks
+ */
+
+/**
+ * Update banner statistics and redirect user to target URL
+ */
+function banner_redirect() {
+  global $user;
+
+  $banner = node_load(arg(1));
+
+  if ($banner) {
+    // don't update banner stats for site admin or banner owner
+    if ($user->uid != 1 && $user->uid != $banner->uid) {
+      db_query('UPDATE {banner} SET clicks = clicks + 1, clicks_day = clicks_day + 1, clicks_week = clicks_week + 1 WHERE nid = %d', arg(1));
+    }
+
+    if ($banner->clicks_max > 0 && ($banner->clicks + 1) == $banner->clicks_max) {
+      watchdog('special', t("banner: '%banner' %status, reached max of %clicks clicks.", array('%banner' => l($banner->title, 'node/'. $banner->id, NULL, NULL, FALSE, TRUE), '%status' => _banner_workflow(BANNER_BLOCKED), '%clicks' => $banner->max_clicks)));
+      db_query('UPDATE {banner} SET workflow = %d WHERE vid = %d', BANNER_BLOCKED, $banner->vid);
+//      _banner_refresh_cache(); // FIXME
+    }
+
+    // redirect to the banner's target url
+    header('Location: '. $banner->url);
+    exit();
+  }
+  else {
+    drupal_not_found();
+  }
+}
+
+/**
+ * Public functions
+ */
+
+/**
+ * Display one or more banners from the selected group.
+ *
+ * @param $group
+ *   The banner group to display
+ * @param $count
+ *   The number of banners to show from the selected group
+ * @return
+ *   <script> tag for use in HTML
+ */
+function banner_display($group = 0, $count = 1) {
+  global $base_url;
+
+  if (user_access('view banners')) {
+    $files = array('banner_db.php', 'banner_file.php');
+    $tids = array();
+
+    // only do taxonomy checking on nodes
+    if (arg(0) == 'node' && is_numeric(arg(1))) {
+      // get vocabularies associated with banners
+      $vocabularies = taxonomy_get_vocabularies('banner');
+
+      // ...but ignore the banner group vocabulary
+      $vid = variable_get('banner_vocabulary', '');
+      unset($vocabularies[$vid]);
+
+      // get terms from current node associated with these vocabs
+      foreach($vocabularies as $vocabulary) {
+        if($terms = taxonomy_node_get_terms_by_vocabulary(arg(1), $vocabulary->vid)) {
+          foreach ($terms as $term) {
+            $tids[] = $term->tid;
+          }
+        }
+      }
+    }
+
+    // see if we have any banners in the current group with one of these terms
+    $comp = array();
+    $result = db_query('SELECT tn2.tid FROM {node} n INNER JOIN {term_node} tn ON n.nid = tn.nid INNER JOIN {term_node} tn2 ON n.nid = tn2.nid INNER JOIN {banner} b ON n.vid = b.vid WHERE tn.tid = %d AND b.workflow = 1', $group);
+    while ($row = db_fetch_array($result)) {
+      $comp[] = $row['tid'];
+    }
+
+    $tids = array_intersect($tids, $comp);
+    if (!$tids) {
+      $tids[] = 0;
+    }
+
+    $url = $base_url .'/'. $files[variable_get('banner_cache', '0')];
+    $qry = array(
+      'group' => $group,
+      'count' => $count,
+      'terms' => implode(',', $tids),
+      'max' => variable_get('banner_cache_max', 1),
+      'path' => file_create_path(),
+    );
+    foreach ($qry as $key => $value) {
+      $query[] = $key .'='. $value;
+    }
+    $source = url($url, implode('&amp;', $query));
+
+    // FIXME: do something else for javascript banners?
+    return '<script type="text/javascript" src="'. $source .'"></script>';
+  }
+}
+
+/**
+ * Validation functions
+ */
+
+/**
+ * Make sure that the selected cache driver is present
+ */
+function _banner_validate_cache($form) {
+  global $form_values;
+
+  $cache_type = $form_values['banner_cache'];
+  $filename = $cache_type ? 'banner_file.php' : 'banner_db.php';
+  if (file_exists($filename)) {
+    $output = @file_get_contents($filename);
+    if (!$output) {
+      form_set_error('banner_cache', t('Failed to access "%filename" due to improper file permissions. Unable to display banners.', array('%filename' => $filename)));
+    }
+  }
+  else {
+    form_set_error('banner_cache', t('Failed to access "%filename", file does not exist. Unable to display banners.', array('%filename' => $filename)));
+  }
+}
+
+/**
+ * Utility functions
+ */
+
+/**
+ * Show list of all banners
+ */
+function _banner_admin_overview() {
+  $headers = array(
+    array('data' => t('Title'), 'field' => 'title'),
+    array('data' => t('Status'), 'field' => 'workflow', 'sort' => 'asc'),
+    array('data' => t('Owner'), 'field' => 'uid'),
+    array('data' => t('Views'), 'field' => 'views'),
+    array('data' => t('Clicks'), 'field' => 'clicks'),
+    array('data' => t('Operations'), 'colspan' => 2)
+  );
+
+  $sql = 'SELECT n.*, b.*, u.name FROM {node} n INNER JOIN {banner} b ON n.vid=b.vid INNER JOIN {users} u ON n.uid=u.uid';
+  $sql .= tablesort_sql($headers);
+
+  $result = pager_query($sql, 25);
+
+  if (db_num_rows($result) > 0) {
+    $destination = drupal_get_destination();
+    while ($node = db_fetch_object($result)) {
+      $row = array();
+
+      $row[] = $node->title;
+      $row[] = _banner_workflow($node->workflow);
+      $row[] = theme('username', $node);
+      $row[] = $node->views;
+      $row[] = $node->clicks;
+      $row[] = array('data' => l(t('view'), 'node/'. $node->nid));
+      $row[] = array('data' => l(t('edit'), 'node/'. $node->nid .'/edit', array(), $destination));
+
+      $rows[] = $row;
+    }
+    if($pager = theme('pager', NULL, 25, 0)) {
+      $rows[] = array(array('data' => $pager, 'colspan' => 9));
+    }
+
+    return theme('table', $headers, $rows);
+  }
+  else {
+    return theme('box', t('No banners found.'), '');
+  }
+}
+
+/**
+ * Refresh banner cache
+ */
+function _banner_admin_refresh($param = array(), $max = 0) {
+  $cache_type = variable_get('banner_cache', '0');
+
+  if ($cache_type == BANNER_CACHE_FILE) {
+    _banner_refresh_cache();
+    drupal_set_message(t('File cache refreshed.'), 'status');
+  }
+  else {
+    drupal_set_message(t("You are using the database cache. The database cache can't be refreshed."), 'error');
+    drupal_goto('admin/banner');
+  }
+
+  return '';
+}
+
+/**
+ * Create vocabulary for handling banner groups
+ */
+function _banner_create_vocabulary() {
+  // create vocabulary for banner groups
+  $edit = array(
+    'name' => t('Banner groups'),
+    'description' => t('This vocabulary is a container for banner groups.'),
+    'help' => t('Choose the banner groups you want to add this banner to.'),
+    'required' => 1,
+    'multiple' => 1,
+    'weight' => -10,
+    'module' => 'banner',
+    'nodes' => array(
+      'banner' => 1,
+    ),
+  );
+  taxonomy_save_vocabulary($edit);
+
+  // get the vid of the vocabulary
+  $vocabularies = taxonomy_get_vocabularies('banner');
+  foreach ($vocabularies as $vid => $voc) {
+    variable_set('banner_vocabulary', $vid);
+  }
+
+  // create default banner groups
+  for ($i = 1; $i <= 3; $i++) {
+    $edit = array(
+      'name' => 'Banner group '. $i,
+      'description' => '',
+      'weight' => 0,
+      'vid' => variable_get('banner_vocabulary', ''),
+    );
+    taxonomy_save_term($edit);
+  }
+}
+
+/**
+ * Return message body
+ */
+function _banner_get_body($message) {
+  switch ($message) {
+    case 'daily_notify':
+      return t("Hello %username,\n\nHere is your daily summary for your '%bannername' banner on %sitename:\n\nToday:\n   Views:  %day_views\n   Clicks: %day_clicks\n\nThis week:\n   Views:  %week_views\n   Clicks: %week_clicks\n\nAll time:\n   Views:  %total_views\n   Clicks: %total_clicks\n\n--\nThis e-mail was automatically generated at your request.\nUnsubscribe here: %url");
+    case 'weekly_notify':
+      return t("Hello %username,\n\nHere is your weekly summary for your '%bannername' banner on %sitename:\n\nToday:\n   Views:  %day_views\n   Clicks: %day_clicks\n\nThis week:\n   Views:  %week_views\n   Clicks: %week_clicks\n\nAll time:\n   Views:  %total_views\n   Clicks: %total_clicks\n\n--\nThis e-mail was automatically generated at your request.\nUnsubscribe here: %url");
+    case 'renewal':
+      return t("Hello %username,\n\nYour advertisement '%bannername' on %sitename will expire on %expire. Please let us know if you are interested in renewing.\n\nTo date, this ad has been viewed %total_views times and clicked %total_clicks times.\n\nThank you!\n%sitename team");
+    case 'upload_notify':
+      return t("Hello %admin,\n\n%sitename user '%username' has uploaded a new banner titled, '%bannername'.\n\n%pending_url");
+  }
+}
+
+/**
+ * Return an array of banner database fields
+ */
+function _banner_get_fields() {
+  return array(
+    'nid' => 0,
+    'vid' => 0,
+
+    // basic information
+    'url' => '',
+    'target' => '',
+    'workflow' => 0,
+    'mode' => 0,
+    'content' => '',
+    'cache' => '',
+
+    // notifications
+    'notify_day' => 0,
+    'notify_week' => 0,
+    'notify_failed' => 0,
+    'notify_send' => 0,
+    'notify_sent' => 0,
+
+    // limits
+    'chance' => 0,
+    'clicks_max' => 0,
+    'views_max' => 0,
+    'views_week_max' => 0,
+    'views_day_max' => 0,
+
+    // statistics
+    'views' => 0,
+    'views_week' => 0,
+    'views_day' => 0,
+    'clicks' => 0,
+    'clicks_week' => 0,
+    'clicks_day' => 0,
+
+    // file
+    'width' => 0,
+    'height' => 0,
+  );
+}
+
+/**
+ * Return description of banner status.
+ */
+function _banner_get_mode_options() {
+  $modes = array();
+
+  if (user_access('upload files')) {
+    $modes[BANNER_UPLOAD] = t('upload');
+  }
+  $modes[BANNER_TEXT] = t('text');
+  if (user_access('administer banners')) {
+    $modes[BANNER_JAVASCRIPT] = t('javascript');
+  }
+  $modes[BANNER_REMOTE] = t('remote');
+
+  return $modes;
+}
+
+/**
+ * Return an array of reminder periods
+ */
+function _banner_get_periods() {
+  return array(
+      86400 => format_interval(86400),
+     172800 => format_interval(172800),
+     259200 => format_interval(259200),
+     345600 => format_interval(345600),
+     432000 => format_interval(432000),
+     604800 => format_interval(604800),
+    1209600 => format_interval(1209600),
+    1814400 => format_interval(1814400),
+    2419200 => format_interval(2419200),
+    4838400 => format_interval(4838400),
+    7257600 => format_interval(7257600),
+    9676800 => format_interval(9676800)
+  );
+}
+
+/**
+ * Return status depending on workflow
+ */
+function _banner_get_status($workflow = 0) {
+  if ($workflow == BANNER_PENDING || $workflow == BANNER_DENIED) {
+    // unpublish node
+    return 0;
+  }
+  else {
+    // publish node
+    return 1;
+  }
+}
+
+/**
+ * Return banner data in a form usable by the file cache
+ */
+function _banner_get_struct() {
+  $result = db_query('SELECT n.nid FROM {node} n INNER JOIN {banner} b ON n.vid = b.vid WHERE n.status = 1 AND b.workflow = %d', BANNER_ENABLED);
+
+  // get vocabularies associated with banners
+  $vocabularies = taxonomy_get_vocabularies('banner');
+
+  // ...but ignore the banner group vocabulary
+  $vid = variable_get('banner_vocabulary', '');
+  unset($vocabularies[$vid]);
+
+  while ($row = db_fetch_array($result)) {
+    $node = node_load($row['nid']);
+
+    $tids = array(0);
+    foreach ($vocabularies as $vocabulary) {
+      if($terms = taxonomy_node_get_terms_by_vocabulary($node->nid, $vocabulary->vid)) {
+        foreach ($terms as $term) {
+          $tids[] = $term->tid;
+        }
+      }
+    }
+    $groups = taxonomy_node_get_terms_by_vocabulary($node->nid, $vid);
+
+    foreach ($tids as $tid) {
+      foreach ($groups as $group) {
+        for ($n = 0; $n < $node->chance; $n++) {
+          $ballot[$tid][$group->tid][] = $node->nid;
+        }
+      }
+    }
+    $banners[$node->nid]->views_this = 0;
+    $banners[$node->nid]->views = $node->views;
+    $banners[$node->nid]->views_day = $node->views_day;
+    $banners[$node->nid]->views_week = $node->views_week;
+    $banners[$node->nid]->views_day_max = $node->views_day_max;
+    $banners[$node->nid]->views_week_max = $node->views_week_max;
+    $banners[$node->nid]->views_max = $node->views_max;
+    if ($node->mode == BANNER_JAVASCRIPT) {
+      $banners[$node->nid]->html = $node->content;
+    }
+    else {
+      $banners[$node->nid]->html = "document.write('".str_replace(array("'", "\n", "\r"), array("\"", " ", " "), _banner_view($node))."');";
+    }
+  }
+
+  if ($banners) {
+    $struct[] = $ballot;
+    $struct[] = $banners;
+  }
+
+  return $struct;
+}
+
+/**
+ * Return array of options for use on node form
+ */
+function _banner_get_workflow_options() {
+  return array(
+    BANNER_PENDING    => t('pending'),
+    BANNER_ENABLED    => t('enabled'),
+    BANNER_DAY_LIMIT  => t("day's limit reached"),
+    BANNER_WEEK_LIMIT => t("week's limit reached"),
+    BANNER_DISABLED   => t('disabled'),
+    BANNER_BLOCKED    => t('blocked'),
+    BANNER_DENIED     => t('denied')
+  );
+}
+
+/**
+ * Create banner link
+ *
+ * @param $url
+ *   Banner URL
+ * @param $target
+ *   URL frame target
+ * @return
+ *   Banner link
+ */
+function _banner_link($url, $target) {
+  $output = '';
+
+  if (!empty($url)) {
+    $attributes = array();
+    if (!empty($target) && $target != '_none') {
+      $attributes['target'] = $target;
+    }
+    $output = l($url, $url, $attributes);
+  }
+
+  return $output;
+}
+
+/**
+ * Send an e-mail to the banner owner
+ *
+ * An e-mail will only be sent if the banner has an owner.
+ *
+ * @param $subject
+ *   Message subject
+ * @param $message
+ *   Message body
+ * @param $banner
+ *   Banner object
+ */
+function _banner_mail($subject, $message, $banner) {
+  global $base_url;
+  if (isset($banner->uid)) {
+    $user = user_load(array('uid' => $banner->uid));
+    $to = $user->mail;
+    $from = variable_get('site_mail', ini_get('sendmail_from'));
+    $headers = "From: $from\nReply-to: $from\nX-Mailer: Drupal\nReturn-path: <$from>\nErrors-to: $from\n";
+
+    $variables = array(
+      '%username' => $user->name,
+      '%bannername' => $banner->title,
+      '%sitename' => variable_get('site_name', 'drupal'),
+      '%day_views' => $banner->day_views,
+      '%day_clicks' => $banner->day_clicks,
+      '%week_views' => $banner->week_views,
+      '%week_clicks' => $banner->week_clicks,
+      '%total_views' => $banner->views,
+      '%total_clicks' => $banner->clicks,
+      '%url' => "$base_url/banners/",
+      '%expire' => (($banner->unpublish_date > 0) ? format_date($banner->unpublish_date, 'custom', 'M d, Y') : t('never'))
+    );
+
+    // use user.module mail function to actually send the mail
+    if (!user_mail($to, $subject, wordwrap(strtr($message, $variables), 72), $headers)) {
+      // mail notification failed
+      $notify_failed = variable_get('banner_notify_failed', 5);
+      if (($failed_notify) && (($banner->notify_failed + 1) > $notify_failed)) {
+        // too many notifications failures, disabling user's notification
+        db_query('UPDATE {banner} SET notify_day = 0, notify_week = 0 WHERE id = %d', $banner->id);
+      }
+      else {
+        // incrementing notification failures counter
+        db_query('UPDATE {banner} SET failed_notify = notify_failed + 1 WHERE id = %d', $banner->id);
+      }
+    }
+    elseif ($banner->notify_failed) {
+      // mail notification succeeded, zero out previous failed attempts counter
+      db_query('UPDATE {banner} SET notify_failed = 0 WHERE uid = %d', $user->uid);
+    }
+  }
+}
+
+/**
+ * Refresh file cache
+ */
+function _banner_refresh_cache($param = array(), $max = 0) {
+  $cache_type = variable_get('banner_cache', '0');
+
+  if ($cache_type == BANNER_CACHE_FILE) {
+    if (!$max) {
+      $max = variable_get('banner_cache_max', '1');
+    }
+
+    for ($i = 1; $i <= $max; $i++) {
+      $cache_file = file_create_path(".$i.banner.cache");
+
+      if (file_exists($cache_file)) {
+        if (!$fd = @fopen($cache_file, 'r+')) {
+          if (!$fd = @fopen($cache_file, 'w+')) {
+            drupal_set_message(t("Failed to access banner cache, check file permissions: '%file'.", array('%file' => $cache_file)), 'error');
+          }
+        }
+        // obtain lock to prevent corruption
+        @flock($fd, LOCK_EX);
+        $contents = file_get_contents($cache_file);
+
+        // update views in db
+        $struct = unserialize($contents);
+        if ($struct) {
+          foreach ($struct[1] as $nid => $banner) {
+            if ($param['banner_reset'] != $nid) {
+              db_query('UPDATE {banner} SET views = views + %d, views_day = views_day + %d, views_week = views_week + %d WHERE nid = %d', $banner->views_this, $banner->views_this, $banner->views_this, $nid);
+            }
+          }
+        }
+        _banner_reset_counters($param);
+
+        $struct = _banner_get_struct();
+        $struct[] = time();
+
+        $data = serialize($struct);
+
+        // don't use file_save_data() for existing files since it fails on
+        // windows when using flock (the copy() call results in an empty file)
+        rewind($fd);
+        fwrite($fd, $data, strlen($data));
+        ftruncate($fd, strlen($data));
+        flock($fd, LOCK_UN);
+        fclose($fd);
+      }
+      else {
+        // create cache file
+        $struct = _banner_get_struct();
+        if ($struct) {
+          $struct[] = time();
+          $data = serialize($struct);
+          file_save_data($data, ".$i.banner.cache", FILE_EXISTS_REPLACE);
+        }
+      }
+    }
+  }
+  else {
+    _banner_reset_counters($param);
+  }
+}
+
+/**
+ * reset day / week counters
+ */
+function _banner_reset_counters($param = array()) {
+  if ($param[reset_day_counters]) {
+    db_query('UPDATE {banner} SET views_day = 0, clicks_day = 0');
+    // FIXME: Watchdog entry
+    // change from status (2) "day's limit reached" to (1) "enabled"
+    db_query('UPDATE {banner} SET workflow = 1 WHERE workflow = 2');
+  }
+  if ($param[reset_week_counters]) {
+    db_query('UPDATE {banner} SET views_week = 0, clicks_week = 0');
+    // FIXME: Watchdog entry
+    // change from status (3) "week's limit reached" to (1) "enabled"
+    db_query('UPDATE {banner} SET workflow = 1 WHERE workflow = 3');
+  }
+}
+
+/**
+ * Return file type
+ */
+function _banner_type($mimetype) {
+  switch($mimetype) {
+    case 'image/jpg':
+    case 'image/pjpg':
+    case 'image/jpeg':
+    case 'image/pjpeg':
+    case 'image/gif':
+    case 'image/png':
+    case 'image/bmp':
+    case 'image/tiff':
+      return 'image';
+    case 'application/x-shockwave-flash':
+      return 'swf';
+    case 'text/html':
+    case 'text/plain':
+      return 'text';
+    default:
+      return;
+  }
+}
+
+/**
+ * Call theme functions depending on banner mode
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Themed banner
+ */
+function _banner_view($node) {
+  $output = '';
+
+  switch ($node->mode) {
+    case BANNER_UPLOAD:
+      $output .= theme('banner_view_upload', $node);
+      break;
+    case BANNER_TEXT:
+      $output .= theme('banner_view_text', $node);
+      break;
+    case BANNER_JAVASCRIPT:
+      $output .= theme('banner_view_javascript', $node);
+      break;
+    case BANNER_REMOTE:
+      $output .= theme('banner_view_remote', $node);
+  }
+
+  return $output;
+}
+
+/**
+ * Display banner limits
+ */
+function _banner_view_limits($node) {
+  $headers = array(t('Clicks'), t('Views'), t('Views/week'), t('Views/day'), t('Chance'));
+  $rows = array(array(
+    array('data' => $node->clicks_max, 'align' => 'center'),
+    array('data' => $node->views_max, 'align' => 'center'),
+    array('data' => $node->views_week_max, 'align' => 'center'),
+    array('data' => $node->views_day_max, 'align' => 'center'),
+    array('data' => $node->chance, 'align' => 'center'),
+  ));
+
+  return theme('box', t('Limits'), theme('table', $headers, $rows));
+}
+
+/**
+ * Display banner notifications
+ */
+function _banner_view_notifications($node) {
+  $notifications = '';
+  if($node->notify_day) {
+    $notifications .= '<p>'. t('A daily notification email is sent to %owner.', array('%owner' => theme_placeholder($node->name))) .'</p>';
+  }
+  if($node->notify_week) {
+    $notifications .= '<p>'. t('A weekly notification email is sent to %owner.', array('%owner' => theme_placeholder($node->name))) .'</p>';
+  }
+  if($node->notify_failed) {
+    $notifications .= '<p>'. t('There %failed.', array('%failed' => format_plural($node->notify_failed, 'has been 1 failed notification attempt', 'have been %count failed notification attempts'))) .'</p>';
+  }
+  if($node->notify_sent) {
+    $notifications .= '<p>'. t('A renewal reminder has already been sent to %owner.', array('%owner' => theme_placeholder($node->name))) .'</p>';
+  }
+  if ($notifications) {
+    $output = $notifications;
+  }
+  else {
+    $output = t('[none]');
+  }
+
+  return theme('box', t('Notifications'), $output);
+}
+
+/**
+ * Display banner information
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Themed table of banner information
+ */
+function _banner_view_overview($node) {
+  $headers = array(
+    array('data' => t('Title')),
+    array('data' => t('URL')),
+    array('data' => t('Status')),
+    array('data' => t('Owner')),
+  );
+  $row = array(array(
+    $node->title,
+    _banner_link($node->url, $node->target),
+    _banner_workflow($node->workflow),
+    theme('username', $node),
+  ));
+
+  return theme('box', t('Overview'), theme('table', $headers, $row));
+}
+
+/**
+ * Display banner statistics
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Themed table of banner statistics
+ */
+function _banner_view_statistics($node) {
+  $headers = array('', t('Views'), t('Clicks'), t('%'), t('Views left'), t('Clicks left'), t('Notification'), t('Status'));
+  $rows = array();
+
+  // statistics for today
+  $percentage = $node->views_day ? sprintf('%1.2f', ($node->clicks_day / $node->views_day * 100)) : '0.00';
+  $views_left = $node->views_day_max ? ($node->views_day_max - $node->views_day) : ($node->views_week_max ? ($node->views_week_max - $node->views_week) : ($node->views_max ? ($node->views_max - $node->views) : t('unlimited')));
+  $clicks_left = $node->clicks_max ? ($node->clicks_max - $node->clicks) : t('unlimited');
+
+  switch($node->workflow) {
+    case BANNER_PENDING:
+      $status = t('pending');
+      break;
+    case BANNER_ENABLED:
+      $status = t('enabled');
+      break;
+    default:
+      $status = t('disabled');
+  }
+
+  $rows[] = array(
+    array('data' => t('Today'), 'align' => 'left'),
+    array('data' => $node->views_day, 'align' => 'center'),
+    array('data' => $node->clicks_day, 'align' => 'center'),
+    array('data' => $percentage, 'align' => 'center'),
+    array('data' => $views_left < 0 ? 0 : $views_left, 'align' => 'center'),
+    array('data' => $clicks_left, 'align' => 'center'),
+    array('data' => $node->notify_day ? t('enabled') : t('disabled'), 'align' => 'center'),
+    array('data' => $status, 'align' => 'center'),
+  );
+
+  // statistics for this week
+  $percentage = $node->views_week ? sprintf('%1.2f', ($node->clicks_week / $node->views_week * 100)) : '0.00';
+  $views_left = $node->views_week_max ? ($node->views_week_max - $node->views_week) : ($node->views_max ? ($node->views_max - $node->views) : t('unlimited'));
+
+  switch($node->workflow) {
+    case BANNER_PENDING:
+      $status = t('pending');
+    case BANNER_ENABLED:
+    case BANNER_DAY_LIMIT:
+      $status = t('enabled');
+    default:
+      $status = t('disabled');
+  }
+
+  $rows[] = array(
+    array('data' => t('This week'), 'align' => 'left'),
+    array('data' => $node->views_week, 'align' => 'center'),
+    array('data' => $node->clicks_week, 'align' => 'center'),
+    array('data' => $percentage, 'align' => 'center'),
+    array('data' => $views_left < 0 ? 0 : $views_left, 'align' => 'center'),
+    array('data' => $clicks_left, 'align' => 'center'),
+    array('data' => $node->notify_week ? t('enabled') : t('disabled'), 'align' => 'center'),
+    array('data' => $status, 'align' => 'center'),
+  );
+
+  // totals
+  $percentage = $node->views ? sprintf('%1.2f', ($node->clicks / $node->views * 100)) : '0.00';
+  $views_left = $node->views_max ? ($node->views_max - $node->views) : t('unlimited');
+
+  $rows[] = array(
+    array('data' => t('All time'), 'align' => 'left'),
+    array('data' => $node->views, 'align' => 'center'),
+    array('data' => $node->clicks, 'align' => 'center'),
+    array('data' => $percentage, 'align' => 'center'),
+    array('data' => $views_left < 0 ? 0 : $views_left, 'align' => 'center'),
+    array('data' => $clicks_left, 'align' => 'center'),
+    array('data' => t('n/a'), 'align' => 'center'),
+    array('data' => t('n/a'), 'align' => 'center'),
+  );
+
+  return theme('box', t('Statistics'), theme('table', $headers, $rows));
+}
+
+/**
+ * Return description of banner workflow
+ *
+ * @param $status
+ *   Banner status (0-6)
+ * @return
+ *   Description of banner status
+ */
+function _banner_workflow($status) {
+  switch($status) {
+    case BANNER_PENDING:
+      // requires administrative approval
+      return t('pending');
+    case BANNER_ENABLED:
+      // actively being displayed
+      return t('enabled');
+    case BANNER_DAY_LIMIT:
+      // disabled for the rest of the day
+      return t('day\'s limit reached');
+    case BANNER_WEEK_LIMIT:
+      // disabled for the rest of the week
+      return t('week\'s limit reached');
+    case BANNER_DISABLED:
+      // disabled until it's reenabled (by admin or owner)
+      return t('disabled');
+    case BANNER_BLOCKED:
+      // administratively blocked -- possibly expired
+      return t('blocked');
+    case BANNER_DENIED:
+      // rejected, banner will not be displayed
+      return t('denied');
+    default:
+      return t('unknown');
+  }
+}
+
+/**
+ * Form functions
+ */
+
+/**
+ * Banner settings
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Banner settings form array
+ */
+function _banner_form_banner($node) {
+  $form = array(
+    '#type' => 'fieldset',
+    '#title' => t('Banner'),
+    '#collapsible' => TRUE,
+  );
+  $form['url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL'),
+    '#default_value' => $node->url,
+    '#description' => t('Target URL for this banner. If your are linking to an internal page, you must provide the full URL (i.e. http://yoursite.com/node/42 instead of node/42).'),
+  );
+  $form['target'] = array(
+    '#type' => 'select',
+    '#title' => t('Target'),
+    '#default_value' => $node->target,
+    '#options' => array(
+      '_none'   => t('<none>'),
+      '_blank'  => '_blank',
+      '_self'   => '_self',
+      '_parent' => '_parent',
+      '_top'    => '_top',
+    ),
+    '#description' => t('Frame target for the banner URL. See W3C\'s documentation on <a href="%url">frame target names</a> for a description of the available options.', array('%url' => 'http://www.w3.org/TR/html4/types.html#h-6.16')),
+  );
+  if (user_access('administer banners')) {
+    // FIXME: owner of banner must be able to disable banner
+    $form['workflow'] = array(
+      '#type' => 'select',
+      '#title' => t('Status'),
+      '#default_value' => $node->workflow,
+      '#options' => _banner_get_workflow_options(),
+      '#description' => t("A 'pending' banner requires administrative approval before it will be displayed. An 'enabled' banner is approved and actively being displayed. A 'disabled' banner is approved but disabled by the user. A 'blocked' banner is approved but disabled by the admin, for example after being displayed 'max views' times.  A 'denied' banner was not approved by the admin."),
+    );
+  }
+  else {
+    if ($node->nid) {
+      $form['workflow'] = array(
+        '#type' => 'markup',
+        '#value' => theme('form_element', t('Status'), theme('placeholder', _banner_workflow($node->workflow))),
+      );
+    }
+  }
+  $form['mode'] = array(
+    '#type' => 'select',
+    '#title' => t('Mode'),
+    '#default_value' => $node->mode,
+    '#options' => _banner_get_mode_options(),
+    '#description' => t('Choose the desired mode for this banner. See the <a href="%url">banner help</a> for a description of the available modes.', array('%url' => url('admin/help/banner'))),
+  );
+  $form['content'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Content'),
+    '#default_value' => $node->content,
+    '#rows' => 8,
+    '#description' => t('Enter the ad content. This can either be text, javascript or the URL of a remote image. If you are adding a text ad, the following placeholders are available: %url and %target, which are replaced with the banner URL and the banner target respectively (these placeholders can also be used in uploaded text banners). If no %url placeholder is present, a link to the banner URL will be added after the banner text.'),
+  );
+
+  // hidden fields for file information
+  $form['width'] = array(
+    '#type' => 'hidden',
+    '#value' => $node->width,
+  );
+  $form['height'] = array(
+    '#type' => 'hidden',
+    '#value' => $node->height,
+  );
+
+  return $form;
+}
+
+/**
+ * Limit settings
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Banner limits form array
+ */
+function _banner_form_limits($node) {
+  $form = array(
+    '#type' => 'fieldset',
+    '#title' => t('Banner limits'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  if (user_access('administer banners')) {
+    $form['chance'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Chance'),
+      '#default_value' => $node->chance ? $node->chance : 1,
+      '#size' => 5,
+      '#maxlength' => 5,
+      '#description' => t('Chance of this banner to show, related to other banners. If a banner has chance 1 and another has chance 2, the second will show twice as much.'),
+    );
+    $form['clicks_max'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum total clicks'),
+      '#default_value' => $node->clicks_max,
+      '#size' => 15,
+      '#maxlength' => 15,
+      '#description' => t('Maximum number of clicks this banner can have. After this the banner will be automatically blocked. Set to 0 to allow for unlimited clicks.'),
+    );
+    $form['views_max'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum total views'),
+      '#default_value' => $node->views_max,
+      '#size' => 15,
+      '#maxlength' => 15,
+      '#description' => t('Maximum number of views this banner can have. After this the banner will be automatically blocked. Set to 0 to allow for unlimited views.'),
+    );
+  }
+  $form['views_week_max'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum weekly views'),
+    '#default_value' => $node->views_week_max,
+    '#size' => 15,
+    '#maxlength' => 15,
+    '#description' => t('Maximum number of weekly views this banner can have. After this the banner will be automatically disabled. Set to 0 to allow for unlimited weekly views.'),
+  );
+  $form['views_day_max'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum daily views'),
+    '#default_value' => $node->views_day_max,
+    '#size' => 15,
+    '#maxlength' => 15,
+    '#description' => t('Maximum number of daily views this banner can have. After this the banner will be automatically disabled. Set to 0 to allow for unlimited daily views.'),
+  );
+
+  return $form;
+}
+
+/**
+ * Notifications
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Banner notifications form array
+ */
+function _banner_form_notifications($node) {
+  $form = array(
+    '#type' => 'fieldset',
+    '#title' => t('Banner notifications'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['notify_day'] = array(
+    '#type' => 'radios',
+    '#title' => t('Daily notification'),
+    '#default_value' => $node->notify_day,
+    '#options' => array(0 => t('Disabled'), 1 => t('Enabled')),
+    '#description' => t('Daily notification of banner statistics. If enabled, the owner of this banner will receive daily notification e-mails summarizing banner activity.'),
+  );
+  $form['notify_week'] = array(
+    '#type' => 'radios',
+    '#title' => t('Weekly notification'),
+    '#default_value' => $node->notify_week,
+    '#options' => array(0 => t('Disabled'), 1 => t('Enabled')),
+    '#description' => t('Weekly notification of banner statistics. If enabled, the owner of this banner will receive weekly notification e-mails summarizing banner activity.'),
+  );
+  if (user_access('administer banners')) {
+    $form['notify_failed'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Notification failures'),
+      '#default_value' => $node->notify_failed,
+      '#size' => 5,
+      '#maxlength' => 5,
+      '#description' => t('Total number of failed notifications for this banner.'),
+    );
+    if (module_exist('scheduler')) {
+      $form['notify_send'] = array(
+        '#type' => 'radios',
+        '#title' => t('Expiration notification'),
+        '#default_value' => $node->notify_send,
+        '#options' => array(0 => t('Disabled'), 1 => t('Enabled')),
+        '#description' => t("Banner expiration notification. If enabled and properly configured, prior to this banner expiring a reminder e-mail will be sent to the banner's owner."),
+      );
+    }
+  }
+
+  return $form;
+}
+
+/**
+ * Statistics settings
+ */
+function _banner_form_statistics($node) {
+  $form = array(
+    '#type' => 'fieldset',
+    '#title' => t('Banner statistics'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  if (user_access('administer banners')) {
+    $form['table'] = array(
+      '#theme' => 'banner_form_statistics',
+    );
+    $form['table']['views_day'] = array(
+      '#type' => 'markup',
+      '#value' => $node->views_day,
+    );
+    $form['table']['clicks_day'] = array(
+      '#type' => 'markup',
+      '#value' => $node->clicks_day,
+    );
+    $form['table']['reset_day'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => FALSE,
+    );
+    $form['table']['views_week'] = array(
+      '#type' => 'markup',
+      '#value' => $node->views_week,
+    );
+    $form['table']['clicks_week'] = array(
+      '#type' => 'markup',
+      '#value' => $node->clicks_week,
+    );
+    $form['table']['reset_week'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => FALSE,
+    );
+    $form['table']['views'] = array(
+      '#type' => 'markup',
+      '#value' => $node->views,
+    );
+    $form['table']['clicks'] = array(
+      '#type' => 'markup',
+      '#value' => $node->clicks,
+    );
+    $form['table']['reset_total'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => FALSE,
+    );
+
+    $form['description'] = array(
+      '#type' => 'markup',
+      '#value' => '<div class="form-item"><div class="description">'. t("You can reset all values in one or more of the above rows by checking the appropriate checkbox(es) then clicking 'Submit' below. CAUTION: This can not be undone.  Once you check 'reset' and then click 'Submit' below you will not be able to restore the previous values.") .'</div></div>',
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Theme functions
+ */
+
+/**
+ * Theme statistics table
+ *
+ * @param $form
+ *   Form array
+ * @return
+ *   Themed statistics table
+ */
+// FIXME: Move from node form!
+function theme_banner_form_statistics($form) {
+  $headers = array('', t('Views'), t('Clicks'), t('Reset'));
+  $rows = array();
+
+  $rows[] = array(
+    array('data' => t('Today'), 'align' => 'left'),
+    array('data' => form_render($form['day_views']), 'align' => 'center'),
+    array('data' => form_render($form['day_clicks']), 'align' => 'center'),
+    array('data' => form_render($form['reset_day']), 'align' => 'center'),
+  );
+  $rows[] = array(
+    array('data' => t('This week'), 'align' => 'left'),
+    array('data' => form_render($form['week_views']), 'align' => 'center'),
+    array('data' => form_render($form['week_clicks']), 'align' => 'center'),
+    array('data' => form_render($form['reset_week']), 'align' => 'center'),
+  );
+  $rows[] = array(
+    array('data' => t('Total'), 'align' => 'left'),
+    array('data' => form_render($form['views']), 'align' => 'center'),
+    array('data' => form_render($form['clicks']), 'align' => 'center'),
+    array('data' => form_render($form['reset_total']), 'align' => 'center'),
+  );
+
+  return theme('table', $headers, $rows);
+}
+
+/**
+ * Theme image
+ *
+ * @param $url
+ *   Image URL
+ * @param $attributes
+ *   Image attributes
+ * @return
+ *   Themed image
+ */
+function theme_banner_image($url, $attributes) {
+  $attributes = drupal_attributes($attributes);
+  return '<img src="'. check_url($url) .'"'. $attributes .' />';
+}
+
+/**
+ * Theme remote banner (image)
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Themed banner
+ */
+function theme_banner_view_remote($node) {
+/*
+  $img_attr = array(
+    'width'  => $node->width,
+    'height' => $node->height,
+    'alt'    => '',
+  );
+*/
+  // FIXME: used a couple of times in the code, move to separate function
+  $url_attr = array('title' => $node->url);
+  if ($node->target != '_none') {
+    $url_attr['target'] = $node->target;
+  }
+
+  $output = l(theme('banner_image', $node->content, $img_attr), 'banner/'. $node->nid, $url_attr, NULL, NULL, FALSE, TRUE);
+
+  return $output;
+}
+
+/**
+ * Theme text banner
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Themed banner
+ */
+function theme_banner_view_text($node) {
+  $output = '';
+
+  if (strpos($node->content, '%url')) {
+    // %url present in content, replace with banner link and target
+    $replace = array(
+      '%url' => check_url(url('banner/'. $node->nid)),
+      '%target' => $node->target != '_none' ? $node->target : '_self',
+    );
+    $output .= strtr($node->content, $replace);
+  }
+  else {
+    // no %url in content, add link at the end
+    $attr = array(
+      'target' => $node->target != '_none' ? $node->target : '_self',
+    );
+    $output .= $node->content .' ';
+    $output .= l(t('&raquo;'), 'banner/'. $node->nid, $attr, NULL, NULL, FALSE, TRUE);
+  }
+
+  return $output;
+}
+
+/**
+ * Theme uploaded banner (image/swf)
+ *
+ * @param $node
+ *   Node object
+ * @return
+ *   Themed banner
+ */
+function theme_banner_view_upload($node) {
+  $output = '';
+
+  // get first attached file
+  if ($node->files) {
+    foreach ($node->files as $key => $file) {
+      $file = (object)$file;
+      if ($file->list && !$file->remove) {
+        break; // we only need the first listed file
+      }
+    }
+  }
+
+  switch (_banner_type($file->filemime)) {
+    case 'image':
+      $img_attr = array(
+        'width'  => $node->width,
+        'height' => $node->height,
+        'alt'    => '',
+      );
+
+      $url_attr = array('title' => $node->url);
+      if ($node->target != '_none') {
+        $url_attr['target'] = $node->target;
+      }
+      $output = l(theme('banner_image', file_create_url($file->filepath), $img_attr), 'banner/'. $node->nid, $url_attr, NULL, NULL, FALSE, TRUE);
+      break;
+    case 'swf':
+      $url = check_url(file_create_url($file->filepath));
+      $output = <<<EOD
+        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="$node->width" height="$node->height">
+          <param name="movie" value="$url">
+          <param name="quality" value="high">
+          <embed src="$url" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="$node->width" height="$node->height"></embed>
+        </object>
+EOD;
+      break;
+    case 'text':
+      // FIXME: used a couple of places, move to separate function?
+      $path = file_create_path($file->filepath);
+      if ($content = file_get_contents($path)) {
+        if (strpos($content, '%url')) {
+          // %url present in content, replace with banner link
+          $output .= strtr($content, array('%url' => check_url(url('banner/'. $node->nid))));
+        }
+        else {
+          // no %url in content, add link at the end
+          $output .= $content;
+          $output .= ' '. l(t('&raquo;'), 'banner/'. $node->nid, array(), NULL, NULL, FALSE, TRUE);
+        }
+      }
+  }
+
+  return $output;
+}

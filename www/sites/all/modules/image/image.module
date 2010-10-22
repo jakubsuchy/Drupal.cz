@@ -1,0 +1,571 @@
+<?php
+// $Id: image.module,v 1.197.2.2 2006/07/18 14:00:52 walkah Exp $
+
+/**
+ * Implementation of hook_help
+ */
+function image_help($section) {
+  switch ($section) {
+    case 'admin/help#image':
+      $output = '<p>'. t('The image module is used to create and administer images for your site. Each image is stored as a post, with thumbnails of the original generated automatically. There are two default thumbnail sizes, thumbnail and preview. The thumbnail size is shown as the preview for image posts and when browsing image galleries. The preview is the default size when first displaying an image node.') .'</p>';
+      $output .= '<p>' .t('Image administration allows the image directory and the image sizes to be set.</p><p>
+Image galleries are used to organize and display images in galleries.   The list tab allows users to edit existing image gallery names, descriptions, parents and relative position, known as a weight.  The add galleries tab allows you to create a new image gallery defining name, description, parent and weight.') .'</p>';
+      $output .= t('<p>You can</p>
+<ul>
+<li>view image handling messages in <a href="%admin-settings">administer &gt;&gt; settings</a>.</li>
+<li>configure image sizes and file directories at <a href="%admin-settings-image">administer &gt;&gt; settings &gt;&gt; image</a>.</li>
+<li>use the <a href="%external-http-drupal-org-project-img_assist">image assist module</a> to upload and insert images into posts.</li>
+', array('%admin-settings' => url('admin/settings'), '%admin-image-galleries' => url('admin/image/galleries'), '%admin-settings-image' => url('admin/settings/image'), '%external-http-drupal-org-project-img_assist' => 'http://drupal.org/project/img_assist')) .'</ul>';
+      $output .= '<p>'. t('For more information please read the configuration and customization handbook <a href="%image">Image page</a>.', array('%image' => 'http://www.drupal.org/handbook/modules/image/')) .'</p>';
+      return $output;
+    case 'admin/modules#description':
+      return t('Allows uploading of images.');
+    case 'node/add#image':
+      return '<p>'. t('An image (with thumbnail). This is ideal for publishing photographs or screenshots.') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_node_info
+ */
+function image_node_info() {
+  return array('image' => array('name' => t('image'), 'base' => 'image'));
+}
+
+/**
+ * Implementation of hook_perm
+ */
+function image_perm() {
+  return array('create images', 'view original images', 'edit own images');
+}
+
+/**
+ * Implementation of hook_access
+ */
+function image_access($op, $node) {
+  global $user;
+
+  if ($op == 'create' && user_access('create images')) {
+    return TRUE;
+  }
+
+  if ($op == 'update' || $op == 'delete') {
+    if (user_access('edit own images') && ($user->uid == $node->uid)) {
+      return TRUE;
+    }
+  }
+}
+
+/**
+ * Implementation of hook_settings
+ */
+function image_settings() {
+  _image_check_settings();
+
+  $form['image_updated'] = array('#type' => 'hidden', '#value' => time());
+
+  $form['paths'] = array('#type' => 'fieldset', '#title' => t('File paths'));
+  $form['paths']['image_default_path'] = array('#type' => 'textfield', '#title' => t('Default image path'), '#default_value' => variable_get('image_default_path', 'images'), '#description' => t('Subdirectory in the directory "%dir" where pictures will be stored. Do not include trailing slash.', array('%dir' => theme('placeholder', variable_get('file_directory_path', 'files')))));
+
+  $form['sizes'] = array('#type' => 'fieldset', '#title' => t('Image sizes'));
+  $form['sizes']['image_sizes'] = image_settings_sizes_form();
+
+  return $form;
+}
+
+function image_settings_sizes_form() {
+  $sizes = _image_get_sizes();
+
+  $form['#type'] = 'item';
+  $form['#description'] = t('Select various pixel dimensions, "thumbnail" and "preview" are required.');
+  $form['#tree'] = TRUE;
+  $form['#theme'] = 'image_settings_sizes_form';
+  for ($i = 0; $i < 5; $i++) {
+    $form[$i]['label'] = array('#type' => 'textfield', '#default_value' => $sizes[$i]['label'], '#size' => 25);
+    if (in_array($sizes[$i]['label'], _image_required_sizes())) {
+      $form[$i]['label']['#attributes'] = array('disabled' => 'disabled');
+      $form[$i]['label']['#value'] = $sizes[$i]['label'];
+    }
+    $form[$i]['width'] = array('#type' => 'textfield', '#default_value' => $sizes[$i]['width'], '#size' => 5, '#maxlength' => 5);
+    $form[$i]['height'] = array('#type' => 'textfield', '#default_value' => $sizes[$i]['height'], '#size' => 5, '#maxlength' => 5);
+  }
+
+  return $form;
+}
+
+function theme_image_settings_sizes_form(&$form) {
+  $header = array(t('Label'), t('Width'), t('Height'));
+  foreach (element_children($form) as $key) {
+    $row = array();
+    $row[] = form_render($form[$key]['label']);
+    $row[] = form_render($form[$key]['width']);
+    $row[] = form_render($form[$key]['height']);
+    $rows[] = $row;
+
+  }
+  $output = theme('table', $header, $rows);
+  $output .= form_render($form);
+
+  return $output;
+}
+
+/**
+ * Implementation of hook_menu
+ */
+function image_menu($may_cache) {
+  $items = array();
+
+  if ($may_cache) {
+    $items[] = array('path' => 'node/add/image', 'title' => t('image'),
+                     'access' => user_access('create images'));
+    $items[] = array('path' => 'image/view', 'title' => t('image'),
+                     'access' => user_access('access content'),
+                     'type' => MENU_CALLBACK,
+                     'callback' => 'image_fetch');
+  }
+
+  return $items;
+}
+
+/**
+ * Implements hook_cron. (deletes old temp images)
+ */
+function image_cron() {
+  $path = variable_get('image_default_path', 'images') . '/temp';
+  $files = file_scan_directory(file_create_path($path), '.*');
+  foreach ($files as $file => $info) {
+    if (time() - filemtime($file) > 60*60*6) {
+      file_delete($file);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_prepare().
+ */
+function image_prepare(&$node, $field_name) {
+  if (is_null($field_name)) {
+    $field_name = 'image';
+  }
+  if ($file = file_check_upload($field_name)) {
+    $file = file_save_upload($field_name, _image_filename($file->filename, NULL, TRUE));
+    if ($file) {
+      if (!image_get_info($file->filepath)) {
+        form_set_error($field_name, t('Uploaded file is not a valid image'));
+        return;
+      }
+    }
+    else {
+      return;
+    }
+    $node->images['_original'] = $file->filepath;
+    _image_build_derivatives($node, true);
+    $node->new_file = TRUE;
+  }
+}
+
+/**
+ * implement hook_file_download
+ */
+function image_file_download($file) {
+  $size = image_get_info(file_create_path($file));
+  if ($size) {
+    $headers = array('Content-Type: ' . $size['mime_type']);
+    return $headers;
+  }
+}
+
+/**
+ * Implementation of hook_link.
+ */
+function image_link($type, $node, $main = 0) {
+  $links = array();
+
+  if ($type == 'node' && $node->type == 'image' && !$main) {
+    $request = ($_GET['size']) ? $_GET['size'] : 'preview';
+    foreach (_image_get_sizes() as $size) {
+      if ($node->images[$request] != $node->images[$size['label']]) {
+        $links[] = l($size['label'], 'node/' . $node->nid, NULL, 'size=' . urlencode($size['label']));
+      }
+    }
+    if (user_access('view original images') && ($node->images[$request] != $node->images['_original'])) {
+      $links[] = l(t('original'), 'node/' . $node->nid, NULL, 'size=_original');
+    }
+  }
+
+  return $links;
+}
+
+/**
+ * Implementation of hook_block.
+ *
+ * Offers 2 blocks: latest image and random image
+ */
+function image_block($op, $delta = 0) {
+  switch ($op) {
+    case 'list':
+      $block[0]['info'] = t('Latest image');
+      $block[1]['info'] = t('Random image');
+
+      return $block;
+    case 'view':
+      if (user_access('access content')) {
+        switch($delta) {
+          case 0:
+            $images = image_get_latest();
+            $block['subject'] = t('Latest image');
+            $block['content'] = l(image_display($images[0], 'thumbnail'), 'node/'.$images[0]->nid, array(), NULL, NULL, FALSE, TRUE);
+            break;
+          case 1:
+            $images = image_get_random();
+            $block['subject'] = t('Random image');
+            $block['content'] = l(image_display($images[0], 'thumbnail'), 'node/'.$images[0]->nid, array(), NULL, NULL, FALSE, TRUE);
+            break;
+        }
+      }
+      return $block;
+  }
+}
+
+function image_form_add_thumbnail($form_id, $edit) {
+  if ($edit['images']['thumbnail']) {
+    $node = (object)($edit);
+    $form = array('#type' => 'item', '#title' => t('Thumbnail'), '#value' => image_display($node, 'thumbnail'), '#weight' => -10);
+  }
+  return $form;
+}
+
+/**
+ * Implementation of hook_form
+ */
+function image_form(&$node, &$param) {
+  _image_check_settings();
+
+  $form['#attributes'] = array("enctype" => "multipart/form-data");
+  $form['title'] = array('#type' => 'textfield', '#title' => t('Title'), '#size' => 60, '#maxlength' => 128, '#required' => TRUE, '#default_value' => $node->title);
+
+  $sizes = _image_get_sizes();
+  $form['images']['#tree'] = TRUE;
+  if ($node->new_file) {
+    $form['images']['_original'] = array('#type' => 'hidden', '#value' => $node->images['_original']);
+  }
+  else {
+    $form['images']['_original'] = array('#type' => 'hidden', '#default_value' => $node->images['_original']);
+  }
+  foreach ($sizes as $size) {
+    if ($node->new_file) {
+      $form['images'][$size['label']] = array('#type' => 'hidden', '#value' => $node->images[$size['label']]);
+    }
+    else {
+      $form['images'][$size['label']] = array('#type' => 'hidden', '#default_value' => $node->images[$size['label']]);
+    }
+  }
+
+  $form['thumbnail']['#after_build'] = array('image_form_add_thumbnail');
+  
+  $form['image'] = array('#type' => 'file', '#title' => t('Image'), '#description' => t('Click "Browse..." to select an image to upload.'), '#weight' => -3);
+  $form['body'] = array('#type' => 'textarea', '#title' => t('Body'), '#rows' => 20, '#default_value' => $node->body);
+  $form['format'] = filter_form($node->format);
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_view
+ */
+function image_view(&$node, $teaser = 0, $page = 0) {
+  $request = ($_GET['size']) ? $_GET['size'] : 'preview';
+  $request = check_plain($request);
+  $node = node_prepare($node, $teaser);
+  $node->teaser = theme('image_teaser', $node);
+  $node->body = theme('image_body', $node, $request);
+}
+
+/**
+ * Implementation of hook_load
+ */
+function image_load(&$node) {
+  $result = db_query("SELECT filename, filepath FROM {files} WHERE nid=%d", $node->nid);
+  $node->images = array();
+  while ($file = db_fetch_object($result)) {
+    $node->images[$file->filename] = $file->filepath;
+  }
+  // special images
+  if (empty($node->images['thumbnail'])) {
+    $node->images['thumbnail'] = $node->images['_original'];
+  }
+  if (empty($node->images['preview'])) {
+    $node->images['preview'] = $node->images['_original'];
+  }
+}
+
+/**
+ * Implementation of hook_insert
+ */
+function image_insert($node) {
+  foreach ($node->images as $label => $image) {
+    _image_insert($node, $label, file_create_path($image));
+  }
+}
+
+/**
+ * Implementation of hook_update
+ */
+function image_update($node) {
+  foreach ($node->images as $label => $image) {
+    $old_path = db_result(db_query("SELECT filepath FROM {files} WHERE filename='%s' AND nid=%d", $label, $node->nid));
+    // This is a new image.
+    if ($old_path != $image) {
+      file_delete(file_create_path($old_path));
+      db_query("DELETE FROM {files} WHERE filename='%s' AND nid=%d", $label, $node->nid);
+      _image_insert($node, $label, file_create_path($image));
+    }
+  }
+}
+
+/**
+ * Implementation of hook_delete.
+ */
+function image_delete($node) {
+  foreach ($node->images as $label => $image) {
+    file_delete(file_create_path($image));
+    db_query("DELETE FROM {files} WHERE filename='%s' AND nid=%d", $label, $node->nid);
+  }
+}
+
+/**
+ * Create an <img> tag for an image.
+ */
+function image_display(&$node, $label = 'preview', $attributes = array()) {
+  // regenerate images?
+  if ($node->images[$label] != $node->images['_original'] &&
+      (!file_exists(file_create_path($node->images[$label])) ||
+       filemtime(file_create_path($node->images[$label])) < variable_get('image_updated', 0))) {
+    _image_build_derivatives($node);
+  }
+
+  if (empty($node->images[$label])) {
+    return;
+  }
+
+  $info = image_get_info(file_create_path($node->images[$label]));
+  $attributes['class'] = "image $label". (isset($attributes['class']) ? " ". $attributes['class'] : "");
+  $attributes['width'] = $info['width'];
+  $attributes['height'] = $info['height'];
+
+  return theme('image_display', $node, $label, file_create_url($node->images[$label]), $attributes);
+}
+
+/**
+ * Fetches an image file, allows "shorthand" image urls such of the form:
+ * image/view/$nid/$label
+ * (e.g. image/view/25/thumbnail or image/view/14)
+ */
+function image_fetch($nid = 0, $size = 'preview') {
+  if ($nid) {
+    $node = node_load(array('nid' => $nid));
+    if ($node->images[$size]) {
+      $file = $node->images[$size];
+      $headers = image_file_download($file);
+      file_transfer($file, $headers);
+    }
+  }
+}
+
+/**
+ * Theme a teaser
+ */
+function theme_image_teaser($node) {
+ return l(image_display($node, 'thumbnail'), 'node/'. $node->nid, array(), NULL, NULL, TRUE, TRUE) . $node->teaser;
+}
+
+/**
+ * Theme a body
+ */
+function theme_image_body($node, $size) {
+ return image_display($node, $size) . $node->body;
+}
+
+/**
+  * Theme an img tag for displaying the image.
+  */
+function theme_image_display($node, $label, $url, $attributes) {
+  return '<img src="'. check_url($url) .'" alt="'. check_plain($node->title) .'" title="'. check_plain($node->title) .'" '. drupal_attributes($attributes) .' />';
+}
+
+
+/**
+ * Fetch a random N image(s) - optionally from a given term.
+ */
+function image_get_random($count = 1, $tid = 0) {
+  if ($tid != 0) {
+    $result = db_query_range(db_rewrite_sql("SELECT n.nid FROM {term_node} tn LEFT JOIN {node} n ON n.nid=tn.nid WHERE n.type='image' AND n.status=1 AND tn.tid=%d ORDER BY RAND()"), $tid, 0, $count);
+  }
+  else {
+    $result = db_query_range(db_rewrite_sql("SELECT n.nid FROM {node} n WHERE n.type='image' AND n.status=1 ORDER BY RAND()"), 0, $count);
+  }
+  $output = array();
+  while ($nid = db_fetch_object($result)) {
+    $output[] = node_load(array('nid' => $nid->nid));
+  }
+  return $output;
+}
+
+/**
+ * Fetch the latest N image(s) - optionally from a given term.
+ */
+function image_get_latest($count = 1, $tid = 0) {
+  if ($tid != 0) {
+    $result = db_query_range(db_rewrite_sql("SELECT n.nid FROM {term_node} tn LEFT JOIN {node} n ON n.nid=tn.nid WHERE n.type='image' AND n.status=1 AND tn.tid=%d ORDER BY n.changed DESC"), $tid, 0, $count);
+  }
+  else {
+    $result = db_query_range(db_rewrite_sql("SELECT n.nid FROM {node} n WHERE n.type='image' AND n.status=1 ORDER BY changed DESC"), 0, $count);
+  }
+  $output = array();
+  while ($nid = db_fetch_object($result)) {
+    $output[] = node_load(array('nid' => $nid->nid));
+  }
+  return $output;
+}
+
+/**
+ * Verify the image module and toolkit settings.
+ */
+function _image_check_settings() {
+  // File paths
+  $image_path = file_create_path(variable_get('image_default_path', 'images'));
+  $temp_path = rtrim($image_path, '/') . '/temp';
+
+  if (!file_check_directory($image_path, FILE_CREATE_DIRECTORY, 'image_default_path')) {
+    return false;
+  }
+  if (!file_check_directory($temp_path, FILE_CREATE_DIRECTORY, 'image_default_path')) {
+    return false;
+  }
+
+  // Sanity check : make sure we've got a working toolkit
+  if (!image_get_toolkit()) {
+    drupal_set_message(t('Make sure you have a working image toolkit installed and enabled, for more information see: %settings', array('%settings' => l(t('the settings page'), 'admin/settings'))), 'error');
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Generate image derivatives.
+ */
+function _image_build_derivatives(&$node, $temp = FALSE) {
+  // sanity check:
+  if (!_image_check_settings()) {
+    return false;
+  }
+  $info = image_get_info(file_create_path($node->images['_original']));
+  $sizes = _image_get_sizes();
+  if (!$temp) {
+    _image_remove($node);
+  }
+  foreach ($sizes as $size) {
+    if ($size['label'] && $size['width'] && $size['height']) {
+      if ($info['width'] > $size['width'] || $info['height'] > $size['height']) {
+        $source = file_create_path($node->images['_original']);
+        $destination = _image_filename(basename($source), $size['label'], $temp);
+        if (!image_scale($source, file_create_path($destination), $size['width'], $size['height'])) {
+          drupal_set_message(t('Unable to create %label image', array('%label' => $size['label'])), 'error');
+        }
+        else {
+          $node->images[$size['label']] = $destination;
+          if (!$temp) {
+            _image_insert($node, $size['label'], file_create_path($destination));
+          }
+        }
+      }
+      else {
+        $node->images[$size['label']] = $node->images['_original'];
+      }
+    }
+  }
+}
+
+function _image_remove($node) {
+  $result = db_query("SELECT * FROM {files} WHERE nid=%d AND filename!='_original'", $node->nid);
+  while ($file = db_fetch_object($result)) {
+    // Never delete the original!
+    if ($file->filepath != $node->images['_original']) {
+      file_delete(file_create_path($file->filepath));
+    }
+  }
+  db_query("DELETE FROM {files} WHERE nid=%d AND filename!='_original'", $node->nid);
+}
+
+/**
+ * Creates an image filename.
+ */
+function _image_filename($filename, $type = NULL, $temp = FALSE) {
+  $path = variable_get('image_default_path', 'images') .'/';
+  if ($temp) {
+    $path .= 'temp/';
+  }
+  
+  if ($type) {
+    $pos = strrpos($filename, '.');
+    if ($pos === false) {
+      // The file had no extension - which happens in really old image.module
+      // versions, so figure out the extension.
+      $info = image_get_info(file_create_path($path . $filename));
+      $filename = $filename .'.'. $type .'.'. $info['extension'];
+    }
+    else {
+      $filename = substr($filename, 0, $pos) .'.'. $type . substr($filename, $pos);
+    }
+  }
+
+  return $path . $filename;
+}
+
+/**
+ * Helper function to return the defined sizes (or proper defaults).
+ */
+function _image_get_sizes() {
+  $sizes = variable_get('image_sizes', array(array('width' => 100, 'height' => 100, 'label' => 'thumbnail'),
+                                             array('width' => 640, 'height' => 640, 'label' => 'preview')));
+  return array_filter($sizes, create_function('$size', 'return !empty($size["label"]);'));
+}
+
+function _image_required_sizes() {
+  return array('thumbnail', 'preview', '_original');
+}
+
+function _image_get_dimensions($label) {
+  foreach (_image_get_sizes() as $size) {
+    if ($size['label'] == $label) {
+      return $size;
+    }
+  }
+  return array();
+}
+
+/**
+ * Moves temporary (working) images to the final directory and stores
+ * relevant information in the files table
+ */
+function _image_insert($node, $label, $image) {
+  // Don't duplicate images when a derivative == _original
+  if (($label != '_original') && ($image == file_create_path($node->images['_original']))) {
+    return;
+  }
+  
+  $dest = _image_filename(basename($image));
+  if (file_copy($image, $dest)) {
+    $info = image_get_info(file_create_path($dest));
+    $file->filename = $label;
+    $file->filepath = _image_filename(basename($image));
+    $file->filemime = $info['mime_type'];
+    $file->filesize = filesize(file_create_path($dest));
+    $fid = db_next_id('{files}_fid');
+    db_query("INSERT INTO {files} (fid, nid, filename, filepath, filemime, filesize) VALUES (%d, %d, '%s', '%s', '%s', '%s')",
+             $fid, $node->nid, $file->filename, $file->filepath, $file->filemime, $file->filesize);
+    db_query("INSERT INTO {file_revisions} (fid, vid, description, list) VALUES (%d, %d, '%s', %d)",
+             $fid, $node->vid, '', 0);
+  }
+}
+

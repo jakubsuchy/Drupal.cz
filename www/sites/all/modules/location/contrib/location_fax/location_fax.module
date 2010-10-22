@@ -1,0 +1,73 @@
+<?php
+// $Id: location_fax.module,v 1.11 2008/11/20 19:46:21 bdragon Exp $
+
+/**
+ * @file
+ * Add fax number fields to Location address.
+ */
+
+/**
+ * Implementation of hook_locationapi().
+ */
+function location_fax_locationapi(&$location, $op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
+    case 'fields':
+      return array('fax' => t('Fax number'));
+
+    case 'defaults':
+      return array(
+        'fax' => array('default' => '', 'collect' => 0, 'weight' => 30),
+      );
+
+    case 'field_expand':
+      if ($a3 == 'fax') {
+        return array(
+          '#type' => 'textfield',
+          '#title' => t('Fax number'),
+          '#size' => 31,
+          '#maxlength' => 31,
+          '#description' => NULL,
+          '#required' => ($a4 == 2),
+          '#default_value' => $location,
+        );
+      }
+      break;
+
+    case 'save':
+      db_query('DELETE FROM {location_fax} WHERE lid = %d', $location['lid']);
+      if (!empty($location['fax'])) {
+        db_query("INSERT INTO {location_fax} (lid, fax) VALUES (%d, '%s')", $location['lid'], $location['fax']);
+      }
+      break;
+
+    case 'load':
+      $fields = array('fax' => '');
+      if ($row = db_fetch_object(db_query('SELECT fax FROM {location_fax} WHERE lid = %d', $location['lid']))) {
+        $fields['fax'] = $row->fax;
+      }
+      return $fields;
+
+    case 'delete':
+      db_query('DELETE FROM {location_fax} WHERE lid = %d', $location['lid']);
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function location_fax_views_api() {
+  return array(
+    'api' => 2,
+  );
+}
+
+/**
+ * Implementation of hook_token_list().
+ */
+function location_fax_token_list($type = 'all') {
+  if ($type == 'node' || $type == 'user' || $type == 'all') {
+    $tokens['location']['location-fax_N'] = t('Location Fax number (If there are multiple locations per node, N is the iteration, starting with 0)');
+    return $tokens;
+  }
+}

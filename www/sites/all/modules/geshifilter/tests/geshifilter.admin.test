@@ -1,0 +1,128 @@
+<?php
+// $Id: geshifilter.admin.test,v 1.1 2008/04/28 22:52:17 soxofaan Exp $
+
+/**
+* Funcional tests for the GeSHi filter administration.
+*/
+class GeshiFilterAdministrationTest extends DrupalTestCase {
+
+  /**
+   * A global filter adminstrator
+   */
+  var $filter_admin_user;
+
+  /**
+   * The id of the input format with only GeSHi filter in it
+   */
+  var $input_format_id;
+
+  /**
+   * Drupal SimpleTest method: return metadata about the test.
+   */
+  function get_info() {
+    return array(
+      'name'  => t('GeSHi filter administration'),
+      'desc'  => t('Test the GeSHi filter administration.'),
+      'group' => t('GeSHi module'),
+    );
+  }
+
+  /**
+   * SimpleTest core method: code run before each and every test method.
+   *
+   * Optional. You only need this if you have setup tasks.
+   */
+  function setUp() {
+    // Always call the setUp() function from the parent class.
+    parent::setUp();
+
+    // Make sure that Geshi filter module is enabled.
+    $this->drupalModuleEnable('geshifilter');
+
+    // Create a filter admin user
+    $permissions = array('administer filters', 'administer site configuration');
+    $this->filter_admin_user = $this->drupalCreateUserRolePerm($permissions);
+
+    // log in with filter admin user
+    $this->drupalLoginUser($this->filter_admin_user);
+
+    // add an input format with only geshi filter
+    $edit = array(
+      'name' => $this->randomName(10, 'inputformat_'),
+      'filters[geshifilter/0]' => TRUE,
+      'roles[2]' => TRUE,
+    );
+    $this->drupalPost('admin/settings/filters/add', $edit, t('Save configuration'));
+    // store the format id of the created input format
+    $this->input_format_id = db_result(db_query("SELECT format FROM {filter_formats} WHERE name = '%s'", $edit['name']));
+    $this->assertTrue($this->input_format_id, t('Input format id (%s)'));
+
+    // set some default GeSHi filter admin settings
+    $this->drupalVariableSet('geshifilter_format_specific_options', FALSE);
+    $this->drupalVariableSet('geshifilter_brackets', GESHIFILTER_BRACKETS_BOTH);
+    $this->drupalVariableSet('geshifilter_default_line_numbering', GESHIFILTER_LINE_NUMBERS_DEFAULT_NONE);
+
+  }
+
+  /**
+   * SimpleTest core method: code run after each and every test method.
+   *
+   * Optional. You only need this if you have setup tasks.
+   */
+  function tearDown() {
+    // remove input format
+    $this->drupalPost('admin/settings/filters/delete/'. $this->input_format_id, array(), t('Delete'));
+
+    // Always call the tearDown() function from the parent class.
+    parent::tearDown();
+  }
+
+  /**
+   * Check tag unicity: tags should differ between languages and from generic tags
+   */
+  function test_tag_unicity() {
+    // enable some languages first
+    $this->drupalVariableSet('geshifilter_language_enabled_php', TRUE);
+    $this->drupalVariableSet('geshifilter_language_enabled_python', TRUE);
+
+    // first round: without format specific tag options
+    $this->drupalVariableSet('geshifilter_format_specific_options', FALSE);
+    $this->drupalVariableSet('geshifilter_tags', 'code blockcode generictag');
+
+    // a language tag should differ from the generic tags
+    $form_values = array(
+      'geshifilter_language_tags_php' => 'php generictag',
+    );
+    $this->drupalPost('admin/settings/geshifilter/languages', $form_values, t('Save configuration'));
+    $this->assertText(t('The language tags should differ between languages and from the generic tags.'), t('Language tags should differ from generic tags (with generic tag options)'));
+
+    // language tags should differ between languages
+    $form_values = array(
+      'geshifilter_language_tags_php' => 'php languagetag',
+      'geshifilter_language_tags_python' => 'languagetag python',
+    );
+    $this->drupalPost('admin/settings/geshifilter/languages/all', $form_values, t('Save configuration'));
+    $this->assertText(t('The language tags should differ between languages and from the generic tags.'), t('Language tags should differ between languages (with generic tag options)'));
+
+    // second round: with format specific tag options
+    $this->drupalVariableSet('geshifilter_format_specific_options', TRUE);
+    $this->drupalVariableSet('geshifilter_tags_' . $this->input_format_id, 'code blockcode generictag');
+
+    // a language tag should differ from the generic tags
+    $form_values = array(
+      'geshifilter_language_tags_php_' . $this->input_format_id => 'php generictag',
+    );
+    $this->drupalPost('admin/settings/filters/' . $this->input_format_id . '/configure', $form_values, t('Save configuration'));
+    $this->assertText(t('The language tags should differ between languages and from the generic tags.'), t('Language tags should differ from generic tags (with format specific tag options)'));
+
+    // language tags should differ between languages
+    $form_values = array(
+      'geshifilter_language_tags_php_' . $this->input_format_id => 'php languagetag',
+      'geshifilter_language_tags_python_' . $this->input_format_id => 'languagetag python',
+    );
+    $this->drupalPost('admin/settings/filters/' . $this->input_format_id . '/configure', $form_values, t('Save configuration'));
+    $this->assertText(t('The language tags should differ between languages and from the generic tags.'), t('Language tags should differ between languages (with format specific tag options)'));
+
+  }
+
+}

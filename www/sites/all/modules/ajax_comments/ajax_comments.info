@@ -1,0 +1,10 @@
+name = AJAX Comments
+description = "AJAXifies comments on site."
+core = 6.x
+dependencies[] = comment
+; Information added by drupal.org packaging script on 2009-03-23
+version = "6.x-1.7"
+core = "6.x"
+project = "ajax_comments"
+datestamp = "1237843207"
+

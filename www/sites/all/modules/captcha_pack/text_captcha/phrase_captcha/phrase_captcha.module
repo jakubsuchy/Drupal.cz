@@ -1,0 +1,95 @@
+<?php
+// $Id: phrase_captcha.module,v 1.12 2008/04/07 22:55:03 soxofaan Exp $
+
+/**
+ * Implementation of a phrase based CAPTCHA, for use with the CAPTCHA module
+ *
+ * @todo: add character picking of current word, which is harder for spam bots
+ * than plain word guessing.
+ */
+
+require_once(drupal_get_path('module', 'phrase_captcha') .'/../text_captcha.inc');
+
+define('PHRASE_CAPTCHA_GENERATE_NONSENSE_WORDS', 0);
+define('PHRASE_CAPTCHA_USER_DEFINED_WORDS', 1);
+
+/**
+ * Implementation of hook_help().
+ */
+function phrase_captcha_help($path, $arg) {
+  switch ($path) {
+    case 'admin/user/captcha/phrase_captcha':
+      return '<p>'. t('This phrase based CAPTCHA presents a CAPTCHA phrase of a given number of words and asks to pick the right word (based on counting, alphabetical order, etc).') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function phrase_captcha_menu() {
+  $items = array();
+  // add an administration tab for phrase_captcha
+  $items['admin/user/captcha/phrase_captcha'] = array(
+    'title' => 'Phrase CAPTCHA',
+    'file' => 'phrase_captcha.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('phrase_captcha_settings_form'),
+    'access arguments' => array('administer CAPTCHA settings'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_captcha
+ */
+function phrase_captcha_captcha($op, $captcha_type='') {
+  switch ($op) {
+    case 'list':
+      return array('Phrase CAPTCHA');
+    case 'generate':
+      if ($captcha_type == 'Phrase CAPTCHA') {
+        require_once('phrase_captcha.inc');
+        // generate words
+        $words = _phrase_captcha_generate_words((int) variable_get('phrase_captcha_word_quantity', 5));
+        // pick a random word selection challenge
+        $word_challenges = _phrase_captcha_enabled_word_challenges();
+        $key = array_rand($word_challenges);
+        $function = $word_challenges[$key];
+        list($phrase_words, $question, $solution) = call_user_func($function, $words);
+        // build options list
+        $all_words = array_merge($words, _phrase_captcha_generate_words((int) variable_get('phrase_captcha_additional_word_quantity', 1)));
+        shuffle($all_words);
+        $options = array();
+        foreach ($all_words as $word) {
+          $options[$word] = $word;
+        }
+        // store the answer and build the form elements
+        $captcha = array();
+        $captcha['solution'] = $solution;
+        $captcha['form']['captcha_phrase'] = array(
+          '#type' => 'markup',
+          '#value' => '"'. implode(' ', $phrase_words) .'"',
+          '#weight' => -2,
+        );
+        $captcha['form']['captcha_response'] = array(
+          '#type' => 'radios',
+          '#title' => $question,
+          '#options' => $options,
+          // extra class needed for additional CSS'ing of the options
+          '#attributes' => array('class' => 'text-captcha-word-list-radios'),
+          // The following entry '#DANGEROUS_SKIP_CHECK' is needed to prevent
+          // that Drupal checks during validation phase if a submitted option
+          // is in the list of possible options. (see includes/form.inc)
+          // The options are randomly generated on each call and consequently
+          // almost never the same during the generate phase and the validation
+          // phase.
+          '#DANGEROUS_SKIP_CHECK' => TRUE, //
+          '#required' => TRUE,
+        );
+        // additional text CAPTCHA CSS rules
+        drupal_add_css(drupal_get_path('module', 'phrase_captcha') .'/../text_captcha.css');
+        return $captcha;
+      }
+  }
+}

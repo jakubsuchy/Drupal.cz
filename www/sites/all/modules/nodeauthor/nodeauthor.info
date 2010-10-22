@@ -1,0 +1,11 @@
+; $Id
+name = Nodeauthor
+description = A simple module that adds an 'About Author' field to the bottom of selected node types which can be populated by users when they edit their profile.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-08-03
+version = "6.x-1.8"
+core = "6.x"
+project = "nodeauthor"
+datestamp = "1217782513"
+

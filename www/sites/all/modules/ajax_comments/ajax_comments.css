@@ -1,0 +1,47 @@
+#comment-form-content, #comment-form-content form {
+  position:relative;
+  zoom:1;
+}
+
+#comment-form #ajax-comments-preview.progress-disabled, #comment-form #ajax-comments-submit.progress-disabled {
+  float:none;
+}
+
+#comment-form  #ahah-progress-edit-preview {
+  float:none;
+  display:inline;
+}
+
+#comment-form .bar {
+  display:none;
+}
+
+#comment-form .percentage {
+  display:none;
+}
+
+#comment-form .message {
+  display:inline;
+  float:none;
+  padding:2px 3em 2px 0.5em;
+  background:#FFFFFF url(images/progress.gif) repeat-xy scroll 0 0;
+  border:1px solid #00375A;
+}
+
+#comment-form-content .ajax-comments-loader {
+  background:#FFFFFF url(images/ajax-loader.gif) no-repeat scroll 50% 50%;
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  opacity:0.8;
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"; /* fuckin' IE8 */
+  filter: alpha(opacity=80);
+}
+
+.ajax-comments-processed a.pressed {
+  text-decoration:none;
+  border-bottom:1px dotted;
+  outline:0;
+}

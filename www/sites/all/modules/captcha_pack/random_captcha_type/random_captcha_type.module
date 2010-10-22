@@ -1,0 +1,73 @@
+<?php
+// $Id: random_captcha_type.module,v 1.15 2009/08/18 23:26:30 soxofaan Exp $
+
+/**
+ * Implementation of a "meta CAPTCHA" which randomly picks a CAPTCHA type
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function random_captcha_type_help($path, $arg) {
+  switch ($path) {
+    case 'admin/user/captcha/random_captcha_type':
+      return '<p>'. t('This CAPTCHA type is a "meta" CAPTCHA type, which randomly picks one of the selected CAPTCHA types.') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function random_captcha_type_menu() {
+  $items = array();
+  // add an administration tab for random_captcha_type
+  $items['admin/user/captcha/random_captcha_type'] = array(
+    'title' => 'Random CAPTCHA type',
+    'file' => 'random_captcha_type.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('random_captcha_type_settings_form'),
+    'access arguments' => array('administer CAPTCHA settings'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_captcha
+ */
+function random_captcha_type_captcha($op, $captcha_type='', $captcha_sid='') {
+  switch ($op) {
+    case 'list':
+      require_once('random_captcha_type.inc');
+      $enabled_types = _random_captcha_type_get_enabled_types();
+      if (count($enabled_types) < 2) {
+        return;
+      }
+      return array('Random CAPTCHA type');
+
+    case 'generate':
+      if ($captcha_type == 'Random CAPTCHA type') {
+        require_once('random_captcha_type.inc');
+        if (isset($_POST['random_captcha_type'])) {
+          // If this is a POST request, we're possibly in a validation phase
+          // so the CAPTCHA type should be the same as in the originating form
+          $module_and_type = $_POST['random_captcha_type'];
+        }
+        else {
+          // If not, just pick a random one
+          $types = _random_captcha_type_get_enabled_types();
+          $module_and_type = $types[array_rand($types)];
+        }
+        list($module, $type) = explode('/', $module_and_type);
+        // Call the generate CAPTCHA hook
+        $captcha = module_invoke($module, 'captcha', 'generate', $type, $captcha_sid);
+        // Store the current CAPTCHA type so it can be recovered for
+        // regenerating the form in the validation phase
+        $captcha['form']['random_captcha_type'] = array(
+          '#type' => 'hidden',
+          '#value' => $module_and_type,
+        );
+        return $captcha;
+      }
+  }
+}

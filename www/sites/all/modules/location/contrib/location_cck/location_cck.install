@@ -1,0 +1,43 @@
+<?php
+// $Id: location_cck.install,v 1.1.2.2 2009/02/26 15:19:01 bdragon Exp $
+
+/**
+ * @file
+ *  Module installation/uninstallation hooks.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function location_cck_install() {
+  // Notify content module when this module is installed.
+  drupal_load('module', 'content');
+  content_notify('install', 'location_cck');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function location_cck_uninstall() {
+  // Notify content module when this module is uninstalled.
+  drupal_load('module', 'content');
+  content_notify('uninstall', 'location_cck');
+}
+
+/**
+ * Implementation of hook_enable().
+ */
+function location_cck_enable() {
+  // Notify content module when this module is enabled.
+  drupal_load('module', 'content');
+  content_notify('enable', 'location_cck');
+}
+
+/**
+ * Implementation of hook_disable().
+ */
+function location_cck_disable() {
+  // Notify content module when this module is disabled.
+  drupal_load('module', 'content');
+  content_notify('disable', 'location_cck');
+}

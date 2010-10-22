@@ -1,0 +1,115 @@
+# $Id: texy_image-module.pot,v 1.1 2007/08/15 11:49:26 havran Exp $
+#
+# LANGUAGE translation of Drupal (texy_image.module)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: texy_image.module,v 1.1 2007/08/15 11:13:35 havran
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2007-08-15 13:44+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: texy_image.module:15
+msgid "<p>Texy! Image allows you modify image settings for Texy!.</p>"
+msgstr ""
+
+#: texy_image.module:17
+msgid "<p>Below is a list of image settings for the Texy! module.</p>"
+msgstr ""
+
+#: texy_image.module:30
+msgid "Image"
+msgstr ""
+
+#: texy_image.module:31
+msgid "Customize the Texy! image settings."
+msgstr ""
+
+#: texy_image.module:48
+msgid "Image settings"
+msgstr ""
+
+#: texy_image.module:56
+msgid "Directory"
+msgstr ""
+
+#: texy_image.module:57
+msgid "Subdirectory of the <code>%dir</code> directory where the pictures are stored. Do not include trailing slash."
+msgstr ""
+
+#: texy_image.module:64
+msgid "Class for images aligned to the left"
+msgstr ""
+
+#: texy_image.module:65
+msgid "Name for a class which will be assigned to all images aligned to the left."
+msgstr ""
+
+#: texy_image.module:71
+msgid "Class for images aligned to the right"
+msgstr ""
+
+#: texy_image.module:72
+msgid "Name for a class which will be assigned to all images aligned to the right."
+msgstr ""
+
+#: texy_image.module:78
+msgid "Default alternate text"
+msgstr ""
+
+#: texy_image.module:79
+msgid "Default value for the <i>alt</i> attribute. Leave this field blank to specify no alternate text for images."
+msgstr ""
+
+#: texy_image.module:85
+msgid "Images with descriptions"
+msgstr ""
+
+#: texy_image.module:86
+msgid "Texy!'s built-in module allows user to easily insert images along with their descriptions. Example: <code>[* image.png *] *** This is a short description of the image</code>."
+msgstr ""
+
+#: texy_image.module:91
+msgid "Images as definition list terms"
+msgstr ""
+
+#: texy_image.module:92
+msgid "By selecting this option you can use definition list term and description elements as containers and output the content in a more semantic way."
+msgstr ""
+
+#: texy_image.module:98
+msgid "Class for images with descriptions"
+msgstr ""
+
+#: texy_image.module:99
+msgid "Name for a class which will be assigned to all images with accompanying descriptions."
+msgstr ""
+
+#: texy_image.module:105
+msgid "Class for images with descriptions aligned to the left"
+msgstr ""
+
+#: texy_image.module:106
+msgid "Name for a class which will be assigned to image containers aligned to the left."
+msgstr ""
+
+#: texy_image.module:112
+msgid "Class for images with descriptions aligned to the right"
+msgstr ""
+
+#: texy_image.module:113
+msgid "Name for a class which will be assigned to image containers aligned to the right."
+msgstr ""
+
+#: texy_image.module:0
+msgid "texy_image"
+msgstr ""
+

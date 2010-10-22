@@ -1,0 +1,78 @@
+# $Id: username_check.de.po,v 1.2 2009/01/22 14:10:02 duke Exp $
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  username_check.module: n/a
+#  username_check.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Username check\n"
+"POT-Creation-Date: 2008-11-27 09:52+0200\n"
+"PO-Revision-Date: 2009-01-03 00:03+0100\n"
+"Last-Translator: Mike Wink\n"
+"Language-Team: Drupal Community <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: username_check.module:25
+msgid "Username check"
+msgstr "Benutzernamenprüfung"
+
+#: username_check.module:54
+msgid "Check username"
+msgstr "Benutzernamen prüfen"
+
+#: username_check.module:80
+msgid "Checking username availability ..."
+msgstr "Prüfe Verfügbarkeit des Benutzernamens..."
+
+#: username_check.module:103
+msgid "The username %username is not allowed."
+msgstr "Der Benutzername %username ist nicht erlaubt."
+
+#: username_check.module:111
+msgid "The name %username is already taken."
+msgstr "Der Benutzername %username ist schon vergeben."
+
+#: username_check.module:115
+msgid "The username %username is available."
+msgstr "Der Benutzername %username ist verfügbar."
+
+#: username_check.module:141
+msgid "Checking mode"
+msgstr "Modus"
+
+#: username_check.module:143
+msgid "Manual - executes upon clicking a button"
+msgstr "Manuell: wird auf Knopfdruck ausgelöst"
+
+#: username_check.module:144
+msgid "Automatic - executes when user leaves username field or upon timer"
+msgstr "Automatisch: wird ausgeführt wenn der Nutzer das Eingabefeld verlässt oder der Timer abläuft"
+
+#: username_check.module:150
+msgid "Timer threshold"
+msgstr "Timergrenzwert"
+
+#: username_check.module:151
+msgid "Threshold in seconds (ex: 0.5, 1). Only for automatic mode."
+msgstr "Grenzwert in Sekunden (bsw. 0.5, 1) nur für automatische Prüfung"
+
+#: username_check.module:0
+msgid "username_check"
+msgstr "username_check"
+
+#: username_check.info:0
+msgid "Username AJAX check"
+msgstr "Benutzernamen AJAX Prüfung"
+
+#: username_check.info:0
+msgid "Check username originality on registration or create user form via AJAX request."
+msgstr "Prüft eingegebene Benutzernamen während der Registrierung oder im \"Benutzer hinzufügen\" Formular via AJAX."
+

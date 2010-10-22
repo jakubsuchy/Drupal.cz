@@ -1,0 +1,41 @@
+<?php
+function unpublished_perm() {
+  return array("view block");
+}
+
+function unpublished_help($section) {
+	  if ($section == 'admin/modules#description') {
+		      return t('Vypis nodu, ktere jsou unpublished');
+	        }
+}
+function unpublished_block($op = 'list', $delta = 0, $edit = array()) {
+	if ($op == 'list') {
+		$blocks[0] = array('info' => t('Unpublished nodes'), 'weight' => 0, 'enabled' => 0, 'region' => 'left');
+		return $blocks;
+	}
+	else if ($op == 'view') { 
+		if (user_access("view block")) {
+			$block = array('subject' => 'Nevydané články', 'content' => _unpublished_display_block());
+			return $block;
+		}
+	}
+}
+function _unpublished_display_block() {
+	global $user;
+	$res = db_query(db_rewrite_sql("SELECT n.uid, n.nid, n.title, n.created FROM {node} n WHERE n.status = 0 ORDER BY n.created ASC"));
+	if (!db_num_rows($res)) {
+		  $output = t("Žádné nevydané články.");
+	} else {
+		while ($node = db_fetch_object($res)) {
+			if ($node->uid != $user->uid) {
+				$title = "Cizí: ".$node->title."!";
+			} else {
+				$title = $node->title;
+			}
+			$items[] = l($title, 'node/'. $node->nid);
+		}
+		$output = theme('node_list', $items, '');
+	}
+	return $output;
+}
+?>

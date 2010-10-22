@@ -1,0 +1,33 @@
+<?php
+// $Id: fastpath_fscache.install,v 1.1 2006/08/26 05:06:20 mathias Exp $
+
+function fastpath_fscache_install() {
+  // Setup the default file path
+  $fscache_path = file_create_path('cache');
+  if (!file_check_directory($fscache_path, FILE_CREATE_DIRECTORY, 'fastpath_fscache_path')) {
+    drupal_set_message(t('Unable to create cache folder "%directory". Please manually create this folder.', array('%directory' => $fscache_path)));
+  }
+  else {
+    variable_set('fastpath_fscache_path', $fscache_path);
+    
+    $cache_inc_path = drupal_get_path('module', fastpath_fscache). '/cache.fs.inc';
+    variable_set('cache_inc', $cache_inc_path);
+    
+    $code = '
+<pre>
+$conf = array(
+  \'page_cache_fastpath\' => 1,
+  \'cache_inc\' => \''. $cache_inc_path .'\',
+  \'file_cache\' => \''. $fscache_path .'\'
+);
+</pre>
+    ';
+    
+    drupal_set_message(t('Fastpath_fscache module installed. Next, add the following lines to your <code>settings.php</code> file. '. $code));    
+  }  
+  
+  // Note: The variable_set() calls don't really do much except claim the 
+  // namespace because this file-based caching system never invokes the db to 
+  // retrieve them.  These paths still need to be rolled by hand in 
+  // settings.php. 
+}

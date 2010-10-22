@@ -1,0 +1,58 @@
+<?php
+// $Id: signup_status_log.module,v 1.3 2009/01/30 18:34:11 miglius Exp $
+
+/**
+ * @file
+ * Implements signup status log
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_menu().
+ */
+function signup_status_log_menu() {
+  $items['admin/reports/signup_status_log'] = array(
+    'title' => 'Signup status log',
+    'description' => 'View signup status changes.',
+    'page callback' => 'signup_status_log_list',
+    'access arguments' => array(SIGNUP_STATUS_MANAGE_PERMISSION),
+  );
+  return $items;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Views integration
+
+/**
+ * Implementation of hook_views_api().
+ */
+function signup_status_log_views_api() {
+  return array(
+    'api' => 2.0,
+    'path' => drupal_get_path('module', 'signup_status_log') .'/views',
+  );
+}
+
+/**
+ * Display a signup status log view.
+ */
+function signup_status_log_list() {
+  $view = views_get_view('signup_status_log');
+  $view->override_path = 'admin/reports/signup_status_log';
+  return $view->preview();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Signup status integration
+
+/**
+ * Implementation of hook_signup_status().
+ */
+function signup_status_log_signup_status($action, $signup) {
+  global $user;
+
+  db_query("INSERT INTO {signup_status_log} (sid, nid, uid, anon_mail, cid, timestamp, admin_uid, action) VALUES (%d, %d, %d, '%s', %d, %d, %d, '%s')", $signup->sid, $signup->nid, $signup->uid, $signup->anon_mail, $signup->status, time(), $user->uid, $action);
+}
+

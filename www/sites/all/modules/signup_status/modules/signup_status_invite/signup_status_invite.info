@@ -1,0 +1,13 @@
+; $Id: signup_status_invite.info,v 1.2 2009/09/19 20:49:00 dww Exp $
+name = Signup status invite
+description = Allow inviting other users to signup.
+package = Signup
+dependencies[] = signup_status
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-09-24
+version = "6.x-1.0-alpha2"
+core = "6.x"
+project = "signup_status"
+datestamp = "1253775363"
+

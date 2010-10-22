@@ -1,0 +1,33 @@
+<?php
+// $Id: signup_status_invite.install,v 1.1 2009/01/30 18:44:47 miglius Exp $
+
+/**
+ * @file
+ * signup status invite module installation and upgrade code.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_enable().
+ */
+function signup_status_invite_enable() {
+  drupal_set_message(t('signup status invite module successfully installed. Please review the available <a href="@settings">configuration settings</a>.', array('@settings' => url('admin/settings/signup_status_invite'))));
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function signup_status_invite_install() {
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function signup_status_invite_uninstall() {
+  variable_del('signup_status_invite_status');
+  variable_del('signup_status_invite_mail_invite_subject');
+  variable_del('signup_status_invite_mail_invite_body');
+}
+

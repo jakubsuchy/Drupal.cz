@@ -1,0 +1,417 @@
+<?php
+
+// $Id: mail.module,v 1.19.2.4 2006/10/17 18:09:27 nedjo Exp $
+
+/**
+ * Provide online user help
+ */
+function mail_help($section = 'admin/help#story') {
+  switch ($section) {
+    case 'admin/modules#description':
+      return t('Enables site administrator or users to send emails to registered users.');
+    case 'admin/settings/mail':
+      return t('Mail postings are sent to registered users with specified roles and also saved to the site database for future reference. Email messages may be customized through the use of variables as listed under the "Message" field.');
+    case 'admin/help#mail':
+      return t("
+      <p>The mail module lets your users with appropriate permissions send mail to registered site users.  Emails are also saved to the site database for future reference.  The module provides a mail content type, and also lets other content types be emailed.</p>
+      <p>Mails sent from the admin account are tagged with the site name and come from the site admin email address.  Mail sent from other accounts have that account's email as a return address and are tagged with a name in the form \"username at site\" where username is the user name of the user doing the posting and site is the name of the site.</p>
+      <h3>Setting up content types for mailing</h3>
+      <p>Use a content type's <a href=\"%node-configuration\">configuration page</a> to enable emailing for that content type.  Set Email to \"enabled\".  This will add an email section to the editing form for that content type, allowing users with appropriate permissions to send updates by email.</p>
+      <h3>Accepting emails</h3>
+      <p>The mail module adds a new field to the user registration and editing forms through which users can opt in to receiving site emails.  Emails send from non-admin accounts will go out only to users who have opted to receive emails.  However, mails sent from user accounts with the \"administer users\" permission can go out to all users, whether or not they have opted in.</p>
+      <h3>User access permissions for mail</h3>
+      <p><strong>send emails to users:</strong> Allows a role to post email to users. You must enable this permission to in order for a role to create a mail message.</p>
+      <h3>Settings</h3>
+      <p>Use the mail <a href=\"%mail-settings\">mail settings page</a> to set default sending options.  These include format (plain text or HTML), priority, character set, and receipt request.  These options can be overridden for a particular mail post on the node editing page.</p>
+      <h3>Attachments</h3>
+      <p>To allow users to send attachments with email messages, enable the upload module and ensure that uploads are enabled for mail posts.  Any files uploaded with a mail post will then be sent as attachments.</p>
+      ", array("%node-configuration" => url("admin/settings/content-types"), "%mail-settings" => url("admin/settings/mail")));
+    case 'node/add/mail':
+      if (!variable_get('mail_mail', 0)) {
+        return t('Emailing is not yet enabled for mail posts. An administrator must enable it in the <a href="%configure">mail content configuration page</a>.', array("%configure" => url("admin/settings/content-types/mail")));
+      }
+    case 'node/add#mail':
+      return t('A mail post can be sent to users of selected roles.');
+  }
+}
+
+/**
+ * Declare administrative settings for a module.
+ */
+function mail_settings() {
+  $form = array();
+  $form['options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Default mail sending options'),
+    '#description' => t('These options will be the defaults for new mail messages, but can be overridden in the mail editing form.'),
+  );
+  $form['options']['mail_format'] = array(
+    '#type' => 'select',
+    '#title' => t('Format'),
+    '#description' => t('Select the default email sending format.'),
+    '#options' => array('plain' => t('plain'), 'html' => t('html')),
+    '#default_value' => variable_get('mail_format', 'plain'),
+  );
+  $form['options']['mail_priority'] = array(
+    '#type' => 'select',
+    '#title' => t('Priority'),
+    '#description' => t('Note that email priority is ignored by a lot of email programs.'),
+    '#options' => array(0 => t('none'), 1 => t('highest'), 2 => t('high'), 3 => t('normal'), 4 => t('low'), 5 => t('lowest')),
+    '#default_value' => variable_get('mail_priority', 0),
+  );
+  $form['options']['mail_character_set'] = array(
+    '#type' => 'select',
+    '#title' => t('Character set'),
+    '#description' => t('Different languages may need a different character set to have email messages displayed correctly. The default for English is (en) iso-8859-1. For more details visit the <a href=\"http://www.w3.org/International/O-charset-lang.html\">w3.org character set guide</a>.'),
+    '#options' => drupal_map_assoc(array('iso-8859-1','iso-8859-7','iso-8859-5', 'UTF-8')),
+    '#default_value' => variable_get('mail_character_set', 'iso-8859-1'),
+  );
+  $form['options']['mail_receipt'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Request receipt'),
+    '#description' => t('Request a Read Receipt from your mails. A lot of email programmes ignore these so it is not a definitive indication of how many people have read your mailout.'),
+    '#default_value' => variable_get('mail_receipt', 0),
+  );
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_node_info().
+ */
+function mail_node_info() {
+  return array('mail' => array('name' => t('mail'), 'base' => 'mail'));
+}
+
+/**
+ * Define user permissions.
+ */
+function mail_perm() {
+  return array('send mail to users');
+}
+
+/**
+ * Define access restrictions
+ */
+function mail_access($op, $node) {
+  global $user;
+
+  if ($op == 'view') {
+    return $node->status;
+  }
+
+  if ($op == 'create') {
+    return user_access('send mail to users');
+  }
+
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function mail_menu($may_cache) {
+  $items = array();
+
+  if ($may_cache) {
+    $items[] = array(
+      'path' => 'node/add/mail',
+      'title' => t('mail'),
+      'access' => user_access('send mail to users'),
+    );
+  }
+
+  return $items;
+}
+
+/**
+ * Display a node editing form
+ */
+function mail_form(&$node) {
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => -5
+  );
+  $form['body_filter']['body'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+    '#description' => t('This will be the body of your email message.')  .' '. t('Available variables are:') .' %username, %site, %uri, %uri_brief, %mailto, %login_uri, %edit_uri.',
+    '#default_value' => $node->body,
+    '#rows' => 20,
+    '#required' => TRUE
+  );
+  $form['body_filter']['format'] = filter_form($node->format);
+  return $form;
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function mail_form_alter($form_id, &$form) {
+  if (isset($form['type'])) {
+    if ($form['type']['#value'] .'_node_settings' == $form_id) {
+      $form['workflow']['mail_'. $form['type']['#value']] = array(
+        '#type' => 'radios',
+        '#title' => t('Allow pages of this content type to be mailed'),
+        '#default_value' => variable_get('mail_'. $form['type']['#value'], 0),
+        '#options' => array(t('Disabled'), t('Enabled')),
+      );
+    }
+
+    $node = $form['#node'];
+    if ($form['type']['#value'] .'_node_form' == $form_id && variable_get("mail_$node->type", FALSE) && user_access('send mail to users')) {
+
+      $form['mail_options'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Mail sending options'),
+        '#collapsible' => TRUE,
+      );
+      $form['mail_options']['mail_out'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Email out a copy of this post'),
+        '#default_value' => $node->mail_out,
+      );
+      $roles = user_roles(TRUE);
+      $form['mail_options']['mail_roles_selected'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Roles'),
+        '#default_value' => $node->mail_roles_selected ? $node->mail_roles_selected : array(),
+        '#options' => $roles,
+        '#description' => t('Select roles to send the email to.  At least one role is required for email to be sent.'),
+      );
+      if (user_access('administer users')) {
+        $form['mail_options']['mail_override_opt'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Send to users who haven\'t opted in'),
+          '#default_value' => $node->mail_override_opt,
+          '#description' => t('Checking this option will send mail to users in the selected roles even if they have not opted in to receiving mail.'),
+        );
+      }
+      $form['mail_options']['mail_format'] = array(
+        '#type' => 'select',
+        '#title' => t('Format'),
+        '#description' => t('Select the default email sending format.'),
+        '#options' => array('plain' => t('plain'), 'html' => t('html')),
+        '#default_value' => $node->mail_format ? $node->mail_format : variable_get('mail_format', 'plain'),
+      );
+      $form['mail_options']['mail_priority'] = array(
+        '#type' => 'select',
+        '#title' => t('Priority'),
+        '#description' => t('Note that email priority is ignored by a lot of email programs.'),
+        '#options' => array(0 => t('none'), 1 => t('highest'), 2 => t('high'), 3 => t('normal'), 4 => t('low'), 5 => t('lowest')),
+        '#default_value' => $node->mail_priority ? $node->mail_priority : variable_get('mail_priority', 0),
+      );
+      $form['mail_options']['mail_character_set'] = array(
+        '#type' => 'select',
+        '#title' => t('Character set'),
+        '#description' => t('Different languages may need a different character set to have email messages displayed correctly. The default for English is (en) iso-8859-1. For more details visit the <a href=\"http://www.w3.org/International/O-charset-lang.html\">w3.org character set guide</a>.'),
+        '#options' => drupal_map_assoc(array('iso-8859-1','iso-8859-7','iso-8859-5', 'UTF-8')),
+        '#default_value' => $node->mail_character_set ? $node->mail_character_set : variable_get('mail_character_set', 'iso-8859-1'),
+      );
+      $form['mail_options']['mail_receipt'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Request receipt'),
+        '#description' => t('Request a Read Receipt from your mails. A lot of email programmes ignore these so it is not a definitive indication of how many people have read your mailout.'),
+        '#default_value' => $node->mail_receipt ? $node->mail_receipt : variable_get('mail_receipt', 0),
+      );
+    }
+  }
+}
+
+/**
+ * Implementation of _nodeapi hook.
+ * Provides the ability to add mailing functionality to any node type.
+ */
+function mail_nodeapi(&$node, $op, $arg) {
+  global $db_url;
+  if (variable_get('mail_'. $node->type, FALSE) && user_access('send mail to users')) {
+    switch ($op) {
+      case 'validate':
+        if ($node->mail_out && !count(array_filter($node->mail_roles_selected))) {
+          form_set_error('mail_roles_selected', t('You need to select at least one role to send the mail to.'));
+        }
+        break;
+      case 'insert':
+      case 'update':
+        if($node->mail_out && $node->status && !$node->moderate) {
+          $node->mail_roles_selected = array_filter($node->mail_roles_selected);
+          _mail_dispatch($node);
+          $db_type = substr($db_url, 0, strpos($db_url, '://'));
+          if ($db_type != 'pgsql') {
+            $body = '<p>' . t('This email was sent to users with the following roles: ') . implode(', ', _mail_get_roles_names($node->mail_roles_selected)) . "</p>\n";
+            $node->body = $body . $node->body;
+            $node->mail_out = FALSE;
+            node_save($node);
+          }
+        }
+        break;
+    }
+  }
+}
+
+/**
+ * Prepare a node's body content for viewing
+ */
+function mail_content($node, $main = 0) {
+  return node_prepare($node, $main);
+}
+
+/**
+ * Implementation of hook_user().
+ *
+ * Provide form element to opt in to content mailouts.
+ */
+function mail_user($type, $edit, &$user, $category = NULL) {
+  if ($type == 'register' || ($type == 'form' && $category == 'account')) {
+    $form['mail'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Email settings'),
+      '#weight' => 5,
+      '#collapsible' => TRUE,
+    );
+    $form['mail']['mail_accept'] = array('#type' => 'checkbox',
+      '#title' => t('Accept email'),
+      '#default_value' => $edit['mail_accept'],
+      '#description' => t('Allow users posting content to sent it to you by email. Note that your e-mail address is not made public and that privileged users such as site administrators are able to email you even if you choose not to enable this feature.'),
+    );
+    return $form;
+  }
+  elseif ($type == 'validate') {
+    return array('mail_accept' => $edit['mail_accept']);
+  }
+}
+
+/**
+ * Return an HTML page to be sent out as an email message body.
+ *
+ * @param $node
+ *   The node object.
+ * @return
+ *   A string containing the entire HTML page.
+ */
+function theme_mail_message($node) {
+  global $user, $base_url;
+  $output = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+  $output .= '<html xmlns="http://www.w3.org/1999/xhtml">';
+  $output .= '<head>';
+  $output .= ' <title>'. check_plain($node->title) .'</title>';
+  $output .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+  $base = $base_url;
+  if (strlen(base_path()) > 1) {
+    $base = substr($base, 0, strpos($base, substr(base_path(), 0, strlen(base_path()) - 1)));
+  }
+  $output .= '<base  href="'. $base .'" />';
+  /*
+  $output .= '<style type="text/css" src="'. base_path() .'/misc/drupal.css" />';
+  foreach (theme_add_style() as $style) {
+    $style->path = $base_url .'/'. substr($style->path, strlen(base_path()), strlen($style->path));
+    $output .= '<style type="text/css" src="'. $style->path .'" />';
+  }
+  */
+  $output .= '</head>';
+  $output .= '<body style="background-color: #fff; color: #000;">';
+  $output .= '<table border="0" cellspacing="4" cellpadding="4"><tr><td style="vertical-align: top;">';
+
+  $output .= "\n<!-- begin content -->\n";
+  $output .= '<p>' . t('Sent by <a href="%name-url">%name</a> from %site.', array('%name' => $user->name, '%name-url' => url("user/$user->uid", NULL, NULL, TRUE), '%site' => variable_get('site_name', 'drupal'))) . '</p>';
+  $output .= '<p>' . t('If you don\'t wish to receive such e-mails, you can <a href="%url">change your account settings</a>.', array('%url' => url('user/' . $node->uid, NULL, NULL, TRUE))) . '</p>';
+  $output .= node_view($node, FALSE, FALSE, FALSE);
+  $output .= "\n<!-- end content -->\n";
+
+  $output .= '</td></tr></table>';
+  $output .= '</body></html>';
+
+  return $output;
+}
+
+/**
+ * Send mail to specified users
+ */
+function _mail_dispatch($node) {
+  global $user, $base_url;
+  $node->from_address = ($user->uid == 1 ? variable_get('site_mail', ini_get('sendmail_from')) : $user->mail);
+  $node->from_name = ($user->uid == 1 ? variable_get('site_name', 'drupal') : t('%user at %site', array('%user' => $user->name, '%site' => variable_get('site_name', 'drupal'))));
+  $node->encode = 'quoted-printable';
+  $roles = $node->mail_roles_selected;
+  if (empty($roles)) {
+    $roles = array();
+  }
+  $roles_where = array();
+  // If 'authenticated user' role is selected, we don't filter by role as we're sending to all roles.
+  if (!in_array(DRUPAL_AUTHENTICATED_RID, $roles)) {
+    foreach ($roles as $rid) {
+      $roles_where[] = 's.rid = ' . $rid;
+    }
+    (count($roles_where)) ? $where = ' AND (' . implode(' OR ', $roles_where) . ') ' : $where = '';
+    $result = db_query('SELECT DISTINCT(u.uid) FROM {users} u, {role} r, {users_roles} s WHERE u.uid = s.uid AND r.rid = s.rid AND u.status != 0' . $where);
+  }
+  else {
+    $result = db_query('SELECT uid FROM {users} WHERE status != 0');
+  }
+  $success = TRUE;
+  while ($uid = db_fetch_object($result)) {
+    $account = user_load(array('uid' => $uid->uid, 'status' => 1));
+    if (!$account->mail_accept && !($node->mail_override_opt && user_access('administer users'))) {
+      //continue;
+    }
+    if ($account->mail) {
+      $node->to = $account->mail;
+      $variables = array('%username' => $account->name, '%site' => variable_get('site_name', 'drupal'), '%uri' => $base_url, '%uri_brief' => substr($base_url, strlen('http://')), '%mailto' => $account->mail, '%date' => format_date(time()), '%login_uri' => url('user/login', NULL, NULL, TRUE), '%edit_uri' => url('user/edit', NULL, NULL, TRUE));
+      $message = strtr(node_view($node, FALSE, FALSE, FALSE), $variables);
+      if ($node->mail_format == 'plain') {
+        $node->message = strip_tags($message);
+      }
+      else {
+        $node->message = theme('mail_message', $node);
+      }
+      if (!mail_send($node)) {
+        $success = FALSE;
+      }
+    }
+  }
+  if ($success) {
+    drupal_set_message(t('Message %title sent to users with the following roles: %roles.', array('%title' => $node->title, '%roles' => implode(', ', _mail_get_roles_names($roles))))); 
+  }
+  else {
+    drupal_set_message(t('Error sending message %title to users with the following roles: %roles.', array('%title' => $node->title, '%roles' => implode(', ', _mail_get_roles_names($roles))))); 
+  }
+}
+
+/**
+ * Send mail
+ */
+function mail_send($mail) {
+  require_once('activeMailLib.php');
+  $email = new activeMailLib($mail->mail_format);
+  $email->From($mail->from_name . ' <' . $mail->from_address . '>');
+  $email->To($mail->to);
+  $email->Subject($mail->title);
+  $email->Message($mail->message, $mail->mail_character_set, $mail->mail_encode);
+  $email->priority($mail->mail_priority);
+  if ($mail->mail_receipt) {
+    $email->Receipt($mail->from_address);
+  }
+  if ($mail->files) {
+    foreach ($mail->files as $file) {
+      $email->Attachment($file->filepath, $file->filename);
+    }
+  }
+  $email->Send();
+  return $email->isSent($mail->to);
+}
+
+/**
+ * Generate an array of role names
+ */
+function _mail_get_roles_names($roles = array()) {
+  $roles_names = array();
+  if (count($roles)) {
+    $result = db_query('SELECT name FROM {role} WHERE rid in (' . implode(',', $roles) . ') ORDER BY name');
+    while ($role = db_fetch_object($result)) {
+      $roles_names[] = $role->name;
+    }
+  }
+  return $roles_names;
+}

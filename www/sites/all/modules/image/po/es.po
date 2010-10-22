@@ -1,0 +1,240 @@
+# Traducción al español del módulo Image.
+# Esta traducción ha sido financiada por interactors. <http://interactors.coop>.
+# Gerard Farràs <gerard.farras@km103.com>, 2005.
+# Interactors <info@interactors.coop>, 2005.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: drupal 4.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-08-04 13:23+0200\n"
+"PO-Revision-Date: 2005-08-24 21:49+0200\n"
+"Last-Translator: Gerard Farràs <gerard.farras@km103.com>\n"
+"Language-Team: Spanish <info@interactors.coop>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3);"
+
+#: image.imagemagick.inc:19
+msgid "%file does not exist or is not executable."
+msgstr "%file no existe o no es ejecutable."
+
+#: image.imagemagick.inc:22
+msgid "Location of the \"convert\" binary"
+msgstr "Ubicación del binario \"convert\""
+
+#: image.module:10
+msgid "Allows uploading of images and creating image galleries."
+msgstr "Permite la carga de imágenes y la creación de galerías de imágenes."
+
+#: image.module:12
+msgid ""
+"An image (with thumbnail). This is ideal for publishing photographs or "
+"screenshots."
+msgstr ""
+"Una imagen (con miniatura). Ideal para la publicación de fotografías o de capturas de pantalla."
+
+#: image.module:14
+msgid ""
+"Image galleries can be used to organize and present groups of images. "
+"Galleries may be nested. To add a new gallery click the \"add gallery\" tab."
+msgstr ""
+"Las galerías de imágenes se pueden utilizar para organizar y presentar grupos de imágenes. "
+"Las galerías se pueden anidar. Para añadir una nueva galería hacer clic en la pestaña \"añadir galería\"."
+
+#: image.module:22 ;97;103;0
+msgid "image"
+msgstr "imagen"
+
+#: image.module:59
+msgid "Default image path"
+msgstr "Ubicación por defecto de las imágenes"
+
+#: image.module:59
+msgid "Subdirectory in the directory \"%dir\" where pictures will be stored."
+msgstr "Subdirectorio en el directorio \"%dir\" donde se guardarán las imágenes."
+
+#: image.module:60
+msgid "File paths"
+msgstr "Ubicación de los ficheros"
+
+#: image.module:79
+msgid "Label"
+msgstr "Etiqueta"
+
+#: image.module:79
+msgid "Width"
+msgstr "Anchura"
+
+#: image.module:79
+msgid "Height"
+msgstr "Altura"
+
+#: image.module:80
+msgid ""
+"Select various pixel dimensions, \"thumbnail\" and \"preview\" are required."
+msgstr ""
+"Seleccionar distintas dimensiones de píxel, \"miniatura\" y \"previsualización\" son obligatorias."
+
+#: image.module:81
+msgid "Allow users to view original image"
+msgstr "Permite a los usuarios visualizar la imagen original"
+
+#: image.module:82
+msgid "Image sizes"
+msgstr "Dimensiones de la imagen"
+
+#: image.module:84
+msgid "Images per page"
+msgstr "Imágenes por página"
+
+#: image.module:84
+msgid "Sets the number of images to be displayed in a gallery page."
+msgstr "Define el número de imágenes que se mostrarán en una página de galería."
+
+#: image.module:85
+msgid "Gallery settings"
+msgstr "Parámetros de galería"
+
+#: image.module:99 ;107;176
+msgid "image galleries"
+msgstr "galerías de imágenes"
+
+#: image.module:110
+msgid "list"
+msgstr "listado"
+
+#: image.module:113
+msgid "add gallery"
+msgstr "añadir galería"
+
+#: image.module:145
+msgid "Uploaded file is not a valid image"
+msgstr "El fichero cargado no es una imagen válida"
+
+#: image.module:197
+msgid "view original"
+msgstr "visualiza original"
+
+#: image.module:212 ;221
+msgid "Latest image"
+msgstr "Última imagen"
+
+#: image.module:213 ;226
+msgid "Random image"
+msgstr "Imagen aleatoria"
+
+#: image.module:253
+msgid "Thumbnail"
+msgstr "Miniatura"
+
+#: image.module:257
+msgid "Image"
+msgstr "Imagen"
+
+#: image.module:257
+msgid "Click \"Browse...\" to select an image to upload."
+msgstr "Hacer clic en \"Browse...\" para seleccionar una imagen para cargar."
+
+#: image.module:258 ;467
+msgid "Description"
+msgstr "Descripción"
+
+#: image.module:404
+msgid "Image galleries"
+msgstr "Galerías de imágenes"
+
+#: image.module:425 ;484
+msgid "Delete"
+msgstr "Suprimir"
+
+#: image.module:450
+msgid "Name"
+msgstr "Nombre"
+
+#: image.module:450
+msgid "Operations"
+msgstr "Operaciones"
+
+#: image.module:455
+msgid "edit gallery"
+msgstr "editar galería"
+
+#: image.module:466
+msgid "Gallery name"
+msgstr "Nombre de la galería"
+
+#: image.module:466
+msgid "The name is used to identify the gallery."
+msgstr "El nombre se utiliza para identificar la galería."
+
+#: image.module:467
+msgid ""
+"The description can be used to provide more information about the forum, or "
+"further details about the topic."
+msgstr ""
+"La descripción puede utilizarse para proporcionar más información respecto al fórum, o más detalles respecto al tema."
+
+#: image.module:478
+msgid "Parent"
+msgstr "Padre"
+
+#: image.module:478
+msgid "root"
+msgstr "raíz"
+
+#: image.module:479
+msgid "Weight"
+msgstr "Peso"
+
+#: image.module:479
+msgid ""
+"In listings, the heavier (with a higher weight value) terms will sink and "
+"the lighter terms will be positioned nearer the top."
+msgstr ""
+"En los listados, los términos más pesados (con un valor más alto de peso) se hundirán, mientras que los términos más ligeros se ubicarán más cerca de la parte superior."
+
+#: image.module:482
+msgid "Submit"
+msgstr "Enviar"
+
+#: image.module:513
+msgid "Last updated: %date"
+msgstr "Última modificación: %date"
+
+#: image.module:533
+msgid "Posted by: %name"
+msgstr "Enviado por: %name"
+
+#: image.module:603
+msgid "Unable to create %label image"
+msgstr "No ha sido posible crear la imagen %label"
+
+#: image.module:650
+msgid "thumbnail"
+msgstr "miniatura"
+
+#: image.module:651
+msgid "preview"
+msgstr "previsualización"
+
+#: image.module:708
+msgid "Image Galleries"
+msgstr "Galerías de imágenes"
+
+#: image.module:511 ;546
+msgid "There is %count image in this gallery"
+msgid_plural "There are %count images in this gallery"
+msgstr[0] "Hay %count imagen en esta galería"
+msgstr[1] "Hay %count imágenes en esta galería"
+
+#: image.module:29
+msgid "administer images"
+msgstr "administrar imágenes"
+
+#: image.module:29
+msgid "create images"
+msgstr "crear imágenes"
+

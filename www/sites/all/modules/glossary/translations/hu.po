@@ -1,0 +1,305 @@
+# $Id: hu.po,v 1.1.2.1 2008/02/26 17:54:41 nancyw Exp $
+# Hungarian translation of Drupal glossary.module
+# Copyright Weblabor Team <info [at] weblabor.hu>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.58\n"
+"POT-Creation-Date: 2004-03-06 15:42+0100\n"
+"PO-Revision-Date: 2004-03-06 16:21+0100\n"
+"Last-Translator: Weblabor Team <info [at] weblabor.hu>\n"
+"Language-Team: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: root/modules/glossary.module:9
+msgid ""
+"\n"
+"<p>Glossary helps newbies understand the jargon which always crops up when "
+"specialists talk about a topic. Doctors discuss CBC and EKG and CCs. Web "
+"developers keep talking about CSS, P2P, XSLT, etc. This is all intimidating "
+"for newbies.</p>\n"
+"<p>Glossary.module scans posts for glossary terms (and their synonyms) in "
+"the body. If found, the glossary indicator is inserted after the term, or "
+"the term is turned into an indicator link depending on the settings. By "
+"hovering over the indicator, users may learn the definition of that term. "
+"Clicking leads the user to that term presented within the whole glossary.</"
+"p>\n"
+"<p>Glossary terms are managed as a vocabulary within the taxonomy.module. To "
+"get started with glossary, create a new vocabulary on the <a href=\"%"
+"taxonomy_admin\">taxonomy administration</a> page. The vocabulary need not "
+"be associated with any modules, although you can add detailed description to "
+"terms by attaching (story or other type of) nodes to them. Add a few terms "
+"to the vocabulary. The term title should be the glossary entry and the "
+"description should be its definition. You can make use of the hierarchy, "
+"synonym, and related terms features. These features impact the display of "
+"the glossary when viewed in an overview. Next, enable the glossary module, "
+"associate the vocabulary with the glossary and optionally change the other "
+"settings at the <a href=\"%glossary_settings\">glossary settings</a> page.</"
+"p>\n"
+"<p>Administration of glossary requires <em>%permissions</em> permissions.</p>"
+msgstr ""
+"\n"
+"<p>A szójegyzék segíti az újakat a webhelyen használt zsargon megértésében. "
+"Az orvosok mindig EKG-ről, TBC-ről meg RH-ról beszélnek. A webfejlesztők "
+"eszköztárába tartoznik a CSS, P2P, XSLT, WSDL, stb. Ezek mind ijesztőek az "
+"újonann érkezők számára.</p>\n"
+"<p>A szójegyzék modul a webhelyen megjelenő tartalmak egy szűrőjeként "
+"funkcionál, keresve a szójegyzék szavait és szinonímáikat a szövegtörzsben. "
+"Ha ilyen kifejezéseket talál, azokat a szójegyzék jelzőjével látja el, mely "
+"fölé mozgatva az egeret a kifejezés magyarázata válik olvashatóvá. A jelzőn "
+"való kattintás a szójegyzék oldalára viszi a felhasználót.</p>\n"
+"<p>A szójegyzék kifejezései egy szótárként kezelhetőek a Drupal taxonómia "
+"rendszerében. Indulásképpen hozz létre egy új szótárat a <a href=\"%"
+"taxonomy_admin\">taxonómi adminisztráció</a> oldalon. Nem kell egyetlen "
+"modulhoz sem rendelned az új szótárat, bár részletes leírást adhatsz a "
+"kifejezésekhez tartalmi elemek kapcsolásával. Adj néhány kifejezést a "
+"szótárhoz, úgy hogy a nevük a magyarázandó kifejezés legyen, a leírásuk "
+"pedig a szó definícója. Kihasználhatod a taxonómia rendszer hierarchikus "
+"felépítésének lehetőségét, a szinonímák és a kapcsolódó kifejezések "
+"támogatását. Ezek a beállítások mind befolyásolják a szójegyzék megjelenését "
+"az áttekintés oldalon. Végül engedélyezd a szójegyzék modult, rendeld az új "
+"szótárat a szójegyzékhez és változtasd meg a többi beállítást igényed "
+"szerint a <a href=\"%glossary_settings\">szójegyzék beállítások</a> oldalon."
+"</p>\n"
+"<p>A szójegyzék adminisztrálása <em>%permissions</em> jogosultságokat "
+"igényel.</p>"
+
+#: root/modules/glossary.module:13 ;43
+msgid "administer glossary"
+msgstr "admin: szójegyzék"
+
+#: root/modules/glossary.module:13
+# msgid "administer taxonomy"
+# msgstr ""
+
+#: root/modules/glossary.module:13
+# msgid "access administration pages"
+# msgstr ""
+
+#: root/modules/glossary.module:16
+msgid "Maintain a glossary on your site."
+msgstr "Szójegyzék karbantartásának támogatása."
+
+#: root/modules/glossary.module:20
+msgid ""
+"<a href=\"%glossary_page\">Glossary</a> terms will be automatically marked "
+"with links to their descriptions"
+msgstr ""
+"A <a href=\"%glossary_page\">szójegyzék</a> elemei automatikusan linkként "
+"jelennek meg a beküldött szövegben."
+
+#: root/modules/glossary.module:55
+# msgid "<none>"
+# msgstr ""
+
+#: root/modules/glossary.module:60
+msgid "Select Vocabulary"
+msgstr "A szójegyzékhez tartozó szótár"
+
+#: root/modules/glossary.module:60
+msgid ""
+"Select a vocabulary which holds all terms for your glossary ... When "
+"enabled, posts will be scanned for glossary terms. An icon or a "
+"superscripted link is inserted beside each term. Hover over the icon or link "
+"to learn the meaning of that term."
+msgstr ""
+"Válassz ki azt a szótárt, mely a szójegyzék elemeit tartalmazza. A szótárban "
+"definiált kifejezések az oldalon megjelenő tartalmakban speciális jelzéssel "
+"jelennek majd meg. A kifejezés mellett (a beállításodnak megfelelően) "
+"megjelenő szöveges link vagy ikon fölé mozgatva az egeret a látogatók a "
+"kifejezés definícióját olvashatják."
+
+#: root/modules/glossary.module:61
+msgid "Match type"
+msgstr "Illeszkedés típusa"
+
+#: root/modules/glossary.module:61
+msgid "word"
+msgstr "teljes szó"
+
+#: root/modules/glossary.module:61
+msgid "right or left substring"
+msgstr "szó eleje vagy szó vége"
+
+#: root/modules/glossary.module:61
+msgid "left substring"
+msgstr "szó eleje"
+
+#: root/modules/glossary.module:61
+msgid "right substring"
+msgstr "szó vége"
+
+#: root/modules/glossary.module:61
+msgid "any substring"
+msgstr "bármilyen rész-karaktersorozat"
+
+#: root/modules/glossary.module:61
+msgid "Choose the match type of glossary links."
+msgstr "A kifejezések keresésének illeszkedési típusa."
+
+#: root/modules/glossary.module:62
+msgid "Case sensitivity"
+msgstr "Kis- és nagybetű érzékenység"
+
+#: root/modules/glossary.module:62
+msgid "case insensitive"
+msgstr "érzéketlen"
+
+#: root/modules/glossary.module:62
+msgid "case sensitive"
+msgstr "érzékeny"
+
+#: root/modules/glossary.module:62
+msgid ""
+"Match either case sensitive or not. Case sensitive matches are far not that "
+"resource intensive."
+msgstr ""
+"Kis- és nagybetűérzékenység beállítása. Az érzékeny keresés sokkal kevesebb "
+"erőforrást használ."
+
+#: root/modules/glossary.module:63
+msgid "Replace matches"
+msgstr "Kifejezések cseréje"
+
+#: root/modules/glossary.module:63
+msgid "only the first match"
+msgstr "csak az első találat"
+
+#: root/modules/glossary.module:63
+msgid "all matches"
+msgstr "minden találat"
+
+#: root/modules/glossary.module:63
+msgid "Whether only the first match should be replaced or all matches."
+msgstr "Csak az első vagy az összes találat jelzése."
+
+#: root/modules/glossary.module:64
+msgid "General settings"
+msgstr "Szójegyzék beállítások"
+
+#: root/modules/glossary.module:66
+msgid "Term Indicator"
+msgstr "Kifejezés jelző"
+
+#: root/modules/glossary.module:66 ;67
+msgid "superscript"
+msgstr "felső indexben lévő szöveg"
+
+#: root/modules/glossary.module:66 ;68
+msgid "icon"
+msgstr "felső indexben lévő ikon"
+
+#: root/modules/glossary.module:66
+msgid "replace with acronym link"
+msgstr "teljes linkkel helyettesítés"
+
+#: root/modules/glossary.module:66
+msgid ""
+"Display terms using either a superscript formatted link, an icon, or an &lt;"
+"acronym&gt; tag."
+msgstr "A szótár kifejezés magyarázatainak formája"
+
+#: root/modules/glossary.module:67
+msgid "Superscript"
+msgstr "Felirat"
+
+#: root/modules/glossary.module:67
+msgid "If you choose %superscript above, enter the superscript text."
+msgstr ""
+"Ha fentebb a %superscript lehetőséget választottad, akkor a link szövegét "
+"itt állíthatod be."
+
+#: root/modules/glossary.module:68
+msgid "Glossary Icon URL"
+msgstr "Szójegyzék ikon URL-je"
+
+#: root/modules/glossary.module:68
+msgid ""
+"If you choose %icon above, enter the URL of the glossary icon relative to "
+"the root of your Drupal site."
+msgstr ""
+"Ha az %icon lehetőséget választottad, akkor az ikon elérését itt adhatod "
+"meg, a Drupal webhely gyökeréhez képest relatív eléréssel."
+
+#: root/modules/glossary.module:69
+msgid "Indicator settings"
+msgstr "Jelző beállítások"
+
+#: root/modules/glossary.module:81 ;87
+msgid "Glossary filter"
+msgstr "Szójegyzék szűrő"
+
+#: root/modules/glossary.module:81
+msgid ""
+"The glossary filter module is loaded. See the separate <a href=\"%"
+"glossary_settings\">glossary settings</a> page for the available options."
+msgstr ""
+"A szójegyzék szűrő be van töltve. Lásd a <a href=\"%glossary_settings"
+"\">szójegyzék beállítások</a> oldalt a rendelkezésre álló beállításokról."
+
+#: root/modules/glossary.module:223 ;230;0
+msgid "glossary"
+msgstr "szójegyzék"
+
+#: root/modules/glossary.module:224
+msgid "edit terms"
+msgstr "szavak szerkesztése"
+
+#: root/modules/glossary.module:225
+# msgid "help"
+# msgstr ""
+
+#: root/modules/glossary.module:226
+msgid "add glossary term"
+msgstr "szójegyzék bővítése"
+
+#: root/modules/glossary.module:226
+msgid "Add a new entry to the glossary."
+msgstr "Új elem felvétele a szójegyzékbe."
+
+#: root/modules/glossary.module:240 ;248
+msgid "Glossary"
+msgstr "Szójegyzék"
+
+#: root/modules/glossary.module:247
+# msgid "Home"
+# msgstr ""
+
+#: root/modules/glossary.module:292
+msgid "edit term"
+msgstr "elem szerkesztése"
+
+#: root/modules/glossary.module:292
+msgid "edit this term and definition."
+msgstr "Az elem és definíciójának szerkesztése."
+
+#: root/modules/glossary.module:296
+msgid "Detailed description"
+msgstr "Részletes ismertető"
+
+#: root/modules/glossary.module:299
+# msgid "See also"
+# msgstr ""
+
+#: root/modules/glossary.module:312
+msgid "add term"
+msgstr "elem hozzáadása"
+
+#: root/modules/glossary.module:313
+msgid "edit glossary"
+msgstr "szójegyzék szerkesztése"
+
+#: root/modules/glossary.module:319
+msgid ""
+"You must designate a vocabulary to hold glossary entries. See the %"
+"glossary_admin page."
+msgstr ""
+"Mindenképpen hozzá kell rendelned a szójegyzékhez egy taxonómia szótárat. "
+"Lásd a %glossary_admin oldalt."
+
+#: root/modules/glossary.module:319
+msgid "glossary administration"
+msgstr "szójegyzék adminisztráció"

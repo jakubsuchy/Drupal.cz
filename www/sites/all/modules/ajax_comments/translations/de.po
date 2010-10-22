@@ -1,0 +1,77 @@
+# $Id: de.po,v 1.1.2.1 2008/12/22 17:00:40 neochief Exp $
+#
+# German translation of ajax_comments
+# Copyright 2008 Private-Servers <Webmaster@private-servers.info>
+# Generated from files:
+#  ajax_comments.module,v 1.1.2.6 2008/12/19 13:44:27 neochief
+#  ajax_comments.info: n/a
+#  ajax_comments.js: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-12-22 12:18+0100\n"
+"PO-Revision-Date: 2008-12-22 12:18+0100\n"
+"Last-Translator: XerraX <XerraX@GMail.com>\n"
+"Language-Team: Private-Servers <info@private-servers.info>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ajax_comments.module:36 ajax_comments.info:0
+msgid "AJAXifies comments on site."
+msgstr "AJAXifiziert Kommentar auf der Seite"
+
+#: ajax_comments.module:68
+msgid "Form always expanded"
+msgstr "Formular immer ausgeklappt"
+
+#: ajax_comments.module:69
+msgid "This setting allows to render comments as collapsed link by default."
+msgstr "Diese Einstellung erlaubt das standartisierte Rendern von Kommentaren als eingeklappte Verknüpfung."
+
+#: ajax_comments.module:74
+msgid "Default row count"
+msgstr "Standart Zeilenanzahl"
+
+#: ajax_comments.module:75
+msgid "Allows to control comment forms' textarea size. Leave blank to use system defined."
+msgstr "Erlaubt das Kontrollieren der Größe von Textfeldern in Kommentarformularen. Freilassen um Systemeinstellungen zu verwenden."
+
+#: ajax_comments.module:80
+msgid "Row count in replies"
+msgstr "Zeilenanzahl in Antworten"
+
+#: ajax_comments.module:81
+msgid "Usually, there is no need in big forms for replies, so this setting allows to reduce their size."
+msgstr "Gewöhnlich wird kein großes Formular in Antworten benötigt. Diese Einstellung erlaubt das Reduzieren der Größe."
+
+#: ajax_comments.module:218
+msgid "preview"
+msgstr "Vorschau"
+
+#: ajax_comments.module:35
+msgid "AJAX comments"
+msgstr "AJAX Kommentare"
+
+#: ajax_comments.module:0
+msgid "ajax_comments"
+msgstr "ajax_comments"
+
+#: ajax_comments.info:0
+msgid "AJAX Comments"
+msgstr "AJAX Kommentare"
+
+#: ajax_comments.info:0
+msgid "Other"
+msgstr "Sonstige"
+
+#: ajax_comments.js:0
+msgid "Are you sure you want to delete the comment? Any replies to this comment will be lost. This action cannot be undone."
+msgstr "Sind Sie sicher, das Sie diesen Kommentar löschen wollen? Alle Antworten auf diesen Kommentar gehen verloren. Diese Aktion kann nicht rückgängig gemacht werden."
+

@@ -1,0 +1,105 @@
+# Czech translation of Drupal (includes/unicode.inc)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: includes/unicode.inc:151
+msgid "Could not convert XML encoding %s to UTF-8."
+msgstr "Nelze převést XML kódování '%s' na UTF-8."
+
+#: includes/unicode.inc:184
+msgid ""
+"Unsupported encoding %s. Please install iconv, GNU recode or mbstring for "
+"PHP."
+msgstr ""
+"Nepodporované kódování '%s'. Nainstalujte prosím iconv, GNU recode nebo "
+"mbstring pro PHP."
+
+#: includes/unicode.inc:48
+msgid ""
+"The PCRE library in your PHP installation is outdated. This will cause "
+"problems when handling Unicode text. If you are running PHP 4.3.3 or higher, "
+"make sure you are using the PCRE library supplied by PHP. Please refer to "
+"the <a href=\"@url\">PHP PCRE documentation</a> for more information."
+msgstr ""
+"PCRE knihovna v PHP je zastaralá. To způsobuje potíže při práci s Unicode "
+"textem. Pokud používáte PHP 4.3.3 nebo novější, ujistěte se, že používáte "
+"PCRE knihovnu dodanou s PHP. Více informací zjistíte v <a href=\"@url"
+"\">dokumentaci PHP PCRE</a>."
+
+#: includes/unicode.inc:53
+msgid ""
+"Operations on Unicode strings are emulated on a best-effort basis. Install "
+"the <a href=\"@url\">PHP mbstring extension</a> for improved Unicode support."
+msgstr ""
+"Standardní PHP: operace s Unicode řetězci jsou emulovány s maximální snahou. "
+"Pro lepší podporu Unicode nainstalujte <a href=\"@url\">PHP mbstring "
+"extension</a>."
+
+#: includes/unicode.inc:58
+msgid ""
+"Multibyte string function overloading in PHP is active and must be disabled. "
+"Check the php.ini <em>mbstring.func_overload</em> setting. Please refer to "
+"the <a href=\"@url\">PHP mbstring documentation</a> for more information."
+msgstr ""
+"Přetížení funkcí pro práci s vícebajtovými řetězci je v PHP aktivní a je "
+"třeba jej vypnout. Zkontrolujte nastavení v php.ini <em>mbstring."
+"func_overload</em>. Více informací najdete v <a href=\"@url\">dokumentaci "
+"PHP mbstring</a>."
+
+#: includes/unicode.inc:61
+msgid ""
+"Multibyte string input conversion in PHP is active and must be disabled. "
+"Check the php.ini <em>mbstring.encoding_translation</em> setting. Please "
+"refer to the <a href=\"@url\">PHP mbstring documentation</a> for more "
+"information."
+msgstr ""
+"Převod vícebajtových řetězců je v PHP aktivní a je třeba jej vypnout. "
+"Zkontrolujte nastavení v php.ini <em>mbstring.encoding_translation</em>. "
+"Více informací najdete v <a href=\"@url\">dokumentaci PHP mbstring</a>."
+
+#: includes/unicode.inc:64
+msgid ""
+"Multibyte string input conversion in PHP is active and must be disabled. "
+"Check the php.ini <em>mbstring.http_input</em> setting. Please refer to the "
+"<a href=\"@url\">PHP mbstring documentation</a> for more information."
+msgstr ""
+"Převod vícebajtových řetězců je v PHP aktivní a je třeba jej vypnout. "
+"Zkontrolujte nastavení v php.ini <em>mbstring.http_input</em>. Více "
+"informací najdete v <a href=\"@url\">dokumentaci PHP mbstring</a>."
+
+#: includes/unicode.inc:67
+msgid ""
+"Multibyte string output conversion in PHP is active and must be disabled. "
+"Check the php.ini <em>mbstring.http_output</em> setting. Please refer to the "
+"<a href=\"@url\">PHP mbstring documentation</a> for more information."
+msgstr ""
+"Převod vícebajtových řetězců je v PHP aktivní a je třeba jej vypnout. "
+"Zkontrolujte nastavení v php.ini <em>mbstring.http_output</em>. Více "
+"informací najdete v <a href=\"@url\">dokumentaci PHP mbstring</a>."
+
+#: includes/unicode.inc:84
+msgid "Standard PHP"
+msgstr "Standardní PHP"
+
+#: includes/unicode.inc:85
+msgid "PHP Mbstring Extension"
+msgstr "PHP Mbstring rozšíření"
+
+#: includes/unicode.inc:86
+msgid "Error"
+msgstr "Chyba"
+
+#: includes/unicode.inc:96
+msgid "Unicode library"
+msgstr "Unicode knihovna"

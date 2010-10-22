@@ -1,0 +1,326 @@
+# Czech translation of Drupal (modules/locale/locale.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: modules/locale/locale.module:22
+msgid ""
+"The locale module allows you to present your Drupal site in a language other "
+"than the default English. You can use it to set up a multi-lingual web site "
+"or replace given <em>built-in</em> text with text which has been customized "
+"for your site. Whenever the locale module encounters text which needs to be "
+"displayed, it tries to translate it into the currently selected language. If "
+"a translation is not available, then the string is remembered, so you can "
+"look up untranslated strings easily."
+msgstr ""
+"Modul locale Vám umožňuje zobrazovat web v jiném jazyce než výchozí "
+"angličtině. Můžete jej použít k vytvoření vícejazyčného webu nebo nahradit "
+"<em>vestavěné</em> texty jinými, které lépe vyhovují Vašemu webu. Kdykoliv "
+"modul locale narazí na text, který je potřeba zobrazit, pokusí se jej "
+"přeložit do aktuálně vybraného jazyka. Pokud není překlad k dispozici, "
+"zapamatuje si řetězec, abyste později mohl snadno dohledat nepřeložené texty."
+
+#: modules/locale/locale.module:23
+msgid ""
+"The locale module provides two options for providing translations. The first "
+"is the integrated web interface, via which you can search for untranslated "
+"strings, and specify their translations. An easier and less time-consuming "
+"method is to import existing translations for your language. These "
+"translations are available as <em>GNU gettext Portable Object files</em> "
+"(<em>.po</em> files for short). Translations for many languages are "
+"available for download from the translation page."
+msgstr ""
+"Modul poskytuje pro překlady dvě možnosti. První je integrované webové "
+"rozhraní, pomocí něhož můžete vyhledat nepřeložené řetězce a přeložit je. "
+"Jednodušší a méně časově náročnou metodou je import existujícího překladu "
+"pro Váš jazyk. Tyto překlady jsou k dispozici jako soubory <em>GNU gettext "
+"Portable Object</em> (zkráceně <em>.po</em> soubory). Překlady pro mnoho "
+"jazyků si můžete stáhnout z webu Drupalu."
+
+#: modules/locale/locale.module:24
+msgid ""
+"If an existing translation does not meet your needs, the <em>.po</em> files "
+"are easily edited with special editing tools. The locale module's import "
+"feature allows you to add strings from such files into your site's database. "
+"The export functionality enables you to share your translations with others, "
+"generating Portable Object files from your site strings."
+msgstr ""
+"Pokud Vám existující překlad nevyhovuje, pomocí speciálních nástrojů můžete "
+"<em>.po</em> soubory snadno upravit. Pomocí importu v modulu locale můžete "
+"texty z těchto souborů snadno přidat do databáze svého webu. Export Vám "
+"dovoluje podělit se o své překlady s ostatními."
+
+#: modules/locale/locale.module:25
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@locale\">Locale page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href=\"@locale"
+"\">stránce Locale</a>."
+
+#: modules/locale/locale.module:29
+msgid ""
+"<p>Drupal provides support for the translation of its interface text into "
+"different languages. This page provides an overview of the installed "
+"languages. You can add a language on the <a href=\"@add-language\">add "
+"language page</a>, or directly by <a href=\"@import\">importing a "
+"translation</a>. If multiple languages are enabled, registered users will be "
+"able to set their preferred language. The site default will be used for "
+"anonymous visitors and for users without their own settings.</p><p>Drupal "
+"interface translations may be added or extended by several courses: by <a "
+"href=\"@import\">importing</a> an existing translation, by <a href=\"@search"
+"\">translating everything</a> from scratch, or by a combination of these "
+"approaches.</p>"
+msgstr ""
+"<p>Drupal poskytuje podporu pro překlad textů rozhraní do jiných jazyků. "
+"Tato stránka obsahuje přehled nainstalovaných jazyků. Jazyk můžete buď na "
+"stránce <a href=\"@add-language\">přidat jazyk</a> nebo přímo <a href="
+"\"@import\">importem překladu</a>. Pokud povolíte více jazyků, registrovaní "
+"uživatelů si mohou vybrat jazyk, který chtějí použít. Pro anonymní uživatele "
+"a uživatele bez vlastního nastavení se použije výchozí jazyk webu.</p> "
+"<p>Překlad rozhraní Drupalu můžete přidat nebo rozšířit dvěma způsoby: <a "
+"href=\"@import\">importovat</a> existující překlad nebo <a href=\"@search"
+"\">přeložit texty</a> sám (nebo kombinací obou způsobů).</p>"
+
+#: modules/locale/locale.module:31
+msgid ""
+"You need to add all languages in which you would like to display the site "
+"interface. If you can't find the desired language in the quick-add dropdown, "
+"then you will need to provide the proper language code yourself. The "
+"language code may be used to negotiate with browsers and to present flags, "
+"etc., so it is important to pick a code that is standardised for the desired "
+"language. You can also add a language by <a href=\"@import\">importing a "
+"translation</a>."
+msgstr ""
+"<p>Musíte přidat všechny jazyky, ve kterých chcete zobrazovat rozhraní webu. "
+"Pokud požadovaný jazyk nenajdete v seznamu, musíte zadat správný kód jazyka "
+"sám. Kód jazyka je možno použít pro dohodu s prohlížeči či zobrazovánjí "
+"vlajek apod., takže je důležitý zadat standardizovaný kód daného jazyka. "
+"Jazyk také můžete přidat <a href=\"@import\">importem překladu</a>.</p>"
+
+#: modules/locale/locale.module:33
+msgid ""
+"This page allows you to import a translation provided in the gettext "
+"Portable Object (.po) format. The easiest way to get your site translated is "
+"to obtain an existing Drupal translation and to import it. You can find "
+"existing translations on the <a href=\"@url\">Drupal translation page</a>. "
+"Note that importing a translation file might take a while."
+msgstr ""
+"<p>Na této stránce můžete importovat překlad poskytnutí ve formátu gettext "
+"Portable Object (.po). Nejjednodušší je stáhnout si existující překlad "
+"Drupalu a importovat jej. Existující překlady najdete na stránce <a href="
+"\"@url\">překladů Drupalu</a>. Poznámka: import souboru s překladem může "
+"chvíli trvat.</p>"
+
+#: modules/locale/locale.module:35
+msgid ""
+"This page allows you to export Drupal strings. The first option is to export "
+"a translation so it can be shared. The second option generates a translation "
+"template, which contains all Drupal strings, but without their translations. "
+"You can use this template to start a new translation using various software "
+"packages designed for this task."
+msgstr ""
+"Tato stránka Vám umožňuje exportovat texty Drupalu. První možností je "
+"exportovat překlad, abyste jej mohl poskytnout ostatním. Druhou možností je "
+"vygenerovat překladovou šablonu, která obsahuje všechny texty Drupalu, ale "
+"bez překladů. Tuto šablonů můžete použít k novému překladu pomocí softwaru "
+"určeného pro tento účel."
+
+#: modules/locale/locale.module:37
+msgid ""
+"It is often convenient to get the strings from your setup on the <a href="
+"\"@export\">export page</a>, and use a desktop Gettext translation editor to "
+"edit the translations. On this page you can search in the translated and "
+"untranslated strings, and the default English texts provided by Drupal."
+msgstr ""
+"Často je pohodlnější získat řetězce na stránce <a href=\"@export\">export</"
+"a> a upravit překlady pomocí desktopového nástroje pro úpravu Gettext "
+"souborů. Na této stránce můžete hledat v přeložených, nepřeložených textech "
+"a výchozích anglických textech poskytnutých s Drupalem."
+
+#: modules/locale/locale.module:51
+msgid "Localization"
+msgstr "Lokalizace"
+
+#: modules/locale/locale.module:52
+msgid "Configure site localization and user interface translation."
+msgstr "Nastavit lokalizaci webu a překlad uživatelského rozhraní."
+
+#: modules/locale/locale.module:58
+msgid "Manage languages"
+msgstr "Správa jazyků"
+
+#: modules/locale/locale.module:63
+msgid "Manage strings"
+msgstr "Správa řetězců"
+
+#: modules/locale/locale.module:107
+msgid "Edit string"
+msgstr "Upravit řetězec"
+
+#: modules/locale/locale.module:113
+msgid "Delete string"
+msgstr "Smazat řetězec"
+
+#: modules/locale/locale.module:142
+msgid "Interface language settings"
+msgstr "Nastavení jazyka rozhraní"
+
+#: modules/locale/locale.module:149
+msgid ""
+"Selecting a different locale will change the interface language of the site."
+msgstr "Můžete si vybrat jiný jazyk pro rozhraní stránky."
+
+#: modules/locale/locale.module:314
+msgid "The English locale cannot be deleted."
+msgstr "Anglický jazyk nelze odstranit."
+
+#: modules/locale/locale.module:326
+msgid "Are you sure you want to delete the language %name?"
+msgstr "Opravu chcete odstranit jazyk %name?"
+
+#: modules/locale/locale.module:326
+msgid ""
+"Deleting a language will remove all data associated with it. This action "
+"cannot be undone."
+msgstr ""
+"Při odstranění jazyka se odstraní také všechna data s ním spojená. Tuto akci "
+"nelze vrátit zpět."
+
+#: modules/locale/locale.module:338
+msgid "The language %locale has been removed."
+msgstr "Jazyk %locale byl odstraněn."
+
+#: modules/locale/locale.module:128
+msgid "administer locales"
+msgstr "administrace jazyků"
+
+#: modules/locale/locale.module:0
+msgid "January"
+msgstr "Leden"
+
+#: modules/locale/locale.module:0
+msgid "Jan"
+msgstr "Led"
+
+#: modules/locale/locale.module:0
+msgid "February"
+msgstr "Únor"
+
+#: modules/locale/locale.module:0
+msgid "Feb"
+msgstr "Úno"
+
+#: modules/locale/locale.module:0
+msgid "March"
+msgstr "Březen"
+
+#: modules/locale/locale.module:0
+msgid "Mar"
+msgstr "Bře"
+
+#: modules/locale/locale.module:0
+msgid "April"
+msgstr "Duben"
+
+#: modules/locale/locale.module:0
+msgid "Apr"
+msgstr "Dub"
+
+#: modules/locale/locale.module:0;0
+msgid "May"
+msgstr "Květen"
+
+#: modules/locale/locale.module:0
+msgid "June"
+msgstr "Červen"
+
+#: modules/locale/locale.module:0
+msgid "Jun"
+msgstr "Čer"
+
+#: modules/locale/locale.module:0
+msgid "July"
+msgstr "Červenec"
+
+#: modules/locale/locale.module:0
+msgid "Jul"
+msgstr "Črv"
+
+#: modules/locale/locale.module:0
+msgid "August"
+msgstr "Srpen"
+
+#: modules/locale/locale.module:0
+msgid "Aug"
+msgstr "Srp"
+
+#: modules/locale/locale.module:0
+msgid "September"
+msgstr "Září"
+
+#: modules/locale/locale.module:0
+msgid "Sep"
+msgstr "Zář"
+
+#: modules/locale/locale.module:0
+msgid "October"
+msgstr "Říjen"
+
+#: modules/locale/locale.module:0
+msgid "Oct"
+msgstr "Říj"
+
+#: modules/locale/locale.module:0
+msgid "November"
+msgstr "Listopad"
+
+#: modules/locale/locale.module:0
+msgid "Nov"
+msgstr "Lis"
+
+#: modules/locale/locale.module:0
+msgid "December"
+msgstr "Prosinec"
+
+#: modules/locale/locale.module:0
+msgid "Dec"
+msgstr "Pro"
+
+#: modules/locale/locale.module:0;0
+msgid "Thu"
+msgstr "Čt"
+
+#: modules/locale/locale.module:0
+msgid "Fri"
+msgstr "Pá"
+
+#: modules/locale/locale.module:0
+msgid "Sat"
+msgstr "So"
+
+#: modules/locale/locale.module:0
+msgid "Sun"
+msgstr "Ne"
+
+#: modules/locale/locale.module:0
+msgid "Mon"
+msgstr "Po"
+
+#: modules/locale/locale.module:0
+msgid "Tue"
+msgstr "Út"
+
+#: modules/locale/locale.module:0
+msgid "Wed"
+msgstr "St"

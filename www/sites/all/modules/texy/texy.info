@@ -1,0 +1,14 @@
+; $Id: texy.info,v 1.4.2.3 2009/04/24 11:46:02 havran Exp $
+name = Texy filter
+description = Filters an easy to read Texy! syntax into XHTML.
+package = Texy
+dependencies[] = filter
+version = VERSION
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-04-28
+version = "6.x-1.3"
+core = "6.x"
+project = "texy"
+datestamp = "1240902365"
+

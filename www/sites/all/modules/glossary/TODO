@@ -1,0 +1,11 @@
+; $Id: TODO,v 1.15.4.2.2.1 2008/06/10 22:20:06 nancyw Exp $
+
+TODO:
+  
+- support a filter to emit a list of glossary terms used in a post (which might
+  be formatted as a sidebox in an article).
+
+- make another filter which discovers candidate glossary terms
+  (perhaps any sequence of 3 or more capital letters) and save those
+  in a table where the admin "promote" them to glossary term status and
+  give them definitions if they are in fact worthy of glossary status.

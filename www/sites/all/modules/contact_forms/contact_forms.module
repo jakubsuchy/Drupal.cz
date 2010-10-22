@@ -1,0 +1,100 @@
+<?php
+// $Id: contact_forms.module,v 1.12 2008/12/31 12:37:41 gpdinoz Exp $
+
+/**
+ * @file
+ * Creates a unique Site Wide Contact form with out drop down menu for each of the Contact Categories.
+ */
+
+/**
+ * Implementation of hook_form_alter()
+ */
+function contact_forms_form_alter(&$form, $form_state, $form_id) {
+  $path = $_GET['q'];
+
+  // redirect contact if another fall back page is defined
+  if ($path == 'contact' && variable_get('contactform_redirect', 'contact') != 'contact') {
+    drupal_goto(variable_get('contactform_redirect', 'contact'));
+  }
+
+  // Alter all contact forms except for /contact
+  if ($form_id == 'contact_mail_page' && $path != 'contact') {
+
+    $category = str_replace(  '_' , ' ' , arg(1));
+    $query =  db_query("SELECT * FROM {contact} WHERE category = '%s'", $category);
+    $num = db_result(db_query("SELECT COUNT(*) FROM {contact} WHERE category = '%s'", $category));
+    //if category doesn't exist redirect to 'contact' or User Defined Page
+    if (!$num) {
+      drupal_goto(variable_get('contactform_redirect', 'contact'));
+    }
+    $categories_data =  db_fetch_array($query);
+
+    $contact_form_var = variable_get('contactform_title', 'Contact !category');
+    drupal_set_title(t(variable_get('contactform_title', 'Contact !category'), array('!category' => $categories_data['category'])));
+
+    $form['contact_information'] = array(
+      '#type' => 'markup',
+      '#value' => t(variable_get('contactforms_information' , 'You can send !category a message using the contact form below.') , array('!category' => $categories_data['category'])),
+    );
+
+    $subject = str_replace(  '_' , ' ' , arg(2));
+    
+    $form['subject'] = array('#type' => 'textfield',
+      '#title' => t('Subject'),
+      '#maxlength' => 255,
+      '#default_value' => $subject,
+      '#required' => TRUE,
+    );
+
+    $form['cid'] = array(
+      '#type' => 'hidden',
+      '#value' => $categories_data['cid'],
+      '#required' => TRUE,
+    );
+  }
+
+  // Alter contact settings form
+  if ($form_id == 'contact_admin_settings') {
+
+    // get example contact form path
+    $query =  db_fetch_object(db_query("SELECT * FROM {contact} LIMIT 1"));
+    $name = str_replace(' ',  '_' ,$query->category);
+
+$form['contact_form_information'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Default Contact Form Additional information'),
+      '#weight' => -1,
+     '#default_value' => variable_get('contact_form_information', t('You can leave a message using the contact form below.')),
+    '#description' => t('Information to show on the standard <a href="@form">contact page</a>. Can be anything from submission guidelines to your postal address or telephone number.', array('@form' => url('contact'))),
+
+    );
+
+    $form['contactforms_information'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Contact Forms Additional information'),
+      '#weight' => 0,
+      '#default_value' => variable_get('contactforms_information', t('You can send !category a message using the contact form below.')),
+      '#description' => t('Information to show on the individual <a href="!form">contact pages</a>. Can be anything from submission guidelines to your postal address or telephone number. To place the category name in your message use the wildcard "!category" e.g. You can send !category a message using the contact form below.', array('@form' => url('contact/'.$name))),
+    );
+
+    $form['contactform_redirect'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Contact Form redirect'),
+      '#default_value' => variable_get('contactform_redirect', 'contact'),
+      '#weight' => -2,
+      '#maxlength' => 60,
+      '#description' => t('The page you would like to redirect to if a contact/category path is entered that doesn\'t exist.'),
+      '#required' => false,
+    );
+
+    $form['contactform_title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Contact Form Title'),
+      '#default_value' => variable_get('contactform_title', 'Contact !category'),
+      '#weight' => -3,
+      '#maxlength' => 60,
+      '#description' => t('The title you would like displayed on the <a href="!form">contact page</a>. To place the category name in the title use the wildcard "!category".', array('!form' => url('contact/'.$name))),
+      '#required' => true,
+    );
+  }
+}

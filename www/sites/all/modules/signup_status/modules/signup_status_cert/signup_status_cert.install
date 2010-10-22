@@ -1,0 +1,38 @@
+<?php
+// $Id: signup_status_cert.install,v 1.2 2009/01/12 18:10:26 jrbeeman Exp $
+
+/**
+ * Implementation of hook_install
+ */
+function signup_status_cert_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysqli':
+    case 'mysql':
+      // Add the certificate and completion tracking info to the signup log
+      db_query("ALTER TABLE {signup_log}
+        ADD completion_time int unsigned NOT NULL default '0',
+        ADD cert_id int unsigned NOT NULL default '0',
+        ADD KEY cert_id (cert_id)");
+      // Add the node certificate template info to the signup table
+      db_query("ALTER TABLE {signup} ADD signup_status_cert_nid int unsigned NOT NULL default '0'");
+    break;
+  }
+}
+
+
+/**
+ * Implementation of hook_uninstall
+ */
+function signup_status_cert_uninstall() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysqli':
+    case 'mysql':
+      // Remove the certificate and completion tracking info from the signup log
+      db_query("ALTER TABLE {signup_log} DROP completion_time, DROP cert_id");
+      $variables = db_query("SELECT name FROM {variable} WHERE name LIKE 'signup_status_cert%%'");
+      while ($variable = db_fetch_object($variables)) {
+        variable_del($variable->name);
+      }
+    break;
+  }
+}

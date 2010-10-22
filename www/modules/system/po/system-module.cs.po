@@ -1,0 +1,1270 @@
+# Czech translation of Drupal (modules/system/system.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+# translation of general.po to
+msgid ""
+msgstr ""
+"Project-Id-Version: system-module\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-08-07 13:04+0200\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team: Czech <redakce@drupal.cz>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: modules/system/system.module:19
+msgid ""
+"The system module provides system-wide defaults such as running jobs at a "
+"particular time, and storing web pages to improve efficiency. The ability to "
+"run scheduled jobs makes administering the web site more usable, as "
+"administrators do not have to manually start jobs. The storing of web pages, "
+"or caching, allows the site to efficiently re-use web pages and improve web "
+"site performance. The settings module provides control over preferences, "
+"behaviours including visual and operational settings."
+msgstr ""
+"Modul system poskytuje výchozí funkce pro celý systém, např. pravidelné "
+"spouštění úloh nebo ukládání webových stránek pro zlepšení výkonu. Díky "
+"možnosti spouštění načasovaných úloh je administrace webu snadnější, protože "
+"administrátoři nemusí spouštět úlohy ručně. Ukládání webových stránek, "
+"cache, umožňuje efektivní znovupoužití webových stránek a zlepšení výkonu "
+"webu. Modul také poskytuje možnosti nastavení webu, např. vzhled."
+
+#: modules/system/system.module:20
+msgid ""
+"Some modules require regularly scheduled actions, such as cleaning up "
+"logfiles. Cron, which stands for chronograph, is a periodic command "
+"scheduler executing commands at intervals specified in seconds. It can be "
+"used to control the execution of daily, weekly and monthly jobs (or anything "
+"with a period measured in seconds). The aggregator module periodically "
+"updates feeds using cron. Ping periodically notifies services of new content "
+"on your site. Search periodically indexes the content on your site. "
+"Automating tasks is one of the best ways to keep a system running smoothly, "
+"and if most of your administration does not require your direct involvement, "
+"cron is an ideal solution. Cron can, if necessary, also be run manually."
+msgstr ""
+"Některé moduly vyžadují pravidelné spouštění nějaké činnosti, např. čištění "
+"logů. Cron je program zajišťující pravidelné spouštění příkazů v určených "
+"intervalech. Můžete zajistit spuštění úlohy každý den, týden či měsíc (nebo "
+"v libovolném intervalu měřitelném v sekundách). Modul aggregator pomocí "
+"cronu pravidelně aktualizuje zdroje. Ping pravidelně upozorňuje služby na "
+"nový obsah Vašeho webu. Search pravidelně indexuje obsah webu. Automatizace "
+"je nejlepší způsob, jak zajistit plynulý provoz webu, a pokud administrace "
+"nevyžaduje Váš přímý zásah, je cron ideální řešení."
+
+#: modules/system/system.module:21
+msgid ""
+"There is a caching mechanism which stores dynamically generated web pages in "
+"a database. By caching a web page, the system module does not have to create "
+"the page each time someone wants to view it, instead it takes only one SQL "
+"query to display it, reducing response time and the server's load. Only "
+"pages requested by <em>anonymous</em> users are cached. In order to reduce "
+"server load and save bandwidth, the system module stores and sends cached "
+"pages compressed."
+msgstr ""
+"Cache ukládá dynamicky generované stránky do databáze. Když je stránka v "
+"cache, nemusí se vytvářet znovu při každém zobrazení a jen se načte z "
+"databáze a zobrazí, tím se sníží doba odpovědi a zátěz serveru. Cachují se "
+"jen stránky vyžádané <em>anonymními</em> uživateli. Pro ušetření přenosového "
+"pásma se cachované stránky ukládají a posílají komprimované."
+
+#: modules/system/system.module:22
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@system\">System page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href=\"@system"
+"\">stránce System</a>."
+
+#: modules/system/system.module:25
+msgid ""
+"Welcome to the administration section. Here you may control how your site "
+"functions."
+msgstr ""
+"Vítejte v administrační části. Zde můžete nastavit všechny možnosti Vašeho "
+"webu."
+
+#: modules/system/system.module:27
+msgid "This page shows you all available administration tasks for each module."
+msgstr "Tato stránka ukazuje dostupné administrační možnosti pro každý modul."
+
+#: modules/system/system.module:29
+msgid ""
+"Select which themes are available to your users and specify the default "
+"theme. To configure site-wide display settings, click the \"configure\" task "
+"above. Alternately, to override these settings in a specific theme, click "
+"the \"configure\" link for the corresponding theme. Note that different "
+"themes may have different regions available for rendering content like "
+"blocks. If you want consistency in what your users see, you may wish to "
+"enable only one theme."
+msgstr ""
+"Vyberte, která témata vzhledu jsou uživatelům k dispozici, a zvolte výchozí "
+"téma. Pro nastavení zobrazení pro celý web, klikněte na záložku \"konfigurace"
+"\". Případně můžete toto nastavení přebít pro určité téma (klikněte na odkaz "
+"\"konfigurace\" u daného tématu). Poznámka: různá témata vzhledu mohou mít "
+"různě rozložené prvky obsahu."
+
+#: modules/system/system.module:31
+msgid ""
+"These options control the default display settings for your entire site, "
+"across all themes. Unless they have been overridden by a specific theme, "
+"these settings will be used."
+msgstr ""
+"Toto nastavení ovlivňuje zobrazení celého webu, všech témat. Použijí se ty "
+"volby, které nejsou změněny v určitém tématu."
+
+#: modules/system/system.module:35
+msgid ""
+"These options control the display settings for the <code>%template</code> "
+"theme. When your site is displayed using this theme, these settings will be "
+"used. By clicking \"Reset to defaults,\" you can choose to use the <a href="
+"\"@global\">global settings</a> for this theme."
+msgstr ""
+"Toto nastavení ovlivňuje zobrazení tématu <code>%template</code>. Tyto volby "
+"se použijí, pokud se web zobrazuje v tomto tématu. Kliknutím na \"Zpět na "
+"standardní nastavení\" můžete pro toto téma zvolit <a href=\"@global"
+"\">globální nastavení</a>."
+
+#: modules/system/system.module:37
+msgid ""
+"<p>Modules are plugins for Drupal that extend its core functionality. Here "
+"you can select which modules are enabled. Click on the name of the module in "
+"the navigation menu for their individual configuration pages. Once a module "
+"is enabled, new <a href=\"@permissions\">permissions</a> might be made "
+"available. Modules can automatically be temporarily disabled to reduce "
+"server load when your site becomes extremely busy by enabling the throttle."
+"module and checking throttle. The auto-throttle functionality must be "
+"enabled on the <a href=\"@throttle\">throttle configuration page</a> after "
+"having enabled the throttle module.</p>\n"
+"<p>It is important that <a href=\"@update-php\">update.php</a> is run every "
+"time a module is updated to a newer version.</p><p>You can find all "
+"administration tasks belonging to a particular module on the <a href=\"@by-"
+"module\">administration by module page</a>.</p>"
+msgstr ""
+"<p>Moduly jsou pluginy, které rozšiřují základní funkce Drupalu. Zde můžete "
+"určit, které moduly mají být zapnuty. Po kliknutí na název modulu v "
+"navigačním menu můžete upravit nastavení daného modulu. Když je modul "
+"povolen, může zpřístupnit nová <a href=\"@permissions\">oprávnění</a>. "
+"Moduly je možné automaticky dočasně vypnout, pokud je potřeba snížit zátěž "
+"serveru - povolte modul throttle. Po povolení modulu je potřeba zapnout "
+"automatické urychlení na <a href=\"@throttle\">stránce nastavení urychlení</"
+"a>.</p> \n"
+"<p>Je důležité spustit <a href=\"@update-php\">update.php</a> pokaždé, když "
+"je modul aktualizován na novější verzi.</p><p>Všechny administrační možnosti "
+"jednotlivých modulů naleznete na stránce <a href=\"@by-module\">administrace "
+"dle modulů</a>.</p>"
+
+#: modules/system/system.module:40
+msgid ""
+"The uninstall process removes all data related to a module. To uninstall a "
+"module, you must first disable it. Not all modules support this feature."
+msgstr ""
+"Odinstalace modulu odstraní všechna data spojená s modulem. Pro odstranění "
+"instalace musíte modul nejdříve vypnout. Ne všechny moduly podporují tuto "
+"funkci."
+
+#: modules/system/system.module:42
+msgid ""
+"Here you can find a short overview of your Drupal site's parameters as well "
+"as any problems detected with your installation. It is useful to copy/paste "
+"this information when you need support."
+msgstr ""
+"Zde naleznete krátký přehled všech parametrů Vašeho Drupal webu a případné, "
+"problémy, které se vyskytly ve Vaší instalaci. Je vhodné tyto informace "
+"použít v případě, že potřebujete pomoc se svou instalací."
+
+#: modules/system/system.module:100
+msgid "Administer"
+msgstr "Administrace"
+
+#: modules/system/system.module:104
+msgid "Compact mode"
+msgstr "Kompaktní mód"
+
+#: modules/system/system.module:108
+msgid "By task"
+msgstr "Dle úkolu"
+
+#: modules/system/system.module:111
+msgid "By module"
+msgstr "Dle modulu"
+
+#    modules/filter.module:352 ;421 modules/locale.module:279,  modules/node.module:802 ;831 modules/system.module:487 ;511;527;54
+#: modules/system/system.module:119
+msgid "Site configuration"
+msgstr "Nastavení webu"
+
+#: modules/system/system.module:120
+msgid "Adjust basic site configuration options."
+msgstr "Administrovat základní nastavení webu."
+
+#: modules/system/system.module:127
+msgid "Site building"
+msgstr "Prvky webu"
+
+#: modules/system/system.module:128
+msgid "Control how your site looks and feels."
+msgstr "Nastavit vzhled a funkce webu."
+
+#: modules/system/system.module:136;437
+msgid "Administration theme"
+msgstr "Téma vzhledu administrace"
+
+#: modules/system/system.module:137
+msgid "Settings for how your administrative pages should look."
+msgstr "Nastavení vzhledu administračních stránek."
+
+#: modules/system/system.module:147
+msgid "Themes"
+msgstr "Témata vzhledu"
+
+#: modules/system/system.module:148
+msgid "Change which theme your site uses or allows users to set."
+msgstr "Změnit téma vzhledu, které web používá."
+
+#: modules/system/system.module:156
+msgid "Select the default theme."
+msgstr "Vyberte výchozí téma vzhledu."
+
+#: modules/system/system.module:171
+msgid "Global settings"
+msgstr "Globální nastavení"
+
+#: modules/system/system.module:188
+msgid "Modules"
+msgstr "Moduly"
+
+#: modules/system/system.module:189
+msgid "Enable or disable add-on modules for your site."
+msgstr "Zapnout či vypnout rozšiřující moduly."
+
+#: modules/system/system.module:204;210;1628;1670;1691
+msgid "Uninstall"
+msgstr "Odinstalovat"
+
+#: modules/system/system.module:219
+msgid "Site information"
+msgstr "Informace o webu"
+
+#: modules/system/system.module:220
+msgid ""
+"Change basic site information, such as the site name, slogan, e-mail "
+"address, mission, front page and more."
+msgstr ""
+"Změnit základní informace o webu, jako je jméno webu, slogan, e-mail, úvodní "
+"stránka atd."
+
+#: modules/system/system.module:225;635
+msgid "Error reporting"
+msgstr "Hlášení chyb"
+
+#: modules/system/system.module:226
+msgid ""
+"Control how Drupal deals with errors including 403/404 errors as well as PHP "
+"error reporting."
+msgstr ""
+"Nastavit stránky \"přístup zamítnut\" (403), \"stránka nenalezena\" (404) a "
+"hlášení PHP chyb."
+
+#: modules/system/system.module:231
+msgid "Performance"
+msgstr "Výkon"
+
+#: modules/system/system.module:232
+msgid ""
+"Enable or disable page caching for anonymous users, and enable or disable "
+"CSS preprocessor."
+msgstr "Změnit nastavení cache pro anonymní uživatele a nastavení CSS kompilátoru."
+
+#: modules/system/system.module:238
+msgid "Tell Drupal where to store uploaded files and how they are accessed."
+msgstr "Konfigurace uložení nahraných soubory a nastavení, jak je na ně přistupováno."
+
+#: modules/system/system.module:243
+msgid "Image toolkit"
+msgstr "Toolkit pro práci s obrázky"
+
+#: modules/system/system.module:244
+msgid "Choose which image toolkit to use if you have installed optional toolkits."
+msgstr ""
+"Vybrat, jaký systém pro práci s obrázky použit, pokud je k dispozici více "
+"možností."
+
+#: modules/system/system.module:249
+msgid "RSS publishing"
+msgstr "RSS exporty"
+
+#: modules/system/system.module:250
+msgid ""
+"Configure the number of items per feed and whether feeds should be titles/"
+"teasers/full-text."
+msgstr ""
+"Nastavit počet uzlů v jednom exportu a konfigurovat, zda exporty obsahují "
+"titulek, náhled či celý text uzlu."
+
+#: modules/system/system.module:255
+msgid "Date and time"
+msgstr "Datum a čas"
+
+#: modules/system/system.module:256
+msgid ""
+"Settings for how Drupal displays date and time, as well as the system's "
+"default timezone."
+msgstr "Nastavit zobrazování data, času a výchozí časové zóny."
+
+#: modules/system/system.module:261
+msgid "Site maintenance"
+msgstr "Údržba webu"
+
+#: modules/system/system.module:262
+msgid "Take the site off-line for maintenance or bring it back online."
+msgstr ""
+"Zapnout či vypnout offline mód pro nutnou údržbu webu, kdy na něj nesmí "
+"přistupovat návštěvníci."
+
+#: modules/system/system.module:267;594
+msgid "Clean URLs"
+msgstr "Čistá URL"
+
+#: modules/system/system.module:268
+msgid "Enable or disable clean URLs for your site."
+msgstr "Zapnout či vypnout čistá URL na Vašem webu."
+
+#: modules/system/system.module:276
+msgid "Logs"
+msgstr "Logy"
+
+#: modules/system/system.module:277
+msgid "View system logs and other status information."
+msgstr "Zobrazit systémové logy a další stavové informace."
+
+#    modules/comment.module:964 ;1021 modules/node.module:780,  modules/user.module:1001 ;1483
+#: modules/system/system.module:283
+msgid "Status report"
+msgstr "Hlášení stavu"
+
+#: modules/system/system.module:284
+msgid "Get a status report about your site's operation and any detected problems."
+msgstr "Zobrazit hlášení stavu funkcí Vašeho webu a případných problémů."
+
+#: modules/system/system.module:290
+msgid "Run cron"
+msgstr "Spustit cron"
+
+#: modules/system/system.module:300
+msgid "SQL"
+msgstr "SQL"
+
+#: modules/system/system.module:330
+msgid "Selecting a different theme will change the look and feel of the site."
+msgstr "Můžete si vybrat jiné téma vzhledu stránky."
+
+#: modules/system/system.module:336
+msgid "Locale settings"
+msgstr "Místní nastavení"
+
+#: modules/system/system.module:342
+msgid "Time zone"
+msgstr "Časová zóna"
+
+#: modules/system/system.module:345
+msgid ""
+"Select your current local time. Dates and times throughout this site will be "
+"displayed using this time zone."
+msgstr ""
+"Vyberte svůj aktuální místní čas. Data a časy na stránce se zobrazí s "
+"použitím této časové zóny."
+
+# TODO
+#: modules/system/system.module:366
+msgid ""
+"One or more problems were detected with your Drupal installation. Check the "
+"<a href=\"@status\">status report</a> for more information."
+msgstr ""
+"Ve Vaší instalaci Drupalu bylo nalezeno jeden nebo více problémů. Pro více "
+"informací prosím zkontrolujte stránku s <a href=\"@status\">hlášením stavu</"
+"a>."
+
+#: modules/system/system.module:429
+msgid "System default"
+msgstr "Výchozí"
+
+#: modules/system/system.module:438
+msgid ""
+"Choose which theme the administration pages should display in. If you choose "
+"\"System default\" the administration pages will use the same theme as the "
+"rest of the site."
+msgstr ""
+"Vyberte v kterém tématu vzhledu se zobrazí administrační stránky. Pokud "
+"vyberete \"Výchozí\", administrační stránky budou používat stejné téma jako "
+"zbytek webu."
+
+#: modules/system/system.module:486
+msgid "Theme configuration"
+msgstr "Nastavení tématu vzhledu"
+
+#: modules/system/system.module:497;1151
+msgid "Screenshot for %theme theme"
+msgstr "Ukázka tématu vzhledu %theme"
+
+#: modules/system/system.module:497;1151
+msgid "no screenshot"
+msgstr "bez ukázky"
+
+#: modules/system/system.module:500
+msgid "(site default theme)"
+msgstr "(výchozí téma vzhledu)"
+
+#: modules/system/system.module:522;1191
+msgid "Screenshot"
+msgstr "Ukázka"
+
+#: modules/system/system.module:543
+msgid "The name of this web site."
+msgstr "Název této webové stránky."
+
+#: modules/system/system.module:550
+msgid ""
+"A valid e-mail address to be used as the \"From\" address by the auto-mailer "
+"during registration, new password requests, notifications, etc.  To lessen "
+"the likelihood of e-mail being marked as spam, this e-mail address should "
+"use the same domain as the website."
+msgstr "E-mailová adresa, která se použije jako políčko \"Odesílatel\" v případě rozesílání e-mailů automatickým mailerem, např. v průběhu registrací uživatelů, žádostí o nové heslo, apod. Pro zmírnění rizika, že bude takový e-mail označen jako spam, e-mailová adresa by měla používat stejné doménové jméno jako tento web."
+
+#: modules/system/system.module:555
+msgid "Slogan"
+msgstr "Slogan"
+
+#: modules/system/system.module:557
+msgid "The slogan of this website. Some themes display a slogan when available."
+msgstr "Slogan tohoto webu. Pokud je slogan zadaný, některá témata jej zobrazují."
+
+#: modules/system/system.module:562
+msgid "Mission"
+msgstr "Cíle"
+
+#: modules/system/system.module:564
+msgid "Your site's mission statement or focus."
+msgstr "Určení či zaměření webu (může se zobrazit na titulní straně)."
+
+#: modules/system/system.module:568
+msgid "Footer message"
+msgstr "Patička"
+
+#: modules/system/system.module:570
+msgid ""
+"This text will be displayed at the bottom of each page. Useful for adding a "
+"copyright notice to your pages."
+msgstr ""
+"Tento text se zobrazí v patičce každé stránky. Hodí se pro přidání "
+"copyrightu na stránky."
+
+#: modules/system/system.module:574
+msgid "Anonymous user"
+msgstr "Anonym"
+
+#: modules/system/system.module:576
+msgid "The name used to indicate anonymous users."
+msgstr "Jméno označující anonymního uživatele."
+
+#: modules/system/system.module:580
+msgid "Default front page"
+msgstr "Výchozí titulní strana"
+
+#: modules/system/system.module:583
+msgid ""
+"The home page displays content from this relative URL. If unsure, specify "
+"\"node\"."
+msgstr ""
+"Titulní strana zobrazí obsah tohoto relativního URL. Pokud nepoužíváte čistá "
+"URL, zadejte část za \"?q=\". Pokud si nejste jist/a, zadejte \"node\"."
+
+#: modules/system/system.module:597
+msgid ""
+"This option makes Drupal emit \"clean\" URLs (i.e. without <code>?q=</code> "
+"in the URL.)"
+msgstr "Při této volbě Drupal používá čistá URL (tj. bez <code>?q=</code> v URL)."
+
+#: modules/system/system.module:602
+msgid ""
+" Before enabling clean URLs, you must perform a test to determine if your "
+"server is properly configured. If you are able to see this page again after "
+"clicking the \"Run the clean URL test\" link, the test has succeeded and the "
+"radio buttons above will be available. If instead you are directed to a "
+"\"Page not found\" error, you will need to change the configuration of your "
+"server. The <a href=\"@handbook\">handbook page on Clean URLs</a> has "
+"additional troubleshooting information. !run-test"
+msgstr ""
+"Než povolíte čistá URL, musíte spustit test a zjistit, jestli je Váš server "
+"správně nastaven. Pokud po kliknutí na tlačítko \"Otestovat čistá URL\" opět "
+"vidíte tuto stránku, je vše v pořádku a můžete použít čistá URL. Pokud vás "
+"ale test přesměruje na stránku s chybou \"Stránka nenalezena\", musíte "
+"změnit nastavení serveru. Další informace se dočtete v  <a href=\"@handbook"
+"\">příručce na stránce o čistých URL</a>. !run-test"
+
+#: modules/system/system.module:602
+msgid "Run the clean URL test"
+msgstr "Spustit test čistých URL"
+
+#: modules/system/system.module:606
+msgid ""
+" You have successfully demonstrated that clean URLs work on your server. You "
+"may enable/disable them as you wish."
+msgstr ""
+"Bylo úspěšně ověřeno, že na Vašem serveru fungují čistá URL. Můžete je "
+"vypnout či zapnout, jak potřebujete."
+
+#: modules/system/system.module:618
+msgid "Default 403 (access denied) page"
+msgstr "Standardní stránka 403 (přístup zamítnut)"
+
+#: modules/system/system.module:621
+msgid ""
+"This page is displayed when the requested document is denied to the current "
+"user. If unsure, specify nothing."
+msgstr ""
+"Tato stránka se zobrazí, pokud aktuální uživatel nemá přístup k vyžádanému "
+"dokumentu. Pokud si nejste jist/a, nezadávejte nic."
+
+#: modules/system/system.module:627
+msgid "Default 404 (not found) page"
+msgstr "Standardní stránka 404 (stránka nenalezena)"
+
+#: modules/system/system.module:630
+msgid ""
+"This page is displayed when no other content matches the requested document. "
+"If unsure, specify nothing."
+msgstr ""
+"Tato stránka se zobrazí, pokud vyžádanému dokumentu neodpovídá nic jiného. "
+"Pokud si nejste jist/a, nezadávejte nic."
+
+#: modules/system/system.module:636
+msgid "Write errors to the log"
+msgstr "Zapsat chyby do logu"
+
+#: modules/system/system.module:636
+msgid "Write errors to the log and to the screen"
+msgstr "Zapsat chyby do logu a na obrazovku"
+
+#: modules/system/system.module:637
+msgid ""
+"Where Drupal, PHP and SQL errors are logged. On a production server it is "
+"recommended that errors are only written to the error log. On a test server "
+"it can be helpful to write logs to the screen."
+msgstr ""
+"Určuje, kam se vypisují chyby Drupalu, PHP a SQL. Na produkčním serveru jen "
+"doporučeno vypisovat chyby jen do logu. Na testovacím serveru vám může "
+"pomoci výpis chyb na obrazovku."
+
+#: modules/system/system.module:641
+msgid "Never"
+msgstr "Nikdy"
+
+#: modules/system/system.module:644
+msgid "Discard log entries older than"
+msgstr "Odstranit položky v logu starší "
+
+#: modules/system/system.module:647
+msgid ""
+"The time log entries should be kept. Older entries will be automatically "
+"discarded. Requires crontab."
+msgstr ""
+"Doba, po kterou se uchovávají záznamy logů. Starší záznamy se automaticky "
+"odstraňují. Vyžaduje crontab."
+
+#: modules/system/system.module:655
+msgid ""
+"The normal cache mode is suitable for most sites and does not cause any side "
+"effects. The aggressive cache mode causes Drupal to skip the loading (init) "
+"and unloading (exit) of enabled modules when serving a cached page. This "
+"results in an additional performance boost but can cause unwanted side "
+"effects."
+msgstr ""
+"Normální mód cache je vhodný pro většinu webů a nezpůsobuje žádné nechtěné "
+"problémy. Agresivní cache řekne Drupalu, aby přeskočil nahrávání kódu "
+"povolených modulů při zobrazování stránek z cache. To ještě dále zvyšuje "
+"výkon, ale může způsobit nechtěné problémy."
+
+#: modules/system/system.module:661
+msgid ""
+"<strong class=\"error\">The following enabled modules are incompatible with "
+"aggressive mode caching and will not function properly: %modules</strong>"
+msgstr ""
+"<strong class=\"error\">Následující povolené moduly nejsou kompatibilní s "
+"agresivním cache módem a nebudou správně fungovat: %modules</strong>"
+
+#: modules/system/system.module:664
+msgid ""
+"<strong class=\"ok\">Currently, all enabled modules are compatible with the "
+"aggressive caching policy.</strong> Please note, if you use aggressive "
+"caching and enable new modules, you will need to check this page again to "
+"ensure compatibility."
+msgstr ""
+"<strong class=\"ok\">Všechny nyní povolené moduly jsou kompatibilní s "
+"agresivní cache.</strong> Berte prosím na vědomí, že pokud povolíte další "
+"moduly, měli byste zkontrolovat tuto stránku a ujistit se, že nové moduly "
+"jsou s agresivní cache kompatibilní."
+
+#: modules/system/system.module:668
+msgid "Page cache"
+msgstr "Cache stránek"
+
+#: modules/system/system.module:669
+msgid ""
+"Enabling the cache will offer a significant performance boost. Drupal can "
+"store and send compressed cached pages requested by <em>anonymous</em> "
+"users. By caching a web page, Drupal does not have to construct the page "
+"each time someone wants to view it."
+msgstr ""
+"Povolení cache velmi urychlí rychlost načítání Vašeho webu. Drupal ukládá a "
+"posílá anonymnímu uživateli zkomprimované stránky z mezipaměti. Pomocí cache "
+"nemusí Drupal při každém přístupu vytvářet všechny prvky stránky vždy znovu."
+
+#: modules/system/system.module:674
+msgid "Caching mode"
+msgstr "Mód cache"
+
+#: modules/system/system.module:676
+msgid "Normal (recommended, no side effects)"
+msgstr "Normální (doporučeno, bez možných problémů)"
+
+#: modules/system/system.module:676
+msgid "Aggressive (experts only, possible side effects)"
+msgstr "Agresivní (pouze pro pokročilé uživatele, možné problémy)"
+
+#: modules/system/system.module:684
+msgid "Minimum cache lifetime"
+msgstr "Minimální životnost cache"
+
+#: modules/system/system.module:687
+msgid ""
+"On high-traffic sites it can become necessary to enforce a minimum cache "
+"lifetime. The minimum cache lifetime is the minimum amount of time that will "
+"go by before the cache is emptied and recreated. A larger minimum cache "
+"lifetime offers better performance, but users will not see new content for a "
+"longer period of time."
+msgstr ""
+"Zapnutí cache znamená dostatečné zvýšení výkonu pro většinu webů s nízkým a "
+"středním provozem. Na web s velkým provozem je nutné vnutit minimální "
+"životnost cache. Ta představuje minimální čas, který uplyne před "
+"vyprázdněním cache. Větší minimální životnost poskytuje lepší výkon, ale "
+"uživatelé déle nevidí nový obsah."
+
+#: modules/system/system.module:692
+msgid "Bandwidth optimizations"
+msgstr "Optimalizace přenosu dat"
+
+#: modules/system/system.module:693
+msgid ""
+"These options can help reduce both the size and number of requests made to "
+"your website. This can reduce the server load, the bandwidth used, and the "
+"average page loading time for your visitors."
+msgstr ""
+"Tyto možnosti pomáhají zmenšit délku a počet požadavků na Váš web. To hodně "
+"snižuje zátěž serveru, přenos dat a průměrný čas nahrání stránky pro Vaše "
+"uživatele."
+
+#: modules/system/system.module:700
+msgid "Aggregate and compress CSS files"
+msgstr "Agregovat a komprimovat CSS soubory"
+
+#: modules/system/system.module:704
+msgid ""
+"Some Drupal modules include their own CSS files. When these modules are "
+"enabled, each module's CSS file adds an additional HTTP request to the page, "
+"which can increase the load time of each page. These HTTP requests can also "
+"slightly increase server load. It is recommended to only turn this option on "
+"when your site is in production, as it can interfere with theme development. "
+"This option is disabled if you have not set up your files directory, or if "
+"your download method is set to private."
+msgstr ""
+"Některé moduly Drupalu obsahují vlastní CSS styly. Pokud je daný modul "
+"povolen, jeho CSS soubor znamená další HTTP požadavek na server, což zvyšuje "
+"délku nahrání stránky k uživateli. Tyto HTTP požadavky také zvyšují zátěž "
+"serveru. Tato volba je doporučena zapnout pouze v případě, že Váš web není "
+"ve vývoji, protože může ztěžovat práci vývojářům témat vzhledu. Tato volba "
+"je vypnuta pokud nemáte nastavený adresář pro nahrání souborů nebo pokud "
+"máte k nahraným souborům nastaven neveřejný přístup."
+
+#: modules/system/system.module:717
+msgid "File system path"
+msgstr "Cesta k souborovému systému"
+
+#: modules/system/system.module:720
+msgid ""
+"A file system path where the files will be stored. This directory has to "
+"exist and be writable by Drupal. If the download method is set to public "
+"this directory has to be relative to the Drupal installation directory, and "
+"be accessible over the web. When download method is set to private this "
+"directory should not be accessible over the web. Changing this location "
+"after the site has been in use will cause problems so only change this "
+"setting on an existing site if you know what you are doing."
+msgstr ""
+"Cesta, kde budou uloženy soubory. Tento adresář musí existovat a Drupal do "
+"něj musí mít právo zápisu. Pokud je metoda stahování nastavena na veřejnou, "
+"musí být tento adresář relativní k instalačnímu adresáři Drupalu a přístupný "
+"z webu. Pokud je metoda stahování neveřejná, neměl by být adresář přístupný "
+"z webu. Změna cesty po chvíli používání může způsobit potíže, takže toto "
+"nastavení na existujícím webu měňte jedině, pokud víte, co děláte."
+
+#: modules/system/system.module:726
+msgid "Temporary directory"
+msgstr "Dočasný adresář"
+
+#: modules/system/system.module:729
+msgid ""
+"Location where uploaded files will be kept during previews. Relative paths "
+"will be resolved relative to the Drupal installation directory."
+msgstr ""
+"Adresář, kde budou uchovávány nahrané soubory při náhledu. Relativní cesta "
+"se zpracovává relativně k instalačnímu adresáři Drupalu."
+
+#: modules/system/system.module:735
+msgid "Download method"
+msgstr "Metoda stahování"
+
+#: modules/system/system.module:737
+msgid "Public - files are available using HTTP directly."
+msgstr "Veřejně - soubory jsou k dispozici pomocí HTTP protokolu."
+
+#: modules/system/system.module:737
+msgid "Private - files are transferred by Drupal."
+msgstr "Neveřejně - soubory přenáší Drupal."
+
+#: modules/system/system.module:738
+msgid ""
+"If you want any sort of access control on the downloading of files, this "
+"needs to be set to <em>private</em>. You can change this at any time, "
+"however all download URLs will change and there may be unexpected problems "
+"so it is not recommended."
+msgstr ""
+"Pokud chcete kontrolovat přístup ke stahovaným souborům, musíte nastavit "
+"tuto volbu na <em>neveřejné</em>. Nastavení můžete kdykoliv změnit, ale při "
+"tom se změní také všechna URL pro stahování a mohou nastat nečekané problémy."
+
+#: modules/system/system.module:749
+msgid "Select an image processing toolkit"
+msgstr "Vyberte toolkit pro práci s obrázky"
+
+#: modules/system/system.module:755
+msgid ""
+"No image toolkits found. Drupal will use PHP's built-in GD library for image "
+"handling."
+msgstr ""
+"Nenalezeny žádné toolkity pro práci s obrázky. Drupal použije zabudovanou "
+"PHP GD knihovnu."
+
+#: modules/system/system.module:765
+msgid "Number of items per feed"
+msgstr "Počet položek v exportu"
+
+#: modules/system/system.module:768
+msgid "The default number of items to include in a feed."
+msgstr "Výchozí počet položek, které se zahrnou do RSS exportu."
+
+#: modules/system/system.module:772
+msgid "Display of XML feed items"
+msgstr "Podrobnost XML položek"
+
+#: modules/system/system.module:774
+msgid "Titles only"
+msgstr "Jen titulky"
+
+#: modules/system/system.module:774
+msgid "Titles plus teaser"
+msgstr "Titulek + upoutávka"
+
+#: modules/system/system.module:774
+msgid "Full text"
+msgstr "Plný text"
+
+#: modules/system/system.module:775
+msgid "Global setting for the length of XML feed items that are output by default."
+msgstr "Globální nastavení délky XML položek."
+
+#: modules/system/system.module:810
+msgid "Default time zone"
+msgstr "Výchozí časová zóna"
+
+#: modules/system/system.module:813
+msgid "Select the default site time zone."
+msgstr "Vyberte výchozí časové pásmo."
+
+#: modules/system/system.module:818
+msgid "Configurable time zones"
+msgstr "Možnost měnit časová pásma"
+
+#: modules/system/system.module:821
+msgid ""
+"Enable or disable user-configurable time zones. When enabled, users can set "
+"their own time zone and dates will be updated accordingly."
+msgstr ""
+"Povoluje nebo zakazuje uživatelskou změnu časové zóny. Pokud je povoleno, "
+"uživatelé si mohou nastavit svou časovou zónu a datumy se podle toho "
+"upravují."
+
+#: modules/system/system.module:826
+msgid "Short date format"
+msgstr "Krátký formát data"
+
+#: modules/system/system.module:829
+msgid "The short format of date display."
+msgstr "Krátký formát zobrazování data."
+
+#: modules/system/system.module:834
+msgid "Medium date format"
+msgstr "Střední formát data"
+
+#: modules/system/system.module:837
+msgid "The medium sized date display."
+msgstr "Středně dlouhý formát zobrazování data."
+
+#: modules/system/system.module:842
+msgid "Long date format"
+msgstr "Dlouhý formát data"
+
+#: modules/system/system.module:845
+msgid "Longer date format used for detailed display."
+msgstr "Delší formát data používaný při výpisu podrobností."
+
+#: modules/system/system.module:850
+msgid "First day of week"
+msgstr "Počáteční den v týdnu"
+
+#: modules/system/system.module:853
+msgid "The first day of the week for calendar views."
+msgstr "Počáteční den v týdnu pro zobrazení kalendáře."
+
+#: modules/system/system.module:863
+msgid "Site status"
+msgstr "Stav webu"
+
+#: modules/system/system.module:865
+msgid "Online"
+msgstr "Online"
+
+#: modules/system/system.module:865
+msgid "Off-line"
+msgstr "Offline"
+
+#: modules/system/system.module:866
+msgid ""
+"When set to \"Online\", all visitors will be able to browse your site "
+"normally. When set to \"Off-line\", only users with the \"administer site "
+"configuration\" permission will be able to access your site to perform "
+"maintenance; all other visitors will see the site off-line message "
+"configured below. Authorized users can log in during \"Off-line\" mode "
+"directly via the <a href=\"@user-login\">user login</a> page."
+msgstr ""
+"Při nastavení \"Online\" mohou všichni návštěvníci normálně procházet Váš "
+"web. Když nastavíte \"Offline\", mají k webu přístup jen uživatelé s "
+"oprávněním \"administrace nastavení\", aby provedli údržbu. Ostatní "
+"návštěvníci uvidí jen zprávu o nepřístupnosti webu. Autorizovaní uživatelé "
+"se mohou v \"offline\" režimu přihlásit pomocí stránky <a href=\"@user-login"
+"\">přihlášení</a>."
+
+#: modules/system/system.module:871
+msgid "Site off-line message"
+msgstr "Zpráva o nepřístupnosti webu"
+
+#: modules/system/system.module:873
+msgid "Message to show visitors when the site is in off-line mode."
+msgstr "Zpráva, která se zobrazuje návštěvníkům, když je web offline."
+
+#: modules/system/system.module:1081
+msgid "The settings have not been saved because of the errors."
+msgstr "Nastavení nebylo uloženo kvůli chybám."
+
+#: modules/system/system.module:1096;1131
+msgid "The configuration options have been reset to their default values."
+msgstr "Byly obnoveny výchozí hodnoty nastavení."
+
+#: modules/system/system.module:1100;1134;1227;1511
+msgid "The configuration options have been saved."
+msgstr "Nastavení bylo uloženo."
+
+#: modules/system/system.module:1213
+msgid ""
+"Please note that the <a href=\"!admin_theme_page\">administration theme</a> "
+"is still set to the %admin_theme theme; consequently, the theme on this page "
+"remains unchanged. All non-administrative sections of the site, however, "
+"will show the selected %selected_theme theme by default."
+msgstr ""
+"Berte prosím na vědomí, že <a href=\"!admin_theme_page\">administrační téma "
+"vzhledu</a> je stále nastaveno na %admin_theme. Všechny veřejné části webu "
+"se budou zobrazovat pomocí tématu %selected_theme."
+
+#: modules/system/system.module:1280;1313
+msgid " (<span class=\"admin-disabled\">disabled</span>)"
+msgstr "(<span class=\"admin-disabled\">vypnuto</a>)"
+
+#: modules/system/system.module:1283
+msgid " (<span class=\"admin-missing\">missing</span>)"
+msgstr " (<span class=\"admin-missing\">chybí</span>)"
+
+#: modules/system/system.module:1289;1308
+msgid " (<span class=\"admin-enabled\">enabled</span>)"
+msgstr " (<span class=\"admin-enabled\">povoleno</span>)"
+
+#: modules/system/system.module:1296
+msgid "Depends on: !dependencies"
+msgstr "Závisí na: !dependencies"
+
+#: modules/system/system.module:1321
+msgid "Required by: !required"
+msgstr "Vyžadováno moduly: !required"
+
+#: modules/system/system.module:1416
+msgid "Some required modules must be enabled"
+msgstr "Některé požadované moduly musí být zapnuty."
+
+#: modules/system/system.module:1418
+msgid "Would you like to continue with enabling the above?"
+msgstr "Chcete pokračovat a povolit výše uvedené?"
+
+#: modules/system/system.module:1419
+msgid "Continue"
+msgstr "Pokračovat"
+
+#: modules/system/system.module:1538
+msgid "Version"
+msgstr "Verze"
+
+#: modules/system/system.module:1545
+msgid "Other"
+msgstr "Ostatní"
+
+#: modules/system/system.module:1664
+msgid ""
+"The following modules will be completely uninstalled from your site, and "
+"<em>all data from these modules will be lost</em>!"
+msgstr ""
+"Následující moduly budou kompletně odinstalovány z Vašeho webu a <em>všechna "
+"data těchto modulů budou ztracena</em>!"
+
+#: modules/system/system.module:1667
+msgid "Confirm uninstall"
+msgstr "Potvrdit odinstalaci"
+
+#: modules/system/system.module:1669
+msgid "Would you like to continue with uninstalling the above?"
+msgstr "Chcete pokračovat s odinstalací výše uvedených?"
+
+#: modules/system/system.module:1708
+msgid "No modules are available to uninstall."
+msgstr "Žádné moduly pro odinstalaci nejsou k dispozici"
+
+#: modules/system/system.module:1728
+msgid "No modules selected."
+msgstr "Nejsou vybrány žádné moduly."
+
+#: modules/system/system.module:1749
+msgid "The selected modules have been uninstalled."
+msgstr "Vybrané moduly byly odinstalovány."
+
+#: modules/system/system.module:1759
+msgid "Cron ran successfully"
+msgstr "Běh cronu dokončen."
+
+#: modules/system/system.module:1762
+msgid "Cron run failed"
+msgstr "Běh cronu se nepodařil."
+
+#: modules/system/system.module:1784
+msgid "Variable"
+msgstr "Proměnná"
+
+#: modules/system/system.module:1784
+msgid "Value"
+msgstr "Hodnota"
+
+#: modules/system/system.module:1797
+msgid "Command counters"
+msgstr "Čítače příkazů"
+
+#: modules/system/system.module:1799
+msgid "The number of <code>SELECT</code>-statements."
+msgstr "Počet <code>SELECT</code> příkazů."
+
+#: modules/system/system.module:1800
+msgid "The number of <code>INSERT</code>-statements."
+msgstr "Počet <code>INSERT</code> příkazů."
+
+#: modules/system/system.module:1801
+msgid "The number of <code>UPDATE</code>-statements."
+msgstr "Počet <code>UPDATE</code> příkazů."
+
+#: modules/system/system.module:1802
+msgid "The number of <code>DELETE</code>-statements."
+msgstr "Počet <code>DELETE</code> příkazů."
+
+#: modules/system/system.module:1803
+msgid "The number of table locks."
+msgstr "Počet zamknutí tabulek."
+
+#: modules/system/system.module:1804
+msgid "The number of table unlocks."
+msgstr "Počet odemknutí tabulek."
+
+#: modules/system/system.module:1807
+msgid "Query performance"
+msgstr "Výkon dotazů"
+
+#: modules/system/system.module:1809;1810
+msgid "The number of joins without an index; should be zero."
+msgstr "Počet dotazů s JOIN, které nepoužívají index. Mělo by být nula."
+
+#: modules/system/system.module:1811
+msgid "The number of sorts done without using an index; should be zero."
+msgstr "Počet dotazů řazení, které nepoužívají index. Mělo by být nula."
+
+#: modules/system/system.module:1812
+msgid "The number of times a lock could be acquired immediately."
+msgstr "Počet případů, kdy by zámek měl být okamžitě přidělen."
+
+#: modules/system/system.module:1813
+msgid "The number of times the server had to wait for a lock."
+msgstr "Počet případů, kdy server musel čekat na zámek."
+
+#: modules/system/system.module:1816
+msgid "Query cache information"
+msgstr "Informace o mezipaměti dotazů"
+
+#: modules/system/system.module:1817
+msgid ""
+"The MySQL query cache can improve performance of your site by storing the "
+"result of queries.  Then, if an identical query is received later, the MySQL "
+"server retrieves the result from the query cache rather than parsing and "
+"executing the statement again."
+msgstr ""
+"MySQL query cache (mezipamět dotazů) urychluje rychlost Vašeho webu "
+"ukládáním výsledků jednotlivých dotazů. Pokud je identický dotaz spuštěn "
+"později, MySQL server načte výsledek z mezipaměti a nemusí tak dotaz "
+"spouštět znovu."
+
+#: modules/system/system.module:1819
+msgid "The number of queries in the query cache."
+msgstr "Počet dotazů v mezipaměti dotazů."
+
+#: modules/system/system.module:1820
+msgid "The number of times that MySQL found previous results in the cache."
+msgstr "Počet případů, kdy MySQL nalezl výsledek v mezipaměti dotazů."
+
+#: modules/system/system.module:1821
+msgid "The number of times that MySQL added a query to the cache (misses)."
+msgstr "Počet případů, kdy MySQL přidal dotaz do mezipaměti (miss)."
+
+#: modules/system/system.module:1822
+msgid ""
+"The number of times that MySQL had to remove queries from the cache because "
+"it ran out of memory.  Ideally should be zero."
+msgstr ""
+"Počet případů, kdy MySQL odstranil dotaz z mezipaměti, protože došla paměť. "
+"Ideálně nula."
+
+#: modules/system/system.module:1942
+msgid "Only JPEG, PNG and GIF images are allowed to be used as logos."
+msgstr "Jako logo je možné použít jen obrázky JPEG, PNG nebo GIF."
+
+#: modules/system/system.module:1960
+msgid "Logo"
+msgstr "Logo"
+
+#: modules/system/system.module:1961
+msgid "Site name"
+msgstr "Název webu"
+
+#: modules/system/system.module:1962
+msgid "Site slogan"
+msgstr "Slogan webu"
+
+#: modules/system/system.module:1963
+msgid "Mission statement"
+msgstr "Cíl webu"
+
+#: modules/system/system.module:1964
+msgid "User pictures in posts"
+msgstr "Uživatelské obrázky v příspěvcích"
+
+#: modules/system/system.module:1965
+msgid "User pictures in comments"
+msgstr "Uživatelské obrázky v komentářích"
+
+#: modules/system/system.module:1966
+msgid "Search box"
+msgstr "Vyhledávací box"
+
+#: modules/system/system.module:1967
+msgid "Shortcut icon"
+msgstr "Ikona webu"
+
+#: modules/system/system.module:1982
+msgid "Toggle display"
+msgstr "Přepnout zobrazení"
+
+#: modules/system/system.module:1983
+msgid "Enable or disable the display of certain page elements."
+msgstr "Povoluje nebo zakazuje zobrazení určitých elementů stránky."
+
+#: modules/system/system.module:2008
+msgid "Display post information on"
+msgstr "Zobrazovat informace o příspěvku"
+
+#: modules/system/system.module:2009
+msgid ""
+"Enable or disable the <em>submitted by Username on date</em> text when "
+"displaying posts of the following type."
+msgstr ""
+"Povoluje nebo zakazuje zobrazení textu <em>poslal Uživatel dne</em> u "
+"určených druhů příspěvků."
+
+#: modules/system/system.module:2023
+msgid "Logo image settings"
+msgstr "Nastavení obrázku loga"
+
+#: modules/system/system.module:2024
+msgid "If toggled on, the following logo will be displayed."
+msgstr "Pokud je zapnut, zobrazuje se logo."
+
+#: modules/system/system.module:2029
+msgid "Use the default logo"
+msgstr "Použít výchozí logo"
+
+#: modules/system/system.module:2032
+msgid "Check here if you want the theme to use the logo supplied with it."
+msgstr "Zaškrtněte, pokud má téma vzhledu použít logo dodané přímo s ním."
+
+#: modules/system/system.module:2036
+msgid "Path to custom logo"
+msgstr "Cesta k volitelnému logu"
+
+#: modules/system/system.module:2038
+msgid ""
+"The path to the file you would like to use as your logo file instead of the "
+"default logo."
+msgstr "Cesta k souboru, který chcete použít jako logo místo výchozího loga."
+
+#: modules/system/system.module:2042
+msgid "Upload logo image"
+msgstr "Nahrát obrázek loga"
+
+#: modules/system/system.module:2044
+msgid ""
+"If you don't have direct file access to the server, use this field to upload "
+"your logo."
+msgstr ""
+"Pokud nemáte přímý přístup k serveru, použijte toto pole k nahrádní loga na "
+"server."
+
+#: modules/system/system.module:2052
+msgid "Shortcut icon settings"
+msgstr "Nastavení favicon ikony"
+
+#: modules/system/system.module:2053
+msgid ""
+"Your shortcut icon or 'favicon' is displayed in the address bar and "
+"bookmarks of most browsers."
+msgstr "Favicon ikona se zobrazuje v adresním řádku a záložkách většiny prohlížečů."
+
+#: modules/system/system.module:2057
+msgid "Use the default shortcut icon."
+msgstr "Použít výchozí ikonu."
+
+#: modules/system/system.module:2059
+msgid "Check here if you want the theme to use the default shortcut icon."
+msgstr "Zaškrtněte, pokud chcete použít výchozí ikonu tématu vzhledu."
+
+#: modules/system/system.module:2063
+msgid "Path to custom icon"
+msgstr "Cesta k volitelné ikoně"
+
+#: modules/system/system.module:2065
+msgid ""
+"The path to the image file you would like to use as your custom shortcut "
+"icon."
+msgstr "Cesta k obrázku, který chcete použít jako ikonu."
+
+#: modules/system/system.module:2070
+msgid "Upload icon image"
+msgstr "Nahrát obrázek ikony"
+
+#: modules/system/system.module:2071
+msgid ""
+"If you don't have direct file access to the server, use this field to upload "
+"your shortcut icon."
+msgstr ""
+"Pokud nemáte přímý přístup na server, použijte toto pole k nahrádní ikony "
+"webu na server."
+
+#: modules/system/system.module:2081
+msgid "Engine-specific settings"
+msgstr "Nastavení pro engine"
+
+#: modules/system/system.module:2081
+msgid ""
+"These settings only exist for all the templates and styles based on the %"
+"engine theme engine."
+msgstr "Toto nastavení je pouze pro všechny šablony a styly enginu témat %engine."
+
+#: modules/system/system.module:2085
+msgid "Theme-specific settings"
+msgstr "Nastavení pro téma vzhledu"
+
+#: modules/system/system.module:2085
+msgid ""
+"These settings only exist for the %theme theme and all the styles based on "
+"it."
+msgstr ""
+"Toto nastavení existuje pouze pro téma vzhledu %theme a všechny styly "
+"založené na něm."
+
+#: modules/system/system.module:2206
+msgid "Show descriptions"
+msgstr "Zobrazit popisy"
+
+#: modules/system/system.module:2206
+msgid "Produce a less compact layout that includes descriptions."
+msgstr "Zobrazit méně kompaktní šablonu, která obsahuje popisy polí."
+
+#    modules/aggregator.module:599 modules/filter.module:340,  modules/menu.module:264 modules/system.module:451,  modules/taxonom
+#: modules/system/system.module:2209
+msgid "Hide descriptions"
+msgstr "Schovat popisy"
+
+# TODO
+#: modules/system/system.module:2209
+msgid "Produce a more compact layout that doesn't include descriptions."
+msgstr "Zobrazit kompaktnější šablonu, která neobsahuje popisy polí."
+
+#: modules/system/system.module:2302
+msgid "Get help"
+msgstr "Nápověda"
+
+#: modules/system/system.module:2321
+msgid "Configure permissions"
+msgstr "Nastavit práva"
+
+#: modules/system/system.module:1407
+msgid "You must enable the %dependencies module to install %module."
+msgid_plural "You must enable the %dependencies modules to install %module."
+msgstr[0] "Pro instalaci modulu %module musíte nejdříve povolit %dependencies."
+msgstr[1] "Pro instalaci modulu %module musíte nejdříve povolit %dependencies."
+msgstr[2] "Pro instalaci modulu %module musíte nejdříve povolit %dependencies !modules."
+
+#: modules/system/system.module:50
+msgid "administer site configuration"
+msgstr "administrovat nastavení webu"
+
+#: modules/system/system.module:50
+msgid "access administration pages"
+msgstr "přístup k administraci"
+
+#: modules/system/system.module:50
+msgid "select different theme"
+msgstr "vybrat jiné téma vzhledu"
+
+#: modules/system/system.module:0
+msgid "system"
+msgstr "systém"
+
