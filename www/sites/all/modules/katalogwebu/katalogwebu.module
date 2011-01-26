@@ -37,7 +37,7 @@ function katalogwebu_menu() {
 
 function katalog_display() {
 
-  if (($term = arg(2)) {
+  if ($term = arg(2)) {
     // Find a term for this view.
     require_once drupal_get_path('module', 'pathauto').'/pathauto.inc';
     $res = db_query("SELECT * FROM {term_data} WHERE vid = 10 OR vid = 9");
