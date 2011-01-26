@@ -1,5 +1,6 @@
 mkdir -p /home/www/drupal/database
 cd /home/www/drupal/database
+rm -f /home/www/drupal/code/live/www/drupal_cz.sql.bz2
 
 # Dump live DB
 /opt/drush/drush --root=/home/www/drupal/public_html/www/ sql-dump --skip-tables-key=common > /home/www/drupal/database/live.sql
