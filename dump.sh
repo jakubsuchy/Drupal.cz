@@ -13,4 +13,4 @@ rm -f /home/www/drupal/database/live.sql
 mysql drupal_cz_scrubbed -u d_cz_scrub --password=$1 --default-character-set=utf8 < /home/www/drupal/code/live/scrub.sql
 # Dump scrubbed DB to live site
 mysqldump -u d_cz_scrub --password=$1 --add-drop-table drupal_cz_scrubbed > /home/www/drupal/code/live/www/drupal_cz.sql
-bzip2 /home/www/drupal/live/www/drupal_cz.sql
+bzip2 /home/www/drupal/code/live/www/drupal_cz.sql
