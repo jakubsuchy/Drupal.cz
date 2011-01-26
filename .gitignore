@@ -1,0 +1,5 @@
+www/sites/default/settings.php
+www/*sql
+files/
+*gz
+*bz2
