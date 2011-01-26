@@ -1,0 +1,141 @@
+#
+# Apache/PHP/Drupal settings:
+#
+
+# Protect files and directories from prying eyes.
+<FilesMatch "(\.(engine|inc|info|install|module|profile|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)|code-style\.pl|Entries.*|Repository|Root|Tag|Template)$">
+  Order allow,deny
+</FilesMatch>
+
+# Don't show directory listings for URLs which map to a directory.
+Options -Indexes
+
+# Follow symbolic links in this directory.
+Options +FollowSymLinks
+
+# Customized error messages.
+ErrorDocument 404 default
+
+# Set the default handler.
+DirectoryIndex index.php
+
+# Override PHP settings. More in sites/default/settings.php
+# but the following cannot be changed at runtime.
+
+# PHP 4, Apache 1.
+<IfModule mod_php4.c>
+  php_value magic_quotes_gpc                0
+  php_value register_globals                0
+  php_value session.auto_start              0
+</IfModule>
+
+# PHP 4, Apache 2.
+<IfModule sapi_apache2.c>
+  php_value magic_quotes_gpc                0
+  php_value register_globals                0
+  php_value session.auto_start              0
+</IfModule>
+
+# PHP 5, Apache 1 and 2.
+<IfModule mod_php5.c>
+  php_value magic_quotes_gpc                0
+  php_value register_globals                0
+  php_value session.auto_start              0
+  php_value zlib.output_compression         0
+</IfModule>
+
+# Requires mod_expires to be enabled.
+<IfModule mod_expires.c>
+  # Enable expirations.
+  ExpiresActive On
+  # Cache all files for 2 weeks after access (A).
+  ExpiresDefault A1209600
+  # Do not cache dynamically generated pages.
+  ExpiresByType text/html A1
+</IfModule>
+
+# Various rewrite rules.
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+
+  # If your site can be accessed both with and without the prefix www. you
+  # can use one of the following settings to force user to use only one option:
+  #
+  # If you want the site to be accessed WITH the www. only, adapt and
+  # uncomment the following:
+  # RewriteCond %{HTTP_HOST} ^example\.com$ [NC]
+  # RewriteRule .* http://www.example.com/ [L,R=301]
+  #
+  # If you want the site to be accessed only WITHOUT the www. prefix, adapt
+  # and uncomment the following:
+  # RewriteCond %{HTTP_HOST} ^www\.example\.com$ [NC]
+  # RewriteRule .* http://example.com/ [L,R=301]
+
+  # Modify the RewriteBase if you are using Drupal in a subdirectory and
+  # the rewrite rules are not working properly.
+  RewriteBase /
+
+  ### BOOST START ###
+  <FilesMatch "(\.html|\.html\.gz)$">
+    <IfModule mod_headers.c>
+      Header set Expires "Sun, 19 Nov 1978 05:00:00 GMT"
+      Header set Cache-Control "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+    </IfModule>
+  </FilesMatch>
+  <IfModule mod_mime.c>
+    AddCharset utf-8 .html
+    AddCharset utf-8 .css
+    AddCharset utf-8 .js
+    AddEncoding gzip .gz
+  </IfModule>
+  <FilesMatch "\.html\.gz$">
+    ForceType text/html
+  </FilesMatch>
+  <FilesMatch "\.css\.gz$">
+    ForceType text/css
+  </FilesMatch>
+  <FilesMatch "\.js\.gz$">
+    ForceType text/javascript
+  </FilesMatch>
+
+  # GZIP - Cached css & js files
+  RewriteCond %{HTTP:Accept-encoding} !gzip
+  RewriteRule .* - [S=2]
+  RewriteCond %{DOCUMENT_ROOT}/cache/gz/%{SERVER_NAME}%{REQUEST_URI}_\.css\.gz -s
+  RewriteRule .* cache/gz/%{SERVER_NAME}%{REQUEST_URI}_\.css\.gz [L,QSA,T=text/css]
+  RewriteCond %{DOCUMENT_ROOT}/cache/gz/%{SERVER_NAME}%{REQUEST_URI}_\.js\.gz -s
+  RewriteRule .* cache/gz/%{SERVER_NAME}%{REQUEST_URI}_\.js\.gz [L,QSA,T=text/javascript]
+
+  # NORMAL - Cached css & js files
+  RewriteCond %{DOCUMENT_ROOT}/cache/%{SERVER_NAME}%{REQUEST_URI}_\.css -s
+  RewriteRule .* cache/%{SERVER_NAME}%{REQUEST_URI}_\.css [L,QSA,T=text/css]
+  RewriteCond %{DOCUMENT_ROOT}/cache/%{SERVER_NAME}%{REQUEST_URI}_\.js -s
+  RewriteRule .* cache/%{SERVER_NAME}%{REQUEST_URI}_\.js [L,QSA,T=text/javascript]
+
+  # Caching for anonymous users
+  # Skip boost IF not get request OR uri has wrong dir OR cookie is set OR request came from this server OR https request
+  RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
+  RewriteCond %{REQUEST_URI} (^(admin|cache|misc|modules|sites|system|themes|node/add))|(/(comment/reply|edit|user|user/(login|password|register))$) [OR]
+  RewriteCond %{HTTP_COOKIE} DRUPAL_UID [OR]
+  RewriteCond %{HTTPS} on
+  RewriteRule .* - [S=3]
+
+  # GZIP
+  RewriteCond %{HTTP:Accept-encoding} !gzip
+  RewriteRule .* - [S=1]
+  RewriteCond %{DOCUMENT_ROOT}/cache/gz/%{SERVER_NAME}%{REQUEST_URI}_%{QUERY_STRING}\.html\.gz -s
+  RewriteRule .* cache/gz/%{SERVER_NAME}%{REQUEST_URI}_%{QUERY_STRING}\.html\.gz [L,T=text/html]
+
+  # NORMAL
+  RewriteCond %{DOCUMENT_ROOT}/cache/%{SERVER_NAME}%{REQUEST_URI}_%{QUERY_STRING}\.html -s
+  RewriteRule .* cache/%{SERVER_NAME}%{REQUEST_URI}_%{QUERY_STRING}\.html [L,T=text/html]
+
+  ### BOOST END ###
+
+  # Rewrite current-style URLs of the form 'index.php?q=x'.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
+</IfModule>
+
+# $Id: .htaccess,v 1.81 2007/01/09 09:27:10 dries Exp $
