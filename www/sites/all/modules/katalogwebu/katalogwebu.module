@@ -53,7 +53,8 @@ function katalog_display() {
     }
   }
 
-  $content = '<p class="katalog-text">Toto je katalog českých webů postavených na Drupalu. Katalog je členěn do kategorií, nebo-li tagů, každý záznam může být v několika kategoriích. Přesvěčte se sami, že Drupal není jen hračka, ale seriózní systém! <a href="/node/add/katalog">Přidat záznam do katalogu</a>.</p>';
+  $content = '<p class="katalog-text">Toto je katalog českých webů postavených na Drupalu. Katalog je členěn do kategorií, nebo-li tagů, každý záznam může být v několika kategoriích. Přesvěčte se sami, že Drupal není jen hračka, ale seriózní systém! <a href="/node/add/content-katalog">Přidat záznam do katalogu</a>.</p>';
+
 
   // Show tags only if term not found.
   if ($tid) {
