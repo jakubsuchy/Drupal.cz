@@ -1,4 +1,4 @@
-# Will Scrub a drupal.cz database.
+# Will Scrub a Drupal.cz database.
 # Jakub Suchy, 22.10.2010
 
 UPDATE users SET name=CONCAT('user', uid), pass='heslo', init=CONCAT('user', uid, '@example.com') WHERE uid != 0;
