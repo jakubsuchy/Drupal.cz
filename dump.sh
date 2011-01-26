@@ -1,6 +1,5 @@
 mkdir -p /home/www/drupal/database
 cd /home/www/drupal/database
-rm -f /home/www/drupal/code/live/www/drupal_cz.sql.bz2
 
 # Dump live DB
 /opt/drush/drush --root=/home/www/drupal/public_html/www/ sql-dump --skip-tables-key=common > /home/www/drupal/database/live.sql
@@ -14,4 +13,5 @@ rm -f /home/www/drupal/database/live.sql
 mysql drupal_cz_scrubbed -u d_cz_scrub --password=$1 --default-character-set=utf8 < /home/www/drupal/code/live/scrub.sql
 # Dump scrubbed DB to live site
 mysqldump -u d_cz_scrub --password=$1 --add-drop-table drupal_cz_scrubbed > /home/www/drupal/code/live/www/drupal_cz.sql
-bzip2 /home/www/drupal/code/live/www/drupal_cz.sql
+bzip2 -f /home/www/drupal/code/live/www/drupal_cz.sql
+rm -f /home/www/drupal/code/live/www/drupal_cz.sql
