@@ -6,7 +6,7 @@ Jak rozjet lokální verzi Drupal.cz?
 ===================================
 
 1) Vytvořte si clone tohoto repositáře
-2) Stáhněte si nejnovější verzi databáze Drupal.cz na adrese http://www.drupal.cz/files/dump.sql.bz2
+2) Stáhněte si nejnovější verzi databáze Drupal.cz na adrese http://www.drupal.cz/drupal_cz.sql.bz2
 3) Web rozjeďte
 4) Udělejte potřebné změny a vygenerujte patch či commitněte do vašeho vlastního forku
 
