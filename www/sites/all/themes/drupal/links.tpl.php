@@ -27,7 +27,8 @@ foreach($links as $key => $lnk) {
 			$output .= "</div> <!-- social-links end -->\n</div> <!-- social-add end -->\n";
 			$social = 0;
 		}
-		$output .= "\n<a class=\"".$key."\" href=\"".url($lnk['href'])."\">".$lnk['title']."</a>\n";
+		$lnk['attributes']['class'] = $key;
+		$output .= "\n". l($lnk['title'], $lnk['href'], $lnk) ."\n";
 	}
   $i++;
 }
