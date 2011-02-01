@@ -5,9 +5,6 @@
  <?php print $styles ?>
  <?php print $scripts; ?>
  <script type="text/javascript"><?php /* Needed to avoid Flash of Unstyle Content in IE */ ?> </script>
- <link rel="stylesheet" href="/themes/drupal/style.css" media="screen" />
- <script type="text/javascript" src="/themes/drupal/social-links.js"></script>
- <script src="/themes/drupal/urchin.js" type="text/javascript"></script>
  <script type="text/javascript">
  _uacct = "UA-156212-2";
  urchinTracker();
