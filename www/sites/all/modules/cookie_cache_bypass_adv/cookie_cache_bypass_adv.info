@@ -1,0 +1,10 @@
+name = Cookie cache bypass advanced
+description = Sets a cookie on form submission directing a reverse proxy to temporarily not serve cached pages for an anonymous user that just submitted content.
+core = 6.x
+
+; Information added by drupal.org packaging script on January 1, 1970 - 00:00
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "cookie_cache_bypass_adv"
+datestamp = "1297037700"
+
