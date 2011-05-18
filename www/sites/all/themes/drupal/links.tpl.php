@@ -1,7 +1,8 @@
 <?php
 $found = 0;
 $social = 0;
-$i = 0;
+//$i = 0;
+$seqid = rand (0, 10000);
 $output = '';
 foreach($links as $key => $lnk) {
   $next = next($links);
@@ -30,7 +31,7 @@ foreach($links as $key => $lnk) {
 		$lnk['attributes']['class'] = $key;
 		$output .= "\n". l($lnk['title'], $lnk['href'], $lnk) ."\n";
 	}
-  $i++;
+  //$i++;
 }
 if ($social) {
 	print "</div> <!-- social-links end -->\n</div> <!-- social-add end -->\n";
