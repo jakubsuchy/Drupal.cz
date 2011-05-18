@@ -1,5 +1,5 @@
 <?php
-// $Id: docs.php,v 1.15 2009/06/01 23:33:37 merlinofchaos Exp $
+// $Id: docs.php,v 1.16.2.2 2010/03/08 20:04:40 merlinofchaos Exp $
 /**
  * @file
  * This file contains no working PHP code; it exists to provide additional documentation
@@ -217,6 +217,14 @@ function hook_views_data() {
  */
 function hook_views_plugins() {
   // example code here
+}
+
+/**
+ * Alter existing plugins data, defined by modules.
+ */
+function hook_views_plugins_alter(&$plugins) {
+  // Add apachesolr to the base of the node row plugin.
+  $plugins['row']['node']['base'][] = 'apachesolr';
 }
 
 /**
@@ -538,8 +546,8 @@ function hook_views_query_substitutions() {
  * This hook is called at the very beginning of views processing,
  * before anything is done.
  *
- * Adding output to the view cam be accomplished by placing text on
- * $view->attachment_before and $view->attachment_after
+ * Adding output to the view can be accomplished by placing text on
+ * $view->attachment_before and $view->attachment_after.
  */
 function hook_views_pre_view(&$view, &$display_id, &$args) {
   // example code here
@@ -549,8 +557,8 @@ function hook_views_pre_view(&$view, &$display_id, &$args) {
  * This hook is called right before the build process, but after displays
  * are attached and the display performs its pre_execute phase.
  *
- * Adding output to the view cam be accomplished by placing text on
- * $view->attachment_before and $view->attachment_after
+ * Adding output to the view can be accomplished by placing text on
+ * $view->attachment_before and $view->attachment_after.
  */
 function hook_views_pre_build(&$view) {
   // example code here
@@ -560,8 +568,8 @@ function hook_views_pre_build(&$view) {
  * This hook is called right before the execute process. The query is
  * now fully built, but it has not yet been run through db_rewrite_sql.
  *
- * Adding output to the view cam be accomplished by placing text on
- * $view->attachment_before and $view->attachment_after
+ * Adding output to the view can be accomplished by placing text on
+ * $view->attachment_before and $view->attachment_after.
  */
 function hook_views_pre_execute(&$view) {
   // example code here
@@ -572,11 +580,40 @@ function hook_views_pre_execute(&$view) {
  * been executed, and the pre_render() phase has already happened for
  * handlers, so all data should be available.
  *
- * Adding output to the view cam be accomplished by placing text on
- * $view->attachment_before and $view->attachment_after
+ * Adding output to the view can be accomplished by placing text on
+ * $view->attachment_before and $view->attachment_after. Altering the
+ * content can be achieved by editing the items of $view->result.
+ *
+ * This hook can be utilized by themes.
  */
 function hook_views_pre_render(&$view) {
   // example code here
+}
+
+/**
+ * Post process any rendered data.
+ *
+ * This can be valuable to be able to cache a view and still have some level of
+ * dynamic output. In an ideal world, the actual output will include HTML
+ * comment based tokens, and then the post process can replace those tokens.
+ *
+ * Example usage. If it is known that the view is a node view and that the
+ * primary field will be a nid, you can do something like this:
+ *
+ * <!--post-FIELD-NID-->
+ *
+ * And then in the post render, create an array with the text that should
+ * go there:
+ *
+ * strtr($output, array('<!--post-FIELD-1-->', 'output for FIELD of nid 1');
+ *
+ * All of the cached result data will be available in $view->result, as well,
+ * so all ids used in the query should be discoverable.
+ *
+ * This hook can be utilized by themes.
+ */
+function hook_views_post_render(&$view, &$output, &$cache) {
+
 }
 
 /**

@@ -1,5 +1,5 @@
 <?php
-// $Id: views_handler_filter_in_operator.inc,v 1.10 2009/06/10 22:04:57 merlinofchaos Exp $
+// $Id: views_handler_filter_in_operator.inc,v 1.12.2.2 2010/04/07 19:14:57 merlinofchaos Exp $
 /**
  * Simple filter to handle matching of multiple options selectable via checkboxes
  *
@@ -93,7 +93,7 @@ class views_handler_filter_in_operator extends views_handler_filter {
           'values' => 0,
         ),
         'not empty' => array(
-          'title' => t('Is not empty (NULL)'),
+          'title' => t('Is not empty (NOT NULL)'),
           'method' => 'op_empty',
           'short' => t('not empty'),
           'values' => 0,
@@ -173,11 +173,6 @@ class views_handler_filter_in_operator extends views_handler_filter {
     }
 
     if ($which == 'all' || $which == 'value') {
-      if ($this->value_form_type == 'checkboxes') {
-        foreach ($options as $key => $option) {
-          $options[$key] = check_plain($option);
-        }
-      }
       $form['value'] = array(
         '#type' => $this->value_form_type,
         '#title' => $this->value_title,
@@ -191,18 +186,27 @@ class views_handler_filter_in_operator extends views_handler_filter {
         $form_state['input'][$identifier] = $default_value;
       }
 
+      $process = array();
+      if ($this->value_form_type == 'checkboxes') {
+        // If this form element will use checkboxes in the UI, we need to
+        // check_plain() all the options ourselves since FAPI is inconsistent
+        // about this. However, instead of directly doing that to the #options
+        // right now, we define a #process callback since we might change our
+        // mind later and convert this into a 'select' form element, which
+        // would lead to double-escaping the options.
+        $process[] = 'views_process_check_options';
+      }
       if ($which == 'all') {
-        $process = array();
-        if ($this->value_form_type == 'checkboxes' || $this->value_form_type == 'radios') {
+        if (empty($form_state['exposed']) && ($this->value_form_type == 'checkboxes' || $this->value_form_type == 'radios')) {
           $process[] = "expand_$this->value_form_type";
           $form['value']['#prefix'] = '<div id="edit-options-value-wrapper">';
           $form['value']['#suffix'] = '</div>';
         }
         $process[] = 'views_process_dependency';
-        $form['value'] += array(
-          '#process' => $process,
-          '#dependency' => array($source => $this->operator_values(1)),
-        );
+        $form['value']['#dependency'] = array($source => $this->operator_values(1));
+      }
+      if (!empty($process)) {
+        $form['value']['#process'] = $process;
       }
     }
   }
@@ -286,20 +290,25 @@ class views_handler_filter_in_operator extends views_handler_filter {
     $operator = check_plain($info[$this->operator]['short']);
     $values = '';
     if (in_array($this->operator, $this->operator_values(1))) {
-      if (count($this->value) == 1) {
+      // Remove every element which is not known.
+      foreach ($this->value as $value) {
+        if (!isset($this->value_options[$value])) {
+          unset($this->value[$value]);
+        }
+      }
+      // Choose different kind of ouput for 0, a single and multiple values.
+      if (count($this->value) == 0) {
+        $values = t('Unknown');
+      }
+      else if (count($this->value) == 1) {
         // If any, use the 'single' short name of the operator instead.
         if (isset($info[$this->operator]['short_single'])) {
           $operator = check_plain($info[$this->operator]['short_single']);
         }
 
         $keys = $this->value;
-        $key = array_shift($keys);
-        if (isset($this->value_options[$key])) {
-          $values = check_plain($this->value_options[$key]);
-        }
-        else {
-          $values = t('Unknown');
-        }
+        $value = array_shift($keys);
+        $values = check_plain($this->value_options[$value]);
       }
       else {
         foreach ($this->value as $value) {

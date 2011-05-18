@@ -1,5 +1,5 @@
 <?php
-//$Id: profile.views.inc,v 1.9 2008/09/24 21:21:21 merlinofchaos Exp $
+//$Id: profile.views.inc,v 1.10.2.1 2010/03/10 19:52:42 merlinofchaos Exp $
 /**
  * @file
  * Provide views data and handlers for user.module
@@ -97,7 +97,7 @@ function profile_views_get_fields() {
  */
 function profile_views_fetch_field($field) {
   $data = array(
-    'title' => t('@field-name', array('@field-name' => $field->title)),
+    'title' => t('@category: @field-name', array('@category' => $field->category, '@field-name' => $field->title)),
   );
 
   // Add fields specific to the profile type.
@@ -106,7 +106,7 @@ function profile_views_fetch_field($field) {
       $data += array(
         'help' => t('Profile textfield'),
         'field' => array(
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_user',
           'click sortable' => TRUE,
         ),
         'sort' => array(
