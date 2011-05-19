@@ -1,4 +1,4 @@
-// $Id: ajax_view.js,v 1.18 2009/06/02 19:30:44 merlinofchaos Exp $
+// $Id: ajax_view.js,v 1.19.2.5 2010/03/25 18:25:28 merlinofchaos Exp $
 
 /**
  * @file ajaxView.js
@@ -29,7 +29,7 @@ Drupal.Views.Ajax.ajaxViewResponse = function(target, response) {
     $view = $newView;
     Drupal.attachBehaviors($view.parent());
   }
- 
+
   if (response.messages) {
     // Show any messages (but first remove old ones, if there are any).
     $view.find('.views-messages').remove().end().prepend(response.messages);
@@ -37,7 +37,7 @@ Drupal.Views.Ajax.ajaxViewResponse = function(target, response) {
 };
 
 /**
- * Ajax behavior for views. 
+ * Ajax behavior for views.
  */
 Drupal.behaviors.ViewsAjaxView = function() {
   if (Drupal.settings && Drupal.settings.views && Drupal.settings.views.ajaxViews) {
@@ -73,7 +73,7 @@ Drupal.behaviors.ViewsAjaxView = function() {
       })
       .addClass('views-processed')
       .submit(function () {
-        $('input[type=submit]', this).after('<span class="views-throbbing">&nbsp</span>');
+        $('input[type=submit], button', this).after('<span class="views-throbbing">&nbsp</span>');
         var object = this;
         $(this).ajaxSubmit({
           url: ajax_path,
@@ -87,7 +87,7 @@ Drupal.behaviors.ViewsAjaxView = function() {
               $('.views-throbbing', object).remove();
             }
           },
-          error: function() { alert(Drupal.t("An error occurred at @path.", {'@path': ajax_path})); $('.views-throbbing', object).remove(); },
+          error: function(xhr) { Drupal.Views.Ajax.handleErrors(xhr, ajax_path); $('.views-throbbing', object).remove(); },
           dataType: 'json'
         });
 
@@ -110,17 +110,19 @@ Drupal.behaviors.ViewsAjaxView = function() {
             // Process pager, tablesort, and attachment summary links.
             .find('ul.pager > li > a, th.views-field a, .attachment .views-summary a')
             .each(function () {
-              var viewData = {};
+              var viewData = { 'js': 1 };
               // Construct an object using the settings defaults and then overriding
               // with data specific to the link.
               $.extend(
                 viewData,
-                settings,
                 Drupal.Views.parseQueryString($(this).attr('href')),
                 // Extract argument data from the URL.
-                Drupal.Views.parseViewArgs($(this).attr('href'), settings.view_base_path)
+                Drupal.Views.parseViewArgs($(this).attr('href'), settings.view_base_path),
+                // Settings must be used last to avoid sending url aliases to the server.
+                settings
               );
               $(this).click(function () {
+                $.extend(viewData, Drupal.Views.parseViewArgs($(this).attr('href'), settings.view_base_path));
                 $(this).addClass('views-throbbing');
                 $.ajax({
                   url: ajax_path,
@@ -132,9 +134,17 @@ Drupal.behaviors.ViewsAjaxView = function() {
                     // to browse newly loaded content after e.g. clicking a pager
                     // link.
                     var offset = $(target).offset();
+                    // We can't guarantee that the scrollable object should be
+                    // the body, as the view could be embedded in something
+                    // more complex such as a modal popup. Recurse up the DOM
+                    // and scroll the first element that has a non-zero top.
+                    var scrollTarget = target;
+                    while ($(scrollTarget).scrollTop() == 0 && $(scrollTarget).parent()) {
+                      scrollTarget = $(scrollTarget).parent()
+                    }
                     // Only scroll upward
-                    if (offset.top - 10 < $(window).scrollTop()) {
-                      $('html,body').animate({scrollTop: (offset.top - 10)}, 500);
+                    if (offset.top - 10 < $(scrollTarget).scrollTop()) {
+                      $(scrollTarget).animate({scrollTop: (offset.top - 10)}, 500);
                     }
                     // Call all callbacks.
                     if (response.__callbacks) {
@@ -143,7 +153,7 @@ Drupal.behaviors.ViewsAjaxView = function() {
                       });
                     }
                   },
-                  error: function() { $(this).removeClass('views-throbbing'); alert(Drupal.t("An error occurred at @path.", {'@path': ajax_path})); },
+                  error: function(xhr) { $(this).removeClass('views-throbbing'); Drupal.Views.Ajax.handleErrors(xhr, ajax_path); },
                   dataType: 'json'
                 });
 
