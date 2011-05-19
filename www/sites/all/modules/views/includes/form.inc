@@ -1,5 +1,5 @@
 <?php
-// $Id: form.inc,v 1.10 2008/06/25 21:10:10 merlinofchaos Exp $
+// $Id: form.inc,v 1.11.2.1 2010/01/05 01:33:46 merlinofchaos Exp $
 
 /**
  * @file form.inc
@@ -264,7 +264,8 @@ function drupal_validate_form_new($form_id, $form, &$form_state) {
  * - @code '#dependency' => array('id-of-form-without-the-#' => array(list, of, values, that, make, this, gadget, visible)); @endcode
  */
 function views_process_dependency($element, $edit, &$form_state, &$form) {
-  if (isset($element['#dependency'])) {
+  static $dependencies;
+  if (isset($element['#dependency']) && !isset($dependencies[$element['#id']])) {
     if (!isset($element['#dependency_count'])) {
       $element['#dependency_count'] = 1;
     }
@@ -276,7 +277,25 @@ function views_process_dependency($element, $edit, &$form_state, &$form) {
       $options['viewsAjax']['formRelationships'][$element['#id']] = array('num' => $element['#dependency_count'], 'values' => $element['#dependency']);
       drupal_add_js($options, 'setting');
     }
+    $dependencies[$element['#id']] = TRUE;
   }
 
   return $element;
 }
+
+/**
+ * #process callback to see if we need to check_plain() the options.
+ *
+ * Since FAPI is inconsistent, the #options are sanitized for you in all cases
+ * _except_ checkboxes. We have form elements that are sometimes 'select' and
+ * sometimes 'checkboxes', so we need decide late in the form rendering cycle
+ * if the options need to be sanitized before they're rendered. This callback
+ * inspects the type, and if it's still 'checkboxes', does the sanitation.
+ */
+function views_process_check_options($element, $edit, &$form_state, &$form) {
+  if ($element['#type'] == 'checkboxes' || $element['#type'] == 'checkbox') {
+    $element['#options'] = array_map('check_plain', $element['#options']);
+  }
+  return $element;
+}
+

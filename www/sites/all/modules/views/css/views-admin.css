@@ -1,4 +1,4 @@
-/* $Id: views-admin.css,v 1.13 2009/04/07 19:34:35 merlinofchaos Exp $ */
+/* $Id: views-admin.css,v 1.14.2.1 2009/11/18 20:24:22 merlinofchaos Exp $ */
 
 /*
  * Summary pad
@@ -211,6 +211,7 @@ div.views-display-deleted div.tab-section {
 
 #views-ajax-title {
   background: #f6f6f6;
+  color: #000;
   border-left: #D6DBDE 1px solid;
   border-right: #D6DBDE 1px solid;
   margin: 0 0 0 118px;
@@ -220,6 +221,7 @@ div.views-display-deleted div.tab-section {
 
 #views-ajax-pad .message {
   background: #f6f6f6;
+  color: #000;
   margin-left: 118px;
   border: #D6DBDE 1px solid;
   border-top: 0;
@@ -230,6 +232,7 @@ div.views-display-deleted div.tab-section {
 
 #views-ajax-pad form {
   background: #fff;
+  color: #000;
   margin-left: 118px;
   border: #D6DBDE 1px solid;
   padding-top: 3px;
@@ -384,6 +387,22 @@ html.js #views-ajax-pad {
 #views-ajax-pad table td .form-item select {
   padding: 0;
   margin: 0;
+}
+
+#views-ajax-pad label.hidden-options {
+  background: transparent url(../images/arrow-active.png) no-repeat right;
+  height: 12px;
+  padding-right: 12px;
+}
+
+#views-ajax-pad label.expanded-options {
+  background: transparent url(../images/expanded-options.png) no-repeat right;
+  height: 12px;
+  padding-right: 16px;
+}
+
+#views-ajax-pad .dependent-options {
+  padding-left: 30px;
 }
 
 /*

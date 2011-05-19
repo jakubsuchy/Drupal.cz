@@ -1,5 +1,5 @@
 <?php
-// $Id: query.inc,v 1.45 2009/06/02 18:17:06 merlinofchaos Exp $
+// $Id: query.inc,v 1.50.2.4 2009/12/02 22:59:18 dww Exp $
 /**
  * @file query.inc
  * Defines the query object which is the underlying layer in a View.
@@ -189,6 +189,11 @@ class views_query {
       $alias = $alias_base . '_' . $count++;
     }
 
+    // Make sure this join is adjusted for our relationship.
+    if ($link_point && isset($this->relationships[$link_point])) {
+      $join = $this->adjust_join($join, $link_point);
+    }
+
     // Add the table directly to the queue to avoid accidentally marking
     // it.
     $this->table_queue[$alias] = array(
@@ -204,6 +209,12 @@ class views_query {
       'table' => $join->table,
       'base' => $base,
     );
+
+    $this->tables[$this->base_table][$alias] = array(
+      'count' => 1,
+      'alias' => $alias,
+    );
+
     return $alias;
   }
 
@@ -242,7 +253,13 @@ class views_query {
       return FALSE;
     }
 
-    return $this->queue_table($table, $relationship, $this->adjust_join($join, $relationship), $alias);
+    if (!$join) {
+      $join = $this->get_join_data($table, $this->relationships[$relationship]['base']);
+    }
+
+    $join = $this->adjust_join($join, $relationship);
+
+    return $this->queue_table($table, $relationship, $join, $alias);
   }
 
   /**
@@ -881,6 +898,7 @@ class views_query {
     if (empty($this->no_distinct) && $this->distinct && !empty($this->fields)) {
       if (!empty($this->fields[$this->base_field])) {
         $this->fields[$this->base_field]['distinct'] = TRUE;
+        $this->add_groupby($this->base_field);
       }
     }
 
@@ -937,6 +955,9 @@ class views_query {
       }
       else if (!empty($field['aggregate'])) {
         $has_aggregate = TRUE;
+      }
+      elseif ($this->distinct && !in_array($fieldname, $this->groupby)) {
+        $string = $GLOBALS['db_type'] == 'pgsql' ? "FIRST($string)" : $string;
       }
       else {
         $non_aggregates[] = $fieldname;

@@ -5,9 +5,6 @@
  <?php print $styles ?>
  <?php print $scripts; ?>
  <script type="text/javascript"><?php /* Needed to avoid Flash of Unstyle Content in IE */ ?> </script>
- <link rel="stylesheet" href="/themes/drupal/style.css" media="screen" />
- <script type="text/javascript" src="/themes/drupal/social-links.js"></script>
- <script src="/themes/drupal/urchin.js" type="text/javascript"></script>
  <script type="text/javascript">
  _uacct = "UA-156212-2";
  urchinTracker();
@@ -43,13 +40,14 @@
     <div class="mission-body">
      <p>
       <?php print $mission; ?>
-      <p class="mission-links">
-       <br />
-       <a class="more-info-mission" href="/o-systemu-drupal">Více o systému Drupal</a>
-       <a class="more-info-mission" href="/forum">Poradna pro začátečniky</a>
-      </p>
-<!--      <a class="more-info-mission" href="/o-serveru-drupal.cz">Více o tomto serveru</a>-->
      </p>
+     <p class="mission-links">
+      <br />
+      <a class="more-info-mission" href="/o-systemu-drupal">Více o systému Drupal</a>
+      <a class="more-info-mission" href="/forum">Poradna pro začátečniky</a>
+     </p>
+<!--      <a class="more-info-mission" href="/o-serveru-drupal.cz">Více o tomto serveru</a>-->
+
      <?php $sea = google_cse_block('view', 0); print $sea['content']; ?>
 
     </div> <!-- mission-body end -->
@@ -84,10 +82,10 @@
  <?php print $footer_message ?>
 
  <div class="preloader">
-  <img src="/themes/drupal/images/nav-right.png" width="1" height="1" alt="." />
-  <img src="/themes/drupal/images/nav-left.png" width="1" height="1" alt="." />
-  <img src="/themes/drupal/images/nav-left-active.png" width="1" height="1" alt="." />
-  <img src="/themes/drupal/images/nav-right-active.png" width="1" height="1" alt="." />
+  <img src="<?php print $directory?>/images/nav-right.png" width="1" height="1" alt="." />
+  <img src="<?php print $directory?>/images/nav-left.png" width="1" height="1" alt="." />
+  <img src="<?php print $directory?>/images/nav-left-active.png" width="1" height="1" alt="." />
+  <img src="<?php print $directory?>/images/nav-right-active.png" width="1" height="1" alt="." />
  </div>
 </div> <!-- footer end -->
 <?php print $closure ?>

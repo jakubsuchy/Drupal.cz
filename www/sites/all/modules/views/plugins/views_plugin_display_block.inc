@@ -1,5 +1,5 @@
 <?php
-// $Id: views_plugin_display_block.inc,v 1.4 2009/06/01 21:38:44 merlinofchaos Exp $
+// $Id: views_plugin_display_block.inc,v 1.5 2009/06/26 00:23:42 merlinofchaos Exp $
 /**
  * @file
  * Contains the block display plugin.
@@ -156,7 +156,7 @@ class views_plugin_display_block extends views_plugin_display {
    * Perform any necessary changes to the form values prior to storage.
    * There is no need for this function to actually store the data.
    */
-  function options_submit($form, &$form_state) {
+  function options_submit(&$form, &$form_state) {
     // It is very important to call the parent function here:
     parent::options_submit($form, $form_state);
     switch ($form_state['section']) {
