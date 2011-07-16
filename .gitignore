@@ -1,4 +1,5 @@
-# ignore the Drupal standard files directories and their contents
-docroot/files/
-docroot/sites/*/files/
+# Ignore paths that contain user-generated content.
+docroot/files
+docroot/sites/*/files
+docroot/sites/*/private
 
