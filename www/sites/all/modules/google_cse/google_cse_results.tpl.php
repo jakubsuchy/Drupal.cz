@@ -22,6 +22,7 @@
     var googleSearchFrameborder = 0;
     var googleSearchDomain = Drupal.settings.googleCSE.domain;
     var googleSearchPath = '/cse';
+    var googleSearchQueryString = 'query';
   //]]>
 </script>
 
