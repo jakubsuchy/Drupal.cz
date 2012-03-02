@@ -1,11 +1,10 @@
-; $Id: mollom.info,v 1.2.2.1 2008/04/01 14:16:13 dries Exp $
 name = Mollom
-description = Protects against comment and contact form spam.
+description = Automatically moderates user-submitted content and protects your site from spam and profanity.
 core = 6.x
 
-; Information added by drupal.org packaging script on 2009-08-17
-version = "6.x-1.10"
+; Information added by drupal.org packaging script on 2011-07-09
+version = "6.x-1.16"
 core = "6.x"
 project = "mollom"
-datestamp = "1250518002"
+datestamp = "1310217719"
 
