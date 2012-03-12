@@ -1,5 +1,4 @@
 <?php
-// $Id: mollom.pages.inc,v 1.1.2.1 2009/07/30 20:28:49 davereid Exp $
 
 /**
  * @file
@@ -9,35 +8,70 @@
 /**
  * AJAX callback to retrieve a CAPTCHA.
  *
+ * @param $type
+ *   The new CAPTCHA type to retrieve, e.g. 'image' or 'audio'.
+ * @param $session_id
+ *   The last known Mollom session id contained in the form.
+ *
+ * @return
+ *   A JSON array containing:
+ *   - content: The HTML markup for the new CAPTCHA.
+ *   - session_id: The Mollom session id for the new CAPTCHA.
+ *
  * @todo Add error handling.
  */
 function mollom_captcha_js($type, $session_id) {
-  $output = '';
-
-  if ($type == 'audio') {
-    $response = mollom('mollom.getAudioCaptcha', array('author_ip' => ip_address(), 'session_id' => $session_id));
-    if ($response) {
-      $output  = '<a href="http://mollom.com" id="mollom-captcha"><embed src="'. check_plain($response['url']) .'" autostart="true" width="120" height="30" /></a>';
-      $output .= ' (<a href="#" id="mollom-image-captcha">'. t('use image CAPTCHA') .'</a>)';
-    }
-  }
-  elseif ($type == 'image') {
-    $response = mollom('mollom.getImageCaptcha', array('author_ip' => ip_address(), 'session_id' => $session_id));
-    if ($response) {
-      $output = '<a href="http://mollom.com" id="mollom-captcha"><img src="'. check_plain(url($response['url'])) .'" alt="Mollom CAPTCHA" /></a>';
-      $output .= ' (<a href="#" id="mollom-audio-captcha">'. t('play audio CAPTCHA') .'</a>)';
-    }
+  // Extract Mollom session id from form element value.
+  @list($timestamp, $mollom_session_id) = explode('-', $session_id, 2);
+  if (empty($mollom_session_id)) {
+    watchdog('mollom', 'Bogus session id %session.', array('%session' => $session_id), WATCHDOG_WARNING);
+    drupal_json();
+    exit();
   }
 
-  print $output;
+  $captcha = mollom_get_captcha($type, array('session_id' => $mollom_session_id));
+
+  // Update cached session id in the cached $form_state.
+  if (!empty($captcha['response']['session_id'])) {
+    if ($cache = cache_get($mollom_session_id, 'cache_mollom')) {
+      $form_state['mollom'] = $cache->data;
+      $form_state['mollom']['response']['session_id'] = $captcha['response']['session_id'];
+      cache_set($form_state['mollom']['response']['session_id'], $form_state['mollom'], 'cache_mollom', $timestamp + 21600);
+      // After successfully updating the cache, replace the original session id.
+      $mollom_session_id = $captcha['response']['session_id'];
+    }
+  }
+
+  // Return new content and new session_id via JSON.
+  $data = array(
+    'content' => $captcha['markup'],
+    'session_id' => $timestamp . '-' . $mollom_session_id,
+  );
+  drupal_json($data);
   exit();
 }
 
 /**
- * Return a list of the possible feedback options for content.
+ * Form builder for report to Mollom form.
+ *
+ * @param $entity
+ *   The entity type of the data to report, e.g. 'node' or 'comment'.
+ * @param $id
+ *   The entity id the data belongs to. If 'session' is passed as $entity, then
+ *   $id is assumed to be a Mollom session_id, as returned by Mollom servers,
+ *   which should only be used to report session data that was not stored for an
+ *   entity in the database (such as contact form submissions).
  */
-function _mollom_feedback_options() {
-  return array(
+function mollom_report_form(&$form_state, $entity, $id) {
+  $form['entity'] = array(
+    '#type' => 'value',
+    '#value' => $entity,
+  );
+  $form['id'] = array(
+    '#type' => 'value',
+    '#value' => $id,
+  );
+  $form['feedback'] = array(
     '#type' => 'radios',
     '#title' => t('Optionally report this to Mollom'),
     '#options' => array(
@@ -50,85 +84,58 @@ function _mollom_feedback_options() {
     '#default_value' => 'none',
     '#description' => t("Mollom is a web service that helps you moderate your site's content: see <a href=\"http://mollom.com\">http://mollom.com</a> for more information. By sending feedback to Mollom, you teach Mollom about the content you like and dislike, allowing Mollom to do a better job helping you moderate your site's content. If you want to report multiple posts at once, you can use Mollom's bulk operations on the content and comment administration pages."),
   );
+
+  // @todo "Delete" does not work for reporting mails to Mollom. In D7+, this
+  //   form should be used solely for mails, as other entities are reported
+  //   through existing delete confirmation forms instead. Perhaps there should
+  //   be a dedicated form for reporting mails, as they are not really
+  //   compatible with any of the standard processes either way.
+  return confirm_form($form,
+    t('Are you sure you want to delete and report the content as inappropriate?'),
+    isset($_GET['destination']) ? $_GET['destination'] : '<front>',
+    t('This action cannot be undone.'),
+    t('Delete'), t('Cancel')
+  );
 }
 
 /**
- * This function reports a comment as feedback and deletes it.
+ * Form submit handler for mollom_report_form().
  */
-function mollom_report_comment($form_state, $cid) {
-  if ($comment = _comment_load($cid)) {
-    $form['cid'] = array('#type' => 'value', '#value' => $cid);
-    $form['feedback'] = _mollom_feedback_options();
-
-    return confirm_form($form,
-      t('Are you sure you want to delete the comment and report it?'),
-      isset($_GET['destination']) ? $_GET['destination'] : 'node/'. $comment->nid,
-      t('This action cannot be undone.'),
-      t('Delete'), t('Cancel'));
-  }
-}
-
-/**
- * This function deletes a comment and optionally sends feedback to Mollom.
- */
-function mollom_report_comment_submit($form, &$form_state) {
+function mollom_report_form_submit($form, &$form_state) {
   if ($form_state['values']['confirm']) {
-    if ($comment = _comment_load($form_state['values']['cid'])) {
-      // Load the Mollom session data:
-      $data = mollom_get_data('comment-'. $comment->cid);
+    $entity = $form_state['values']['entity'];
+    $id = $form_state['values']['id'];
 
-      // Provide feedback to Mollom if available:
-      if (isset($data) && isset($data->session) && isset($form_state['values']['feedback']) && $form_state['values']['feedback'] != 'none') {
-        mollom('mollom.sendFeedback', array('session_id' => $data->session, 'feedback' => $form_state['values']['feedback']));
-      }
-
-      // Delete a comment and its replies:
-      module_load_include('inc', 'comment', 'comment.admin');
-      _comment_delete_thread($comment);
-      _comment_update_node_statistics($comment->nid);
-      cache_clear_all();
-
-      drupal_set_message(t('The comment has been deleted.'));
+    // Load the Mollom session data.
+    if ($entity == 'session') {
+      $data = new stdClass;
+      $data->session_id = $id;
     }
-  }
-  $form_state['redirect'] = "node/$comment->nid";
-}
-
-/**
- * This function deletes a node and optionally sends feedback to Mollom.
- */
-function mollom_report_node($form_state, $nid) {
-  if ($node = node_load($nid)) {
-    $form['nid'] = array('#type' => 'value', '#value' => $node->nid);
-    $form['feedback'] = _mollom_feedback_options();
-
-    return confirm_form($form,
-      t('Are you sure you want to delete %title and report it?', array('%title' => $node->title)),
-      isset($_GET['destination']) ? $_GET['destination'] : 'node/'. $node->nid,
-      t('This action cannot be undone.'),
-      t('Delete'), t('Cancel'));
-  }
-}
-
-/**
- * This function deletes a node and optionally sends feedback to Mollom.
- */
-function mollom_report_node_submit($form, &$form_state) {
-  if ($form_state['values']['confirm']) {
-    if ($node = node_load($form_state['values']['nid'])) {
-      // Load the Mollom session data:
-      $data = mollom_get_data('node-'. $node->nid);
-
-      // Provide feedback to Mollom if available:
-      if (isset($data) && isset($data->session) && isset($form_state['values']['feedback']) && $form_state['values']['feedback'] != 'none') {
-        mollom('mollom.sendFeedback', array('session_id' => $data->session, 'feedback' => $form_state['values']['feedback']));
-      }
-
-      // Delete the node.  Calling this function will delete any comments,
-      // clear the cache and print a status message.
-      node_delete($node->nid);
+    else {
+      $data = mollom_data_load($entity, $id);
     }
-  }
 
-  $form_state['redirect'] = '<front>';
+    // Send feedback to Mollom, if we have session data.
+    if (!empty($data->session_id) && isset($form_state['values']['feedback']) && $form_state['values']['feedback'] != 'none') {
+      if (_mollom_send_feedback($data->session_id, $form_state['values']['feedback'])) {
+        drupal_set_message(t('The content was successfully reported as inappropriate.'));
+      }
+    }
+
+    // Delete the content. The callback should take care of proper deletion and
+    // cache clearing on its own.
+    foreach (mollom_form_list() as $form_id => $info) {
+      if (!isset($info['entity']) || $info['entity'] != $entity) {
+        continue;
+      }
+      // If there is a 'report delete callback', invoke it.
+      if (isset($info['report delete callback']) && function_exists($info['report delete callback'])) {
+        $function = $info['report delete callback'];
+        $function($entity, $id);
+        break;
+      }
+    }
+
+    $form_state['redirect'] = '<front>';
+  }
 }
