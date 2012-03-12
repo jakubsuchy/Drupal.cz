@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @file
+ *   Installer file for Acquia SPI module.
+ */
+
+// -- Core hooks ---------------------------------------------------------------
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function acquia_spi_uninstall() {
+  variable_del('acquia_spi_cron_last');
+  variable_del('acquia_spi_cron_interval');
+}
+
+/**
+ * Implementation of hook_requirements().
+ */
+function acquia_spi_requirements($phase) {
+
+  $requirements = array();
+  $last_sent = variable_get('acquia_spi_cron_last', 0);
+  $use_cron = variable_get('acquia_spi_use_cron', 1);
+
+  switch ($phase) {
+    case 'runtime':
+      $has_credentials = acquia_agent_has_credentials();
+
+      if ($has_credentials) {
+        $key = md5(acquia_agent_settings('acquia_key') . '-spi-send-' . drupal_get_private_key());
+        $config_url = $description = $interval = '';
+        $ago = time() - $last_sent;
+        if ($ago >= 60 * 60 * 36) { // 1.5 days ago.
+          $severity = REQUIREMENT_WARNING;
+          $description = 'SPI data has not been reported to the Acquia Network for more than a day.<br/>';
+        }
+        else {
+          $severity = REQUIREMENT_OK;
+        }
+        if (!$use_cron) {
+          $config_url = url('admin/settings/acquia-agent');
+          $description .= 'You are not sending SPI data via Drupal\'s cron system. <a href="!config-page">View Acquia Network configuration</a> for details.<br/>';
+        }
+        else {
+          $interval = variable_get('acquia_spi_cron_interval', 30);
+          if (variable_get('acquia_spi_cron_interval_override', FALSE)) {
+            $interval = variable_get('acquia_spi_cron_interval_override', 30);
+          }
+          $description .= 'SPI data will be sent once every !interval minutes once cron is called. ';
+        }
+        $description .= 'You can <a href="!spi-send">manually send SPI data</a>.';
+        if ($last_sent == 0) {
+          $value = t('SPI data has not been sent');
+        }
+        else {
+          $value = t('Last sent !time ago', array('!time' => format_interval($ago)));
+        }
+        $requirements['acquia_spi'] = array(
+          'title' => t('Acquia Network SPI'),
+          'severity' => $severity,
+          'value' => $value,
+          'description' => t($description, array('!interval' => $interval, '!config-page' => $config_url, '!spi-send' => url('system/acquia-spi-send', array('query' => array('destination' => 'admin/reports/status', 'key' => $key))))),
+        );
+      }
+      break;
+  }
+
+  return $requirements;
+}
