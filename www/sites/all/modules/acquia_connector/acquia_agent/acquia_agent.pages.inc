@@ -381,6 +381,8 @@ function _acquia_agent_automatic_start_submit(&$form_state) {
     variable_set('acquia_key', $sub['key']);
     variable_set('acquia_identifier', $sub['identifier']);
     variable_set('acquia_subscription_name', $sub['name']);
+    // Clear storage to allow continuation.
+    $form_state['storage'] = NULL;
   }
 }
 
