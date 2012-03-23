@@ -1,5 +1,7 @@
-www/sites/default/settings.php
-www/*sql
-files/
+# Ignore paths that contain user-generated content.
+docroot/files
+docroot/sites/*/files
+docroot/sites/*/private
+
 *gz
 *bz2
