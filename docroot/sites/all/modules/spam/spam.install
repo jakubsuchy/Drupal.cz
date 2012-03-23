@@ -1,5 +1,4 @@
 <?php
-// $Id: spam.install,v 1.1.2.1.2.9.2.21.2.1 2008/12/25 05:42:09 jeremy Exp $
 
 /**
  * @file
@@ -14,7 +13,7 @@ function spam_schema() {
     'fields' => array(
       'sid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
       'content_type' => array('type' => 'varchar', 'length' => '128', 'not null' => TRUE, 'default' => ''),
-      'content_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'content_id' => array('type' => 'varchar', 'length' => '32', 'not null' => TRUE, 'default' => ''),
       'score' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '4'),
       'hostname' => array('type' => 'varchar', 'length' => '15', 'not null' => TRUE, 'default' => ''),
       'timestamp' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
@@ -48,7 +47,7 @@ function spam_schema() {
       'trid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
       'level' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '2'),
       'content_type' => array('type' => 'varchar', 'length' => '128', 'not null' => FALSE, 'default' => ''),
-      'content_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'content_id' => array('type' => 'varchar', 'length' => '32', 'not null' => TRUE, 'default' => ''),
       'uid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '10'),
       'function' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
       'message' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
@@ -65,33 +64,13 @@ function spam_schema() {
       'uid' => array('uid'),
     ),
   );
-  $schema['spam_filters_groups_data'] = array(
-    'fields' => array(
-      'gid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
-      'content_type' => array('type' => 'varchar', 'length' => '64', 'not null' => TRUE, 'default' => ''),
-    ),
-    'primary key' => array('gid', 'content_type'),
-    'indexes' => array(
-      'content_type' => array('content_type'),
-    ),
-  );
-  $schema['spam_filters_groups'] = array(
-    'fields' => array(
-      'gid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
-      'name' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
-      'weight' => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0, 'disp-width' => '4'),
-    ),
-    'primary key' => array('gid'),
-    'indexes' => array(
-      'weight' => array('weight'),
-    ),
-  );
   $schema['spam_filters_errors'] = array(
     'fields' => array(
       'bid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
       'uid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
+      'language' => array('type' => 'varchar', 'length' => 12, 'not null' => TRUE, 'default' => ''),
       'content_type' => array('type' => 'varchar', 'length' => '128', 'not null' => TRUE, 'default' => ''),
-      'content_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'content_id' => array('type' => 'varchar', 'length' => '32', 'not null' => TRUE, 'default' => ''),
       'content_hash' => array('type' => 'char', 'length' => '32', 'not null' => TRUE, 'default' => ''),
       'content' => array('type' => 'text', 'not null' => TRUE),
       'form' => array('type' => 'text', 'not null' => TRUE),
@@ -141,5 +120,64 @@ function spam_uninstall() {
   // Remove tables.
   drupal_uninstall_schema('spam');
   drupal_set_message(t('All spam module tables have been deleted.'));
+}
+
+
+/**
+ * Allow for non-integer spam IDs
+ */
+function spam_update_6001() {
+  $ret = array();
+
+  db_drop_unique_key($ret, 'spam_tracker',  'content_id_content_type');
+  db_change_field($ret, 'spam_tracker', 'content_id', 'content_id', 
+                  array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''), 
+                  array('unique keys' => array(
+                          'content_id_content_type' => array('content_id', 'content_type'),
+                        ),
+                  ));
+
+  db_drop_index($ret, 'spam_log',  'content_type_content_id');
+  db_change_field($ret, 'spam_log', 'content_id', 'content_id', 
+                  array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''), 
+                  array('indexes' => array(
+                          'content_type_content_id' => array('content_type', 'content_id'),
+                        ),
+                  ));
+
+  db_drop_index($ret, 'spam_filters_errors',  'id_type');
+  db_change_field($ret, 'spam_filters_errors', 'content_id', 'content_id', 
+                  array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''), 
+                  array('indexes' => array(
+                          'id_type' => array('content_id', 'content_type'),
+                        ),
+                  ));
+
+  return $ret;
+}
+
+/**
+ * Add language field to spam_filters_errors table.
+ */
+function spam_update_6002() {
+  $ret = array();
+
+  db_add_field($ret, 'spam_filters_errors', 'language', array('type' => 'varchar', 'length' => 12, 'default' => '', 'not null' => TRUE));
+
+  return $ret;
+}
+
+/**
+ * Drop unused fields/tables
+ */
+function spam_update_6003() {
+  $ret = array();
+
+  db_drop_table($ret, 'spam_filters_groups');
+  db_drop_table($ret, 'spam_filters_groups_data');
+  db_drop_index($ret, 'spam_filters', 'gid');
+  db_drop_field($ret, 'spam_filters', 'gid');
+
+  return $ret;
 }
 

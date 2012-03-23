@@ -1,0 +1,403 @@
+<?php
+
+/**
+ * @file
+ * Duplicate filter module
+ * Copyright(c) 2007-2008
+ *  Jeremy Andrews <jeremy@tag1consulting.com>.  All rights reserved.
+ *
+ * Detects spam by looking for duplication of content, or posting IP.
+ */
+
+define('SPAM_FILTER_DUPLICATE_BLACKLIST_SILENT', 0);
+define('SPAM_FILTER_DUPLICATE_BLACKLIST_NOTIFY', 1);
+define('SPAM_FILTER_DUPLICATE_BLACKLIST_BLOCK', 2);
+
+define('SPAM_FILTER_DUPLICATE_DEFAULT_THRESHOLD', 2);
+define('SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST', 3);
+
+define('SPAM_FILTER_DUPLICATE_NOT_SPAM', 0);
+define('SPAM_FILTER_DUPLICATE_SPAM', 1);
+
+/**
+ * Drupal _menu() hook.
+ */
+function spam_filter_duplicate_menu() {
+  $items = array();
+
+  $items['admin/settings/spam/filters/duplicate'] = array(
+    'title' => 'Duplicate',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('spam_filter_duplicate_admin_settings'),
+    'access arguments' => array('administer spam'),
+    'description' => 'Configure the spam duplicate filter.',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['duplicate/denied/ip'] = array(
+    'page callback' => 'spam_filter_duplicate_denied_ip',
+    'type' => MENU_CALLBACK,
+    'access callback' => TRUE,
+  );
+  $items['duplicate/denied/post'] = array(
+    'page callback' => 'spam_filter_duplicate_denied_post',
+    'type' => MENU_CALLBACK,
+    'access callback' => TRUE,
+  );
+
+  $items['admin/reports/spam/blocked_ip'] = array(
+    'title' => 'Blocked IPs',
+    'access arguments' => array('administer spam'),
+    'page callback' => 'spam_logs_blocked_ip',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * The arg() function may not be availble early in the bootstrap process,
+ * so we reimplement it here.
+ */
+function _spam_filter_duplicate_arg($index) {
+  static $arguments, $q;
+
+  if (empty($arguments) || $q != $_GET['q']) {
+    $arguments = explode('/', $_GET['q']);
+    $q = $_GET['q'];
+  }
+
+  if (isset($arguments[$index])) {
+    return $arguments[$index];
+  }
+}
+
+
+/**
+ * If IP blacklisting and IP blocking are both enabled, perform a database
+ * query on each page load to see if the current visitor has been blacklisted.
+ */
+function spam_filter_duplicate_init() {
+  // Allow notification to blacklisted IP, if enabled.
+  if (_spam_filter_duplicate_arg(0) == 'duplicate' && _spam_filter_duplicate_arg(1) == 'denied' && _spam_filter_duplicate_arg(2) == 'ip') return;
+
+  // Only perform database queries if functionality is enabled.
+  if ((variable_get('spam_filter_duplicate_blacklist_action', SPAM_FILTER_DUPLICATE_BLACKLIST_NOTIFY) == SPAM_FILTER_DUPLICATE_BLACKLIST_BLOCK) && (variable_get('spam_filter_duplicate_blacklist', SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST) > -1)) {
+    // Blacklisting and IP blocking enabled.
+    $spam_filter_duplicate_ip = (int)db_result(db_query("SELECT COUNT(iid) FROM {spam_filter_duplicate} WHERE hostname = '%s' AND spam = %d", ip_address(), SPAM_FILTER_DUPLICATE_SPAM));
+    if ($spam_filter_duplicate_ip >= variable_get('spam_filter_duplicate_blacklist', SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST)) {
+      if (user_access('bypass filters')) {
+        spam_log(SPAM_DEBUG, 'spam_filter_duplicate_init', t('Found !count spam for IP !ip, ignoring because user !user (uid !uid) is configured to bypass filters', array('!count' => $spam_filter_duplicate_ip, '!ip' => ip_address(), '!user' => $user->name, 'uid' => $user->uid)), $type, $id);
+        return;
+      }
+      drupal_goto("duplicate/denied/ip");
+    }
+  }
+}
+
+/**
+ * Spam API Hook
+ */
+function spam_filter_duplicate_spamapi($op, $type = NULL, $content = array(), $fields = array(), $extra = NULL) {
+
+  switch ($op) {
+
+    case 'filter':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_duplicate', $type, $content, $fields, $extra)) return;
+      return spam_filter_duplicate_spam_filter($content, $type, $fields, $extra);
+
+    case 'filter_module':
+      return 'spam_filter_duplicate';
+
+    case 'insert':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_duplicate', $type, $content, $fields, $extra)) return;
+      if (is_array($extra) && $extra['sid'] && $extra['host'] &&
+          !empty($content) && !empty($fields)) {
+        $hash = _spam_filter_duplicate_content_hash($content, $fields);
+        db_query("INSERT INTO {spam_filter_duplicate} (sid, content_hash, hostname, timestamp) VALUES(%d, '%s', '%s', %d)", $extra['sid'], $hash, $extra['host'], time());
+        $action = _spam_filter_duplicate_action();
+        if (is_array($action) && !empty($action)) {
+          if (isset($action['redirect'])) {
+            drupal_goto($action['redirect']);
+          }
+        }
+      }
+      break;
+
+    case 'update':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_duplicate', $type, $content, $fields, $extra)) return;
+      if (is_array($extra) && $extra['sid'] && $extra['host'] &&
+          !empty($content) && !empty($fields)) {
+        $hash = _spam_filter_duplicate_content_hash($content, $fields);
+        db_query("UPDATE {spam_filter_duplicate} SET content_hash = '%s', hostname = '%s', timestamp = %d WHERE sid = %d", $hash, $extra['host'], time(), $extra['sid']);
+        if (!db_affected_rows()) {
+          db_query("INSERT INTO {spam_filter_duplicate} (sid, content_hash, hostname, timestamp) VALUES(%d, '%s', '%s', %d)", $extra['sid'], $hash, $extra['host'], time());
+        }
+        $action = _spam_filter_duplicate_action();
+        if (is_array($action) && !empty($action)) {
+          if (isset($action['redirect'])) {
+            drupal_goto($action['redirect']);
+          }
+        }
+      }
+      break;
+
+    case 'delete':
+      if (is_array($extra) && $extra['sid'] && !empty($content) && !empty($fields)) {
+        db_query("DELETE FROM {spam_filter_duplicate} WHERE sid = %d", $extra['sid']);
+      }
+      break;
+
+    case 'filter_info':
+      return array(
+        'name' => t('Duplicate filter'),
+        'module' => t('spam_filter_duplicate'),
+        'description' => t('A duplication spam filter.'),
+        'help' => t('The duplicate filter detects spam by detecting content duplication.'),
+      );
+      break;
+
+    case 'filter_install':
+      return array(
+        'status' => SPAM_FILTER_ENABLED,
+        'weight' => -8,
+      );
+
+    case 'mark_as_spam':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_duplicate', $type, $content, $fields, $extra)) return;
+      db_query('UPDATE {spam_filter_duplicate} SET spam = %d WHERE sid = %d', SPAM_FILTER_DUPLICATE_SPAM, $extra['sid']);
+      if (!db_affected_rows() && $extra['id'] && $extra['sid']) {
+        $content = spam_invoke_module($type, 'load', $extra['id']);
+        $fields = spam_invoke_module($type, 'filter_fields', $content);
+        $hash = _spam_filter_duplicate_content_hash($content, $fields);
+        $hostname = spam_invoke_module($type, 'hostname', $extra['id']);
+        db_query("INSERT INTO {spam_filter_duplicate} (sid, content_hash, hostname, timestamp) VALUES(%d, '%s', '%s', %d)", $extra['sid'], $hash, $hostname, time());
+      }
+      $action = _spam_filter_duplicate_action();
+      if (is_array($action) && isset($action['redirect'])) {
+        return $action['redirect'];
+      }
+      break;
+
+    case 'mark_as_not_spam':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_duplicate', $type, $content, $fields, $extra)) return;
+      db_query('UPDATE {spam_filter_duplicate} SET spam = %d WHERE sid = %d', SPAM_FILTER_DUPLICATE_NOT_SPAM, $extra['sid']);
+      if (!db_affected_rows() && $extra['id'] && $extra['sid']) {
+        // Updating content that we've not filtered before.  Retrive all the
+        // data we need to add it to the spam_filter_duplicate table.
+        $fields = spam_invoke_module($type, 'filter_fields', $extra['content']);
+        $hash = _spam_filter_duplicate_content_hash($extra['content'], $fields);
+        $hostname = spam_invoke_module($type, 'hostname', $extra['id']);
+        db_query("INSERT INTO {spam_filter_duplicate} (sid, content_hash, hostname, timestamp) VALUES(%d, '%s', '%s', %d)", $extra['sid'], $hash, $hostname, time());
+      }
+      break;
+
+  }
+}
+
+/**
+ *
+ */
+function spam_filter_duplicate_admin_settings() {
+  $form['content'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Content'),
+    '#collapsible' => TRUE,
+  );
+  $limits = drupal_map_assoc(range(2, 15));
+  $limits[-1] = t('unlimited');
+  $form['content']['spam_filter_duplicate_threshold'] = array(
+    '#type' => 'select',
+    '#title' => t('Duplication threshold'),
+    '#default_value' => variable_get('spam_filter_duplicate_threshold', SPAM_FILTER_DUPLICATE_DEFAULT_THRESHOLD),
+    '#options' => $limits,
+    '#description' => t('Specify how many times the same identical content can be posted before it will be considered spam.  When tuning this filter, note that users may accidentally submit the same content multiple times causing an otherwise acceptible posting to be duplicated.'),
+  );
+  $form['content']['spam_filter_duplicate_post_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Duplicate post message'),
+    '#default_value' => variable_get('spam_filter_duplicate_post_message', t('<p>You have attempted to post the same identical content multiple times, causing your posts to be flagged as potential spam.  If this has happened in error, please report this error along with your IP address (%IP) to a @site site administrator.  We apologize for any inconvenience.</p>', array('@site' => variable_get('site_name', 'Drupal')))),
+    '#description' => t('Message to show visitors when their content has been blocked because it was posted multiple times.  The text "%IP" will be replaced by the visitors actual IP address.'),
+  );
+
+  $form['ip'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('IP'),
+    '#collapsible' => TRUE,
+  );
+  $limits = drupal_map_assoc(range(1, 15));
+  $limits[-1] = t('unlimited');
+  $form['ip']['spam_filter_duplicate_blacklist'] = array(
+    '#type' => 'select',
+    '#title' => t('IP blacklist threshold'),
+    '#default_value' => variable_get('spam_filter_duplicate_blacklist', SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST),
+    '#options' => $limits,
+    '#description' => t('Specify how many times a given IP address is allowed to post possible spam content before the IP address is blacklisted and prevented from posting any additional content.'),
+  );
+  $form['ip']['spam_filter_duplicate_blacklist_action'] = array(
+    '#type' => 'radios',
+    '#title' => t('IP blacklist action'),
+    '#options' => array(t('Silently prevent visitor from posting'), t('Notify blacklisted visitor when posting, prevent from posting'), t('Notify blacklisted visitor, prevent from visiting site')),
+    '#default_value' => variable_get('spam_filter_duplicate_blacklist_action', SPAM_FILTER_DUPLICATE_BLACKLIST_NOTIFY),
+    '#description' => t('Select an action from the above options.  If notification is enabled, the user will be redirected to a custom page displaying the "Blacklisted IP message" defined below.  If you only prevent users from posting, they will be able to view all site content.  If you prevent a user from visiting your site, they will only ever see the "Blacklisted IP message".'),
+  );
+  $form['ip']['spam_filter_duplicate_blacklist_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Blacklisted IP message'),
+    '#default_value' => variable_get('spam_filter_duplicate_blacklist_message', t('<p>You are currently not allowed to post content to @site, as previous content posted by your IP address (%IP) has been flagged as potential spam.</p><p>If you have not posted spam to @site, please report this error along with your IP address to a site administrator.  We apologize for any inconvenience.</p>', array('@site' => variable_get('site_name', 'Drupal')))),
+    '#description' => t('Message to show visitors when their IP has been blacklisted.  The text "%IP" will be replaced by the visitors actual IP address.')
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Save the configuration.
+ */
+function spam_filter_duplicate_admin_settings_submit($form, &$form_state) {
+/* TODO The 'op' element in the form values is deprecated.
+   Each button can have #validate and #submit functions associated with it.
+   Thus, there should be one button that submits the form and which invokes
+   the normal form_id_validate and form_id_submit handlers. Any additional
+   buttons which need to invoke different validate or submit functionality
+   should have button-specific functions. */
+  if ($form_state['values']['op'] == t('Reset to defaults')) {
+    variable_del('spam_filter_duplicate_threshold');
+    variable_del('spam_filter_duplicate_post_message');
+    variable_del('spam_filter_duplicate_blacklist');
+    variable_del('spam_filter_duplicate_blacklist_action');
+    variable_del('spam_filter_duplicate_blacklist_message');
+    drupal_set_message('Configuration reset to defaults.');
+  }
+  else {
+    variable_set('spam_filter_duplicate_threshold', $form_state['values']['spam_filter_duplicate_threshold']);
+    variable_set('spam_filter_duplicate_post_message', $form_state['values']['spam_filter_duplicate_post_message']);
+    variable_set('spam_filter_duplicate_blacklist', $form_state['values']['spam_filter_duplicate_blacklist']);
+    variable_set('spam_filter_duplicate_blacklist_action', $form_state['values']['spam_filter_duplicate_blacklist_action']);
+    variable_set('spam_filter_duplicate_blacklist_message', $form_state['values']['spam_filter_duplicate_blacklist_message']);
+    drupal_set_message('Configuration saved.');
+  }
+}
+
+/**
+ * Get and md5 hash of all content truncated together.
+ */
+function _spam_filter_duplicate_content_hash($content, $fields) {
+  if (is_object($content)) {
+    $content = (array)$content;
+  }
+  $hash = '';
+  
+  if (isset($fields['main']) && is_array($fields['main'])) {
+    foreach ($fields['main'] as $field) {
+      $hash .= $content[$field];
+    }
+  }
+
+  return md5($hash);
+}
+
+/**
+ * Determine whether or not the content is spam.
+ */
+function spam_filter_duplicate_spam_filter($content, $type, $fields, $extra = array(), $filter_test = FALSE) {
+  $score = 0;
+  $action = array();
+  $hash = _spam_filter_duplicate_content_hash($content, $fields);
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  $spam_filter_duplicate_hash = db_result(db_query("SELECT COUNT(d.iid) FROM {spam_filter_duplicate} d LEFT JOIN {spam_tracker} t ON d.sid = t.sid WHERE content_hash = '%s' AND content_id <> '%s'", $hash, $id)) + 1;
+  if ($spam_filter_duplicate_hash >= variable_get('spam_filter_duplicate_threshold', SPAM_FILTER_DUPLICATE_DEFAULT_THRESHOLD)) {
+    $sids = db_query("SELECT sid FROM {spam_filter_duplicate} WHERE content_hash = '%s'", $hash);
+    if (!$filter_test) {
+      while ($sid = db_result($sids)) {
+        $unpublish = db_fetch_object(db_query('SELECT content_type, content_id, score FROM {spam_tracker} WHERE sid = %d', $sid));
+        spam_mark_as_spam($unpublish->content_type, $unpublish->content_id, array('score' => 99));
+      }
+      // Update counter tracking that we've blocked a duplicate posting of this
+      // content.  (It will actually increment the counter on
+      // "duplicate_threshold" rows.)
+      db_query("UPDATE {spam_filter_duplicate} SET duplicate_hash = duplicate_hash + 1 WHERE content_hash = '%s'", $hash);
+    }
+    $action['hash'] = array(
+      'score' => 99,
+      'description' => t('Content is identical to %count other existing posts.', array('%count' => variable_get('spam_filter_duplicate_threshold', SPAM_FILTER_DUPLICATE_DEFAULT_THRESHOLD))),
+    );
+    $action['total'] = 99;
+    $action['redirect'] = 'duplicate/denied/post';
+    _spam_filter_duplicate_action($action);
+    return $action;
+  }
+
+  $spam_filter_duplicate_ip = db_result(db_query("SELECT COUNT(iid) FROM {spam_filter_duplicate} WHERE hostname = '%s' AND spam = %d", ip_address(), SPAM_FILTER_DUPLICATE_SPAM));
+  if ($spam_filter_duplicate_ip >= variable_get('spam_filter_duplicate_blacklist', SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST) && (variable_get('spam_filter_duplicate_blacklist', SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST) > -1)) {
+    $action['ip'] = array(
+      'score' => 99,
+      'description' => t('Content was posted by the same IP address used to post %count other spam posts.', array('%count' => variable_get('spam_filter_duplicate_blacklist', SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST))),
+    );
+    $action['total'] = 99;
+    $action['redirect'] = 'duplicate/denied/ip';
+  }
+
+  return $action;
+}
+
+function _spam_filter_duplicate_action($register = array()) {
+  static $action = array();
+
+  if (!empty($register)) {
+    $action = $register;
+  }
+
+  return $action;
+}
+
+/**
+ *
+ */
+function spam_filter_duplicate_denied_ip() {
+  $message = strtr(variable_get('spam_filter_duplicate_blacklist_message', t('<p>You are currently not allowed to post content to @site, as previous content posted by your IP address (%IP) has been flagged as potential spam.</p><p>If you have not posted spam to @site, please report this error along with your IP address to a site administrator.  We apologize for any inconvenience.</p>')), array('@site' => variable_get('site_name', 'Drupal'), '%IP' => ip_address()));
+  spam_denied_page($message, t('Your IP address has been blocked by our spam filter.'));
+}
+
+/**
+ *
+ */
+function spam_filter_duplicate_denied_post() {
+  $message = strtr(variable_get('spam_filter_duplicate_post_message', t('<p>You have attempted to post the same identical content multiple times, causing your posts to be flagged as potential spam.  If this has happened in error, please report this error along with your IP address (%IP) to a @site site administrator.  We apologize for any inconvenience.</p>')), array('@site' => variable_get('site_name', 'Drupal'), '%IP' => ip_address()));
+  spam_denied_page($message, t('You have attempted to post the same content multiple times.'));
+}
+
+function spam_logs_blocked_ip() {
+  drupal_set_title(t('Spam Module Blocked IPs'));
+
+  $header = array(
+    array('data' => t('IP Address'),    'field' => 'hostname'),
+    array('data' => t('Last Seen'),    'field' => 'timestamp', 'sort' => 'desc'),
+    array('data' => t('Counter'), 'field' => 'count'),
+  );
+
+  // This SQL is *nasty*, so if you think you can do better, please be my guest!
+  // This unfortunately has to be SQL because the pager module can't be told
+  // how many rows we've got (so we can't do our own processing in PHP and
+  // still get paging to work properly).
+  $sql = "SELECT * FROM (SELECT DISTINCT x.hostname, x.timestamp, COUNT(x.hostname) AS count FROM (SELECT timestamp, hostname FROM {spam_tracker} WHERE score > %d ORDER BY timestamp DESC) AS x GROUP BY x.hostname) AS y WHERE y.count >= %d";
+  $arguments = array(variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD), variable_get('spam_filter_duplicate_blacklist', SPAM_FILTER_DUPLICATE_DEFAULT_BLACKLIST));
+
+  $count_sql = preg_replace('/^SELECT \* /', 'SELECT count(hostname) ', $sql);
+
+  $result = pager_query($sql . tablesort_sql($header), 50, 0, $count_sql, $arguments);
+
+  while ($log = db_fetch_object($result)) {
+    $rows[] = array('data' => array(
+        $log->hostname,
+        format_date($log->timestamp, 'small'),
+        $log->count
+      )
+    );
+  }
+
+  if (!$rows) {
+    $rows[] = array(array('data' => t('No log messages available.'), 'colspan' => 6));
+  }
+
+  return theme('table', $header, $rows) . theme('pager', NULL, 50, 0);
+}

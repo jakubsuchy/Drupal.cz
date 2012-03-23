@@ -1,4 +1,4 @@
-/* $Id: lightbox_lite.css,v 1.1.4.10 2008/08/15 11:29:35 snpower Exp $ */
+/* $Id: lightbox_lite.css,v 1.1.4.11 2010/06/07 14:54:30 snpower Exp $ */
 #lightbox {
   background-color: #eee;
   padding: 10px;
@@ -52,7 +52,7 @@
   clear: both;
 }
 
-#overlay {
+#lightbox2-overlay {
   background-color: #333;
   opacity: 0.6;
   filter:alpha(opacity=60);

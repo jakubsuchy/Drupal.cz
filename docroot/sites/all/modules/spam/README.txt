@@ -1,3 +1,13 @@
+--------
+Upgrades
+--------
+At this point, the upgrade from 1.0 or 5.x to 1.1 and 1.2 is not well
+supported. It seems to be mainly due to the handling of the spam_filters
+table, but there could be other things in the way.
+
+See: http://drupal.org/node/1137648
+     http://drupal.org/node/1185292
+
 ---------
 Overview:
 ---------

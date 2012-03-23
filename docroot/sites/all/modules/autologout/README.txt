@@ -1,6 +1,5 @@
 README.txt file
 ===============
-$Id: README.txt,v 1.2 2009/04/17 14:05:51 jvandervort Exp $
 
 Settings
 ========

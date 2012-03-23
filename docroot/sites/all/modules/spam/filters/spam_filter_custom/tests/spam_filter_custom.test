@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Spam filter Custom module functionality tests.
+ */
+
+/**
+ * Spam custom filter testcase.
+ */
+class SpamCustomFilterTestCase extends SpamWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Custom Filter',
+      'description' => 'Checks for spam module functionallity.',
+      'group' => 'Spam',
+    );
+  }
+
+  public function setUp() {
+    // $this->debug = TRUE;
+    parent::setUp('spam_filter_custom');
+  }
+
+  public function testSpamCustomFilter() {
+
+    // Activate custom filter.
+    $edit = array(
+      'status-0' => TRUE,
+    );
+    $this->drupalPost('admin/settings/spam/filters', $edit, t('Update filters'));
+
+    // Create a custom filter.
+    $this->drupalGet('admin/settings/spam/filters/custom');
+    $this->clickLink(t('create custom filter'));
+
+    $edit = array(
+      'filter' => $this->spam,
+    );
+    $this->drupalPost(NULL, $edit, t('Create filter'));
+
+    // Check for escaped string.
+    $this->assertText(check_plain($this->spam), 'Spam String found.');
+
+    // Post spam.
+    $this->drupalLogin($this->user);
+
+
+    $edit = array(
+      'subject' => $this->spam,
+      'comment' => $this->spam,
+    );
+    $this->drupalPost('comment/reply/' . $this->node->nid, $edit, t('Preview'));
+
+    $edit = array();
+    $this->drupalPost(NULL, $edit, t('Save'));
+  }
+}

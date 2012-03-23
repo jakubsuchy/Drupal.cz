@@ -1,5 +1,4 @@
 <?php
-// $Id: theme.maintenance.inc,v 1.10 2008/01/24 09:42:50 goba Exp $
 
 /**
  * @file
@@ -36,12 +35,15 @@ function _drupal_maintenance_theme() {
     $theme = 'minnelli';
   }
   else {
-    // Load module basics (needed for hook invokes).
-    $module_list['system']['filename'] = 'modules/system/system.module';
-    $module_list['filter']['filename'] = 'modules/filter/filter.module';
-    module_list(TRUE, FALSE, FALSE, $module_list);
-    drupal_load('module', 'system');
-    drupal_load('module', 'filter');
+    if (!db_is_active()) {
+      // Because we are operating in a crippled environment, we need to
+      // bootstrap just enough to allow hook invocations to work.
+      $module_list['system']['filename'] = 'modules/system/system.module';
+      $module_list['filter']['filename'] = 'modules/filter/filter.module';
+      module_list(TRUE, FALSE, FALSE, $module_list);
+      drupal_load('module', 'system');
+      drupal_load('module', 'filter');
+    }
 
     $theme = variable_get('maintenance_theme', 'minnelli');
   }
@@ -122,9 +124,9 @@ function theme_install_page($content) {
     $title = count($messages['error']) > 1 ? st('The following errors must be resolved before you can continue the installation process') : st('The following error must be resolved before you can continue the installation process');
     $variables['messages'] .= '<h3>'. $title .':</h3>';
     $variables['messages'] .= theme('status_messages', 'error');
-    $variables['content'] .= '<p>'. st('Please check the error messages and <a href="!url">try again</a>.', array('!url' => request_uri())) .'</p>';
+    $variables['content'] .= '<p>'. st('Please check the error messages and <a href="!url">try again</a>.', array('!url' => check_url(request_uri()))) .'</p>';
   }
-  
+
   // Special handling of warning messages
   if (isset($messages['warning'])) {
     $title = count($messages['warning']) > 1 ? st('The following installation warnings should be carefully reviewed') : st('The following installation warning should be carefully reviewed');
@@ -231,10 +233,10 @@ function template_preprocess_maintenance_page(&$variables) {
 
   // Construct page title
   if (drupal_get_title()) {
-    $head_title = array(strip_tags(drupal_get_title()), variable_get('site_name', 'Drupal'));
+    $head_title = array(strip_tags(drupal_get_title()), variable_get('site_name', 'Pressflow'));
   }
   else {
-    $head_title = array(variable_get('site_name', 'Drupal'));
+    $head_title = array(variable_get('site_name', 'Pressflow'));
     if (variable_get('site_slogan', '')) {
       $head_title[] = variable_get('site_slogan', '');
     }
@@ -254,7 +256,7 @@ function template_preprocess_maintenance_page(&$variables) {
   $variables['primary_links']     = array();
   $variables['secondary_links']   = array();
   $variables['search_box']        = '';
-  $variables['site_name']         = (theme_get_setting('toggle_name') ? variable_get('site_name', 'Drupal') : '');
+  $variables['site_name']         = (theme_get_setting('toggle_name') ? variable_get('site_name', 'Pressflow') : '');
   $variables['site_slogan']       = (theme_get_setting('toggle_slogan') ? variable_get('site_slogan', '') : '');
   $variables['css']               = drupal_add_css();
   $variables['styles']            = drupal_get_css();

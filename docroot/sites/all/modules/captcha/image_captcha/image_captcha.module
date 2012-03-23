@@ -1,18 +1,17 @@
 <?php
-// $Id: image_captcha.module,v 1.33 2009/12/15 23:53:37 soxofaan Exp $
+// $Id: image_captcha.module,v 1.33.2.4 2011/02/06 20:45:12 soxofaan Exp $
 
 /**
  * @file
  * Implementation of image CAPTCHA for use with the CAPTCHA module
  */
 
-// TODO: add hook_requirements to avoid installing when there is no GD support
+// TODO: add test for fallback to simple math challenge in maintenance mode.
 
 define('IMAGE_CAPTCHA_ALLOWED_CHARACTERS', 'aAbBCdEeFfGHhijKLMmNPQRrSTtWXYZ23456789');
 
 // Setup status flags.
-define('IMAGE_CAPTCHA_SETUP_OK', 0);
-define('IMAGE_CAPTCHA_ERROR_NO_GDLIB_WITH_JPEG', 1);
+define('IMAGE_CAPTCHA_ERROR_NO_GDLIB', 1);
 define('IMAGE_CAPTCHA_ERROR_NO_TTF_SUPPORT', 2);
 define('IMAGE_CAPTCHA_ERROR_TTF_FILE_READ_PROBLEM', 4);
 
@@ -137,21 +136,35 @@ function _image_captcha_utf8_split($str) {
 }
 
 /**
- * Helper function for checking if the requirements for the Image CAPTCHA are met.
+ * Helper function for checking the setup of the Image CAPTCHA.
+ *
+ * The image CAPTCHA requires at least the GD PHP library.
+ * Support for TTF is recommended and the enabled
+ * font files should be readable.
+ * This functions checks these things.
  *
  * @param $check_fonts whether or not the enabled fonts should be checked.
  *
  * @return status code: bitwise 'OR' of status flags like
- *   IMAGE_CAPTCHA_ERROR_NO_GDLIB_WITH_JPEG, IMAGE_CAPTCHA_ERROR_NO_TTF_SUPPORT,
+ *   IMAGE_CAPTCHA_ERROR_NO_GDLIB, IMAGE_CAPTCHA_ERROR_NO_TTF_SUPPORT,
  *   IMAGE_CAPTCHA_ERROR_TTF_FILE_READ_PROBLEM.
- *   When no problems, the status is IMAGE_CAPTCHA_SETUP_OK.
  */
 function _image_captcha_check_setup($check_fonts=TRUE) {
   // Start clean.
-  $status = IMAGE_CAPTCHA_SETUP_OK;
-  // Check GD library and is TTF support.
+  $status = 0;
+  // Check if we can use the GD library.
+  // Note that we are only checking
+  // for the existence of the imagejpeg function.
+  // We could also check for imagepng, which can also be used
+  // (optionally) for the image CAPTCHA by the site admin.
+  // However, this incurs extra complexity in the setup checking
+  // (more constants to define) and in the caller functions
+  // (more situations to check for).
+  // We take this shortcut (only checking for imagejpeg) because
+  // it's probably pretty safe to assume that imagepng
+  // is available when imagejpeg is available.
   if (!function_exists('imagejpeg')) {
-    $status = $status | IMAGE_CAPTCHA_ERROR_NO_GDLIB_WITH_JPEG;
+    $status = $status | IMAGE_CAPTCHA_ERROR_NO_GDLIB;
   }
   if (!function_exists('imagettftext')) {
     $status = $status | IMAGE_CAPTCHA_ERROR_NO_TTF_SUPPORT;
@@ -173,8 +186,8 @@ function _image_captcha_check_setup($check_fonts=TRUE) {
 function image_captcha_captcha($op, $captcha_type='', $captcha_sid=NULL) {
   switch ($op) {
     case 'list':
-      // only offer image CAPTCHA if possible to generate an image CAPTCHA
-      if (_image_captcha_check_setup() == IMAGE_CAPTCHA_SETUP_OK) {
+      // Only offer the image CAPTCHA if it is possible to generate an image on this setup.
+      if (!(_image_captcha_check_setup() & IMAGE_CAPTCHA_ERROR_NO_GDLIB)) {
         return array('Image');
       }
       else {

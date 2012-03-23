@@ -1,4 +1,4 @@
-# $Id: de.po,v 1.6 2009/12/06 11:15:14 thomaszahreddin Exp $
+# $Id: de.po,v 1.6.2.1 2010/08/17 12:12:59 soxofaan Exp $
 #
 # LANGUAGE translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
@@ -222,7 +222,7 @@ msgstr "CAPTCHA überspringen"
 
 #: captcha.module:150
 msgid "This question is for testing whether you are a human visitor and to prevent automated spam submissions."
-msgstr "Diese Frage hat den Zweck zu testen, ob Sie ein menschlicher Benutzer sind und um automatisierten Spam vorzubeugen."
+msgstr "Diese Frage hat den Zweck zu testen, ob Sie ein menschlicher Benutzer sind und um automatisiertem Spam vorzubeugen."
 
 #: captcha.module:191
 msgid "CAPTCHA: \"@type\" enabled"

@@ -1,5 +1,4 @@
 <?php
-// $Id: user.module,v 1.892.2.12 2009/02/25 13:57:04 goba Exp $
 
 /**
  * @file
@@ -14,12 +13,23 @@ define('EMAIL_MAX_LENGTH', 64);
  *
  * We cannot use module_invoke() for this, because the arguments need to
  * be passed by reference.
+ *
+ * @param $op
+ *   The operation to be passed as the first parameter of the hook function.
+ * @param $edit
+ *   An associative array variable containing form values to be passed
+ *   as the second parameter of the hook function.
+ * @param $account
+ *   The user account object to be passed as the third parameter of the hook
+ *   function.
+ * @param $category
+ *   The category of user information being acted upon.
  */
-function user_module_invoke($type, &$array, &$user, $category = NULL) {
+function user_module_invoke($op, &$edit, &$account, $category = NULL) {
   foreach (module_list() as $module) {
     $function = $module .'_user';
     if (function_exists($function)) {
-      $function($type, $array, $user, $category);
+      $function($op, $edit, $account, $category);
     }
   }
 }
@@ -130,27 +140,29 @@ function user_external_login($account, $edit = array()) {
 /**
  * Fetch a user object.
  *
- * @param $array
- *   An associative array of attributes to search for in selecting the
- *   user, such as user name or e-mail address.
+ * @param $user_info
+ *   Information about the user to load, consisting of one of the following:
+ *   - An associative array whose keys are fields in the {users} table (such as
+ *     uid, name, pass, mail, status) and whose values are the field's value.
+ *   - A numeric user ID.
  *
  * @return
  *   A fully-loaded $user object upon successful user load or FALSE if user
  *   cannot be loaded.
  */
-function user_load($array = array()) {
+function user_load($user_info = array()) {
   // Dynamically compose a SQL query:
   $query = array();
   $params = array();
 
-  if (is_numeric($array)) {
-    $array = array('uid' => $array);
+  if (is_numeric($user_info)) {
+    $user_info = array('uid' => $user_info);
   }
-  elseif (!is_array($array)) {
+  elseif (!is_array($user_info)) {
     return FALSE;
   }
 
-  foreach ($array as $key => $value) {
+  foreach ($user_info as $key => $value) {
     if ($key == 'uid' || $key == 'status') {
       $query[] = "$key = %d";
       $params[] = $value;
@@ -160,7 +172,7 @@ function user_load($array = array()) {
       $params[] = md5($value);
     }
     else {
-      $query[]= "LOWER($key) = LOWER('%s')";
+      $query[]= "$key = '%s'";
       $params[] = $value;
     }
   }
@@ -180,7 +192,7 @@ function user_load($array = array()) {
     while ($role = db_fetch_object($result)) {
       $user->roles[$role->rid] = $role->name;
     }
-    user_module_invoke('load', $array, $user);
+    user_module_invoke('load', $user_info, $user);
   }
   else {
     $user = FALSE;
@@ -193,14 +205,17 @@ function user_load($array = array()) {
  * Save changes to a user account or add a new user.
  *
  * @param $account
- *   The $user object for the user to modify or add. If $user->uid is
- *   omitted, a new user will be added.
- *
+ *   The user object for to modify or add. If you want to modify an existing
+ *   user account, you will need to ensure that (a) $account is an object, and
+ *   (b) you have set $account->uid to the numeric user ID of the user account
+ *   you wish to modify. Pass in NULL or any non-object to add a new user.
  * @param $array
  *   (optional) An array of fields and values to save. For example,
- *   array('name' => 'My name'); Setting a field to NULL deletes it from
- *   the data column.
- *
+ *   array('name' => 'My name'); Keys that do not belong to columns
+ *   in the user-related tables are added to the a serialized array
+ *   in the 'data' column and will be loaded in the $user->data array by
+ *   user_load(). Setting a field to NULL deletes it from the data column,
+ *   if you are modifying an existing user account.
  * @param $category
  *   (optional) The category for storing profile information in.
  *
@@ -235,7 +250,7 @@ function user_save($account, $array = array(), $category = 'account') {
           if ($value === NULL) {
             unset($data[$key]);
           }
-          else {
+          elseif (!empty($key)) {
             $data[$key] = $value;
           }
         }
@@ -271,7 +286,7 @@ function user_save($account, $array = array(), $category = 'account') {
     if (!empty($array['pass'])) {
       sess_destroy_uid($account->uid);
       if ($account->uid == $GLOBALS['user']->uid) {
-        sess_regenerate();
+        drupal_session_regenerate();
       }
     }
 
@@ -378,11 +393,21 @@ function user_save($account, $array = array(), $category = 'account') {
  * Verify the syntax of the given name.
  */
 function user_validate_name($name) {
-  if (!strlen($name)) return t('You must enter a username.');
-  if (substr($name, 0, 1) == ' ') return t('The username cannot begin with a space.');
-  if (substr($name, -1) == ' ') return t('The username cannot end with a space.');
-  if (strpos($name, '  ') !== FALSE) return t('The username cannot contain multiple spaces in a row.');
-  if (ereg("[^\x80-\xF7 [:alnum:]@_.-]", $name)) return t('The username contains an illegal character.');
+  if (!strlen($name)) {
+    return t('You must enter a username.');
+  }
+  if (substr($name, 0, 1) == ' ') {
+    return t('The username cannot begin with a space.');
+  }
+  if (substr($name, -1) == ' ') {
+    return t('The username cannot end with a space.');
+  }
+  if (strpos($name, '  ') !== FALSE) {
+    return t('The username cannot contain multiple spaces in a row.');
+  }
+  if (preg_match('/[^\x{80}-\x{F7} a-z0-9@_.\'-]/i', $name)) {
+    return t('The username contains an illegal character.');
+  }
   if (preg_match('/[\x{80}-\x{A0}'.          // Non-printable ISO-8859-1 + NBSP
                    '\x{AD}'.                 // Soft-hyphen
                    '\x{2000}-\x{200F}'.      // Various space characters
@@ -391,12 +416,13 @@ function user_validate_name($name) {
                    '\x{FEFF}'.               // Byte order mark
                    '\x{FF01}-\x{FF60}'.      // Full-width latin
                    '\x{FFF9}-\x{FFFD}'.      // Replacement characters
-                   '\x{0}]/u',               // NULL byte
+                   '\x{0}-\x{1F}]/u',        // NULL byte and control characters
                    $name)) {
     return t('The username contains an illegal character.');
   }
-  if (strpos($name, '@') !== FALSE && !eregi('@([0-9a-z](-?[0-9a-z])*.)+[a-z]{2}([zmuvtg]|fo|me)?$', $name)) return t('The username is not a valid authentication ID.');
-  if (strlen($name) > USERNAME_MAX_LENGTH) return t('The username %name is too long: it must be %max characters or less.', array('%name' => $name, '%max' => USERNAME_MAX_LENGTH));
+  if (drupal_strlen($name) > USERNAME_MAX_LENGTH) {
+    return t('The username %name is too long: it must be %max characters or less.', array('%name' => $name, '%max' => USERNAME_MAX_LENGTH));
+  }
 }
 
 function user_validate_mail($mail) {
@@ -487,7 +513,7 @@ function user_access($string, $account = NULL, $reset = FALSE) {
     $perm = array();
   }
 
-  if (is_null($account)) {
+  if (!isset($account)) {
     $account = $user;
   }
 
@@ -517,7 +543,7 @@ function user_access($string, $account = NULL, $reset = FALSE) {
  * @return boolean TRUE for blocked users, FALSE for active.
  */
 function user_is_blocked($name) {
-  $deny = db_fetch_object(db_query("SELECT name FROM {users} WHERE status = 0 AND name = LOWER('%s')", $name));
+  $deny = db_fetch_object(db_query("SELECT name FROM {users} WHERE status = 0 AND name = '%s'", $name));
 
   return $deny;
 }
@@ -532,7 +558,7 @@ function user_fields() {
     }
     else {
       // Make sure we return the default fields at least.
-      $fields = array('uid', 'name', 'pass', 'mail', 'picture', 'mode', 'sort', 'threshold', 'theme', 'signature', 'created', 'access', 'login', 'status', 'timezone', 'language', 'init', 'data');
+      $fields = array('uid', 'name', 'pass', 'mail', 'picture', 'mode', 'sort', 'threshold', 'theme', 'signature', 'signature_format', 'created', 'access', 'login', 'status', 'timezone', 'language', 'init', 'data');
     }
   }
 
@@ -574,13 +600,13 @@ function user_search($op = 'search', $keys = NULL, $skip_access_check = FALSE) {
         $keys = preg_replace('!\*+!', '%', $keys);
         if (user_access('administer users')) {
           // Administrators can also search in the otherwise private email field.
-          $result = pager_query("SELECT name, uid, mail FROM {users} WHERE LOWER(name) LIKE LOWER('%%%s%%') OR LOWER(mail) LIKE LOWER('%%%s%%')", 15, 0, NULL, $keys, $keys);
+          $result = pager_query("SELECT name, uid, mail FROM {users} WHERE name LIKE '%%%s%%' OR mail LIKE '%%%s%%'", 15, 0, NULL, $keys, $keys);
           while ($account = db_fetch_object($result)) {
             $find[] = array('title' => $account->name .' ('. $account->mail .')', 'link' => url('user/'. $account->uid, array('absolute' => TRUE)));
           }
         }
         else {
-          $result = pager_query("SELECT name, uid FROM {users} WHERE LOWER(name) LIKE LOWER('%%%s%%')", 15, 0, NULL, $keys);
+          $result = pager_query("SELECT name, uid FROM {users} WHERE name LIKE '%%%s%%'", 15, 0, NULL, $keys);
           while ($account = db_fetch_object($result)) {
             $find[] = array('title' => $account->name, 'link' => url('user/'. $account->uid, array('absolute' => TRUE)));
           }
@@ -618,7 +644,7 @@ function user_user($type, &$edit, &$account, $category = NULL) {
       '#weight' => 5,
       '#title' => t('History'),
     );
-    $account->content['summary']['member_for'] =  array(
+    $account->content['summary']['member_for'] = array(
       '#type' => 'user_profile_item',
       '#title' => t('Member for'),
       '#value' => format_interval(time() - $account->created),
@@ -761,17 +787,7 @@ function user_block($op = 'list', $delta = 0, $edit = array()) {
           // Perform database queries to gather online user lists.  We use s.timestamp
           // rather than u.access because it is much faster.
           $anonymous_count = sess_count($interval);
-          $authenticated_users = db_query('SELECT DISTINCT u.uid, u.name, s.timestamp FROM {users} u INNER JOIN {sessions} s ON u.uid = s.uid WHERE s.timestamp >= %d AND s.uid > 0 ORDER BY s.timestamp DESC', $interval);
-          $authenticated_count = 0;
-          $max_users = variable_get('user_block_max_list_count', 10);
-          $items = array();
-          while ($account = db_fetch_object($authenticated_users)) {
-            if ($max_users > 0) {
-              $items[] = $account;
-              $max_users--;
-            }
-            $authenticated_count++;
-          }
+          $authenticated_count = db_result(db_query('SELECT COUNT(DISTINCT s.uid) FROM {sessions} s WHERE s.timestamp >= %d AND s.uid > 0', $interval));
 
           // Format the output with proper grammar.
           if ($anonymous_count == 1 && $authenticated_count == 1) {
@@ -784,6 +800,10 @@ function user_block($op = 'list', $delta = 0, $edit = array()) {
           // Display a list of currently online users.
           $max_users = variable_get('user_block_max_list_count', 10);
           if ($authenticated_count && $max_users) {
+            $authenticated_users = db_query_range('SELECT u.uid, u.name, MAX(s.timestamp) AS timestamp FROM {users} u INNER JOIN {sessions} s ON u.uid = s.uid WHERE s.timestamp >= %d AND s.uid > 0 GROUP BY u.uid, u.name ORDER BY s.timestamp DESC', $interval, 0, $max_users);
+            while ($account = db_fetch_object($authenticated_users)) {
+              $items[] = $account;
+            }
             $output .= theme('user_list', $items, t('Online users'));
           }
 
@@ -1070,8 +1090,8 @@ function user_menu() {
     'title' => 'Delete',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('user_confirm_delete', 1),
-    'access callback' => 'user_access',
-    'access arguments' => array('administer users'),
+    'access callback' => 'user_delete_access',
+    'access arguments' => array(1),
     'type' => MENU_CALLBACK,
     'file' => 'user.pages.inc',
   );
@@ -1117,12 +1137,30 @@ function user_menu() {
   return $items;
 }
 
+/**
+ * Implementation of hook_init().
+ */
 function user_init() {
   drupal_add_css(drupal_get_path('module', 'user') .'/user.css', 'module');
 }
 
-function user_uid_optional_load($arg) {
-  return user_load(isset($arg) ? $arg : $GLOBALS['user']->uid);
+/**
+ * Load either a specified or the current user account.
+ *
+ * @param $uid
+ *   An optional user ID of the user to load. If not provided, the current
+ *   user's ID will be used.
+ * @return
+ *   A fully-loaded $user object upon successful user load, FALSE if user
+ *   cannot be loaded.
+ *
+ * @see user_load()
+ */
+function user_uid_optional_load($uid = NULL) {
+  if (!isset($uid)) {
+    $uid = $GLOBALS['user']->uid;
+  }
+  return user_load($uid);
 }
 
 /**
@@ -1136,7 +1174,7 @@ function user_category_load($uid, &$map, $index) {
     $accounts[$uid] = user_load($uid);
   }
   $valid = TRUE;
-  if ($account = $accounts[$uid]) {
+  if (($account = $accounts[$uid]) && isset($map[$index + 1]) && $map[$index + 1] == 'edit') {
     // Since the path is like user/%/edit/category_name, the category name will
     // be at a position 2 beyond the index corresponding to the % wildcard.
     $category_index = $index + 2;
@@ -1221,7 +1259,7 @@ function user_set_authmaps($account, $authmaps) {
     if ($value) {
       db_query("UPDATE {authmap} SET authname = '%s' WHERE uid = %d AND module = '%s'", $value, $account->uid, $module[1]);
       if (!db_affected_rows()) {
-        db_query("INSERT INTO {authmap} (authname, uid, module) VALUES ('%s', %d, '%s')", $value, $account->uid, $module[1]);
+        @db_query("INSERT INTO {authmap} (authname, uid, module) VALUES ('%s', %d, '%s')", $value, $account->uid, $module[1]);
       }
     }
     else {
@@ -1249,18 +1287,16 @@ function user_login(&$form_state) {
     '#size' => 60,
     '#maxlength' => USERNAME_MAX_LENGTH,
     '#required' => TRUE,
-    '#attributes' => array('tabindex' => '1'),
   );
 
-  $form['name']['#description'] = t('Enter your @s username.', array('@s' => variable_get('site_name', 'Drupal')));
+  $form['name']['#description'] = t('Enter your @s username.', array('@s' => variable_get('site_name', 'Pressflow')));
   $form['pass'] = array('#type' => 'password',
     '#title' => t('Password'),
     '#description' => t('Enter the password that accompanies your username.'),
     '#required' => TRUE,
-    '#attributes' => array('tabindex' => '2'),
   );
   $form['#validate'] = user_login_default_validators();
-  $form['submit'] = array('#type' => 'submit', '#value' => t('Log in'), '#weight' => 2, '#attributes' => array('tabindex' => '3'));
+  $form['submit'] = array('#type' => 'submit', '#value' => t('Log in'), '#weight' => 2);
 
   return $form;
 }
@@ -1319,7 +1355,6 @@ function user_login_final_validate($form, &$form_state) {
   global $user;
   if (!$user->uid) {
     form_set_error('name', t('Sorry, unrecognized username or password. <a href="@password">Have you forgotten your password?</a>', array('@password' => url('user/password'))));
-    watchdog('user', 'Login attempt failed for %user.', array('%user' => $form_state['values']['name']));
   }
 }
 
@@ -1352,6 +1387,9 @@ function user_authenticate($form_values = array()) {
     user_authenticate_finalize($form_values);
     return $user;
   }
+  else {
+    watchdog('user', 'Login attempt failed for %user.', array('%user' => $form_values['name']));
+  }
 }
 
 /**
@@ -1371,8 +1409,10 @@ function user_authenticate_finalize(&$edit) {
   $user->login = time();
   db_query("UPDATE {users} SET login = %d WHERE uid = %d", $user->login, $user->uid);
 
-  // Regenerate the session ID to prevent against session fixation attacks.
-  sess_regenerate();
+  // This is called before hook_user in case one of those functions fails
+  // or incorrectly does a redirect which would leave the old session in place.
+  drupal_session_regenerate();
+
   user_module_invoke('login', $edit, $user);
 }
 
@@ -1423,6 +1463,16 @@ function user_external_login_register($name, $module) {
   }
 }
 
+/**
+ * Generates a unique URL for a user to login and reset their password.
+ *
+ * @param object $account
+ *   An object containing the user account.
+ *
+ * @return
+ *   A unique URL that provides a one-time log in for the user, from which
+ *   they can change their password.
+ */
 function user_pass_reset_url($account) {
   $timestamp = time();
   return url("user/reset/$account->uid/$timestamp/". user_pass_rehash($account->pass, $timestamp, $account->login), array('absolute' => TRUE));
@@ -1521,6 +1571,15 @@ function user_edit_form(&$form_state, $uid, $edit, $register = FALSE) {
       '#default_value' => $edit['signature'],
       '#description' => t('Your signature will be publicly displayed at the end of your comments.'),
     );
+
+    // Prevent a "validation error" message when the user attempts to save with a default value they
+    // do not have access to.
+    if (!filter_access($edit['signature_format']) && empty($_POST)) {
+      drupal_set_message(t("The signature input format has been set to a format you don't have access to. It will be changed to a format you have access to when you save this page."));
+      $edit['signature_format'] = FILTER_FORMAT_DEFAULT;
+    }
+
+    $form['signature_settings']['signature_format'] = filter_form($edit['signature_format'], NULL, array('signature_format'));
   }
 
   // Picture/avatar:
@@ -1549,7 +1608,7 @@ function _user_edit_validate($uid, &$edit) {
     if ($error = user_validate_name($edit['name'])) {
       form_set_error('name', $error);
     }
-    else if (db_result(db_query("SELECT COUNT(*) FROM {users} WHERE uid != %d AND LOWER(name) = LOWER('%s')", $uid, $edit['name'])) > 0) {
+    else if (db_result(db_query("SELECT COUNT(*) FROM {users} WHERE uid != %d AND name = '%s'", $uid, $edit['name'])) > 0) {
       form_set_error('name', t('The name %name is already taken.', array('%name' => $edit['name'])));
     }
     else if (drupal_is_denied('user', $edit['name'])) {
@@ -1561,7 +1620,7 @@ function _user_edit_validate($uid, &$edit) {
   if ($error = user_validate_mail($edit['mail'])) {
     form_set_error('mail', $error);
   }
-  else if (db_result(db_query("SELECT COUNT(*) FROM {users} WHERE uid != %d AND LOWER(mail) = LOWER('%s')", $uid, $edit['mail'])) > 0) {
+  else if (db_result(db_query("SELECT COUNT(*) FROM {users} WHERE uid != %d AND mail = '%s'", $uid, $edit['mail'])) > 0) {
     form_set_error('mail', t('The e-mail address %email is already registered. <a href="@password">Have you forgotten your password?</a>', array('%email' => $edit['mail'], '@password' => url('user/password'))));
   }
   else if (drupal_is_denied('mail', $edit['mail'])) {
@@ -1598,7 +1657,7 @@ function user_delete($edit, $uid) {
   db_query('DELETE FROM {authmap} WHERE uid = %d', $uid);
   $variables = array('%name' => $account->name, '%email' => '<'. $account->mail .'>');
   watchdog('user', 'Deleted user: %name %email.', $variables, WATCHDOG_NOTICE);
-  module_invoke_all('user', 'delete', $edit, $account);
+  user_module_invoke('delete', $edit, $account);
 }
 
 /**
@@ -1922,8 +1981,12 @@ function user_help($path, $arg) {
 function _user_categories($account) {
   $categories = array();
 
+  // Only variables can be passed by reference workaround.
+  $null = NULL;
   foreach (module_list() as $module) {
-    if ($data = module_invoke($module, 'user', 'categories', NULL, $account, '')) {
+    $function = $module .'_user';
+    // $null and $account need to be passed by reference.
+    if (function_exists($function) && ($data = $function('categories', $null, $account, ''))) {
       $categories = array_merge($data, $categories);
     }
   }
@@ -2033,7 +2096,7 @@ function user_comment(&$comment, $op) {
   // Validate signature.
   if ($op == 'view') {
     if (variable_get('user_signatures', 0) && !empty($comment->signature)) {
-      $comment->signature = check_markup($comment->signature, $comment->format);
+      $comment->signature = check_markup($comment->signature, $comment->signature_format, FALSE);
     }
     else {
       $comment->signature = '';
@@ -2063,7 +2126,7 @@ function theme_user_signature($signature) {
  *
  * @param $account
  *  The user object of the account being notified.  Must contain at
- *  least the fields 'uid', 'name', and 'mail'.
+ *  least the fields 'uid', 'name', 'pass', 'login', and 'mail'.
  * @param $language
  *  Language object to generate the tokens with.
  * @return
@@ -2073,7 +2136,7 @@ function user_mail_tokens($account, $language) {
   global $base_url;
   $tokens = array(
     '!username' => $account->name,
-    '!site' => variable_get('site_name', 'Drupal'),
+    '!site' => variable_get('site_name', 'Pressflow'),
     '!login_url' => user_pass_reset_url($account),
     '!uri' => $base_url,
     '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
@@ -2103,7 +2166,7 @@ function user_mail_tokens($account, $language) {
  */
 function user_preferred_language($account, $default = NULL) {
   $language_list = language_list();
-  if ($account->language && isset($language_list[$account->language])) {
+  if (!empty($account->language) && isset($language_list[$account->language])) {
     return $language_list[$account->language];
   }
   else {
@@ -2394,7 +2457,11 @@ function user_register() {
 
   // Display the registration form.
   if (!$admin) {
-    $form['user_registration_help'] = array('#value' => filter_xss_admin(variable_get('user_registration_help', '')));
+    $form['user_registration_help'] = array(
+      '#value' => filter_xss_admin(variable_get('user_registration_help', '')),
+      // Ensure that user registration help appears above profile fields.
+      '#weight' => -20,
+    );
   }
 
   // Merge in the default user edit fields.
@@ -2452,7 +2519,8 @@ if (Drupal.jsEnabled) {
 }
 
 function user_register_validate($form, &$form_state) {
-  user_module_invoke('validate', $form_state['values'], $form_state['values'], 'account');
+  $account = (object) $form_state['values'];
+  user_module_invoke('validate', $form_state['values'], $account, 'account');
 }
 
 /**
@@ -2461,11 +2529,38 @@ function user_register_validate($form, &$form_state) {
 function _user_forms(&$edit, $account, $category, $hook = 'form') {
   $groups = array();
   foreach (module_list() as $module) {
-    if ($data = module_invoke($module, 'user', $hook, $edit, $account, $category)) {
+    $function = $module .'_user';
+    // $edit and $account need to be passed by reference.
+    if (function_exists($function) && ($data = $function($hook, $edit, $account, $category))) {
       $groups = array_merge_recursive($data, $groups);
     }
   }
   uasort($groups, '_user_sort');
 
   return empty($groups) ? FALSE : $groups;
+}
+
+/**
+ * Prepare a destination query string for use in combination with drupal_goto().
+ *
+ * Used to direct the user back to the referring page after completing
+ * the openid login.  This function prevents the login page from being
+ * returned because that page will give an access denied message to an
+ * authenticated user.
+ *
+ * @see drupal_get_destination()
+ */
+function user_login_destination() {
+  $destination = drupal_get_destination();
+  return $destination == 'destination=user%2Flogin' ? 'destination=user' : $destination;
+}
+
+/**
+ * Menu access callback; limit access to account deletion pages.
+ *
+ * Limit access to administrative users, and prevent the anonymous user account
+ * from being deleted.
+ */
+function user_delete_access($account) {
+  return user_access('administer users') && $account->uid > 0;
 }

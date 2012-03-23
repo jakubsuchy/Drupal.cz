@@ -1,5 +1,4 @@
 <?php
-// $Id: database.mysql-common.inc,v 1.17.2.1 2008/02/07 10:17:26 goba Exp $
 
 /**
  * @file
@@ -60,7 +59,16 @@ function db_query($query) {
 function db_create_table_sql($name, $table) {
 
   if (empty($table['mysql_suffix'])) {
-    $table['mysql_suffix'] = "/*!40100 DEFAULT CHARACTER SET UTF8 */";
+    $table['mysql_suffix'] = '/*!40100 DEFAULT CHARACTER SET utf8';
+    // By default, MySQL uses the default collation for new tables, which is
+    // 'utf8_general_ci' for utf8. If an alternate collation has been set, it
+    // needs to be explicitly specified.
+    // @see db_connect()
+    $collation = (!empty($table['collation']) ? $table['collation'] : (!empty($GLOBALS['db_collation']) ? $GLOBALS['db_collation'] : ''));
+    if ($collation) {
+      $table['mysql_suffix'] .= ' COLLATE ' . $collation;
+    }
+    $table['mysql_suffix'] .= ' */';
   }
 
   $sql = "CREATE TABLE {". $name ."} (\n";
@@ -156,7 +164,7 @@ function _db_process_field($field) {
 function _db_create_field_sql($name, $spec) {
   $sql = "`". $name ."` ". $spec['mysql_type'];
 
-  if (isset($spec['length'])) {
+  if (in_array($spec['type'], array('varchar', 'char', 'text')) && isset($spec['length'])) {
     $sql .= '('. $spec['length'] .')';
   }
   elseif (isset($spec['precision']) && isset($spec['scale'])) {
@@ -281,7 +289,7 @@ function db_drop_table(&$ret, $table) {
  *   table along with adding the field. The format is the same as a
  *   table specification but without the 'fields' element.  If you are
  *   adding a type 'serial' field, you MUST specify at least one key
- *   or index including it in this array. @see db_change_field for more
+ *   or index including it in this array. See db_change_field() for more
  *   explanation why.
  */
 function db_add_field(&$ret, $table, $field, $spec, $keys_new = array()) {
@@ -335,7 +343,7 @@ function db_drop_field(&$ret, $table, $field) {
  *   Default value to be set. NULL for 'default NULL'.
  */
 function db_field_set_default(&$ret, $table, $field, $default) {
-  if ($default == NULL) {
+  if ($default === NULL) {
     $default = 'NULL';
   }
   else {
@@ -512,7 +520,7 @@ function db_drop_index(&$ret, $table, $name) {
  */
 
 function db_change_field(&$ret, $table, $field, $field_new, $spec, $keys_new = array()) {
-  $sql = 'ALTER TABLE {'. $table .'} CHANGE '. $field .' '.
+  $sql = 'ALTER TABLE {'. $table .'} CHANGE `'. $field .'` '.
     _db_create_field_sql($field_new, _db_process_field($spec));
   if (count($keys_new)) {
     $sql .= ', ADD '. implode(', ADD ', _db_create_keys_sql($keys_new));

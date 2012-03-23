@@ -1,5 +1,4 @@
 <?php
-// $Id: database.mysql.inc,v 1.89 2008/01/24 10:46:54 goba Exp $
 
 /**
  * @file
@@ -80,16 +79,46 @@ function db_connect($url) {
     _db_error_page(mysql_error());
   }
 
-  // Force UTF-8.
-  mysql_query('SET NAMES "utf8"', $connection);
+  // Force MySQL to use the UTF-8 character set. Also set the collation, if a
+  // certain one has been set; otherwise, MySQL defaults to 'utf8_general_ci'
+  // for UTF-8.
+  if (!empty($GLOBALS['db_collation'])) {
+    mysql_query('SET NAMES utf8 COLLATE '. $GLOBALS['db_collation'], $connection);
+  }
+  else {
+    mysql_query('SET NAMES utf8', $connection);
+  }
+
   return $connection;
 }
 
 /**
  * Helper function for db_query().
  */
-function _db_query($query, $debug = 0) {
-  global $active_db, $queries, $user;
+function _db_query($query, $debug = 0, $slave = FALSE) {
+  global $active_db, $active_slave_db, $queries, $user;
+
+  // Ignore slave database servers for this request.
+  //
+  // In Drupal's distributed database structure, new data is written to the master
+  // and then propagated to the slave servers.  This means there is a lag
+  // between when data is written to the master and when it is available on the slave.
+  // At these times, we will want to avoid using a slave server temporarily.
+  // For example, if a user posts a new node then we want to disable the slave
+  // server for that user temporarily to allow the slave server to catch up.
+  // That way, that user will see their changes immediately while for other
+  // users we still get the benefits of having a slave server, just with slightly
+  // stale data.  Code that wants to disable the slave server should use the
+  // db_set_ignore_slave() function to set $_SESSION['ignore_slave_server'] to
+  // the timestamp after which the slave can be re-enabled.
+  if (isset($_SESSION['ignore_slave_server'])) {
+    if ($_SESSION['ignore_slave_server'] >= $_SERVER['REQUEST_TIME']) {
+      $slave = FALSE;
+    }
+    else {
+      unset($_SESSION['ignore_slave_server']);
+    }
+  }
 
   if (variable_get('dev_query', 0)) {
     list($usec, $sec) = explode(' ', microtime());
@@ -105,27 +134,40 @@ function _db_query($query, $debug = 0) {
     $query = '/* '. $name .' : '. $bt[2]['function'] .' */ '. $query;
   }
 
-  $result = mysql_query($query, $active_db);
+  $sent_to_slave = FALSE;
+  if (isset($active_slave_db) && $slave) {
+    $result = mysql_query($query, $active_slave_db);
+    $sent_to_slave = TRUE;
+  }
+  else {
+    $result = mysql_query($query, $active_db);
+  }
 
   if (variable_get('dev_query', 0)) {
     $query = $bt[2]['function'] ."\n". $query;
     list($usec, $sec) = explode(' ', microtime());
     $stop = (float)$usec + (float)$sec;
     $diff = $stop - $timer;
-    $queries[] = array($query, $diff);
+    $queries[] = array($query, $diff, $sent_to_slave);
+  }
+
+  if (!$sent_to_slave) {
+    $active_last_db = $active_db;
+  } else {
+    $active_last_db = $active_slave_db;
   }
 
   if ($debug) {
     print '<p>query: '. $query .'<br />error:'. mysql_error($active_db) .'</p>';
   }
 
-  if (!mysql_errno($active_db)) {
+  if (!mysql_errno($active_last_db)) {
     return $result;
   }
   else {
     // Indicate to drupal_error_handler that this is a database error.
     ${DB_ERROR} = TRUE;
-    trigger_error(check_plain(mysql_error($active_db) ."\nquery: ". $query), E_USER_WARNING);
+    trigger_error(check_plain(mysql_error($active_last_db) ."\nquery: ". $query), E_USER_WARNING);
     return FALSE;
   }
 }
@@ -169,6 +211,7 @@ function db_fetch_array($result) {
  *
  * @param $result
  *   A database query result resource, as returned from db_query().
+ * 
  * @return
  *   The resulting field or FALSE.
  */
@@ -241,6 +284,52 @@ function db_query_range($query) {
   $query .= ' LIMIT '. (int)$from .', '. (int)$count;
   return _db_query($query);
 }
+
+
+/**
+ * Runs a limited-range query in the active slave database.
+ *
+ * Use this as a substitute for db_query_slave() when a subset of the query is to be
+ * returned.
+ * User-supplied arguments to the query should be passed in as separate parameters
+ * so that they can be properly escaped to avoid SQL injection attacks.
+ *
+ * @param $query
+ *   A string containing an SQL query.
+ * @param ...
+ *   A variable number of arguments which are substituted into the query
+ *   using printf() syntax. The query arguments can be enclosed in one
+ *   array instead.
+ *   Valid %-modifiers are: %s, %d, %f, %b (binary data, do not enclose
+ *   in '') and %%.
+ *
+ *   NOTE: using this syntax will cast NULL and FALSE values to decimal 0,
+ *   and TRUE values to decimal 1.
+ *
+ * @param $from
+ *   The first result row to return.
+ * @param $count
+ *   The maximum number of result rows to return.
+ * @return
+ *   A database query result resource, or FALSE if the query was not executed
+ *   correctly.
+ */
+function db_query_range_slave($query) {
+  $args = func_get_args();
+  $count = array_pop($args);
+  $from = array_pop($args);
+  array_shift($args);
+
+  $query = db_prefix_tables($query);
+  if (isset($args[0]) and is_array($args[0])) { // 'All arguments in one array' syntax
+    $args = $args[0];
+  }
+  _db_query_callback($args, TRUE);
+  $query = preg_replace_callback(DB_QUERY_REGEXP, '_db_query_callback', $query);
+  $query .= ' LIMIT '. (int)$from .', '. (int)$count;
+  return _db_query($query, FALSE, TRUE);
+}
+
 
 /**
  * Runs a SELECT query and stores its results in a temporary table.
@@ -337,6 +426,12 @@ function db_unlock_tables() {
 
 /**
  * Check if a table exists.
+ *
+ * @param $table
+ *   The name of the table.
+ *
+ * @return
+ *   TRUE if the table exists, and FALSE if the table does not exist.
  */
 function db_table_exists($table) {
   return (bool) db_fetch_object(db_query("SHOW TABLES LIKE '{". db_escape_table($table) ."}'"));
@@ -344,26 +439,17 @@ function db_table_exists($table) {
 
 /**
  * Check if a column exists in the given table.
+ *
+ * @param $table
+ *   The name of the table.
+ * @param $column
+ *   The name of the column.
+ *
+ * @return
+ *   TRUE if the column exists, and FALSE if the column does not exist.
  */
 function db_column_exists($table, $column) {
   return (bool) db_fetch_object(db_query("SHOW COLUMNS FROM {". db_escape_table($table) ."} LIKE '". db_escape_table($column) ."'"));
-}
-
-/**
- * Wraps the given table.field entry with a DISTINCT(). The wrapper is added to
- * the SELECT list entry of the given query and the resulting query is returned.
- * This function only applies the wrapper if a DISTINCT doesn't already exist in
- * the query.
- *
- * @param $table Table containing the field to set as DISTINCT
- * @param $field Field to set as DISTINCT
- * @param $query Query to apply the wrapper to
- * @return SQL query with the DISTINCT wrapper surrounding the given table.field.
- */
-function db_distinct_field($table, $field, $query) {
-  $field_to_select = 'DISTINCT('. $table .'.'. $field .')';
-  // (?<!text) is a negative look-behind (no need to rewrite queries that already use DISTINCT).
-  return preg_replace('/(SELECT.*)(?:'. $table .'\.|\s)(?<!DISTINCT\()(?<!DISTINCT\('. $table .'\.)'. $field .'(.*FROM )/AUsi', '\1 '. $field_to_select .'\2', $query);
 }
 
 /**

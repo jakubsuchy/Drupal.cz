@@ -1,5 +1,5 @@
 <?php
-// $Id: content_handler_field_multiple.inc,v 1.1.2.22 2009/07/22 20:45:17 markuspetrux Exp $
+// $Id: content_handler_field_multiple.inc,v 1.1.2.26 2011/01/07 13:33:55 yched Exp $
 
 /**
  * @file
@@ -36,14 +36,19 @@ class content_handler_field_multiple extends content_handler_field {
     }
   }
 
-  function options(&$options) {
-    parent::options($options);
+  function option_definition() {
+    $options = parent::option_definition();
+
     $options['multiple'] = array(
-      'group' => TRUE,
-      'multiple_number' => '',
-      'multiple_from' => '',
-      'multiple_reversed' => FALSE,
+      'contains' => array(
+        'group' => array('default' => TRUE),
+        'multiple_number' => array('default' => ''),
+        'multiple_from' => array('default' => ''),
+        'multiple_reversed' => array('default' => FALSE),
+      ),
     );
+
+    return $options;
   }
 
   /**
@@ -186,14 +191,27 @@ class content_handler_field_multiple extends content_handler_field {
    * Fields rendered with the 'group multiple' option use <div> markers,
    * and thus shouldn't be wrapped in a <span>.
    */
-  function element_type() {
+  function element_type($none_supported = FALSE, $default_empty = FALSE) {
+    // If this is not a grouped field, use the parent method.
     if (!$this->defer_query) {
-      return parent::element_type();
+      return parent::element_type($none_supported, $default_empty);
+    }
+
+    // The 'element_type' property denotes Views 3.x ('semantic views'
+    // functionnality). If the property is set, and not set to '' ("default"),
+    // let the generic method handle the output.
+    if (isset($this->options['element_type']) && $this->options['element_type'] !== '') {
+      return parent::element_type($none_supported, $default_empty);
+    }
+
+    if ($default_empty) {
+      return '';
     }
 
     if (isset($this->definition['element type'])) {
       return $this->definition['element type'];
     }
+
     return 'div';
   }
 
@@ -206,6 +224,13 @@ class content_handler_field_multiple extends content_handler_field {
     // We're down to a single node here, so we can retrieve the actual field
     // definition for the node type being considered.
     $field = content_fields($this->content_field['field_name'], $values->{$this->aliases['type']});
+
+    // If the field does not appear in the node type, then we have no value
+    // to display, and can just return.
+    if (empty($field)) {
+      return '';
+    }
+
     $options = $this->options;
 
     $vid = $values->{$this->field_alias};

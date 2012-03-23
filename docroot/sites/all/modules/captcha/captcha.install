@@ -1,5 +1,10 @@
 <?php
-// $Id: captcha.install,v 1.11 2009/12/19 00:24:36 soxofaan Exp $
+// $Id: captcha.install,v 1.11.2.8 2011/02/03 23:43:56 soxofaan Exp $
+
+/**
+ * @file
+ * Install, update and uninstall functions for the CAPTCHA module.
+ */
 
 /**
  * Implementation of hook_schema().
@@ -14,13 +19,14 @@ function captcha_schema() {
         'type' => 'varchar',
         'length' => 128,
         'not null' => TRUE,
+        'default' => '',
       ),
       'module' => array(
         'description' => 'The module that provides the challenge.',
         'type' => 'varchar',
         'length' => 64,
       ),
-      'type' => array(
+      'captcha_type' => array(
         'description' => 'The challenge type to use.',
         'type' => 'varchar',
         'length' => 64,
@@ -36,6 +42,12 @@ function captcha_schema() {
         'description' => 'CAPTCHA session ID.',
         'type' => 'serial',
         'not null' => TRUE,
+      ),
+      'token' => array(
+        'description' => 'One time CAPTCHA token.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
       ),
       'uid' => array(
         'description' => "User's {users}.uid.",
@@ -98,22 +110,54 @@ function captcha_schema() {
 }
 
 /**
+ * Implementation of hook_requirements().
+ */
+function captcha_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+  if ($phase == 'runtime') {
+    // Show the wrong response counter in the status report.
+    $requirements['captcha_wrong_response_counter'] = array(
+      'title' => $t('CAPTCHA'),
+      'value' => format_plural(
+        variable_get('captcha_wrong_response_counter', 0),
+        'Already 1 blocked form submission',
+        'Already @count blocked form submissions'
+      ),
+      'severity' => REQUIREMENT_INFO,
+    );
+  }
+  return $requirements;
+}
+
+/**
  * Implementation of hook_install().
  */
 function captcha_install() {
   $t = get_t();
   drupal_install_schema('captcha');
 
-  // insert some defaults
-  $form_ids = array('comment_form', 'contact_mail_user', 'contact_mail_page',
-    'user_register', 'user_pass', 'user_login', 'user_login_block', 'forum_node_form');
+  // Insert some default CAPTCHA points.
+  $form_ids = array(
+    'comment_form',
+    'contact_mail_user', 'contact_mail_page',
+    'user_register', 'user_pass', 'user_login', 'user_login_block',
+    'forum_node_form'
+  );
   foreach ($form_ids as $form_id) {
-    db_query("INSERT INTO {captcha_points} (form_id, module, type) VALUES ('%s', NULL, NULL)", $form_id);
+    db_query("INSERT INTO {captcha_points} (form_id, module, captcha_type) VALUES ('%s', NULL, NULL)", $form_id);
   }
 
-  // what to do after install?
+  // Be friendly to your users: what to do after install?
   drupal_set_message($t('You can now <a href="!captcha_admin">configure the CAPTCHA module</a> for your site.',
     array('!captcha_admin' => url('admin/user/captcha'))), 'status');
+
+  // Explain to users that page caching may be disabled.
+  if (variable_get('cache', CACHE_DISABLED) != CACHE_DISABLED) {
+    drupal_set_message($t('Note that the CAPTCHA module disables <a href="!performance_admin">page caching</a> of pages that include a CAPTCHA challenge.',
+      array('!performance_admin' => url('admin/settings/performance'))), 'warning');
+  }
+
 }
 
 /**
@@ -267,4 +311,26 @@ function captcha_update_6201() {
   $items = array();
   $items[] = update_sql("UPDATE {captcha_points} SET module = 'captcha', type = 'Math' WHERE module = 'text_captcha' AND type = 'Text';");
   return $items;
+}
+
+
+/**
+ * Implementation of hook_update_N()
+ * Add a CAPTCHA token column to captcha_sessions table.
+ */
+function captcha_update_6202() {
+  $ret = array();
+  db_add_column($ret, 'captcha_sessions', 'token', 'varchar(64)');
+  return $ret;
+}
+
+
+/**
+ * Implementation of hook_update_N()
+ * Rename the type field to captcha_type in captcha_points.
+ */
+function captcha_update_6203() {
+  $ret = array();
+  db_change_field($ret, 'captcha_points', 'type', 'captcha_type', array('type' => 'varchar', 'length' => 64));
+  return $ret;
 }

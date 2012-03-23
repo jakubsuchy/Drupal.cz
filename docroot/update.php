@@ -1,5 +1,4 @@
 <?php
-// $Id: update.php,v 1.252.2.2 2008/12/10 22:30:13 goba Exp $
 
 /**
  * @file
@@ -247,7 +246,6 @@ function update_script_selection_form() {
   $form['has_js'] = array(
     '#type' => 'hidden',
     '#default_value' => FALSE,
-    '#attributes' => array('id' => 'edit-has_js'),
   );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -347,8 +345,8 @@ function update_results_page() {
           if (!count($queries)) {
             $output .= '<li class="none">No queries</li>';
           }
+          $output .= '</ul>';
         }
-        $output .= '</ul>';
       }
     }
     $output .= '</div>';
@@ -378,7 +376,7 @@ function update_info_page() {
   $output .= "<li>Install your new files in the appropriate location, as described in the handbook.</li>\n";
   $output .= "</ol>\n";
   $output .= "<p>When you have performed the steps above, you may proceed.</p>\n";
-  $output .= '<form method="post" action="update.php?op=selection&token='. $token .'"><input type="submit" value="Continue" /></form>';
+  $output .= '<form method="post" action="update.php?op=selection&amp;token='. $token .'"><p><input type="submit" value="Continue" /></p></form>';
   $output .= "\n";
   return $output;
 }
@@ -518,6 +516,31 @@ function update_fix_d6_requirements() {
       'primary key' => array('cid'),
     );
     db_create_table($ret, 'cache_block', $schema['cache_block']);
+
+    // Create the semaphore table now -- the menu system after 6.15 depends on
+    // this table, and menu code runs in updates prior to the table being
+    // created in its original update function, system_update_6054().
+    $schema['semaphore'] = array(
+      'fields' => array(
+        'name' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => ''),
+        'value' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => ''),
+        'expire' => array(
+          'type' => 'float',
+          'size' => 'big',
+          'not null' => TRUE),
+        ),
+      'indexes' => array('expire' => array('expire')),
+      'primary key' => array('name'),
+    );
+    db_create_table($ret, 'semaphore', $schema['semaphore']);
   }
 
   return $ret;
@@ -618,6 +641,7 @@ ini_set('display_errors', TRUE);
 
 // Access check:
 if (!empty($update_free_access) || $user->uid == 1) {
+  drupal_session_start();
 
   include_once './includes/install.inc';
   include_once './includes/batch.inc';

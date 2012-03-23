@@ -1,5 +1,4 @@
 <?php
-// $Id: filefield.install,v 1.37 2009/07/03 22:02:12 quicksketch Exp $
 /**
  * @file
  * FileField: Defines a CCK file field type.
@@ -8,7 +7,7 @@
  * and Drupal's {files} table to store the actual file data.
  */
 
-include_once('field_file.inc');
+require_once dirname(__FILE__) . '/field_file.inc';
 
 /**
  * Implementation of hook_install().
@@ -54,6 +53,7 @@ function filefield_requirements($phase) {
 
   // Report Drupal version
   if ($phase == 'runtime') {
+    drupal_load('module', 'filefield');
     $implementation = filefield_progress_implementation();
     $apache = strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== FALSE;
     $fastcgi = strpos($_SERVER['SERVER_SOFTWARE'], 'mod_fastcgi') !== FALSE || strpos($_SERVER["SERVER_SOFTWARE"], 'mod_fcgi') !== FALSE;
@@ -72,12 +72,12 @@ function filefield_requirements($phase) {
     elseif (!$implementation && extension_loaded('apc')) {
       $value = $t('Not enabled');
       $description = $t('Your server is capable of displaying file upload progress through APC, but it is not enabled. Add <code>apc.rfc1867 = 1</code> to your php.ini configuration. Alternatively, it is recommended to use <a href="http://pecl.php.net/package/uploadprogress">PECL uploadprogress</a>, which supports more than one simultaneous upload.');
-      $severity = REQUIREMENT_WARNING;
+      $severity = REQUIREMENT_INFO;
     }
     elseif (!$implementation) {
       $value = $t('Not enabled');
       $description = t('Your server is capable of displaying file upload progress, but does not have the required libraries. It is recommended to install the <a href="http://pecl.php.net/package/uploadprogress">PECL uploadprogress library</a> (preferred) or to install <a href="http://us2.php.net/apc">APC</a>.');
-      $severity = REQUIREMENT_WARNING;
+      $severity = REQUIREMENT_INFO;
     }
     elseif ($implementation == 'apc') {
       $value = $t('Enabled (<a href="http://php.net/manual/en/apc.configuration.php#ini.apc.rfc1867">APC RFC1867</a>)');
@@ -115,7 +115,7 @@ function filefield_update_6001() {
   }
 
   $ret = array();
-  include_once(drupal_get_path('module', 'content') .'/includes/content.admin.inc');
+  module_load_include('inc', 'content', 'includes/content.admin');
 
   // Rename the field type from file to filefield. adhere to module namespace.
   $ret[] = update_sql("UPDATE {content_node_field} SET type = 'filefield', module = 'filefield', active = 1 WHERE type = 'file'");
@@ -216,7 +216,7 @@ function filefield_update_6100() {
         $field['description_field'] = $field['show_description'];
       }
       _content_field_write($field);
-      $ret[] = array('success' => TRUE, 'query' => t('The File field %field has been updated with new settings.', array('%field' => $field['field_name'])));
+      $ret[] = array('success' => TRUE, 'query' => t('The file field %field has been updated with new settings.', array('%field' => $field['field_name'])));
     }
   }
 
@@ -294,21 +294,35 @@ function filefield_update_6104() {
  */
 function _filefield_update_6001_move_operation($field, &$context) {
   // Setup the first through
-  if (!isset($context['sandbox']['progress'])) {
+  if (!isset($context['sandbox']['processed_files'])) {
     $db_info = content_database_info($field);
     $context['sandbox']['db_info'] = $db_info;
     $context['sandbox']['table'] = $db_info['table'];
     $context['sandbox']['col_data'] = $db_info['columns']['data']['column'];
     $context['sandbox']['col_desc'] = $db_info['columns']['description']['column'];
     $context['sandbox']['max'] = db_result(db_query("SELECT COUNT(*) FROM {". $db_info['table'] ."}"));
-    $context['sandbox']['progress'] = 0;
     $context['sandbox']['current_node'] = 0;
+    $context['sandbox']['current_delta'] = 0;
+    $context['sandbox']['processed_files'] = array();
   }
 
   // Work our way through the field values 50 rows at a time.
   $limit = 50;
-  $result = db_query_range("SELECT * FROM {{$context['sandbox']['table']}} WHERE vid > %d ORDER BY nid ASC", $context['sandbox']['current_node'], 0, $limit);
+  $result = NULL;
+  if ($field['multiple']) {
+    $result = db_query_range("SELECT * FROM {{$context['sandbox']['table']}} WHERE (vid = %d AND delta > %d) OR vid > %d ORDER BY vid ASC, delta ASC", $context['sandbox']['current_node'], $context['sandbox']['current_delta'], $context['sandbox']['current_node'], 0, $limit);
+  }
+  else {
+    $result = db_query_range("SELECT * FROM {{$context['sandbox']['table']}} WHERE vid >= %d ORDER BY vid ASC", $context['sandbox']['current_node'], 0, $limit);
+  }
   while ($row = db_fetch_array($result)) {
+    // Do not process the same file twice. This may happen when a node's files
+    // are split across two separate batch update HTTP requests.
+    $delta = isset($row['delta']) ? $row['delta'] : 0;
+    if (isset($context['sandbox']['processed_files'][$row['vid'] . '_' . $delta])) {
+      continue;
+    }
+
     // Try to unserialize the data column.
     if (!empty($row[$context['sandbox']['col_data']])) {
       $data = unserialize($row[$context['sandbox']['col_data']]);
@@ -324,14 +338,16 @@ function _filefield_update_6001_move_operation($field, &$context) {
     db_query("UPDATE {{$context['sandbox']['table']}} SET {$context['sandbox']['col_data']} = '%s' WHERE vid = %d", serialize($data), $row['vid']);
 
     // Update our progress information.
-    $context['sandbox']['progress']++;
+    $context['sandbox']['processed_files'][$row['vid'] . '_' . $delta] = TRUE;
     $context['sandbox']['current_node'] = $row['vid'];
+    $context['sandbox']['current_delta'] = $delta;
   }
 
   // Inform the batch engine that we are not finished,
   // and provide an estimation of the completion level we reached.
-  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
-    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+  $processed_count = count($context['sandbox']['processed_files']);
+  if ($processed_count != $context['sandbox']['max']) {
+    $context['finished'] = $processed_count / $context['sandbox']['max'];
   }
 }
 

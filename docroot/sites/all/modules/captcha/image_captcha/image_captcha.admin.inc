@@ -1,5 +1,5 @@
 <?php
-// $Id: image_captcha.admin.inc,v 1.30 2009/12/15 23:53:37 soxofaan Exp $
+// $Id: image_captcha.admin.inc,v 1.30.2.2 2010/11/29 23:33:37 soxofaan Exp $
 
 /**
  * @file
@@ -22,7 +22,7 @@ function image_captcha_settings_form() {
 
   // First some error checking.
   $setup_status = _image_captcha_check_setup(FALSE);
-  if ($setup_status & IMAGE_CAPTCHA_ERROR_NO_GDLIB_WITH_JPEG) {
+  if ($setup_status & IMAGE_CAPTCHA_ERROR_NO_GDLIB) {
     drupal_set_message(t(
       'The Image CAPTCHA module can not generate images because your PHP setup does not support it (no <a href="!gdlib">GD library</a> with JPEG support).',
       array('!gdlib' => 'http://php.net/manual/en/book.image.php')
@@ -59,6 +59,17 @@ function image_captcha_settings_form() {
     '#default_value' => (int) variable_get('image_captcha_code_length', 5),
     '#description' => t('The code length influences the size of the image. Note that larger values make the image generation more CPU intensive.'),
   );
+  // RTL support option (only show this option when there are RTL languages).
+  $languages = language_list('direction');
+  if ($languages[1]) {
+    $form['image_captcha_code_settings']['image_captcha_rtl_support'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('RTL support'),
+      '#default_value' => variable_get('image_captcha_rtl_support', 0),
+      '#description' => t('Enable this option to render the code from right to left for right to left languages.'),
+    );
+  }
+
 
   // Font related stuff.
   $form['image_captcha_font_settings'] = _image_captcha_settings_form_font_section();

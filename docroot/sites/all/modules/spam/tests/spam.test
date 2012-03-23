@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Spam module functionality tests.
+ */
+
+/**
+ * Base class for all spam web test cases.
+ */
+class SpamWebTestCase extends DrupalWebTestCase {
+
+  protected $admin_user;
+  protected $user;
+  protected $node;
+  protected $spam;
+  protected $ham;
+  protected $debug;
+
+  public function setUp() {
+
+    // From CCK CRUD test.
+    $args     = func_get_args();
+    $modules  = array_merge(array('spam'), $args);
+    call_user_func_array(array('parent', 'setUp'), $modules);
+
+    //$this->spam = $this->randomString();
+    $this->spam = $this->randomString();
+    $this->ham  = $this->randomString();
+
+    $this->admin_user = $this->drupalCreateUser(array('administer spam', 'bypass filters', 'administer site configuration'));
+    $this->user = $this->drupalCreateUser();
+
+    // Login the admin.
+    $this->drupalLogin($this->admin_user);
+
+    // We test spam in comments as default so we need a node of a node-type that
+    // accepts comments.
+    $this->node = $this->drupalCreateNode(array('type' => 'story'));
+
+    // For debugging put $this->debug = TRUE; in your tests setup method.
+    if ($this->debug) {
+      debug('Debugging is active.');
+      $edit = array('spam_log_level' => 5);
+      $this->drupalPost('admin/settings/spam', $edit, t('Save configuration'));
+    }
+
+  }
+
+  public function tearDown() {
+    if ($this->debug) {
+      debug('For Debugging make sure verbose testing output is active or you can\'t access the report!');
+      $this->drupalLogin($this->admin_user);
+      $this->drupalGet('admin/reports/spam');
+    }
+    parent::tearDown();
+  }
+}

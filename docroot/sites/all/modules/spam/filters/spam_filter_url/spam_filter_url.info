@@ -1,0 +1,19 @@
+name = Spam URL filter
+description = A URL filter plug-in for the spam module.
+package = Spam
+dependencies[] = spam
+dependencies[] = spam_filter_bayesian
+core = 6.x
+; Information added by drupal.org packaging script on 2009-09-01
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "spam"
+datestamp = "1251764880"
+
+
+; Information added by drupal.org packaging script on 2011-11-20
+version = "6.x-1.4"
+core = "6.x"
+project = "spam"
+datestamp = "1321829144"
+

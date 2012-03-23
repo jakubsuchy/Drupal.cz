@@ -1,4 +1,3 @@
-// $Id: teaser.js,v 1.12 2008/01/09 12:10:04 goba Exp $
 
 /**
  * Auto-attach for teaser behavior.
@@ -71,10 +70,10 @@ Drupal.behaviors.teaser = function(context) {
     $(include).parent().parent().before(button);
 
     // Extract the teaser from the body, if set. Otherwise, stay in joined mode.
-    var text = body.val().split('<!--break-->', 2);
-    if (text.length == 2) {
-      teaser[0].value = trim(text[0]);
-      body[0].value = trim(text[1]);
+    var text = body.val().split('<!--break-->');
+    if (text.length >= 2) {
+      teaser[0].value = trim(text.shift());
+      body[0].value = trim(text.join('<!--break-->'));
       $(teaser).attr('disabled', '');
       $('input', button).val(Drupal.t('Join summary')).toggle(join_teaser, split_teaser);
     }
@@ -88,7 +87,7 @@ Drupal.behaviors.teaser = function(context) {
       Drupal.behaviors.textarea(teaser.parentNode);
     }
     // Set initial visibility
-    if ($(teaser).is('[@disabled]')) {
+    if ($(teaser).is(':disabled')) {
       $(teaser).parent().hide();
     }
 

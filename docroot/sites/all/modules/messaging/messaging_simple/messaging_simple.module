@@ -1,5 +1,5 @@
 <?php
-// $Id: messaging_simple.module,v 1.3.2.4.2.8.2.1 2009/04/29 09:26:08 jareyero Exp $
+// $Id: messaging_simple.module,v 1.3.2.4.2.8.2.2 2009/09/21 22:07:17 jareyero Exp $
 /**
  * @file
  * Simple messaging using html page. Messaging method plug-in
@@ -95,7 +95,7 @@ function messaging_simple_user_message($form_state, $account, $id) {
     $form['body'] = array(
       '#type' => 'item',
       '#title' => t('Content'),
-      '#value' => $message['body'],
+      '#value' => check_markup($message['body']),
     );
     $form['delete'] = array(
       '#type' => 'submit',
@@ -129,6 +129,7 @@ function messaging_simple_messaging($op = 'info') {
         'description' => t('Don\'t send messages but display them on a user account tab'),
         'send callback' => 'messaging_simple_send_msg',
         'destination' => 'uid',
+        'format' => 'HTML',
       );
       return $info;  
   }
