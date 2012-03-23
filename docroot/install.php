@@ -1,5 +1,4 @@
 <?php
-// $Id: install.php,v 1.113.2.8 2009/02/25 11:47:36 goba Exp $
 
 require_once './includes/install.inc';
 
@@ -20,6 +19,14 @@ function install_main() {
   require_once './includes/bootstrap.inc';
   drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
 
+  // The user agent header is used to pass a database prefix in the request when
+  // running tests. However, for security reasons, it is imperative that no
+  // installation be permitted using such a prefix.
+  if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], "simpletest") !== FALSE) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+    exit;
+  }
+
   // This must go after drupal_bootstrap(), which unsets globals!
   global $profile, $install_locale, $conf;
 
@@ -39,6 +46,13 @@ function install_main() {
   module_list(TRUE, FALSE, FALSE, $module_list);
   drupal_load('module', 'system');
   drupal_load('module', 'filter');
+
+  // Install profile chosen, set the global immediately.
+  // This needs to be done before the theme cache gets 
+  // initialized in drupal_maintenance_theme().
+  if (!empty($_GET['profile'])) {
+    $profile = preg_replace('/[^a-zA-Z_0-9]/', '', $_GET['profile']);
+  }
 
   // Set up theme system for the maintenance page.
   drupal_maintenance_theme();
@@ -74,15 +88,14 @@ function install_main() {
     $task = NULL;
   }
 
-  // Decide which profile to use.
-  if (!empty($_GET['profile'])) {
-    $profile = preg_replace('/[^a-zA-Z_0-9]/', '', $_GET['profile']);
-  }
-  elseif ($profile = install_select_profile()) {
-    install_goto("install.php?profile=$profile");
-  }
-  else {
-    install_no_profile_error();
+  // No profile was passed in GET, ask the user.
+  if (empty($_GET['profile'])) {
+    if ($profile = install_select_profile()) {
+      install_goto("install.php?profile=$profile");
+    }
+    else {
+      install_no_profile_error();
+    }
   }
 
   // Load the profile.
@@ -125,6 +138,12 @@ function install_main() {
     if (!$verify) {
       install_change_settings($profile, $install_locale);
     }
+    // The default lock implementation uses a database table,
+    // so we cannot use it for install, but we still need
+    // the API functions available.
+    require_once './includes/lock-install.inc';
+    $conf['lock_inc'] = './includes/lock-install.inc';
+    lock_init();
 
     // Install system.module.
     drupal_install_system();
@@ -257,7 +276,6 @@ function install_settings_form(&$form_state, $profile, $install_locale, $setting
       '#title' => st('Database name'),
       '#default_value' => $db_path,
       '#size' => 45,
-      '#maxlength' => 45,
       '#required' => TRUE,
       '#description' => $db_path_description
     );
@@ -268,7 +286,6 @@ function install_settings_form(&$form_state, $profile, $install_locale, $setting
       '#title' => st('Database username'),
       '#default_value' => $db_user,
       '#size' => 45,
-      '#maxlength' => 45,
       '#required' => TRUE,
     );
 
@@ -278,7 +295,6 @@ function install_settings_form(&$form_state, $profile, $install_locale, $setting
       '#title' => st('Database password'),
       '#default_value' => $db_pass,
       '#size' => 45,
-      '#maxlength' => 45,
     );
 
     $form['advanced_options'] = array(
@@ -295,7 +311,8 @@ function install_settings_form(&$form_state, $profile, $install_locale, $setting
       '#title' => st('Database host'),
       '#default_value' => $db_host,
       '#size' => 45,
-      '#maxlength' => 45,
+      // Hostnames can be 255 characters long.
+      '#maxlength' => 255,
       '#required' => TRUE,
       '#description' => st('If your database is located on a different server, change this.'),
     );
@@ -306,7 +323,8 @@ function install_settings_form(&$form_state, $profile, $install_locale, $setting
       '#title' => st('Database port'),
       '#default_value' => $db_port,
       '#size' => 45,
-      '#maxlength' => 45,
+      // The maximum port number is 65536, 5 digits.
+      '#maxlength' => 5,
       '#description' => st('If your database server is listening to a non-standard port, enter its number.'),
     );
 
@@ -317,7 +335,6 @@ function install_settings_form(&$form_state, $profile, $install_locale, $setting
       '#title' => st('Table prefix'),
       '#default_value' => $db_prefix,
       '#size' => 45,
-      '#maxlength' => 45,
       '#description' => st('If more than one application will be sharing this database, enter a table prefix such as %prefix for your @drupal site here.', array('@drupal' => drupal_install_profile_name(), '%prefix' => $prefix)),
     );
 
@@ -525,7 +542,7 @@ function install_select_locale($profilename) {
       drupal_set_title(st('Choose language'));
       if (!empty($_GET['localize'])) {
         $output = '<p>'. st('With the addition of an appropriate translation package, this installer is capable of proceeding in another language of your choice. To install and use Drupal in a language other than English:') .'</p>';
-        $output .= '<ul><li>'. st('Determine if <a href="@translations" target="_blank">a translation of this Drupal version</a> is available in your language of choice. A translation is provided via a translation package; each translation package enables the display of a specific version of Drupal in a specific language. Not all languages are available for every version of Drupal.', array('@translations' => 'http://drupal.org/project/translations')) .'</li>';
+        $output .= '<ul><li>'. st('Determine if <a href="@translations" target="_blank">a translation of this Drupal version</a> is available in your language of choice. A translation is provided via a translation package; each translation package enables the display of a specific version of Drupal in a specific language. Not all languages are available for every version of Drupal.', array('@translations' => 'http://localize.drupal.org')) .'</li>';
         $output .= '<li>'. st('If an alternative translation package of your choice is available, download and extract its contents to your Drupal root directory.') .'</li>';
         $output .= '<li>'. st('Return to choose language using the second link below and select your desired language from the displayed list. Reloading the page allows the list to automatically adjust to the presence of new translation packages.') .'</li>';
         $output .= '</ul><p>'. st('Alternatively, to install and use Drupal in English, or to defer the selection of an alternative language until after installation, select the first link below.') .'</p>';
@@ -533,7 +550,7 @@ function install_select_locale($profilename) {
         $output .= '<ul><li><a href="install.php?profile='. $profilename .'&amp;locale=en">'. st('Continue installation in English') .'</a></li><li><a href="install.php?profile='. $profilename .'">'. st('Return to choose a language') .'</a></li></ul>';
       }
       else {
-        $output = '<ul><li><a href="install.php?profile='. $profilename .'&amp;locale=en">'. st('Install Drupal in English') .'</a></li><li><a href="install.php?profile='. $profilename .'&amp;localize=true">'. st('Learn how to install Drupal in other languages') .'</a></li></ul>';
+        $output = '<ul><li><a href="install.php?profile='. $profilename .'&amp;locale=en">'. st('Install Pressflow in English') .'</a></li><li><a href="install.php?profile='. $profilename .'&amp;localize=true">'. st('Learn how to install Pressflow in other languages') .'</a></li></ul>';
       }
       print theme('install_page', $output);
       exit;
@@ -905,7 +922,7 @@ function install_check_requirements($profile, $verify) {
 <li>Copy the %default_file file to %file.</li>
 <li>Change file permissions so that it is writable by the web server. If you are unsure how to grant file permissions, please consult the <a href="@handbook_url">on-line handbook</a>.</li>
 </ol>
-More details about installing Drupal are available in INSTALL.txt.', array('@drupal' => drupal_install_profile_name(), '%file' => $file, '%default_file' => $conf_path .'/default.settings.php', '@handbook_url' => 'http://drupal.org/server-permissions')), 'error');
+More details about installing Pressflow are available in INSTALL.txt.', array('@drupal' => drupal_install_profile_name(), '%file' => $file, '%default_file' => $conf_path .'/default.settings.php', '@handbook_url' => 'http://drupal.org/server-permissions')), 'error');
     }
     elseif (!$writable) {
       drupal_set_message(st('The @drupal installer requires write permissions to %file during the installation process. If you are unsure how to grant file permissions, please consult the <a href="@handbook_url">on-line handbook</a>.', array('@drupal' => drupal_install_profile_name(), '%file' => $file, '@handbook_url' => 'http://drupal.org/server-permissions')), 'error');

@@ -1,5 +1,4 @@
 <?php
-// $Id: template.php,v 1.16.2.1 2009/02/25 11:47:37 goba Exp $
 
 /**
  * Sets the body-tag class attribute.
@@ -38,18 +37,6 @@ function phptemplate_breadcrumb($breadcrumb) {
 }
 
 /**
- * Allow themable wrapping of all comments.
- */
-function phptemplate_comment_wrapper($content, $node) {
-  if (!$content || $node->type == 'forum') {
-    return '<div id="comments">'. $content .'</div>';
-  }
-  else {
-    return '<div id="comments"><h2 class="comments">'. t('Comments') .'</h2>'. $content .'</div>';
-  }
-}
-
-/**
  * Override or insert PHPTemplate variables into the templates.
  */
 function phptemplate_preprocess_page(&$vars) {
@@ -58,6 +45,15 @@ function phptemplate_preprocess_page(&$vars) {
   // Hook into color.module
   if (module_exists('color')) {
     _color_page_alter($vars);
+  }
+}
+
+/**
+ * Add a "Comments" heading above comments except on forum pages.
+ */
+function garland_preprocess_comment_wrapper(&$vars) {
+  if ($vars['content'] && $vars['node']->type != 'forum') {
+    $vars['content'] = '<h2 class="comments">'. t('Comments') .'</h2>'.  $vars['content'];
   }
 }
 
@@ -71,6 +67,9 @@ function phptemplate_menu_local_tasks() {
   return menu_primary_local_tasks();
 }
 
+/**
+ * Returns the themed submitted-by string for the comment.
+ */
 function phptemplate_comment_submitted($comment) {
   return t('!datetime — !username',
     array(
@@ -79,6 +78,9 @@ function phptemplate_comment_submitted($comment) {
     ));
 }
 
+/**
+ * Returns the themed submitted-by string for the node.
+ */
 function phptemplate_node_submitted($node) {
   return t('!datetime — !username',
     array(
@@ -93,9 +95,9 @@ function phptemplate_node_submitted($node) {
 function phptemplate_get_ie_styles() {
   global $language;
 
-  $iecss = '<link type="text/css" rel="stylesheet" media="all" href="'. base_path() . path_to_theme() .'/fix-ie.css" />';
+  $iecss = '<link type="text/css" rel="stylesheet" media="all" href="'. file_create_url(path_to_theme() .'/fix-ie.css') . ' />';
   if ($language->direction == LANGUAGE_RTL) {
-    $iecss .= '<style type="text/css" media="all">@import "'. base_path() . path_to_theme() .'/fix-ie-rtl.css";</style>';
+    $iecss .= '<style type="text/css" media="all">@import "'. file_create_url(path_to_theme() .'/fix-ie-rtl.css') . '";</style>';
   }
 
   return $iecss;

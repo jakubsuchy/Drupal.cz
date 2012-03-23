@@ -1,5 +1,4 @@
 <?php
-// $Id: locale.inc,v 1.174.2.7 2009/01/06 15:36:51 goba Exp $
 
 /**
  * @file
@@ -34,6 +33,9 @@ function locale_languages_overview_form() {
   $options = array();
   $form['weight'] = array('#tree' => TRUE);
   foreach ($languages as $langcode => $language) {
+    // Language code should contain no markup, but is emitted
+    // by radio and checkbox options.
+    $langcode = check_plain($langcode);
 
     $options[$langcode] = '';
     if ($language->enabled) {
@@ -335,6 +337,17 @@ function locale_languages_predefined_form_submit($form, &$form_state) {
  * Validate the language editing form. Reused for custom language addition too.
  */
 function locale_languages_edit_form_validate($form, &$form_state) {
+  // Validate that the name, native, and langcode variables are safe.
+  if (preg_match('/["<>\']/', $form_state['values']['langcode'])) {
+    form_set_error('langcode', t('The characters &lt;, &gt;, " and \' are not allowed in the language code field.'));
+  }
+  if (preg_match('/["<>\']/', $form_state['values']['name'])) {
+    form_set_error('name', t('The characters &lt;, &gt;, " and \' are not allowed in the language name in English field.'));
+  }
+  if (preg_match('/["<>\']/', $form_state['values']['native'])) {
+    form_set_error('native', t('The characters &lt;, &gt;, " and \' are not allowed in the native language name field.'));
+  }
+
   if (!empty($form_state['values']['domain']) && !empty($form_state['values']['prefix'])) {
     form_set_error('prefix', t('Domain and path prefix values should not be set at the same time.'));
   }
@@ -536,8 +549,13 @@ function locale_translate_seek_screen() {
  */
 function locale_translate_seek_form() {
   // Get all languages, except English
-  $languages = locale_language_list('name', TRUE);
-  unset($languages['en']);
+  $raw_languages = locale_language_list('name', TRUE);
+  unset($raw_languages['en']);
+  // Sanitize the values to be used in radios.
+  $languages = array();
+  foreach ($raw_languages as $key => $value) {
+    $languages[check_plain($key)] = check_plain($value);
+  }
 
   // Present edit form preserving previous user settings
   $query = _locale_translate_seek_query();
@@ -847,8 +865,10 @@ function locale_string_is_safe($string) {
  * Validate string editing form submissions.
  */
 function locale_translate_edit_form_validate($form, &$form_state) {
+  // Locale string check is needed for default textgroup only.
+  $safe_check_needed = $form_state['values']['textgroup'] == 'default';
   foreach ($form_state['values']['translations'] as $key => $value) {
-    if (!locale_string_is_safe($value)) {
+    if ($safe_check_needed && !locale_string_is_safe($value)) {
       form_set_error('translations', t('The submitted string contains disallowed HTML: %string', array('%string' => $value)));
       watchdog('locale', 'Attempted submission of a translation string with disallowed HTML: %string', array('%string' => $value), WATCHDOG_WARNING);
     }
@@ -1016,9 +1036,9 @@ function locale_add_language($langcode, $name = NULL, $native = NULL, $direction
  *   Text group to import PO file into (eg. 'default' for interface translations)
  */
 function _locale_import_po($file, $langcode, $mode, $group = NULL) {
-  // If not in 'safe mode', increase the maximum execution time.
-  if (!ini_get('safe_mode')) {
-    set_time_limit(240);
+  // Try to allocate enough time to parse and import the data.
+  if (function_exists('set_time_limit')) {
+    @set_time_limit(240);
   }
 
   // Check if we have the language already in the database.
@@ -1124,7 +1144,7 @@ function _locale_import_read_po($op, $file, $mode = NULL, $lang = NULL, $group =
       $context = "MSGID_PLURAL";
     }
     elseif (!strncmp("msgid", $line, 5)) {
-      if ($context == "MSGSTR") {   // End current entry, start a new one
+      if (($context == "MSGSTR") || ($context == "MSGSTR_ARR")) { // End current entry, start a new one
         _locale_import_one_string($op, $current, $mode, $lang, $file, $group);
         $current = array();
       }
@@ -1266,15 +1286,21 @@ function _locale_import_one_string($op, $value = NULL, $mode = NULL, $lang = NUL
     case 'db-store':
       // We got header information.
       if ($value['msgid'] == '') {
-        $header = _locale_import_parse_header($value['msgstr']);
+        $languages = language_list();
+        if (($mode != LOCALE_IMPORT_KEEP) || empty($languages[$lang]->plurals)) {
+          // Since we only need to parse the header if we ought to update the
+          // plural formula, only run this if we don't need to keep existing
+          // data untouched or if we don't have an existing plural formula.
+          $header = _locale_import_parse_header($value['msgstr']);
 
-        // Get the plural formula and update in database.
-        if (isset($header["Plural-Forms"]) && $p = _locale_import_parse_plural_forms($header["Plural-Forms"], $file->filename)) {
-          list($nplurals, $plural) = $p;
-          db_query("UPDATE {languages} SET plurals = %d, formula = '%s' WHERE language = '%s'", $nplurals, $plural, $lang);
-        }
-        else {
-          db_query("UPDATE {languages} SET plurals = %d, formula = '%s' WHERE language = '%s'", 0, '', $lang);
+          // Get the plural formula and update in database.
+          if (isset($header["Plural-Forms"]) && $p = _locale_import_parse_plural_forms($header["Plural-Forms"], $file->filename)) {
+            list($nplurals, $plural) = $p;
+            db_query("UPDATE {languages} SET plurals = %d, formula = '%s' WHERE language = '%s'", $nplurals, $plural, $lang);
+          }
+          else {
+            db_query("UPDATE {languages} SET plurals = %d, formula = '%s' WHERE language = '%s'", 0, '', $lang);
+          }
         }
         $headerdone = TRUE;
       }
@@ -1340,7 +1366,9 @@ function _locale_import_one_string_db(&$report, $langcode, $source, $translation
 
   if (!empty($translation)) {
      // Skip this string unless it passes a check for dangerous code.
-     if (!locale_string_is_safe($translation)) {
+     // Text groups other than default still can contain HTML tags
+     // (i.e. translatable blocks).
+     if ($textgroup == "default" && !locale_string_is_safe($translation)) {
        $report['skips']++;
        $lid = 0;
      }
@@ -1643,7 +1671,7 @@ function _locale_import_shorten_comments($comment) {
       break;
     }
   }
-  return substr($comm, 0, -2);
+  return trim(substr($comm, 0, -2));
 }
 
 /**
@@ -1788,7 +1816,7 @@ function _locale_export_po_generate($language = NULL, $strings = array(), $heade
 
   if (!isset($header)) {
     if (isset($language)) {
-      $header = '# '. $language->name .' translation of '. variable_get('site_name', 'Drupal') ."\n";
+      $header = '# '. $language->name .' translation of '. variable_get('site_name', 'Pressflow') ."\n";
       $header .= '# Generated by '. $user->name .' <'. $user->mail .">\n";
       $header .= "#\n";
       $header .= "msgid \"\"\n";
@@ -2130,38 +2158,16 @@ function _locale_rebuild_js($langcode = NULL) {
   }
 
   // Construct the array for JavaScript translations.
-  // We sort on plural so that we have all plural forms before singular forms.
-  $result = db_query("SELECT s.lid, s.source, t.plid, t.plural, t.translation FROM {locales_source} s LEFT JOIN {locales_target} t ON s.lid = t.lid AND t.language = '%s' WHERE s.location LIKE '%%.js%%' AND s.textgroup = 'default' ORDER BY t.plural DESC", $language->language);
+  // Only add strings with a translation to the translations array.
+  $result = db_query("SELECT s.lid, s.source, t.translation FROM {locales_source} s INNER JOIN {locales_target} t ON s.lid = t.lid AND t.language = '%s' WHERE s.location LIKE '%%.js%%' AND s.textgroup = 'default'", $language->language);
 
-  $translations = $plurals = array();
+  $translations = array();
   while ($data = db_fetch_object($result)) {
-    // Only add this to the translations array when there is actually a translation.
-    if (!empty($data->translation)) {
-      if ($data->plural) {
-        // When the translation is a plural form, first add it to another array and
-        // wait for the singular (parent) translation.
-        if (!isset($plurals[$data->plid])) {
-          $plurals[$data->plid] = array($data->plural => $data->translation);
-        }
-        else {
-          $plurals[$data->plid] += array($data->plural => $data->translation);
-        }
-      }
-      elseif (isset($plurals[$data->lid])) {
-        // There are plural translations for this translation, so get them from
-        // the plurals array and add them to the final translations array.
-        $translations[$data->source] = array($data->plural => $data->translation) + $plurals[$data->lid];
-        unset($plurals[$data->lid]);
-      }
-      else {
-        // There are no plural forms for this translation, so just add it to
-        // the translations array.
-        $translations[$data->source] = $data->translation;
-      }
-    }
+    $translations[$data->source] = $data->translation;
   }
 
   // Construct the JavaScript file, if there are translations.
+  $data_hash = NULL;
   $data = $status = '';
   if (!empty($translations)) {
 
@@ -2180,22 +2186,38 @@ function _locale_rebuild_js($langcode = NULL) {
   $dir = file_create_path(variable_get('locale_js_directory', 'languages'));
 
   // Delete old file, if we have no translations anymore, or a different file to be saved.
-  if (!empty($language->javascript) && (!$data || $language->javascript != $data_hash)) {
+  $changed_hash = $language->javascript != $data_hash;
+  if (!empty($language->javascript) && (!$data || $changed_hash)) {
     file_delete(file_create_path($dir .'/'. $language->language .'_'. $language->javascript .'.js'));
     $language->javascript = '';
     $status = 'deleted';
   }
 
-  // Only create a new file if the content has changed.
-  if ($data && $language->javascript != $data_hash) {
+  // Only create a new file if the content has changed or the original file got
+  // lost.
+  $dest = $dir .'/'. $language->language .'_'. $data_hash .'.js';
+  if ($data && ($changed_hash || !file_exists($dest))) {
     // Ensure that the directory exists and is writable, if possible.
     file_check_directory($dir, TRUE);
 
     // Save the file.
-    $dest = $dir .'/'. $language->language .'_'. $data_hash .'.js';
     if (file_save_data($data, $dest)) {
       $language->javascript = $data_hash;
-      $status = ($status == 'deleted') ? 'updated' : 'created';
+      // If we deleted a previous version of the file and we replace it with a
+      // new one we have an update.
+      if ($status == 'deleted') {
+        $status = 'updated';
+      }
+      // If the file did not exist previously and the data has changed we have
+      // a fresh creation.
+      elseif ($changed_hash) {
+        $status = 'created';
+      }
+      // If the data hash is unchanged the translation was lost and has to be
+      // rebuilt.
+      else {
+        $status = 'rebuilt';
+      }
     }
     else {
       $language->javascript = '';
@@ -2203,9 +2225,10 @@ function _locale_rebuild_js($langcode = NULL) {
     }
   }
 
-  // Save the new JavaScript hash (or an empty value if the file
-  // just got deleted). Act only if some operation was executed.
-  if ($status) {
+  // Save the new JavaScript hash (or an empty value if the file just got
+  // deleted). Act only if some operation was executed that changed the hash
+  // code.
+  if ($status && $changed_hash) {
     db_query("UPDATE {languages} SET javascript = '%s' WHERE language = '%s'", $language->javascript, $language->language);
 
     // Update the default language variable if the default language has been altered.
@@ -2223,6 +2246,10 @@ function _locale_rebuild_js($langcode = NULL) {
     case 'updated':
       watchdog('locale', 'Updated JavaScript translation file for the language %language.', array('%language' => t($language->name)));
       return TRUE;
+    case 'rebuilt':
+      watchdog('locale', 'JavaScript translation file %file.js was lost.', array('%file' => $language->javascript), WATCHDOG_WARNING);
+      // Proceed to the 'created' case as the JavaScript translation file has
+      // been created again.
     case 'created':
       watchdog('locale', 'Created JavaScript translation file for the language %language.', array('%language' => t($language->name)));
       return TRUE;
@@ -2433,7 +2460,7 @@ function _locale_get_predefined_list() {
     "se" => array("Northern Sami"),
     "sg" => array("Sango"),
     "sh" => array("Serbo-Croatian"),
-    "si" => array("Singhalese"),
+    "si" => array("Sinhala", "සිංහල"),
     "sk" => array("Slovak", "Slovenčina"),
     "sl" => array("Slovenian", "Slovenščina"),
     "sm" => array("Samoan"),
@@ -2571,20 +2598,21 @@ function _locale_batch_build($files, $finished = NULL, $components = array()) {
     $operations = array();
     foreach ($files as $file) {
       // We call _locale_batch_import for every batch operation.
-      $operations[] = array('_locale_batch_import', array($file->filename));    }
-      $batch = array(
-        'operations'    => $operations,
-        'title'         => $t('Importing interface translations'),
-        'init_message'  => $t('Starting import'),
-        'error_message' => $t('Error importing interface translations'),
-        'file'          => './includes/locale.inc',
-        // This is not a batch API construct, but data passed along to the
-        // installer, so we know what did we import already.
-        '#components'   => $components,
-      );
-      if (isset($finished)) {
-        $batch['finished'] = $finished;
-      }
+      $operations[] = array('_locale_batch_import', array($file->filename));
+    }
+    $batch = array(
+      'operations'    => $operations,
+      'title'         => $t('Importing interface translations'),
+      'init_message'  => $t('Starting import'),
+      'error_message' => $t('Error importing interface translations'),
+      'file'          => './includes/locale.inc',
+      // This is not a batch API construct, but data passed along to the
+      // installer, so we know what did we import already.
+      '#components'   => $components,
+    );
+    if (isset($finished)) {
+      $batch['finished'] = $finished;
+    }
     return $batch;
   }
   return FALSE;

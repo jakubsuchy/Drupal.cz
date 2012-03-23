@@ -1,5 +1,4 @@
 <?php
-// $Id: file.inc,v 1.121.2.5 2008/10/20 09:42:31 goba Exp $
 
 /**
  * @file
@@ -35,19 +34,57 @@ define('FILE_STATUS_PERMANENT', 1);
 /**
  * Create the download path to a file.
  *
- * @param $path A string containing the path of the file to generate URL for.
- * @return A string containing a URL that can be used to download the file.
+ * There are two kinds of local files:
+ * - "created files", i.e. those in the files directory (which is stored in
+ *   the file_directory_path variable and can be retrieved using
+ *   file_directory_path()). These are files that have either been uploaded by
+ *   users or were generated automatically (for example through CSS
+ *   aggregation).
+ * - "shipped files", i.e. those outside of the files directory, which ship as
+ *   part of Drupal core or contributed modules or themes.
+ *
+ * @param $path
+ *   A string containing the Drupal path (i.e. path relative to the Drupal
+ *   root directory) of the file to generate the URL for.
+ * @return
+ *   A string containing a URL that can be used to download the file.
  */
 function file_create_url($path) {
-  // Strip file_directory_path from $path. We only include relative paths in urls.
-  if (strpos($path, file_directory_path() .'/') === 0) {
-    $path = trim(substr($path, strlen(file_directory_path())), '\\/');
+  // Clean up Windows paths.
+  $old_path = $path = str_replace('\\', '/', $path);
+
+  drupal_alter('file_url', $path);
+
+  // If any module has altered the path, then return the alteration.
+  if ($path != $old_path) {
+    return $path;
   }
-  switch (variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC)) {
-    case FILE_DOWNLOADS_PUBLIC:
-      return $GLOBALS['base_url'] .'/'. file_directory_path() .'/'. str_replace('\\', '/', $path);
-    case FILE_DOWNLOADS_PRIVATE:
-      return url('system/files/'. $path, array('absolute' => TRUE));
+
+  // Otherwise serve the file from Drupal's web server. This point will only
+  // be reached when either no custom_file_url_rewrite() function has been
+  // defined, or when that function returned FALSE, thereby indicating that it
+  // cannot (or doesn't wish to) rewrite the URL. This is typically because
+  // the file doesn't match some conditions to be served from a CDN or static
+  // file server, or because the file has not yet been synced to the CDN or
+  // static file server.
+
+  // Shipped files.
+  if (strpos($path, file_directory_path() . '/') !== 0) {
+    return base_path() . $path;
+  }
+  // Created files.
+  else {
+    switch (variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC)) {
+      case FILE_DOWNLOADS_PUBLIC:
+        return $GLOBALS['base_url'] . '/' . $path;
+      case FILE_DOWNLOADS_PRIVATE:
+        // Strip file_directory_path from $path. Private downloads' URLs are
+        // rewritten to be served relatively to system/files (which is a menu
+        // callback that streams the file) instead of relatively to the file
+        // directory path.
+        $path = file_directory_strip($path);
+        return url('system/files/' . $path, array('absolute' => TRUE));
+    }
   }
 }
 
@@ -83,17 +120,28 @@ function file_create_path($dest = 0) {
 }
 
 /**
- * Check that the directory exists and is writable. Directories need to
- * have execute permissions to be considered a directory by FTP servers, etc.
+ * Checks whether a directory exists and is writable.
  *
- * @param $directory A string containing the name of a directory path.
- * @param $mode A Boolean value to indicate if the directory should be created
- *   if it does not exist or made writable if it is read-only.
- * @param $form_item An optional string containing the name of a form item that
- *   any errors will be attached to. This is useful for settings forms that
- *   require the user to specify a writable directory. If it can't be made to
- *   work, a form error will be set preventing them from saving the settings.
- * @return FALSE when directory not found, or TRUE when directory exists.
+ * Furthermore, the directory can optionally be created if it does not exist,
+ * and/or be set to writable if it is currently not. Directories need to have
+ * execute permission to be considered a directory by FTP servers.
+ *
+ * @param $directory
+ *   A string representing the directory path.
+ * @param $mode
+ *   An optional bitmask containing the actions, if any, to be carried out on
+ *   the directory. Any combination of the actions FILE_CREATE_DIRECTORY and
+ *   FILE_MODIFY_PERMISSIONS is allowed.
+ * @param $form_item
+ *   An optional string containing the name of a form item that any errors
+ *   will be attached to. Useful when the function validates a directory path
+ *   entered as a form value. An error will consequently prevent form submit
+ *   handlers from running, and instead display the form along with the
+ *   error messages.
+ *
+ * @return
+ *   FALSE if the directory does not exist or is not writable, even after
+ *   any optional actions have been carried out. Otherwise, TRUE is returned.
  */
 function file_check_directory(&$directory, $mode = 0, $form_item = NULL) {
   $directory = rtrim($directory, '/\\');
@@ -195,23 +243,31 @@ function file_check_location($source, $directory = '') {
 }
 
 /**
- * Copies a file to a new location. This is a powerful function that in many ways
- * performs like an advanced version of copy().
+ * Copies a file to a new location.
+ *
+ * This is a powerful function that in many ways performs like an advanced
+ * version of copy().
  * - Checks if $source and $dest are valid and readable/writable.
  * - Performs a file copy if $source is not equal to $dest.
  * - If file already exists in $dest either the call will error out, replace the
  *   file or rename the file based on the $replace parameter.
  *
- * @param $source A string specifying the file location of the original file.
- *   This parameter will contain the resulting destination filename in case of
+ * @param $source
+ *   Either a string specifying the file location of the original file or an
+ *   object containing a 'filepath' property. This parameter is passed by
+ *   reference and will contain the resulting destination filename in case of
  *   success.
- * @param $dest A string containing the directory $source should be copied to.
- *   If this value is omitted, Drupal's 'files' directory will be used.
- * @param $replace Replace behavior when the destination file already exists.
- *   - FILE_EXISTS_REPLACE - Replace the existing file
- *   - FILE_EXISTS_RENAME - Append _{incrementing number} until the filename is unique
- *   - FILE_EXISTS_ERROR - Do nothing and return FALSE.
- * @return True for success, FALSE for failure.
+ * @param $dest
+ *   A string containing the directory $source should be copied to. If this
+ *   value is omitted, Drupal's 'files' directory will be used.
+ * @param $replace
+ *   Replace behavior when the destination file already exists.
+ *   - FILE_EXISTS_REPLACE: Replace the existing file.
+ *   - FILE_EXISTS_RENAME: Append _{incrementing number} until the filename is
+ *     unique.
+ *   - FILE_EXISTS_ERROR: Do nothing and return FALSE.
+ * @return
+ *   TRUE for success, FALSE for failure.
  */
 function file_copy(&$source, $dest = 0, $replace = FILE_EXISTS_RENAME) {
   $dest = file_create_path($dest);
@@ -311,21 +367,28 @@ function file_destination($destination, $replace) {
 
 /**
  * Moves a file to a new location.
+ *
  * - Checks if $source and $dest are valid and readable/writable.
  * - Performs a file move if $source is not equal to $dest.
  * - If file already exists in $dest either the call will error out, replace the
  *   file or rename the file based on the $replace parameter.
  *
- * @param $source A string specifying the file location of the original file.
- *   This parameter will contain the resulting destination filename in case of
+ * @param $source
+ *   Either a string specifying the file location of the original file or an
+ *   object containing a 'filepath' property. This parameter is passed by
+ *   reference and will contain the resulting destination filename in case of
  *   success.
- * @param $dest A string containing the directory $source should be copied to.
- *   If this value is omitted, Drupal's 'files' directory will be used.
- * @param $replace Replace behavior when the destination file already exists.
- *   - FILE_EXISTS_REPLACE - Replace the existing file
- *   - FILE_EXISTS_RENAME - Append _{incrementing number} until the filename is unique
- *   - FILE_EXISTS_ERROR - Do nothing and return FALSE.
- * @return True for success, FALSE for failure.
+ * @param $dest
+ *   A string containing the directory $source should be copied to. If this
+ *   value is omitted, Drupal's 'files' directory will be used.
+ * @param $replace
+ *   Replace behavior when the destination file already exists.
+ *   - FILE_EXISTS_REPLACE: Replace the existing file.
+ *   - FILE_EXISTS_RENAME: Append _{incrementing number} until the filename is
+ *     unique.
+ *   - FILE_EXISTS_ERROR: Do nothing and return FALSE.
+ * @return
+ *   TRUE for success, FALSE for failure.
  */
 function file_move(&$source, $dest = 0, $replace = FILE_EXISTS_RENAME) {
   $path_original = is_object($source) ? $source->filepath : $source;
@@ -342,15 +405,36 @@ function file_move(&$source, $dest = 0, $replace = FILE_EXISTS_RENAME) {
 }
 
 /**
- * Munge the filename as needed for security purposes. For instance the file
- * name "exploit.php.pps" would become "exploit.php_.pps".
+ * Modify a filename as needed for security purposes.
  *
- * @param $filename The name of a file to modify.
- * @param $extensions A space separated list of extensions that should not
- *   be altered.
- * @param $alerts Whether alerts (watchdog, drupal_set_message()) should be
- *   displayed.
- * @return $filename The potentially modified $filename.
+ * Munging a file name prevents unknown file extensions from masking exploit
+ * files. When web servers such as Apache decide how to process a URL request,
+ * they use the file extension. If the extension is not recognized, Apache
+ * skips that extension and uses the previous file extension. For example, if
+ * the file being requested is exploit.php.pps, and Apache does not recognize
+ * the '.pps' extension, it treats the file as PHP and executes it. To make
+ * this file name safe for Apache and prevent it from executing as PHP, the
+ * .php extension is "munged" into .php_, making the safe file name
+ * exploit.php_.pps.
+ *
+ * Specifically, this function adds an underscore to all extensions that are
+ * between 2 and 5 characters in length, internal to the file name, and not
+ * included in $extensions.
+ *
+ * Function behavior is also controlled by the Drupal variable
+ * 'allow_insecure_uploads'. If 'allow_insecure_uploads' evaluates to TRUE, no
+ * alterations will be made, if it evaluates to FALSE, the filename is 'munged'.
+ *
+ * @param $filename
+ *   File name to modify.
+ * @param $extensions
+ *   A space-separated list of extensions that should not be altered.
+ * @param $alerts
+ *   If TRUE, drupal_set_message() will be called to display a message if the
+ *   file name was changed.
+ *
+ * @return
+ *   The potentially modified $filename.
  */
 function file_munge_filename($filename, $extensions, $alerts = TRUE) {
   $original = $filename;
@@ -413,6 +497,7 @@ function file_create_filename($basename, $directory) {
     }
     else {
       $name = $basename;
+      $ext = '';
     }
 
     $counter = 0;
@@ -451,29 +536,32 @@ function file_space_used($uid = NULL) {
 }
 
 /**
- * Saves a file upload to a new location. The source file is validated as a
- * proper upload and handled as such.
+ * Saves a file upload to a new location.
  *
- * The file will be added to the files table as a temporary file. Temporary files
- * are periodically cleaned. To make the file permanent file call
+ * The source file is validated as a proper upload and handled as such.
+ * The file will be added to the files table as a temporary file. Temporary
+ * files are periodically cleaned. To make the file permanent file call
  * file_set_status() to change its status.
  *
  * @param $source
  *   A string specifying the name of the upload field to save.
  * @param $validators
- *   An optional, associative array of callback functions used to validate the
+ *   (optional) An associative array of callback functions used to validate the
  *   file. The keys are function names and the values arrays of callback
- *   parameters which will be passed in after the user and file objects. The
- *   functions should return an array of error messages, an empty array
+ *   parameters which will be passed in after the file object. The
+ *   functions should return an array of error messages; an empty array
  *   indicates that the file passed validation. The functions will be called in
  *   the order specified.
  * @param $dest
  *   A string containing the directory $source should be copied to. If this is
  *   not provided or is not writable, the temporary directory will be used.
  * @param $replace
- *   A boolean indicating whether an existing file of the same name in the
- *   destination directory should overwritten. A false value will generate a
- *   new, unique filename in the destination directory.
+ *   Replace behavior when the destination file already exists:
+ *   - FILE_EXISTS_REPLACE: Replace the existing file.
+ *   - FILE_EXISTS_RENAME: Append _{incrementing number} until the filename
+ *     is unique.
+ *   - FILE_EXISTS_ERROR: Do nothing and return FALSE.
+ *
  * @return
  *   An object containing the file information, or 0 in the event of an error.
  */
@@ -529,13 +617,6 @@ function file_save_upload($source, $validators = array(), $dest = FALSE, $replac
     $file->filepath = $_FILES['files']['tmp_name'][$source];
     $file->filemime = file_get_mimetype($file->filename);
 
-    // Rename potentially executable files, to help prevent exploits.
-    if (preg_match('/\.(php|pl|py|cgi|asp|js)$/i', $file->filename) && (substr($file->filename, -4) != '.txt')) {
-      $file->filemime = 'text/plain';
-      $file->filepath .= '.txt';
-      $file->filename .= '.txt';
-    }
-
     // If the destination is not provided, or is not writable, then use the
     // temporary directory.
     if (empty($dest) || file_check_path($dest) === FALSE) {
@@ -550,8 +631,22 @@ function file_save_upload($source, $validators = array(), $dest = FALSE, $replac
     $errors = array();
     foreach ($validators as $function => $args) {
       array_unshift($args, $file);
+      // Make sure $file is passed around by reference.
+      $args[0] = &$file;
       $errors = array_merge($errors, call_user_func_array($function, $args));
     }
+
+    // Rename potentially executable files, to help prevent exploits.
+    if (preg_match('/\.(php|pl|py|cgi|asp|js)$/i', $file->filename) && (substr($file->filename, -4) != '.txt')) {
+      $file->filemime = 'text/plain';
+      $file->filepath .= '.txt';
+      $file->filename .= '.txt';
+      // As the file may be named example.php.txt, we need to munge again to
+      // convert to example.php_.txt, then create the correct destination.
+      $file->filename = file_munge_filename($file->filename, $extensions);
+      $file->destination = file_destination(file_create_path($dest .'/'. $file->filename), $replace);
+    }
+
 
     // Check for validation errors.
     if (!empty($errors)) {
@@ -612,9 +707,12 @@ function file_validate_name_length($file) {
  * @param $file
  *   A Drupal file object.
  * @param $extensions
- *   A string with a space separated
+ *   A string with a space separated list of allowed file extensions, not
+ *   including the period. For example, 'bmp jpg gif png'.
+ *
  * @return
- *   An array. If the file extension is not allowed, it will contain an error message.
+ *   An array. If the file extension is not allowed, it will contain an error
+ *   message.
  */
 function file_validate_extensions($file, $extensions) {
   global $user;
@@ -623,7 +721,7 @@ function file_validate_extensions($file, $extensions) {
 
   // Bypass validation for uid  = 1.
   if ($user->uid != 1) {
-    $regex = '/\.('. ereg_replace(' +', '|', preg_quote($extensions)) .')$/i';
+    $regex = '/\.('. @ereg_replace(' +', '|', preg_quote($extensions)) .')$/i';
     if (!preg_match($regex, $file->filename)) {
       $errors[] = t('Only files with the following extensions are allowed: %files-allowed.', array('%files-allowed' => $extensions));
     }
@@ -640,7 +738,7 @@ function file_validate_extensions($file, $extensions) {
  * @param $file_limit
  *   An integer specifying the maximum file size in bytes. Zero indicates that
  *   no limit should be enforced.
- * @param $$user_limit
+ * @param $user_limit
  *   An integer specifying the maximum number of bytes the user is allowed. Zero
  *   indicates that no limit should be enforced.
  * @return
@@ -657,8 +755,8 @@ function file_validate_size($file, $file_limit = 0, $user_limit = 0) {
       $errors[] = t('The file is %filesize exceeding the maximum file size of %maxsize.', array('%filesize' => format_size($file->filesize), '%maxsize' => format_size($file_limit)));
     }
 
-    $total_size = file_space_used($user->uid) + $file->filesize;
-    if ($user_limit && $total_size > $user_limit) {
+    // Save a query by only calling file_space_used() when a limit is provided.
+    if ($user_limit && (file_space_used($user->uid) + $file->filesize) > $user_limit) {
       $errors[] = t('The file is %filesize which would exceed your disk quota of %quota.', array('%filesize' => format_size($file->filesize), '%quota' => format_size($user_limit)));
     }
   }
@@ -771,8 +869,13 @@ function file_save_data($data, $dest, $replace = FILE_EXISTS_RENAME) {
 /**
  * Set the status of a file.
  *
- * @param file A Drupal file object
- * @param status A status value to set the file to.
+ * @param $file 
+ *   A Drupal file object.
+ * @param $status
+ *   A status value to set the file to. One of:
+ *   - FILE_STATUS_PERMANENT
+ *   - FILE_STATUS_TEMPORARY
+ *
  * @return FALSE on failure, TRUE on success and $file->status will contain the
  *     status.
  */
@@ -794,6 +897,14 @@ function file_set_status(&$file, $status) {
 function file_transfer($source, $headers) {
   if (ob_get_level()) {
     ob_end_clean();
+  }
+  
+  // IE cannot download private files because it cannot store files downloaded
+  // over https in the browser cache. The problem can be solved by sending
+  // custom headers to IE. See http://support.microsoft.com/kb/323308/en-us
+  if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) {
+    drupal_set_header('Cache-Control: private');
+    drupal_set_header('Pragma: private');
   }
 
   foreach ($headers as $header) {
@@ -851,6 +962,7 @@ function file_download() {
 
 /**
  * Finds all files that match a given mask in a given directory.
+ *
  * Directories and files beginning with a period are excluded; this
  * prevents hidden files and directories (such as SVN working directories)
  * from being scanned.
@@ -867,18 +979,19 @@ function file_download() {
  *   When TRUE, the directory scan will recurse the entire tree
  *   starting at the provided directory.
  * @param $key
- *   The key to be used for the returned array of files. Possible
- *   values are "filename", for the path starting with $dir,
- *   "basename", for the basename of the file, and "name" for the name
- *   of the file without an extension.
+ *   The key to be used for the returned associative array of files. Possible
+ *   values are "filename", for the path starting with $dir; "basename", for
+ *   the basename of the file; and "name" for the name of the file without the
+ *   extension.
  * @param $min_depth
  *   Minimum depth of directories to return files from.
  * @param $depth
- *   Current depth of recursion. This parameter is only used internally and should not be passed.
+ *   Current depth of recursion. This parameter is only used internally and
+ *   should not be passed in.
  *
  * @return
  *   An associative array (keyed on the provided key) of objects with
- *   "path", "basename", and "name" members corresponding to the
+ *   "filename", "basename", and "name" members corresponding to the
  *   matching files.
  */
 function file_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $callback = 0, $recurse = TRUE, $key = 'filename', $min_depth = 0, $depth = 0) {
@@ -892,7 +1005,7 @@ function file_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $ca
           // Give priority to files in this folder by merging them in after any subdirectory files.
           $files = array_merge(file_scan_directory("$dir/$file", $mask, $nomask, $callback, $recurse, $key, $min_depth, $depth + 1), $files);
         }
-        elseif ($depth >= $min_depth && ereg($mask, $file)) {
+        elseif ($depth >= $min_depth && @ereg($mask, $file)) {
           // Always use this match over anything already set in $files with the same $$key.
           $filename = "$dir/$file";
           $basename = basename($file);
@@ -962,6 +1075,23 @@ function file_directory_temp() {
  */
 function file_directory_path() {
   return variable_get('file_directory_path', conf_path() .'/files');
+}
+
+/**
+ * Remove a possible leading file directory path from the given path.
+ *
+ * @param $path
+ *   Path to a file that may be in Drupal's files directory.
+ * @return
+ *   String with Drupal's files directory removed from it.
+ */
+function file_directory_strip($path) {
+  // Strip file_directory_path from $path. We only include relative paths in
+  // URLs.
+  if (strpos($path, file_directory_path() . '/') === 0) {
+    $path = trim(substr($path, strlen(file_directory_path())), '\\/');
+  }
+  return $path;
 }
 
 /**
@@ -1187,6 +1317,7 @@ function file_get_mimetype($filename, $mapping = NULL) {
       'au|snd' => 'audio/basic',
       'mid|midi|kar' => 'audio/midi',
       'mpga|mpega|mp2|mp3|m4a' => 'audio/mpeg',
+      'f4a|f4b' => 'audio/mp4',
       'm3u' => 'audio/x-mpegurl',
       'oga|spx' => 'audio/ogg',
       'sid' => 'audio/prs.sid',
@@ -1325,7 +1456,8 @@ function file_get_mimetype($filename, $mapping = NULL) {
       'fli' => 'video/fli',
       'gl' => 'video/gl',
       'mpeg|mpg|mpe' => 'video/mpeg',
-      'mp4' => 'video/mp4',
+      'mp4|f4v|f4p' => 'video/mp4',
+      'flv' => 'video/x-flv',
       'ogv' => 'video/ogg',
       'qt|mov' => 'video/quicktime',
       'mxu' => 'video/vnd.mpegurl',

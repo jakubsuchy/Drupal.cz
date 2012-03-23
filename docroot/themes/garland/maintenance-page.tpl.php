@@ -1,5 +1,4 @@
 <?php
-// $Id: maintenance-page.tpl.php,v 1.3 2008/01/24 09:42:53 goba Exp $
 
 /**
  * @file maintenance-page.tpl.php
@@ -15,8 +14,8 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php print $language->language ?>" lang="<?php print $language->language ?>" dir="<?php print $language->dir ?>">
   <head>
-    <title><?php print $head_title ?></title>
     <?php print $head ?>
+    <title><?php print $head_title ?></title>
     <?php print $styles ?>
     <?php print $scripts ?>
     <!--[if lt IE 7]>

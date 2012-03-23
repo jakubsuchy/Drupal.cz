@@ -1,5 +1,4 @@
 <?php
-// $Id: update.report.inc,v 1.10.2.2 2008/08/28 08:14:56 dries Exp $
 
 /**
  * @file
@@ -47,17 +46,19 @@ function theme_update_report($data) {
         $class = 'ok';
         $icon = theme('image', 'misc/watchdog-ok.png', t('ok'), t('ok'));
         break;
+      case UPDATE_UNKNOWN:
+      case UPDATE_NOT_FETCHED:
+        $class = 'unknown';
+        $icon = theme('image', 'misc/watchdog-warning.png', t('warning'), t('warning'));
+        break;
       case UPDATE_NOT_SECURE:
       case UPDATE_REVOKED:
       case UPDATE_NOT_SUPPORTED:
+        $class = 'error';
+        $icon = theme('image', 'misc/watchdog-error.png', t('error'), t('error'));
+        break;
+      case UPDATE_NOT_CHECKED:
       case UPDATE_NOT_CURRENT:
-        if ($notification_level == 'all'
-            || $project['status'] != UPDATE_NOT_CURRENT) {
-          $class = 'error';
-          $icon = theme('image', 'misc/watchdog-error.png', t('error'), t('error'));
-          break;
-        }
-        // Otherwise, deliberate no break and use the warning class/icon.
       default:
         $class = 'warning';
         $icon = theme('image', 'misc/watchdog-warning.png', t('warning'), t('warning'));
@@ -181,12 +182,33 @@ function theme_update_report($data) {
     $row .= t('Includes: %includes', array('%includes' => implode(', ', $project['includes'])));
     $row .= "</div>\n";
 
+    if (!empty($project['base_themes'])) {
+      $row .= '<div class="basethemes">';
+      sort($project['base_themes']);
+      // We use !dependencies and manually call theme('placeholder') here to
+      // avoid breakding the D6 string freeze. This identical string is
+      // already in modules/system/system.admin.inc.
+      $row .= t('Depends on: !dependencies', array('!dependencies' => theme('placeholder', implode(', ', $project['base_themes']))));
+      $row .= "</div>\n";
+    }
+
+    if (!empty($project['sub_themes'])) {
+      $row .= '<div class="subthemes">';
+      sort($project['sub_themes']);
+      // We use !required and manually call theme('placeholder') here to avoid
+      // breakding the D6 string freeze. This identical string is already in
+      // modules/system/system.admin.inc.
+      $row .= t('Required by: !required', array('!required' => theme('placeholder', implode(', ', $project['sub_themes']))));
+      $row .= "</div>\n";
+    }
+
     $row .= "</div>\n"; // info div.
 
     if (!isset($rows[$project['project_type']])) {
       $rows[$project['project_type']] = array();
     }
-    $rows[$project['project_type']][] = array(
+    $row_key = isset($project['title']) ? drupal_strtolower($project['title']) : drupal_strtolower($project['name']);
+    $rows[$project['project_type']][$row_key] = array(
       'class' => $class,
       'data' => array($row),
     );
@@ -201,6 +223,7 @@ function theme_update_report($data) {
   );
   foreach ($project_types as $type_name => $type_label) {
     if (!empty($rows[$type_name])) {
+      ksort($rows[$type_name]);
       $output .= "\n<h3>". $type_label ."</h3>\n";
       $output .= theme('table', $header, $rows[$type_name], array('class' => 'update'));
     }

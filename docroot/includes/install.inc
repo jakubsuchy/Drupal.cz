@@ -1,5 +1,4 @@
 <?php
-// $Id: install.inc,v 1.56.2.4 2009/02/16 10:25:02 goba Exp $
 
 define('SCHEMA_UNINSTALLED', -1);
 define('SCHEMA_INSTALLED', 0);
@@ -115,7 +114,7 @@ function drupal_install_profile_name() {
     if (function_exists($function)) {
       $details = $function();
     }
-    $name = isset($details['name']) ? $details['name'] : 'Drupal';
+    $name = isset($details['name']) ? $details['name'] : 'Pressflow';
   }
 
   return $name;

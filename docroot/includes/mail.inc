@@ -1,5 +1,4 @@
 <?php
-// $Id: mail.inc,v 1.8.2.4 2008/10/06 11:04:08 dries Exp $
 
 /**
  * Compose and optionally send an e-mail message.
@@ -45,7 +44,7 @@
  *     switch($key) {
  *       case 'notice':
  *         $message['subject'] = t('Notification from !site', $variables, $language->language);
- *         $message['body'] = t("Dear !username\n\nThere is new content available on the site.", $variables, $language->language);
+ *         $message['body'][] = t("Dear !username\n\nThere is new content available on the site.", $variables, $language->language);
  *         break;
  *     }
  *   }
@@ -70,7 +69,7 @@
  * @param $params
  *   Optional parameters to build the e-mail.
  * @param $from
- *   Sets From, Reply-To, Return-Path and Error-To to this value, if given.
+ *   Sets From to this value, if given.
  * @param $send
  *   Send the message directly, without calling drupal_mail_send() manually.
  * @return
@@ -99,16 +98,16 @@ function drupal_mail($module, $key, $to, $language, $params = array(), $from = N
     'MIME-Version'              => '1.0',
     'Content-Type'              => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
     'Content-Transfer-Encoding' => '8Bit',
-    'X-Mailer'                  => 'Drupal'
+    'X-Mailer'                  => 'Pressflow'
   );
   if ($default_from) {
     // To prevent e-mail from looking like spam, the addresses in the Sender and
     // Return-Path headers should have a domain authorized to use the originating
     // SMTP server. Errors-To is redundant, but shouldn't hurt.
-    $headers['From'] = $headers['Reply-To'] = $headers['Sender'] = $headers['Return-Path'] = $headers['Errors-To'] = $default_from;
+    $headers['From'] = $headers['Sender'] = $headers['Return-Path'] = $headers['Errors-To'] = $default_from;
   }
   if ($from) {
-    $headers['From'] = $headers['Reply-To'] = $from;
+    $headers['From'] = $from;
   }
   $message['headers'] = $headers;
 
@@ -132,7 +131,7 @@ function drupal_mail($module, $key, $to, $language, $params = array(), $from = N
     // Log errors
     if (!$message['result']) {
       watchdog('mail', 'Error sending e-mail (from %from to %to).', array('%from' => $message['from'], '%to' => $message['to']), WATCHDOG_ERROR);
-      drupal_set_message(t('Unable to send e-mail. Please contact the site admin, if the problem persists.'), 'error');
+      drupal_set_message(t('Unable to send e-mail. Please contact the site administrator if the problem persists.'), 'error');
     }
   }
 
@@ -475,7 +474,7 @@ function _drupal_html_to_text_pad($text, $pad, $prefix = '') {
   if (($p = strrpos($text, "\n")) === FALSE) {
     $p = -1;
   }
-  $n = max(0, 79 - (strlen($text) - $p));
+  $n = max(0, 79 - (strlen($text) - $p) - strlen($prefix));
   // Add prefix and padding, and restore linebreak.
-  return $text . $prefix . str_repeat($pad, $n - strlen($prefix)) ."\n";
+  return $text . $prefix . str_repeat($pad, $n) ."\n";
 }
