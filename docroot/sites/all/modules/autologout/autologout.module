@@ -1,0 +1,652 @@
+<?php
+// $Id: autologout.module,v 1.8.2.1 2009/04/17 14:09:53 jvandervort Exp $
+
+/**
+ * @file
+ * Used to automagically log out a user after a preset time, AjK May 2006
+ *
+ * Updated for core 6.x
+ * This version uses Javascript Countdown Timer 6.x-2.1 for the timer. It will
+ * still work without Javascript Countdown Timer, but will not display the timer.
+ *      - jrglasgow Feb 2008
+ */
+
+/**
+ * Provide Drupal site administrators with a method to ensure site users
+ * are automatically logged out after a preset time.
+ */
+
+if(!defined("AUTOLOGOUT_DEBUG")) {
+  define("AUTOLOGOUT_DEBUG", 0); // 0 - disabled, 1 - enabled
+}
+
+/* {{{ default settings class definition (place holder definition) */
+/**
+ * Note, these defaults are for the "out of the box" settings. Most
+ * of these can be set by the site admin and once the site admin does
+ * change them, these are no longer used (i.e. if variable_get() returns
+ * a valid value these are ignored.
+ *
+ * @see _autologout_local_settings()
+ */
+class autologout_default_settings {
+  var $enabled = FALSE;       // Initially disabled
+  var $timeout = 3600;        // default 1 hour
+  var $refresh_delta = 0;     // force browser refresh (timeout+refresh_delta)
+  var $use_watchdog = 1;      // log auto-logouts to watchdog
+  var $block_title = 'automatic logout in';
+}
+/* }}} */
+
+/* {{{ autologout_info() */
+/**
+ * Implementation of hook_info().
+ */
+function autologout_info() {
+  return array(
+    'autologout' => array(
+      'name' => t('Automated logout'),
+      'module' => 'autologout',
+      'description' => t('Manage the automated logout features')
+    )
+  );
+}
+/* }}} */
+
+/* {{{ autologout_perm() */
+/**
+ * Implementation of hook_perm().
+ */
+function autologout_perm() {
+
+  _autologout_debug("autologout_perm()");
+
+  return array('administer autologout');
+}
+/* }}} */
+
+/* {{{ autologout_access() */
+/**
+ * Implementation of hook_access().
+ */
+/*
+function autologout_access($op, $node) {
+  global $user;
+
+  _autologout_debug("autologout_access('$op', ".$node->nid.")");
+  return TRUE;
+}
+ */
+/* }}} */
+
+/* {{{ autologout_block() */
+/**
+ * Implementation of hook_block().
+ */
+function autologout_block($op = 'list', $delta = 0, $edit = array()) {
+  global $user;
+
+  _autologout_debug("autologout_block('$op')");
+
+  if (!_autologout_local_settings('enabled')) {
+    return;
+  }
+  switch ($op) {
+    case 'list':
+      $block[0]['info'] = t('Automated Logout info');
+      return $block;
+      break;
+    case 'configure':
+      if (module_exists("countdowntimer")) {
+        if (variable_get('countdowntimer_js_load_option', 0) != 1 ) {
+          //
+          // Display the error on the block configure page and log the
+          // other times the block is called without the settings enabled
+          //
+          drupal_set_message(l(t('Countdown Timer admin settings'), 'admin/settings/countdowntimer') . t('  for Javascript load options should be set to EVERY PAGE or this block will not display properly.'), 'error');
+        }
+      }
+      else{
+        drupal_set_message(l(t('Javascript Countdown Timer'), 'http://drupal.org/project/countdowntimer') . t(' must be installed for the block to be visable.'), 'error');
+      }
+    case 'save':
+      break;
+    case 'view':
+      if ($user->uid < 2 || _autologout_by_role()) {
+        _autologout_debug("  block doesn't apply");
+        return;
+      }
+      /**
+       *  only display the block when the countdowntimer module is installed
+       */
+      if (module_exists("countdowntimer")) {
+        if (variable_get('countdowntimer_js_load_option', 0) != 1 ) {
+          //countdowntimer is not configured for every page, the block
+          //won't countdown on all pages otherwise.
+          //Log the error
+          $error_message = t('Automated Logout block called and Countdown Timer admin settings is not set for EVERY PAGE');
+          watchdog('configuration', $error_message);
+          if (variable_get('error_level', 1) == 1 || strstr($_SERVER['SCRIPT_NAME'], 'update.php')) {
+            /**
+             * if permissable in site settings display the error on the page
+             */
+            drupal_set_message($error_message, 'error');
+          }
+        }
+      }
+      $block['subject'] = _autologout_local_settings('block_title');
+      $refresh = (int)_autologout_local_settings('refresh_delta');
+      $timeout = _autologout_local_settings('timeout');
+      $logout_time = (int)$_SESSION['lastaccess'] + $timeout;
+      $tz = drupal_substr(date('O'), 0, 3);
+      /**
+       * When we port to Drupal 7 we can change the date to date('c', $logout_time)
+       * which is the ISO 8601 date used here but support was only added in PHP 5
+       */
+      $block['content'] = '
+      <span class="countdowntimer">'. t('You will be automatically logged out at') .' '. date('r', $logout_time) .' '. t('if this page is not refreshed before then.') .'
+          <span style="display:none" class="datetime">'. date('Y-m-d\TH:i:s', $logout_time) . $tz .':00</span>
+          <span style="display:none" class="current_server_time">'. date('Y-m-d\TH:i:s') . $tz .':00</span>
+          <span style="display:none" class="dir">down</span>
+          <span style="display:none" class="format_txt">%hours%:%mins%:%secs%</span>
+          <span style="display:none" class="threshold">5</span>
+          <span style="display:none" class="complete">'. t('You have been logged out.') .' '. ($refresh ? ' '. t('This page will refresh in %refresh seconds.', array('%refresh' => $refresh)) : '') .'</span>
+      ';
+      $redirect_url = _autologout_local_settings('redirect_url');
+      $logout_message = _autologout_local_settings('logout_message');
+
+      if ( $redirect_url != '' ) {
+        $block['content'] .='<span style="display:none" class="tc_redir">'. $redirect_url .'</span>';
+      }
+      if ( $logout_message != '' ) {
+        $block['content'] .='<span style="display:none" class="tc_msg">'. $logout_message .'</span>';
+      }
+
+      $block['content'] .='</span>';
+      //_autologout_define_headers();
+      break;
+  } // end switch()
+
+  return $block;
+}
+/* }}} */
+
+/* {{{ autologout_help() */
+/**
+ * Implementation of hook_help().
+ */
+function autologout_help($path, $arg) {
+    switch ($path) {
+        case 'admin/build/block/configure':
+            if (($arg[4] == 'autologout') && ($arg[5] == 0)) {
+              return 'The Automated Logout block will only display if you have '. l('Javascript Countdown Timer', 'http://drupal.org/project/countdowntimer') .' 6.x-2.1 or later installed.';
+            }
+            break;
+    }
+}
+/* }}} */
+
+
+/* {{{ autologout_init() */
+/**
+ * Implementation of hook_init().
+ */
+function autologout_init() {
+    global $user;
+    if ($user->uid < 2 || _autologout_by_role()) {
+        _autologout_debug("  block doesn't apply");
+        return;
+    }
+    $timeout = (int)_autologout_local_settings('timeout');
+    if (_autologout_local_settings('enabled')) {
+        if (!isset($_SESSION['lastaccess']) || ((int)$_SESSION['lastaccess'] + $timeout) > time()) {
+            /**
+             * If we don't have a time to compare with, or the timeout
+             * has not yet occurred we set a time.
+             */
+            $_SESSION['lastaccess'] = time();
+
+            if ($refresh = (int)_autologout_local_settings('refresh_delta') && !module_exists("countdowntimer")) {
+                $force_refresh = $timeout + $refresh;
+                $this_header = "<meta http-equiv=\"refresh\" content=\"{$force_refresh}\" />";
+                $this_head = drupal_set_html_head($this_header);
+            }
+        }
+        else {
+            /**
+             * timeout occured, end session
+             */
+            if (_autologout_local_settings('use_watchdog')) {
+                watchdog('user', 'Automated Logout activated', array(), WATCHDOG_NOTICE);
+            }
+            unset($_SESSION['lastaccess']);
+            module_load_include('pages.inc', 'user');
+            user_logout();
+            return;
+        }
+    }
+}
+/* }}} */
+
+
+
+/* {{{ autologout_user() */
+/**
+ * Implementation of hook_user().
+ */
+function autologout_user($op, &$edit, &$account, $category = NULL) {
+
+  _autologout_debug("autologout_user($op)");
+
+  if (empty($account->uid) || $account->uid == 1) {
+    return; // UID 0 or UID 1 not appliciable
+  }
+
+  if (!$category) {
+    $category = "account";
+  }
+
+  switch ($op) {
+    case 'login':
+      // one session checking
+      $return = _autologout_check_one_session();
+      //drupal_set_message('return = '. $return);
+      if ($return) {
+        //drupal_set_message('checking for other sessions');
+        _autologout_invalidate_other_sessions($account);
+      }
+      $_SESSION['lastaccess'] = time();
+      break;
+    case 'load':
+      if (_autologout_user_in_by_user_role($account)) {
+        $account->autologout = 0;
+        $r = db_query("SELECT setting FROM {autologout} WHERE uid = %d", $account->uid);
+        $rcount = db_result(db_query("SELECT count(setting) FROM {autologout} WHERE uid = %d", $account->uid));
+        if ($rcount > 0) {
+          $row = db_fetch_object($r);
+          $account->autologout = (int)$row->setting;
+        }
+      }
+      break;
+    case 'form':
+      if (_autologout_user_in_by_user_role($account) && 'account' == $category) {
+        $form = array();
+        $form[$category]['autologout'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Disable inactivity Automated Logout'),
+          '#default_value' => $account->autologout,
+          '#weight' => 10,
+        );
+        return $form;
+      }
+      break;
+    case 'update':
+      if (_autologout_user_in_by_user_role($account)) {
+        if (isset($edit['autologout'])) {
+          db_query("DELETE FROM {autologout} WHERE uid = %d", $account->uid);
+          db_query("INSERT INTO {autologout} SET uid = %d, setting = %d",
+            $account->uid, $edit['autologout']);
+          unset($edit['autologout']);
+        }
+      }
+      break;
+    case 'delete':
+      db_query("DELETE FROM {autologout} WHERE uid = %d", $account->uid);
+      break;
+  }
+
+  return;
+}
+/* }}} */
+
+/* {{{ autologout_nodeapi() */
+/**
+ * Implementation of hook_nodeapi().
+ */
+function autologout_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+
+  _autologout_debug("autologout_nodeapi($op)");
+
+  // if a user is entering data then don't log them out or
+  // they will loose their work. There's nothing more
+  // frustrating than entering alot of info only for a
+  // website to throw it away!
+
+  switch ($op) {
+    case "insert":
+    case "update":
+    case "execute":
+    case "validate":
+    case "prepare":
+    case "delete":
+      $_SESSION['lastaccess'] = time();
+      break;
+  }
+}
+/* }}} */
+
+/* {{{ autologout_menu() */
+/**
+ * Implementation of hook_menu().
+ */
+function autologout_menu() {
+
+  $items['admin/settings/autologout'] = array(
+    'title' => t('Automated logout'),
+    'description' => t('Manage the Automated Logout features'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_autologout_settings'),
+    'access arguments' => array('administer autologout'),
+    'type' => MENU_NORMAL_ITEM
+  );
+
+  return $items;
+}
+
+
+/* }}} */
+
+/* {{{ autologout_settings() */
+/**
+ * Implementation of hook_settings().
+ */
+function _autologout_settings() {
+  _autologout_debug("autologout_settings()");
+
+  if (!user_access('administer autologout')) {
+    drupal_access_denied();
+    return;
+  }
+
+  $form = array();
+  $form['autologout'] = array(
+    '#type'  => 'fieldset',
+    '#title' => t('Automated Logout settings'),
+    '#tree'  => TRUE
+  );
+  $form['autologout']['markup1'] = array(
+    '#type'  => 'markup',
+    '#value' => theme('autologout_generic', 1),
+  );
+  $form['autologout']['enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable module'),
+    '#default_value' => _autologout_local_settings('enabled'),
+    '#description' => t('Uncheck this and save settings to disable Automated Logout')
+  );
+  $form['autologout']['timeout'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Timeout value in seconds'),
+    '#default_value' => _autologout_local_settings('timeout'),
+    '#size' => 10,
+    '#maxlength' => 12,
+    '#description' => t('The length of inactivity time, in seconds, before Automated Logout')
+  );
+  $form['autologout']['use_watchdog'] = array(
+   '#type' => 'checkbox',
+   '#title' => t('Enable watchdog Automated Logout logging'),
+   '#default_value' => _autologout_local_settings('use_watchdog'),
+   '#description' => t('Enable logging of automatically logged out users')
+  );
+  $form['autologout']['block_title']  = array(
+    '#type' => 'textfield',
+    '#title' => t('Block title'),
+    '#default_value' => _autologout_local_settings('block_title'),
+    '#size' => 40,
+    '#description' => t('The title of the block')
+  );
+
+  $form['autologout']['markup2'] = array(
+    '#type' => 'markup',
+    '#value' => theme('autologout_generic', 0),
+  );
+
+  foreach (user_roles(TRUE) as $role) {
+    $form['autologout'][$role] = array(
+      '#type' => 'select',
+      '#title' => $role,
+      '#options' => array('0' => t('Enforce'), '1' => t('Exclude'), '2' => t('By user')),
+      '#default_value' => _autologout_local_settings($role)
+    );
+  }
+
+  $markup3_items = array(
+    t('Enforce : all users in this role will be auto-logged out'),
+    t('Exclude : all users in this role are excluded from auto-logout functionality'),
+    t('By user : all users in this role can select to switch off this functionality')
+  );
+  $markup3 = theme('item_list', $markup3_items, t('Policy description')) . t('Please note: If a user is found to be in a role that allows disabling this feature, this overrides any enforcement');
+  $form['autologout']['markup3'] = array(
+   '#type' => 'markup',
+   '#value' => $markup3
+  );
+
+  if (module_exists("countdowntimer")) {
+    $form['autologout']['redirect_url']  = array(
+      '#type' => 'textfield',
+      '#title' => t('Redirect URL at logout'),
+      '#default_value' => _autologout_local_settings('redirect_url'),
+      '#size' => 40,
+      '#description' => t('If you want to redirect users to another page when they are logged out. (FULL http:// path)')
+    );
+    $form['autologout']['logout_message']  = array(
+      '#type' => 'textfield',
+      '#title' => t('Display a message box at logout'),
+      '#default_value' => _autologout_local_settings('logout_message'),
+      '#size' => 40,
+      '#description' => t('If you want to display a message to the users when they are logged out.')
+    );
+  }
+  else {
+    // disabled if countdowntimer is loaded
+    $form['autologout']['refresh_delta'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Browser refresh delay'),
+      '#default_value' => _autologout_local_settings('refresh_delta'),
+      '#size' => 10,
+      '#maxlength' => 12,
+      '#description' => t("The length of time, in seconds, after a timeout that a browser refresh is forced. Setting this to 0 (zero) disables the browser refresh facility. Using this facility will force a browser refresh and expire the session thus sending the user's browser to the homepage, in a logged out state."),
+    );
+  }
+  $form['autologout_one_session'] = array(
+    '#type'  => 'fieldset',
+    '#title' => t('One Session settings'),
+    '#tree'  => TRUE,
+    '#description' => 'One session will provide enforcement for "one session" per user. If a user logs in when another session for that user is active the other session will be deactivated. The user will be notified and the event logged.',
+  );
+  $values = variable_get('autologout_one_session', 0);
+  //drupal_set_message('values = <pre>'. print_r($values, true).'</pre>');
+  foreach (user_roles(TRUE) as $role) {
+    $this_value = $values[$role];
+    //drupal_set_message('role = '. $role .' : value = '. $values[$role]);
+    $form['autologout_one_session'][$role] = array(
+      '#type' => 'select',
+      '#title' => $role,
+      '#options' => array('1' => t('Enforce'), '0' => t('Exclude')),
+      '#default_value' => (isset($values[$role]) ? $values[$role] : 0),
+    );
+  }
+  $markup4_items = array(
+    t('Enforce : all users in this role will be only allowed one session.'),
+    t('Exclude : all users in this role are excluded from one session functionality.'),
+  );
+  $markup4 = theme('item_list', $markup4_items, t('Policy description')) . t('Please note: If a user is found to be in a role that allows disabling this feature, this overrides any enforcement');
+  $form['autologout_one_session']['markup4'] = array(
+   '#type' => 'markup',
+   '#value' => $markup4,
+  );
+  return system_settings_form($form);
+}
+/* }}} */
+
+/* ========================= */
+/*  Helper functions follow  */
+/* ========================= */
+
+/* {{{ _autologout_by_role() */
+/**
+ * _autologout_by_role()
+ *
+ * Is the user in a role that we exclude from features defined by this module
+ *
+ * @param $passed_user
+ *   A drupal "user" object or default FALSE (use global $user)
+ *
+ * @return bool
+ *  TRUE if user s to be excluded, FALSE otherwise
+ */
+function _autologout_by_role($passed_user = FALSE) {
+  global $user;
+
+  // this bit I am unsure about, if I don't use the
+  // user_load() function here, I don't see my inserted
+  // value "autologout" in the global $user object ??
+
+  if (FALSE == $passed_user) {
+    $local_user = user_load(array('uid' => $user->uid));
+  }
+  else {
+    $local_user = $passed_user;
+  }
+
+  foreach (user_roles(TRUE) as $role) {
+    switch (_autologout_local_settings($role)) {
+      case 0: // Enforce for all in this role
+        break;
+      case 1: // Exclude all users in this role
+        if (in_array($role, $local_user->roles)) {
+          return TRUE;
+        }
+        break;
+      case 2: // Exclude user if user set to disable
+        if (in_array($role, $local_user->roles)) {
+          if (isset($local_user->autologout) && $local_user->autologout != 0) {
+            return TRUE;
+          }
+        }
+        break;
+    }
+  }
+
+  return FALSE;
+}
+/* }}} */
+
+/* {{{ _autologout_user_in_by_user_role() */
+function _autologout_user_in_by_user_role($passed_user = FALSE) {
+  global $user;
+
+  if (FALSE == $passed_user) {
+    $local_user = user_load(array('uid' => $user->uid));
+  }
+  else {
+    $local_user = $passed_user;
+  }
+
+  foreach (user_roles(TRUE) as $role) {
+    if (_autologout_local_settings($role) == 2 && in_array($role, $local_user->roles)) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+/* }}} */
+
+/* {{{ _autologout_local_settings() */
+/**
+ * _autologout_local_settings($name = FALSE)
+ *
+ * Used to get a modules "settings" value. Note, the "out of box"
+ * settings are defined by the place holder class
+ *
+ * @see autologout_default_settings()
+ *
+ * @param $name
+ *  A string of the variable name to get or FALSE return all variables as array
+ *
+ * @return mixed
+ *   array of all variables (if param was false)
+ *   string the named variabled value
+ */
+function _autologout_local_settings($name = FALSE) {
+
+  $defaults = (array)(new autologout_default_settings);
+  if (!($settings = variable_get('autologout', FALSE))) {
+    $settings = $defaults;
+  }
+
+  if (FALSE != $name) {
+    if (!isset($settings[$name]) && isset($defaults[$name])) {
+      return $defaults[$name];
+    }
+    elseif (!isset($settings[$name]) && !isset($defaults[$name])) {
+      return NULL;
+    }
+    else {
+      return $settings[$name];
+    }
+  }
+  else {
+    return $settings; // return the entire array
+  }
+}
+/* }}} */
+
+/**
+ * theme_autologout_generic()
+ *
+ * A general theme function used when HTML is being inserted into
+ * a text string. Allows themers the oppertunity to alter html the
+ * module may want to output to suit their site/theme.
+ *
+ * @param integer $arg
+ *  A constant defining what string to return.
+ * @return string
+ *   The actual string.
+ */
+function theme_autologout_generic($arg = 0) {
+  switch ($arg) {
+    case 0:
+      return '<br/><b>'. t('Set-up your site policy by role:-') .'</b>';
+    case 1:
+      return '<br/><b>'. t('WARNING, user with ID = 1 (initial admin user) is never auto-logged out') .'</b>';
+    default:
+      return '';
+  }
+}
+
+/* {{{ _autologout_debug() */
+function _autologout_debug($s) {
+
+  if (defined("AUTOLOGOUT_DEBUG") && AUTOLOGOUT_DEBUG) {
+    error_log($s);
+  }
+}
+/* }}} */
+
+function _autologout_check_one_session() {
+  global $user;
+  $return = 1;
+  $values = variable_get('autologout_one_session', 0);
+  foreach ($user->roles as $role) {
+    //drupal_set_message('role = '. $role .' = '. $values[$role]);
+    $return = $return && $values[$role];
+  }
+  //drupal_set_message('return = '. $return);
+  return $return;
+}
+function _autologout_invalidate_other_sessions($account) {
+  // check to see if the user is already logged in somewhere else
+  // if so deactivate that login and let the user know that the
+  // other session has been deactivated
+  $sql = "SELECT COUNT(*) as count FROM {sessions} WHERE uid = '%s' AND sid <> '%s'";
+  $result = db_result(db_query($sql, $account->uid, session_id()));
+  //drupal_set_message('session counts = '. $result);
+  if ($result != 0) {
+    drupal_set_message(t('You are only allowed 1 session at a time. You had %number_of_rows other active session that was terminated.', array('%number_of_rows' => $result, )), 'error');
+    $sql = "UPDATE {sessions} SET uid='0' WHERE uid = '%s' AND sid <> '%s'";
+    db_query($sql, $account->uid, session_id());
+    watchdog('Automated Logout', t('One Session automatically logged out user.'), array(), WATCHDOG_WARNING);
+  }
+}

@@ -1,0 +1,233 @@
+29 September 2004
+-----------------
+[Bruno Rocci, text from Bryan Kennedy]
+- Updated installation instructions
+
+19 September 2004
+-----------------
+[Gerhard Killesreiter]
+- Update for cached menu support.
+
+12 September 2004
+-----------------
+[Gordon Heydon]
+- Improved image transformation.
+
+01 September 2004
+-----------------
+[Gordon Heydon]
+- Added support forphp_imagick support.
+
+17 August 2004
+--------------
+[Eric Scouten]
+- Fix problem with non-admin users submitting images.
+- Split off image manipulation features into image.inc. (Hopefully that
+  can make it into core after the 4.5 release.)
+
+08 August 2004
+--------------
+[Eric Scouten]
+- Back off the removal of image gallery features. Separate gallery module
+  won't be ready in time for 4.5 release.
+
+02 August 2004
+--------------
+[Eric Scouten]
+- Split image filter into a separate module
+- Removed image gallery features. Scott Courtney is working on a new module
+  which will replace this functionality.
+
+28 July 2004
+------------
+[Gordon Heydon, changes applied by Eric Scouten]
+- Drop support for MSSQL (support has been dropped throughout Drupal).
+- Add new image filter syntax, continue to support old syntax
+- Add ability to store many sizes of each image (i.e. 640x480, 800x600, ... )
+- Add support for imlib2
+- Add new URL "image/view/(node id)" which returns the image by itself
+
+28 July 2004
+------------
+[Eric Scouten]
+- Add utility to update image.module's database from prior versions
+
+22 June 2004
+---------------
+[Matt Westgate]
+- Updated to be compatible with latest menu and path changes.
+
+7 February 2004
+---------------
+[Steven Wittens]
+- Updated to be compatible with filter system improvements.
+
+22 July 2003
+------------
+[Gerhard Killesreiter]
+- updated for table prefix patch
+- file names are now <original filename>-$node->nid.ext
+
+9 June 2003 (Summarization of several patches)
+-----------
+[Craig Courtney]
+- Moved processing logic from _from to _validate
+- Seperated personal gallery privileges from site gallery privileges
+- Added support for register globals off
+- Integrated proper error display with returning $error
+- Fixed next/prev links
+- Made Body/Teaser consistent with drupal CVS behaviors
+- Cleaned up submission form
+- Removed image filename clashes
+- Added temp directory size limits to prevent image uploads from filling up server disk space
+- Module now displays teaser on main page instead of full image
+- Fixed bug where changes would not save on edit unless the image itself was changed
+[Jonathan Chaffer]
+- Patch to fix undefined function call error
+[Moshe Weitzman]
+- Fix to admin page to show properly when a usr hasn't yet selectd a vocabulary for organizing images.
+[Al Maw]
+- Added t() blocks for translations
+- Removed styes in favor of drupal.css classes
+
+
+19. May 2003
+------------
+[Bruno Rocci]
+- GD 1.x support
+applied by Gerhard Killesreiter
+
+
+8 March 2003
+------------
+[Moshe Weitzman]
+- updated admin section to new menu structure and made some Help text more visible
+- fixed directory upload features. had broken with new node API.
+- improved a few error messages and help texts
+- added option to hide the Weight field on Compose form
+- replaced calls to is_executable() with file_exists()
+
+8 March 2003
+------------
+[Kjartan Mannes]
+- updated to work with latest node changes.
+
+6 October 2002
+----------------------
+[Gerhard Killesreiter]
+added image.pgsql contributed by James Arthur <j_a_arthur@yahoo.com>.
+
+
+3 October 2002
+----------------------
+[Gerhard Killesreiter]
+
+_image_check_configuration: Add test for slashes at the end of dirs.
+                            Changed some echos to prints
+
+2 October 2002
+----------------
+[Moshe Weitzman]
+
+added a fast directory upload option. this enables an admin to load
+a bunch of images into drupal in a single pass. the same taxonomy terms
+are applied to all, thus creating a gallery. if IPTC info is present, it
+is used to populate the title, body, and teaser fields. IPTC tagging is
+a great way to prep your images while offline See Help for more info on IPTC tools.
+
+If IPTC info is present during standard image node compose, it
+is proposed as the node title, body and teaser
+
+imagemagick created thumbnails use 'scale' instead of 'resize'.
+this is more compatible with prior versions of imagemagick,
+and ISPs don't update this library often.
+
+added some Help, particularly for IPTC and directory upload functions. much more is needed.
+
+1 October 2002
+------------------
+[Gerhard Killesreiter]
+- All configurable directories now need slashes at the end.
+  You will need to add a slash to the temp directory in
+  your config page.
+
+
+14 July 2002
+------------------
+- actual image is now rendered by theme->node() adding author and date, and can be overridden by themes
+
+24 June 2002
+------------------
+- fixed wrong permissions in links (next/previous image)
+
+23 June 2002
+------------------
+- fixed images appearing in submission queue
+- fixed a wrong title in a link
+
+12 June 2002
+------------------
+- temporary revert back to method_exists instead of theme()s, which are still there but commented
+- fixed taxonomy_get_tree calls
+
+
+11 June 2002
+------------------
+- partial support for GD: only thumbnails
+- applied patch to cron (infinite loop) by Stefano
+- applied patch to filter (more options) by Stefano, but params are now optional
+- applied patch to _gallery_inline_img (simpler html) by Stefano
+- used theme everywhere, and cleaned up some references
+- fixed two bugs in _image_album_properties (found by Simon): that function was completely wrong.
+
+
+11 June 2002
+-------------
+- added _system() hook
+
+
+3 June 2002
+------------------
+- correct syntax (without &) in getimagesize
+- misc cleanup and fixes
+
+
+26 May 2002 - "almost there"
+------------------
+- bugfix
+
+
+24 May 2002
+------------------
+- used t() everywhere
+- a few bugs fixed and some clean up
+
+
+23 May 2002
+------------------
+- paging and browser bar in thumbs view; browser bar is customizable by themes
+- link to previous and next image in view
+- always added random prefix to images while editing, to prevent caching
+
+
+21 May 2002 - "gokart"
+------------------
+- personal galleries can now be limited (both number and size)
+- lots of bug fixes and tidbits
+
+
+20 May 2002 - "Attack of the clones"
+------------------
+- filter, customizable, uses thumb and teaser; I now understand the problems of the filter system
+- you now need a specific permission ("manipulate images") to have convert work; I was not easy with the idea of people uploading huge pictures and spending their time rotating them one degree every time
+- many less query when showing gallery, now we do
+- flag to add a random prefix to images while viewing, to prevent caching
+- for jhead and convert path check, too
+- cleaned up, code has been
+- in Italian comments no more are ;)
+- Force used, always
+
+
+17 May 2002 - "la cala"
+------------------
+- first alpha

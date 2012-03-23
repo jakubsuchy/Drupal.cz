@@ -1,0 +1,13 @@
+; $Id: print_pdf.info,v 1.1.2.2 2008/08/21 22:03:40 jcnventura Exp $
+name = "PDF version"
+description = "Adds the capability to export pages as PDF."
+dependencies[] = print
+core=6.x
+package = "Printer, e-mail and PDF versions"
+
+; Information added by drupal.org packaging script on 2009-03-18
+version = "6.x-1.4"
+core = "6.x"
+project = "print"
+datestamp = "1237410110"
+

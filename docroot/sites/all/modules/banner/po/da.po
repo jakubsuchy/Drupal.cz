@@ -1,0 +1,695 @@
+# Danish translation of Drupal (banner.module)
+# Copyright 2006 Morten Wulff <wulff@psyke.org>
+msgid ""
+msgstr ""
+"Project-Id-Version: Danish translation of Drupal (banner.module) $Id: da.po,v 1.2 2006/09/18 13:51:21 wulff Exp $\n"
+"POT-Creation-Date: 2006-03-19 12:42+0100\n"
+"PO-Revision-Date: 2006-09-18 15:52+0100\n"
+"Last-Translator: Morten Wulff <wulff@psyke.org>\n"
+"Language-Team: Danish <danish@psyke.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Danish\n"
+"X-Poedit-Country: DENMARK\n"
+
+#: banner.module:97
+msgid "Banner count"
+msgstr "Bannertælling"
+
+#: banner.module:100
+msgid "Number of banners to show from the selected banner group."
+msgstr ""
+
+#: banner.module:130
+msgid "'%banner' banner daily notification"
+msgstr ""
+
+#: banner.module:162
+msgid "'%banner' banner weekly notification"
+msgstr ""
+
+#: banner.module:215
+#: ;955;1498
+msgid "Title"
+msgstr "Titel"
+
+#: banner.module:218
+msgid "A name for this banner, used in administration only, e.g. 'job opening', 'product launch'."
+msgstr ""
+
+#: banner.module:224
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: banner.module:227
+msgid "Enter a description of the banner. This will be shown in the administrator overview and on banner comment pages."
+msgstr ""
+
+#: banner.module:257
+msgid "This is the designated banner group vocabulary. Some of the normal vocabulary options have been removed."
+msgstr ""
+
+#: banner.module:260
+#: ;339;409;443;0
+msgid "banner"
+msgstr "banner"
+
+#: banner.module:276
+msgid ""
+"\n"
+"<p>The banner module is used to display advertising or other rotating content on your site.\n"
+"      "
+msgstr ""
+
+#: banner.module:280
+msgid "An advertising system."
+msgstr "Et reklamesystem"
+
+#: banner.module:282
+msgid "Banners are texts or images which are shown in fixed locations on each page."
+msgstr ""
+
+#: banner.module:284
+msgid "This is a list of your banners."
+msgstr "Dette er en liste af dine bannere."
+
+#: banner.module:286
+msgid "Choose banner cache and notification settings."
+msgstr "Indstillinger for mellemlager og påmindelser."
+
+#: banner.module:346
+msgid "my banners"
+msgstr "mine bannere"
+
+#: banner.module:353
+msgid "all"
+msgstr "alle"
+
+#: banner.module:359
+msgid "active"
+msgstr "aktive"
+
+#: banner.module:365
+#: ;1224;1534;1546;1559;1571;1608
+msgid "enabled"
+msgstr "aktive"
+
+#: banner.module:371
+#: ;1223;1532;1556;1605
+msgid "pending"
+msgstr "afventer"
+
+#: banner.module:377
+#: ;1228;1620
+msgid "blocked"
+msgstr "blokerede"
+
+#: banner.module:385
+msgid "banners"
+msgstr "bannere"
+
+#: banner.module:391
+msgid "list"
+msgstr "liste"
+
+#: banner.module:398
+msgid "refresh cache"
+msgstr "opdater mellemlager"
+
+#: banner.module:473
+msgid "The <a href=\"%url\">upload module</a> must be enabled and configured if you wish to use uploaded images or text files as banners."
+msgstr ""
+
+#: banner.module:476
+msgid "The <a href=\"%url\">scheduler module</a> must be installed and configured if you wish to set publishing and unpublishing dates for banners."
+msgstr ""
+
+#: banner.module:479
+msgid "The <a href=\"%url\">taxonomy module</a> must be installed and configured."
+msgstr ""
+
+#: banner.module:485
+msgid "Requirements"
+msgstr "Krav"
+
+#: banner.module:498
+msgid "Cache settings"
+msgstr "Mellemlager"
+
+#: banner.module:502
+msgid "Cache handler"
+msgstr "Mellemlagerhåndtering"
+
+#: banner.module:505
+msgid "database"
+msgstr "database"
+
+#: banner.module:506
+msgid "file"
+msgstr "fil"
+
+#: banner.module:508
+msgid "Choose a cache handler. Database caching has lower performance but always works."
+msgstr ""
+
+#: banner.module:513
+msgid "Maximum cache files"
+msgstr "Maksimalt antal mellemlagerfiler"
+
+#: banner.module:516
+msgid "If using the file cache handler, specify here the maximum number of cache files that should be created. Using only one cache file guarantees that banners will be disabled exactly when they cross a threshold such as being displayed the maximum allowed number of times. On busier sites, it can boost performance to use multiple cache files."
+msgstr ""
+
+#: banner.module:522
+msgid "User notification settings"
+msgstr "Indstillinger for brugerpåmindelser"
+
+#: banner.module:528
+msgid "Body of daily notification e-mail"
+msgstr ""
+
+#: banner.module:532
+msgid "Customize the body of the daily notification e-mail, only sent to banner owners when they enable daily notification. Available variables are: %mail_variables."
+msgstr ""
+
+#: banner.module:536
+msgid "Body of weekly notification e-mail"
+msgstr ""
+
+#: banner.module:540
+msgid "Customize the body of the weekly notification e-mail, only sent to banner owners when they enable weekly notification. Available variables are: %mail_variables."
+msgstr ""
+
+#: banner.module:544
+msgid "Disable notifications"
+msgstr "Deaktiver påmindelser"
+
+#: banner.module:546
+#: ;561;1792;1799;1816
+msgid "Disabled"
+msgstr "Deaktiveret"
+
+#: banner.module:547
+msgid "Disable notifications to user after this many failed mail attempts."
+msgstr ""
+
+#: banner.module:553
+msgid "Renewal reminder settings"
+msgstr ""
+
+#: banner.module:559
+msgid "Automatic renewal reminder"
+msgstr ""
+
+#: banner.module:561
+#: ;1792;1799;1816
+msgid "Enabled"
+msgstr "Aktiveret"
+
+#: banner.module:562
+msgid "If enabled, an automatic reminder can be e-mailed when an advertisement is about to expire. This e-mail can remind your customers that they need to renew their advertisement on your site."
+msgstr ""
+
+#: banner.module:566
+msgid "Send reminder"
+msgstr "Send påmindelse"
+
+#: banner.module:569
+msgid "Send the renewal reminder this long before the advertisement expires."
+msgstr ""
+
+#: banner.module:573
+msgid "Body of renewal reminder e-mail"
+msgstr ""
+
+#: banner.module:577
+msgid "Customize the body of the renewal reminder e-mail, only sent once to banner owners when their ad is about to expire. Available variables are: %mail_variables"
+msgstr ""
+
+#: banner.module:602
+msgid "You must enter a valid target URL for the banner."
+msgstr "Du skal indtaste en gyldig URL for banneret."
+
+#: banner.module:610
+msgid "You need to upload at least one file to use the selected mode."
+msgstr "Du skal overføre mindst én fil for at bruge den valgte bannertype."
+
+#: banner.module:615
+msgid "You need to enter the banner text in the content field to use the selected mode."
+msgstr "Du skal indtaste bannerteksten i indholdsfeltet for at bruge den valgte bannertype."
+
+#: banner.module:620
+msgid "You need to enter the script in the content field to use the selected mode."
+msgstr "Du skal indtaste koden i indholdsfeltet for at bruge den valgte bannertype."
+
+#: banner.module:628
+msgid "Could not determine size of remote image."
+msgstr "Kunne ikke fastslå størrelsen af det eksterne billede."
+
+#: banner.module:632
+msgid "You need to enter a valid URL in the content field to use the selected mode."
+msgstr "Du skal indtaste en gyldig URL i indholdsfeltet for at bruge den valgte bannertype."
+
+#: banner.module:661
+msgid "Unsupported file type."
+msgstr "Filtype ikke understøttet."
+
+#: banner.module:812
+#: ;992
+msgid "No banners found."
+msgstr "Ingen bannere fundet."
+
+#: banner.module:837
+msgid "banner: '%banner' %status, reached max of %clicks clicks."
+msgstr ""
+
+#: banner.module:938
+msgid "Failed to access \"%filename\" due to improper file permissions. Unable to display banners."
+msgstr "Kan ikke tilgå \"%filename\" på grund af utilstrækkelige tilladelser. Kan ikke vise bannere."
+
+#: banner.module:942
+msgid "Failed to access \"%filename\", file does not exist. Unable to display banners."
+msgstr "Kan ikke tilgå \"%filename\", filen eksisterer ikke. Kan ikke vise bannere."
+
+#: banner.module:956
+#: ;1500;1522;1670;1680
+msgid "Status"
+msgstr "Status"
+
+#: banner.module:957
+#: ;1501
+msgid "Owner"
+msgstr "Ejer"
+
+#: banner.module:959
+#: ;1449;1522;1900
+msgid "Views"
+msgstr "Visninger"
+
+#: banner.module:960
+#: ;1449;1522;1900
+msgid "Clicks"
+msgstr "Klik"
+
+#: banner.module:961
+msgid "Operations"
+msgstr "Handlinger"
+
+#: banner.module:980
+msgid "view"
+msgstr "vis"
+
+#: banner.module:981
+msgid "edit"
+msgstr "rediger"
+
+#: banner.module:1004
+msgid "File cache refreshed."
+msgstr "Mellemlager opdateret."
+
+#: banner.module:1007
+msgid "You are using the database cache. The database cache can't be refreshed."
+msgstr "Du bruger databasemellemlageret. Dette mellemlager kan ikke opdateres."
+
+#: banner.module:1020
+msgid "Banner groups"
+msgstr "Bannergrupper"
+
+#: banner.module:1021
+msgid "This vocabulary is a container for banner groups and their settings."
+msgstr ""
+
+#: banner.module:1022
+msgid "Choose the banner groups you want to add this banner to."
+msgstr "Vælg hvilke bannergrupper du ønsker at tilføje dette banner til."
+
+#: banner.module:1057
+msgid ""
+"Hello %username,\n"
+"\n"
+"Here is your daily summary for your '%bannername' banner on %sitename:\n"
+"\n"
+"Today:\n"
+"   Views:  %day_views\n"
+"   Clicks: %day_clicks\n"
+"\n"
+"This week:\n"
+"   Views:  %week_views\n"
+"   Clicks: %week_clicks\n"
+"\n"
+"All time:\n"
+"   Views:  %total_views\n"
+"   Clicks: %total_clicks\n"
+"\n"
+"--\n"
+"This e-mail was automatically generated at your request.\n"
+"Unsubscribe here: %url"
+msgstr ""
+
+#: banner.module:1059
+msgid ""
+"Hello %username,\n"
+"\n"
+"Here is your weekly summary for your '%bannername' banner on %sitename:\n"
+"\n"
+"Today:\n"
+"   Views:  %day_views\n"
+"   Clicks: %day_clicks\n"
+"\n"
+"This week:\n"
+"   Views:  %week_views\n"
+"   Clicks: %week_clicks\n"
+"\n"
+"All time:\n"
+"   Views:  %total_views\n"
+"   Clicks: %total_clicks\n"
+"\n"
+"--\n"
+"This e-mail was automatically generated at your request.\n"
+"Unsubscribe here: %url"
+msgstr ""
+
+#: banner.module:1061
+msgid ""
+"Hello %username,\n"
+"\n"
+"Your advertisement '%bannername' on %sitename will expire on %expire. Please let us know if you are interested in renewing.\n"
+"\n"
+"To date, this ad has been viewed %total_views times and clicked %total_clicks times.\n"
+"\n"
+"Thank you!\n"
+"%sitename team"
+msgstr ""
+
+#: banner.module:1063
+msgid ""
+"Hello %admin,\n"
+"\n"
+"%sitename user '%username' has uploaded a new banner titled, '%bannername'.\n"
+"\n"
+"%pending_url"
+msgstr ""
+
+#: banner.module:1117
+msgid "upload"
+msgstr "overført"
+
+#: banner.module:1119
+msgid "text"
+msgstr "tekst"
+
+#: banner.module:1121
+msgid "javascript"
+msgstr "javascript"
+
+#: banner.module:1123
+msgid "remote"
+msgstr "eksternt"
+
+#: banner.module:1225
+#: ;1611
+msgid "day's limit reached"
+msgstr "dagsgrænse nået"
+
+#: banner.module:1226
+#: ;1614
+msgid "week's limit reached"
+msgstr "ugegrænse nået"
+
+#: banner.module:1227
+#: ;1536;1546;1561;1571;1617
+msgid "disabled"
+msgstr "deaktiveret"
+
+#: banner.module:1229
+#: ;1623
+msgid "denied"
+msgstr "nægtet"
+
+#: banner.module:1288
+msgid "never"
+msgstr "aldrig"
+
+#: banner.module:1328
+msgid "Failed to access banner cache, check file permissions: '%file'."
+msgstr ""
+
+#: banner.module:1449
+msgid "Views/week"
+msgstr "Visninger/uge"
+
+#: banner.module:1449
+msgid "Views/day"
+msgstr "Visninger/dag"
+
+#: banner.module:1449
+#: ;1730
+msgid "Chance"
+msgstr "Sandsynlighed"
+
+#: banner.module:1458
+msgid "Limits"
+msgstr "Grænser"
+
+#: banner.module:1467
+msgid "A daily notification email is sent to %owner."
+msgstr "En daglig påmindelse sendes til '%owner'."
+
+#: banner.module:1470
+msgid "A weekly notification email is sent to %owner."
+msgstr "En ugentlig påmindelse sendes til '%owner'."
+
+#: banner.module:1473
+msgid "There %failed."
+msgstr ""
+
+#: banner.module:1476
+msgid "A renewal reminder has already been sent to %owner."
+msgstr ""
+
+#: banner.module:1482
+msgid "[none]"
+msgstr "[ingen]"
+
+#: banner.module:1485
+msgid "Notifications"
+msgstr "Påmindelse"
+
+#: banner.module:1499
+#: ;1649
+msgid "URL"
+msgstr "URL"
+
+#: banner.module:1510
+msgid "Overview"
+msgstr "Oversigt"
+
+#: banner.module:1522
+msgid "%"
+msgstr "%"
+
+#: banner.module:1522
+msgid "Views left"
+msgstr "Visninger tilbage"
+
+#: banner.module:1522
+msgid "Clicks left"
+msgstr "Klik tilbage"
+
+#: banner.module:1522
+msgid "Notification"
+msgstr "Påmindelse"
+
+#: banner.module:1527
+#: ;1528;1552;1577
+msgid "unlimited"
+msgstr "ubegrænset"
+
+#: banner.module:1540
+#: ;1904
+msgid "Today"
+msgstr "I dag"
+
+#: banner.module:1565
+#: ;1910
+msgid "This week"
+msgstr "Denne uge"
+
+#: banner.module:1580
+msgid "All time"
+msgstr "Altidaltid"
+
+#: banner.module:1586
+#: ;1587
+msgid "n/a"
+msgstr "n/a"
+
+#: banner.module:1590
+msgid "Statistics"
+msgstr "Statistik"
+
+#: banner.module:1625
+msgid "unknown"
+msgstr "ukendt"
+
+#: banner.module:1644
+msgid "Banner"
+msgstr "Banner"
+
+#: banner.module:1651
+msgid "Target URL for this banner. If your are linking to an internal page, you must provide the full URL (i.e. http://yoursite.com/node/42 instead of node/42)."
+msgstr ""
+
+#: banner.module:1655
+msgid "Target"
+msgstr "Mål"
+
+#: banner.module:1658
+msgid "<none>"
+msgstr "<ingen>"
+
+#: banner.module:1664
+msgid "Frame target for the banner URL. See W3C's documentation on <a href=\"%url\">frame target names</a> for a description of the available options."
+msgstr ""
+
+#: banner.module:1673
+msgid "A 'pending' banner requires administrative approval before it will be displayed. An 'enabled' banner is approved and actively being displayed. A 'disabled' banner is approved but disabled by the user. A 'blocked' banner is approved but disabled by the admin, for example after being displayed 'max views' times.  A 'denied' banner was not approved by the admin."
+msgstr ""
+
+#: banner.module:1686
+msgid "Mode"
+msgstr "Type"
+
+#: banner.module:1689
+msgid "Choose the desired mode for this banner. See the <a href=\"%url\">banner help</a> for a description of the available modes."
+msgstr ""
+
+#: banner.module:1693
+msgid "Content"
+msgstr "Indhold"
+
+#: banner.module:1696
+msgid "Enter the ad content. This can either be text, javascript or the URL of a remote image. If you are adding a text ad, the following placeholders are available: %url and %target, which are replaced with the banner URL and the banner target respectively (these placeholders can also be used in uploaded text banners). If no %url placeholder is present, a link to the banner URL will be added after the banner text."
+msgstr ""
+
+#: banner.module:1723
+msgid "Banner limits"
+msgstr "Bannerbegrænsning"
+
+#: banner.module:1734
+msgid "Chance of this banner to show, related to other banners. If a banner has chance 1 and another has chance 2, the second will show twice as much."
+msgstr ""
+
+#: banner.module:1738
+msgid "Maximum total clicks"
+msgstr ""
+
+#: banner.module:1742
+msgid "Maximum number of clicks this banner can have. After this the banner will be automatically blocked. Set to 0 to allow for unlimited clicks."
+msgstr ""
+
+#: banner.module:1746
+msgid "Maximum total views"
+msgstr ""
+
+#: banner.module:1750
+msgid "Maximum number of views this banner can have. After this the banner will be automatically blocked. Set to 0 to allow for unlimited views."
+msgstr ""
+
+#: banner.module:1755
+msgid "Maximum weekly views"
+msgstr ""
+
+#: banner.module:1759
+msgid "Maximum number of weekly views this banner can have. After this the banner will be automatically disabled. Set to 0 to allow for unlimited weekly views."
+msgstr ""
+
+#: banner.module:1763
+msgid "Maximum daily views"
+msgstr ""
+
+#: banner.module:1767
+msgid "Maximum number of daily views this banner can have. After this the banner will be automatically disabled. Set to 0 to allow for unlimited daily views."
+msgstr ""
+
+#: banner.module:1784
+msgid "Banner notifications"
+msgstr "Bannerpåmindelser"
+
+#: banner.module:1790
+msgid "Daily notification"
+msgstr "Daglig påmindelse"
+
+#: banner.module:1793
+msgid "Daily notification of banner statistics. If enabled, the owner of this banner will receive daily notification e-mails summarizing banner activity."
+msgstr ""
+
+#: banner.module:1797
+msgid "Weekly notification"
+msgstr "Ugentlig påmindelse"
+
+#: banner.module:1800
+msgid "Weekly notification of banner statistics. If enabled, the owner of this banner will receive weekly notification e-mails summarizing banner activity."
+msgstr ""
+
+#: banner.module:1805
+msgid "Notification failures"
+msgstr "Fejlslagne påmindelser"
+
+#: banner.module:1809
+msgid "Total number of failed notifications for this banner."
+msgstr "Antal fejlslagne påmindelser for dette banner."
+
+#: banner.module:1814
+msgid "Expiration notification"
+msgstr "Påmindelse om udløb"
+
+#: banner.module:1817
+msgid "Banner expiration notification. If enabled and properly configured, prior to this banner expiring a reminder e-mail will be sent to the banner's owner."
+msgstr ""
+
+#: banner.module:1831
+msgid "Banner statistics"
+msgstr "Bannerstatistik"
+
+#: banner.module:1879
+msgid "You can reset all values in one or more of the above rows by checking the appropriate checkbox(es) then clicking 'Submit' below. CAUTION: This can not be undone.  Once you check 'reset' and then click 'Submit' below you will not be able to restore the previous values."
+msgstr ""
+
+#: banner.module:1900
+msgid "Reset"
+msgstr "Nulstil"
+
+#: banner.module:1916
+msgid "Total"
+msgstr "Total"
+
+#: banner.module:1992
+#: ;2054
+msgid "&raquo;"
+msgstr "&raquo;"
+
+#: banner.module:837
+msgid "special"
+msgstr "speciel"
+
+#: banner.module:1473
+msgid "has been 1 failed notification attempt"
+msgid_plural "have been %count failed notification attempts"
+msgstr[0] "har været 1 fejlslagent forsøg på påmindelse"
+msgstr[1] "har været %count fejlslagne forsøg på påmindelse"
+
+#: banner.module:461
+msgid "administer banners"
+msgstr "administrer bannere"
+
+#: banner.module:461
+msgid "create banners"
+msgstr "opret bannere"
+
+#: banner.module:461
+msgid "view banners"
+msgstr "vis bannere"
+

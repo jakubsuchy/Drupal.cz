@@ -1,0 +1,121 @@
+# $Id: ru.po,v 1.1.2.1 2008/06/24 20:15:06 mfb Exp $
+#
+# Russian translation of Drupal5.x (google_cse.module)
+# Copyright 2007 vadbars <vadbars@mail.ru>
+# Generated from files:
+#  google_cse.module,v 1.1.2.4 2007/03/31 00:26:02 mfb
+#  google_cse.info,v 1.1.2.1 2007/03/29 02:47:06 mfb
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal 5.x\n"
+"POT-Creation-Date: 2007-03-31 17:01+0600\n"
+"PO-Revision-Date: 2007-03-31 17:33+0500\n"
+"Last-Translator: vadbars <vadbars@mail.ru>\n"
+"Language-Team: Russian Drupal Translation Team (RDTT) <translators@drupal.ru>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+
+#: google_cse.module:18
+msgid "Google"
+msgstr "Google"
+
+#: google_cse.module:19
+msgid "Google Co-op Custom Search Engine"
+msgstr "Пользовательская поисковая система Google"
+
+#: google_cse.module:26
+msgid "Google CSE"
+msgstr "Google CSE"
+
+#: google_cse.module:27
+msgid "Configure the Google Co-op Custom Search Engine."
+msgstr "Настройка пользовательской поисковой системы Google."
+
+#: google_cse.module:42
+msgid "Google Co-op Custom Search Engine ID"
+msgstr "Идентификатор пользовательской поисковой системы Google"
+
+#: google_cse.module:45
+msgid "Enter your <a target=\"_blank\" href=\"http://www.google.com/coop/cse\">Google Co-op Custom Search Engine ID</a>."
+msgstr "Укажите ваш <a target=\"_blank\" href=\"http://www.google.com/coop/cse\">идентификатор пользовательской поисковой системы Google</a>."
+
+#: google_cse.module:48
+msgid "Search results page title"
+msgstr "Заголовок страницы с результатами поиска"
+
+#: google_cse.module:52
+msgid "Enter the desired title of the page where the search results will be displayed."
+msgstr "Укажите желаемое название страницы, где должны быть отображены результаты поиска."
+
+#: google_cse.module:53;148;186;214
+msgid "Search"
+msgstr "Поиск"
+
+#: google_cse.module:56
+msgid "Searchbox width"
+msgstr "Ширина строки поиска"
+
+#: google_cse.module:60
+msgid "Enter the desired width, in characters, of the searchbox when displayed in a block."
+msgstr "Укажите желаемую ширину строки поиска, в знаках."
+
+#: google_cse.module:64
+msgid "Search results searchbox width"
+msgstr "Ширина строки поиска в области вывода результатов поиска"
+
+#: google_cse.module:68
+msgid "Enter the desired width, in characters, of the searchbox when displayed on the results page."
+msgstr "Укажите желаемую ширину строки поиска в области вывода результатов поиска, в знаках."
+
+#: google_cse.module:72
+msgid "Search results frame width"
+msgstr "Ширина области вывода результатов поиска"
+
+#: google_cse.module:76
+msgid "Enter the desired width, in pixels, of the search frame."
+msgstr "Укажите ширину области вывода результатов поиска, в пикселях."
+
+#: google_cse.module:80
+msgid "Search results \"Add to Google\" Google Gadget"
+msgstr "Кнопка \"Добавить в Google\" "
+
+#: google_cse.module:82
+msgid "Disabled"
+msgstr "Отключено"
+
+#: google_cse.module:82
+msgid "Enabled"
+msgstr "Включено"
+
+#: google_cse.module:83
+msgid "If enabled, an \"Add to Google\" button will be displayed above the search results. For this to function, you must <strong>not</strong> have <a target=\"_blank\" href=\"http://www.google.com/coop/manage/cse/\">configured</a> your CSE results to appear on this site, because Drupal sites are not compatible with the \"q\" parameter. Search results will still appear on this site for searches originating here."
+msgstr "Если включено, над результатами поиска будет показываться кнопка \"Добавить в Google\". Чтобы работала эта функция, ваши результаты поиска CSE <strong>не</strong> должны быть <a target=\"_blank\" href=\"http://www.google.com/coop/manage/cse/\">настроены</a> для размещения на данном сайте, поскольку сайты на Drupal несовместимы с параметром \"q\". Результаты поиска должны просто появляться на этом сайте для местных поисковых запросов."
+
+#: google_cse.module:87
+msgid "Search domain"
+msgstr "Адрес поискового сервера"
+
+#: google_cse.module:90
+msgid "Enter the domain for search results, e.g. <em>google.com</em>."
+msgstr "Укажите домен поискового сервера, например, <em>google.com</em>."
+
+#: google_cse.module:102
+#: google_cse.info:0
+msgid "Google Co-op CSE"
+msgstr "Google Co-op CSE"
+
+#: google_cse.module:221
+msgid "search Google CSE"
+msgstr "искать в Google CSE"
+
+#: google_cse.info:0
+msgid "Use a Google Custom Search Engine to search your site and/or any other sites."
+msgstr "Использует пользовательскую поисковую систему (CSE) Google для поиска по вашему сайту и/или любым другим сайтам."
+
+#: google_cse.info:0
+msgid "google_cse"
+msgstr "google_cse"
+

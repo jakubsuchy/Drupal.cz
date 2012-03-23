@@ -1,0 +1,13 @@
+name = Drupal.cz
+description = Tableless, recolorable, multi-column, fluid width theme (default).
+version = VERSION
+core = 6.x
+engine = phptemplate
+
+stylesheets[all][] = style.css
+
+scripts[] = js/social-links.js
+scripts[] = js/urchin.js
+
+regions[obsahdole] = Obsah dole
+regions[vpravo] = Right sidebar

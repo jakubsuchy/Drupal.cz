@@ -1,0 +1,14 @@
+This module was originally written by Marco Molinari <marco@porciletto.org>.
+Since I committed it many others have contributed (in random order):
+Gerhard Killesreiter
+Moshe Weitzman
+Alastair Maw
+Bruno Rocci
+Craig Courtney
+Gordon Heydon
+Eric Scouten
+and of course Dries and Kjartan, and probably others I forgot.
+
+Thank you, guys!
+
+

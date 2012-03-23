@@ -1,0 +1,20 @@
+urlfilter.module - February, 2nd 2006
+- issue #14922 add discovery of the following prefixes:
+  smb://, afp://, file://, gopher://, news://,
+  ssl://, sslv2://, sslv3://, tls://, tcp://, udp://
+- issue #5982 basic option to open all links in a new window (_blank)
+- issue #37881 truncate link text for long URLs
+
+urlfilter.module - January, 7th 2002
+------------------------------------
+- partial rewrite of the regular expressions should get rid of all double-replacement bugs
+- URLs at the end of a sentence (i.e. followed by a comma or dot) will be appropriately handled
+
+urlfilter.module - November, 11th 2001
+--------------------------------------
+- fixed bug: hyperlinks with an URL as their caption would get refiltered
+
+
+urlfilter.module - November, 10th 2001
+--------------------------------------
+- initial release.

@@ -1,0 +1,10 @@
+<?php
+// $Id: phrase_captcha.install,v 1.1 2007/08/21 13:40:20 soxofaan Exp $
+
+/**
+ * On uninstall: remove module variables and clear variable cache
+ */
+function phrase_captcha_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'phrase_captcha_%'");
+  cache_clear_all('variables', 'cache');
+}

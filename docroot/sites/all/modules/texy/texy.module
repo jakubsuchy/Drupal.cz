@@ -1,0 +1,268 @@
+<?php
+// $Id: texy.module,v 1.9.2.6 2009/04/27 17:43:24 havran Exp $
+
+/**
+ * @file
+ * Filters an easy to read Texy! syntax into XHTML.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function texy_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#texy':
+      $output = '<p>'. t('Texy! allows you to enter content using an easy to read Texy syntax which is filtered into structurally valid XHTML. No knowledge of HTML is required.') .'</p>';
+      $output .= '<p>'. t('Texy! is one of the most complex formatting tools. It allows adding of images, links, nested lists, tables and has full support for CSS. Usage examples can be found at <a href="@texy">the Texy homepage</a>.', array('@texy' => 'http://texy.info/en')) .'</p>';
+      return $output;
+    case 'admin/settings/texy':
+      return '<p>'. t('Below is a list of main settings for the Texy! module. You can enable extra Texy! functionality in Modules section...') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function texy_menu() {
+  $items['admin/settings/texy'] = array(
+    'title' => 'Texy!',
+    'description' => 'Customize main Texy! filter settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('texy_form_main_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'texy.admin.inc',
+  );
+  $items['admin/settings/texy/basic'] = array(
+    'title' => 'Basic',
+    'description' => 'Customize basic Texy! filter settings.',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme()
+ */
+function texy_theme() {
+  return array(
+    'texy_form_main_settings' => array(
+      'arguments' => array('form' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_filter()
+ */
+function texy_filter($op, $delta = 0, $format = -1, $text = '') {
+  switch ($op) {
+    case 'list':
+      return array(0 => t('Texy! filter'));
+    case 'description':
+      return t('Filters an easy to read Texy! syntax into XHTML.');
+    case 'process':
+      return _filter_texy($text);
+    default:
+      return $text;
+  }
+}
+
+/**
+ * Implementation of hook_filter_tips().
+ */
+function texy_filter_tips($delta, $format, $long = false) {
+  if ($delta == 0) {
+    switch ($long) {
+      case 0:
+        return t('You can use <a href="http://texy.info/en">Texy!</a> to format and alter entered content.');
+      case 1:
+        $output = t('
+          <p>This site uses <a href="http://texy.info">Texy!</a> to format and alter entered content. Texy! provides an intuitive and easy to read syntax which is automatically filtered into XHTML upon content submission.</p>
+          <dl>
+            <dt>Paragraphs and line breaks</dt>
+              <dd>Just add two line breaks to create a paragraph. Put a space at the start of a new line to preserve a line break.</dd>
+            <dt>Emphasized</dt>
+              <dd>*Emphasized*</dd>
+              <dd><em>Emphasized</em></dd>
+            <dt>Strong</dt>
+              <dd>**Strong**</dd>
+              <dd><strong>Strong</strong></dd>
+            <dt>Hyperlink</dt>
+              <dd>"Hyperlink":http://drupal.org</dd>
+              <dd><a href="http://drupal.org">Hyperlink</a></dd>
+            <dt>Block quoted</dt>
+              <dd>&gt; Block quoted</dd>
+              <dd><blockquote><p>Block quoted</p></blockquote></dd>
+            <dt>Quoted inline</dt>
+              <dd>&gt;&gt;Quoted inline&lt;&lt;</dd>
+              <dd><q>Quoted inline</q></dd>
+            <dt>Acronym</dt>
+              <dd>"SLA"((Some Lengthy Acronym))</dd>
+              <dd><acronym title="Some Lengthy Acronym">SLA</acronym></dd>
+            <dt>Source code</dt>
+              <dd>/---code html<br />&lt;em&gt;Texy!&lt;/em&gt;<br />\---code</dd>
+              <dd><pre><code>&lt;em&gt;Texy!&lt;/em&gt;</code></pre></dd>
+            <dt>Unordered list</dt>
+              <dd>- First item<br />- Second item</dd>
+              <dd><ul> <li>First item</li> <li>Second item</li> </ul></dd>
+            <dt>Ordered list</dt>
+              <dd>1) First item<br />2) Second item</dd>
+              <dd><ol> <li>First item</li> <li>Second item</li> </ol></dd>
+            <dt>Subscripted</dt>
+              <dd>Sub__scripted__ or Sub_2 for numbers</dd>
+              <dd>Sub<sub>scripted</sub> or Sub<sub>2</sub> for numbers</dd>
+            <dt>Superscripted</dt>
+              <dd>Super^^scripted^^ or Super^2 for numbers</dd>
+              <dd>Super<sup>scripted</sup> or Super<sup>2</sup> for numbers</dd>
+          </dl>
+          <p>More information can be found at <a href="http://texy.info">the official Texy! page</a>.</p>
+        ');
+        return $output;
+    }
+  }
+}
+
+/**
+ * Implementation of hook_texy_settings()
+ *
+ * For main Texy! settings
+ */
+function texy_texy_settings(&$texy) {
+  // start headings from h3
+  $texy->headingModule->top = variable_get('texy_heading_base', 3);
+
+  $_linewrap = variable_get('texy_line_wrap', '');
+  if (empty($_linewrap)) {
+    // do not wrap
+    $texy->cleaner->lineWrap = FALSE;
+  } else {
+    // wrap lines
+    $texy->cleaner->lineWrap = $_linewrap;
+  }
+
+  // break long words with insert &shy; or not
+  $texy->allowed['longwords'] = variable_get('texy_allowed_longwords', FALSE);
+  // and set max word lenght which is not break
+  $texy->longWordsModule->wordLimit = variable_get('texy_word_limit', 20);
+  // obfuscate email addresses or not
+  $texy->obfuscateEmail = variable_get('texy_obfuscate_email', FALSE);
+  // force insert "nofollow" in links or not
+  $texy->linkModule->forceNoFollow = variable_get('texy_force_nofollow', FALSE);
+  // set typographic convention
+  $texy->typographyModule->locale = variable_get('texy_locale', 'en');
+
+  $_allowedclasses = variable_get('texy_allowed_classes', '');
+  if ($_allowedclasses == '<all>') {
+    // permit all classes
+    $texy->allowedClasses = TRUE;
+  } else if (empty($_allowedclasses)) {
+    // permit no classes
+    $texy->allowedClasses = FALSE;
+  } else {
+    // permit only specified classes
+    $texy->allowedClasses = preg_split('/,/', str_replace(' ', '', $_allowedclasses));
+  }
+
+  $_allowedstyles = variable_get('texy_allowed_styles', '');
+  if ($_allowedstyles == '<all>') {
+    // permit all styles
+    $texy->allowedStyles = TRUE;
+  } else if (empty($_allowedstyles)) {
+    // permit no styles
+    $texy->allowedStyles = FALSE;
+  } else {
+    // permit only specified styles
+    $texy->allowedStyles = preg_split('/,/', str_replace(' ', '', $_allowedstyles));
+  }
+
+  $_allowedtags = variable_get('texy_allowed_tags', '');
+  if ($_allowedtags == '<all>') {
+    // permit all tags
+    $texy->allowedTags = TRUE;
+  } else if (empty($_allowedtags)) {
+    // permit no tags
+    $texy->allowedTags = FALSE;
+  } else {
+    // permit only specified tags - with all attributes
+    $texy->allowedTags = array();
+    foreach (preg_split('/,/', str_replace(' ', '', $_allowedtags)) as $_tag) {
+      $texy->allowedTags[$_tag] = TRUE;
+    }
+  }
+
+  // misc phrases
+  $texy->allowed['phrase/sup'] = variable_get('texy_phrase_sup', TRUE);
+  $texy->allowed['phrase/sup-alt'] = variable_get('texy_phrase_sup_alt', TRUE);
+  $texy->allowed['phrase/sub'] = variable_get('texy_phrase_sub', TRUE);
+  $texy->allowed['phrase/sub-alt'] = variable_get('texy_phrase_sub_alt', TRUE);
+}
+
+
+/**
+ * Main Texy! filter.
+ */
+function _filter_texy($text) {
+  $texy =& _texy_get_object();
+
+  if ($texy) {
+    $texy->encoding = 'utf-8'; // always UTF-8 for Drupal
+
+    // here we invoke all hook_texy_handler and set handlers for modify Texy!
+    // output
+    module_invoke_all('texy_handler', $texy);
+
+    // here we invoke all hook_texy_settings and set other Texy! modules s
+    // specific settings
+    module_invoke_all('texy_settings', $texy);
+
+    // main Texy! filter processing
+    $html = $texy->process($text);
+
+    return $html;
+  }
+
+  return $text;
+}
+
+/**
+ * Initialization of Texy! object
+ */
+function _texy_get_object($messages = FALSE) {
+  // get base module path
+  $module_path = drupal_get_path('module', 'texy');
+  // use PHP5?
+  $use_php5 = FALSE;
+
+  // check
+  if (version_compare('5.1.0', PHP_VERSION, '<=') && function_exists('iconv')) {
+    // for PHP5 (also requires iconv)
+    $use_php5 = TRUE;
+  }
+  else if (version_compare('5.1.0', PHP_VERSION, '<=') && !function_exists('iconv')) {
+    if ($message) drupal_set_message(t('You web site use PHP5 but without Iconv module. Texy filter module now use Texy! library for PHP4 which is now unsupported!'), 'warning');
+  }
+  else if (version_compare('5.0.0', PHP_VERSION, '<=') && version_compare('5.1.0', PHP_VERSION, '>')) {
+    if ($message) drupal_set_message(t('You web site use PHP5 but version older than PHP 5.1.0. Texy filter module now use Texy! library for PHP4 which is now unsupported!'), 'warning');
+  }
+  else {
+    if ($message) drupal_set_message(t('You web site use PHP4. Texy filter module now use Texy! library for PHP4 which is now unsupported!'), 'warning');
+  }
+
+  // include proper version of Texy! library
+  if ($use_php5) {
+    // for PHP5
+    require_once $module_path . '/texy/texy.compact.5.php';
+  }
+  else {
+    // for PHP4
+    require_once $module_path . '/texy/texy.compact.4.php';  
+  }
+  
+  // create new Texy! object
+  $texy = new Texy;
+
+  return $texy;
+}

@@ -1,0 +1,236 @@
+2006-07-18
+  - #71645 - Fixed queries in banner_cron() (scheduler integration still needs to be done)
+  - #74130 - Fixed parameter name in cache handlers - thanks jrsturrock
+  - #72762 - Missing target attribute on text banner links
+  - #72767 - Problem with reporting of clicks per day/week/all time
+  - #65378 - Minor additions to the docs - thanks js1
+
+2006-06-28
+  - replace with banners-as-node version
+
+2006-04-09
+  - #44454 - Added support for link targets
+  - #48960 - Don't count views/clicks for admin or banner owner
+  - #57881 - Remove border=0 from theme_banner_show - thanks dan_aka_jack
+  - #55141 - Banners with no URL go to an empty page - thanks jlinares
+  - #09895 - Add banner URL to link title - thanks njivy
+  - #09903 - Define banner owner by name instead of uid - thanks njivy
+
+2006-03-19
+  - Fixed #32126 - Fatal error under PHP5.1
+  - Fixed #25615 - bootstrap changes break banner_file.php once a minute
+  - Fixed #26702 - Banners not displaying - Thanks __Tango
+  - Fixed #23666 - Text file is not recognized as a valid format under windows - Thanks Matteo
+
+2006-03-15 (Morten Wulff):
+ - updated to Drupal 4.7 (CVS)
+
+11/29/2005:
+ - banner.mysql
+    o bug #39167: set field defaults
+
+7/15/2005:
+ - banner.module
+    o handle when banners configured for taxonomy but not enabled
+ - banner.mysql
+    o fix typo that prevented script from running
+
+6/26/2005:
+ - banner.module:
+    o add ability to display banners based on taxonomy
+      (sponsored by jo1ene at Advanced Web Design)
+      - new global configuration option to associate banners with one or more
+        vocabulary
+      - new per-banner configuration option to associate banners with one or
+        more taxonomy terms
+      - add new dimension to cache structure to support terms
+    o make path to cache files relative
+    o convert some form_selects to form_radios
+ - banner.mysql:
+    o add new banner_term table for associating banners with terms
+ - banner_file.php
+    o support new banner cache format
+
+5/11/2005:
+ - banner.module:
+    o updated to work with Drupal 4.6
+      (sponsored by crunchywelch at Advomatic LLC)
+
+4/19/2005:
+ - banner.module:
+    o remove "key" concept for cache files
+    o updated to support multiple cache files
+    o auto-create cache files on _settings page
+
+ - banner_file.php:
+    o complete rewrite, support multiple cache files to handle busy web servers
+    o auto-detect failure to read cache files, auto create as needed
+    o defaults to old-style with 1 cache file
+    o needs testing to determine if the number of cache files should be left
+      as a configurable, or if a sane default can be chosen
+    o issue #20805: add proper content-type header
+
+ - banner_db.php:
+    o issue #20805: add proper content-type header
+
+4/12/2005:
+ - banner.module:
+   o remove reference to misc/ in settings, no longer accurate
+
+3/3/2005:
+ - banner_db.php
+    o issue #18306: add missing "}" to fix banner display with banner_db.php
+
+2/27/2005:
+ - banner_file.php, banner_db.php
+    o issue #18014: fix warning when using only 1 banner
+
+2/19/2005:
+ - banner.module:
+    o move file cache into standard (configurable) file path (out of misc/)
+    o verify banner_file.php and baner_db.php are properly installed
+    o utilize core file functions as much as possible when reading/writing
+      file_cache (no locking provided by core file functions, so we still have
+      to make some direct calls to fopen, flock and fclose.  Also, when using
+      the file cache we don't have access to file.inc so we make all direct
+      calls.)
+    o issue #15881: new 'add banner' permission required to for banner managers
+      to be able to upload new banners
+    o issue #15927: db_query updated to not send renewal reminder for banners
+      that never expire
+
+1/19/2005:
+ - banner.module
+    o fix issue #15873: fix link to user account, remove []'s around options,
+
+12/22/2004:
+ - banner.module
+    o added support for auto-detection of progressive jpegs (thanks to
+      Alberto Gaiga for pointing out the need)
+    o added the ability to manually edit the auto-detected mime-type
+    o don't send notifications if a banner is disabled
+ - INSTALL
+    o added brief FAQ
+
+12/6/2004
+ - README, INSTALL:
+    o removed personal email address
+    o added link to "banner module mailing list"
+
+10/31/2004 (Ryan Phillips)
+ - banner.module
+    o allow drupal to handle menu permissions, fixing some buggy behavior
+    o use 'show banners' permission instead of nonexistant 'access banners'
+
+10/30/2004 (Jeremy Andrews)
+ - banner.module
+    o renamed 'position' to 'group' to be more clear on its purpose
+    o make banner_display() default to group 0
+    o display banner id on administrative banner overview page
+    o fix bug #12313: replace oudated call to _banner_show() with a call to
+      theme_banner_show()
+    o Drupal 4.5 compatibility: file->path became file->filepath,
+      file->type became file->filemime
+ - INSTALL
+    o rewritten to hopefully make the installation process more clear
+ - xtemplate.patch
+    o new example patch shows how to integrate the banner module into the
+      xtemplate engine.  The patch offers examples with both 'bluemarine'
+      and 'pushbutton'.
+
+10/27/2004 (Jeremy Andrews)
+ - banner.module
+    o update to work with Drupal 4.5.0 (fixed _menu hook)
+    o auto create banner subdirectory if missing
+    o replace removed FILE_SEPARATOR with '/'
+    o make 'my banners' menu visible by default
+
+8/16/2004 (Jeremy Andrews)
+ - banner.module
+    o patch #9893 by Nic Ivy merged (use new menu system, introduce tab support,
+      rename 'show banners' to 'access banners')
+    o patch #9898 by Nic Ivy merged (introduce theme_banner_show, use
+      drupal_goto to display proper paths)
+    o patch #9901 by Nic Ivy merged (refactor urls, add local tabs)
+    o few fixups to above patches (myself)
+ - INSTALL, README
+    o update to use new theme_banner_show() function instead of banner_display()
+
+8/11/2004 (Jeremy Andrews)
+ - banner_db.php
+ - banner_file.php
+    o add missing {}'s around database table name
+
+7/26/2004 (Jeremy Andrews)
+ - banner.module
+    o Fix bug #8736, don't generate anonymous/empty emails
+    o convert " to ' where logical
+    o add support for private images
+    o add support for custom image directory
+    o optionally generate notification email when user uploads new banner
+
+4/22/2004 (Jeremy Andrews)
+ - banner.module
+    o patch by Michelangelo Partipilo:
+      "This solves a bug that was causing banner_cron to throw an error on
+       Win32/NT when expiration date was 0. I suppose it reported an empty
+       date on *nix."
+      (Affects notification mails for banners that don't have expiration date)
+
+3/31/2004 (Jeremy Andrews):
+ - banner.module
+    o properly fix bug where clicking on a banner showed 'Page not found'
+
+3/29/2004 (Jeremy Andrews):
+ - banner.module
+    o fix bug where clicking on a banner would result in 'Page Not Found'
+
+3/27/2004 (Jeremy Andrews):
+ - banner.module
+    o fix form link on user page, allowing users to update banners they own
+
+3/20/2004 (Jeremy Andrews) :
+ - banner.module
+    o replaced _banner_status_array() with _banner_status()
+       - returns text string rather than whole array
+       - reordered status values to make tablesort grouping logical
+         (WARNING:  this means you manually need to update each banner
+                    status after updating to this version of banner.module)
+    o add 'admin/banner/view' page to view all available info about banner
+    o updated 'admin/banner/edit' page to allow editing of all fields
+    o updated user pages:
+       - replaced custom menus with standard drupal menus
+       - admins can view all banners, or banners with a specific status
+
+ - banner_db.php, banner_file.php
+    o update to properly use new status values
+
+3/19/2004 (Jeremy Andrews) :
+ - banner.module
+    o convert banner admin page to use tablesort when displaying banners
+    o beginning to make admin pages more friendly / more functional
+      (these changes will be backported to 4.4 when fully finished)
+
+3/17/2004 (Jeremy Andrews) :
+ - banner.module
+    o fix bug reported by Michelangelo Partipilo
+      (two instances of invalid db_query on nonexistent field)
+
+3/7/2004 (Jeremy Andrews <jeremy@kerneltrap.org>):
+ - banner_db.php
+    o added necessary include_once bootstrap.inc
+
+ - banner.module
+    o update banner_link() to call banner_page() when a banner is clicked
+    o manually construct url from $base_url to work with non-clean urls
+
+2/22/2004 (Jeremy Andrews):
+ - now uses file.inc instead of fs.module
+ - updated to Drupal 4.4 (CVS)
+
+12/07/2003 (Jeremy Andrews) :
+ - generates automatic renewal reminder emails when ads are expiring.
+     module now requires new 'reminded' database column:
+       ALTER TABLE banner ADD reminder_sent INT(1) NOT NULL DEFAULT 0;
+ - shows in user control panel ad expiration date (if any)
+ - offers help text on user control panel page

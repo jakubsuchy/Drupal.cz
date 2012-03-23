@@ -1,0 +1,116 @@
+<?php
+// $Id: texy_syntaxhighlighting.module,v 1.2.6.5 2009/04/24 11:46:03 havran Exp $
+
+/**
+ * @file
+ * Syntaxhighlighting support for Texy! filter module.
+ */
+
+/**
+ * Implementation of hook_init().
+ */
+function texy_syntaxhighlighting_init() {
+  if (variable_get('texy_syntaxhighlighting_use', FALSE)) {
+    // attach a stylesheet for the syntax highlighter
+    $css_path = variable_get('texy_syntaxhighlighting_css_path', 'fshl/styles/COHEN_style.css');
+    if ( !empty($css_path) ) {
+      $path = drupal_get_path('module', 'texy_syntaxhighlighting');
+      drupal_add_css($path .'/lib/'. $css_path);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function texy_syntaxhighlighting_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#texy_syntaxhighlighting':
+      return '<p>'. t('Texy! Syntaxhighlighting allows you to use code syntaxhighlighting together with Texy! filter module.') .'</p>';
+    case 'admin/settings/texy/syntaxhighlighting':
+      return '<p>'. t('Below is a list of syntaxhighlighting settings for the Texy! filter module. Basic syntaxhighlighting module for <em>PHP, HTML, CSS, JS (or JAVASCRIPT), CPP, Java, SQL</em> and <em>PY (or PYTHON)</em> languages <a href="@fshl-url">FSHL (Fast Syntax Highlighter)</a> is already installed and preconfigured, you only need enable it. You can use <code>&lt;lng&gt; ... &lt;/lng&gt;</code>, <code>[lng] ... [/lng]</code> or <code>&lt;code type="lng"&gt; ... &lt;/code&gt;</code> for enable highlighting. <code>lng</code> mean language  which you want have highlighted (lowercased e.g. <code>PHP</code> -> <code>php</code>).', array('@fshl-url' => url('http://www.hvge.sk/scripts/fshl/'))) .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_menu
+ */
+function texy_syntaxhighlighting_menu() {
+  $items['admin/settings/texy/syntaxhighlighting'] = array(
+    'title' => 'Syntaxhighlighting',
+    'description' => 'Customize the Texy! syntaxhighlighting settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('texy_form_syntaxhighlighting_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'texy_syntaxhighlighting.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_texy_settings()
+ */
+function texy_syntaxhighlighting_texy_settings(&$texy) {
+}
+
+/**
+ * Implementation of hook_texy_handler()
+ */
+function texy_syntaxhighlighting_texy_handler(&$texy) {
+  // get base module path
+  $module_path = drupal_get_path('module', 'texy_syntaxhighlighting');
+
+  // check for use syntax highlighter
+  if (variable_get('texy_syntaxhighlighting_use', FALSE)) {
+    $syntaxhighlighter = $module_path . '/lib/fshl.php';
+    $syntaxhighlighter_dir = $module_path . '/lib/fshl';
+
+    if (file_exists($syntaxhighlighter) && file_exists($syntaxhighlighter_dir)) {
+      // set user callback function for the /--- code blocks (for the syntax highlighter)
+      require_once $syntaxhighlighter;
+
+      // add new handler for code block
+      $texy->addHandler('block', 'fshlCodeBlockHandler');
+
+      // add new syntax: <?php ... ? >
+      $texy->registerBlockPattern(
+      	'fshlPatternBlockHandler',
+      	'#^<\\?php\n.+?\n\\?>$#ms', // block patterns must be multiline and line-anchored
+      	'phpBlockSyntax'
+      );
+
+      // add new syntax: <script ...> ... </script>
+      $texy->registerBlockPattern(
+      	'fshlPatternBlockHandler',
+      	'#^<script(?: type=.?text/javascript.?)?>\n.+?\n</script>$#ms', // block patterns must be multiline and line-anchored
+      	'scriptBlockSyntax'
+      );
+
+      // add new syntax: <...> ... </...>
+      $texy->registerBlockPattern(
+      	'fshlPatternBlockHandler',
+      	'#^<(php|html|css|cpp|java|js|javascript|sql|py|python|texy)>\n.+?\n</\1>$#ms', // block patterns must be multiline and line-anchored
+      	'tagBlockSyntax'
+      );
+
+      // add new syntax: [...] ... [/...]
+      $texy->registerBlockPattern(
+      	'fshlPatternBlockHandler',
+      	'#^\[(php|html|css|cpp|java|js|javascript|sql|py|python|texy)\]\n.+?\n\[/\1\]$#ms', // block patterns must be multiline and line-anchored
+      	'squareBlockSyntax'
+      );
+
+      // add new syntax: <code type="..."> ... </code>
+      $texy->registerBlockPattern(
+      	'fshlPatternBlockHandler',
+      	'#^<code type="(php|html|css|cpp|java|js|javascript|sql|py|python|texy)">\n.+?\n</code>$#ms', // block patterns must be multiline and line-anchored
+      	'codeBlockSyntax'
+      );
+    }
+    else {
+      drupal_set_message(t('Syntax highlighter <em>!syntaxhighlighter_name</em> is not ready...', array('!syntaxhighlighter_name' => $syntaxhighlighter_name)),'error');
+    }
+  }
+}

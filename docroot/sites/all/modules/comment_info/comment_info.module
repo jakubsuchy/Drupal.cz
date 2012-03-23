@@ -1,0 +1,61 @@
+<?php
+// $Id: comment_info.module,v 1.1.2.1 2006/06/05 19:27:32 cainan Exp $
+
+/**
+ * @file
+ * 
+ * This module provides persistant anonymous guest comment info.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function comment_info_help($section) {
+  switch ($section) {
+    case 'admin/modules#description':
+      return t('Sticky Guest Comment info.');
+      break;
+  }
+}
+
+/** 
+ * Insert our checkbox, and populate fields.
+ * set validation hook.
+ */
+function comment_info_form_alter($form_id, &$form) { 
+
+  global $user;
+  if ($user->uid || ($form_id != 'comment_form')) {
+    return;
+  }
+
+  foreach (array('name','homepage','mail') as $field) {
+    if (is_array($form[$field]) && $_SESSION['comment_info']['optin']) {
+      $form[$field]['#value'] = $_SESSION['comment_info'][$field];
+    }
+  }
+    
+  $form['#validate']['comment_info_validate'] = array();
+
+  $form['comment_info']['optin'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Uložit mé iniciály pro příště.', 
+    '#default_value' => $_SESSION['comment_info']['optin'] 
+  );
+}
+
+/** 
+ * save our data.
+ */
+function comment_info_validate($form_id, $form_values) { 
+
+  if ($form_values['optin']) {
+    foreach (array('name','homepage','mail','optin') as $field) {
+      $_SESSION['comment_info'][$field] = $form_values[$field];
+    }
+  } else {
+    foreach (array('name','homepage','mail','optin') as $field) {
+      unset($_SESSION['comment_info'][$field]);
+    }
+  }
+}

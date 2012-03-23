@@ -1,0 +1,36 @@
+# Danish translation of Drupal (urlfilter.module)
+# Copyright 2006 Morten Wulff <wulff@tem.dtu.dk>
+msgid ""
+msgstr ""
+"Project-Id-Version: Danish translation of Drupal (urlfilter.module) $Id: da.po,v 1.1 2006/01/13 16:04:12 wulff Exp $\n"
+"POT-Creation-Date: 2005-06-08 18:23+0200\n"
+"PO-Revision-Date: 2006-01-13 17:04+0100\n"
+"Last-Translator: Morten Wulff <wulff@tem.dtu.dk>\n"
+"Language-Team: Danish <danish@psyke.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Danish\n"
+"X-Poedit-Country: DENMARK\n"
+
+#: urlfilter.module:7
+msgid "Automatically turns web and e-mail addresses into clickable links."
+msgstr "Omdanner automatisk web og e-post adresser til klikbare henvisninger."
+
+#: urlfilter.module:12
+msgid "Web and e-mail addresses are automatically converted into links."
+msgstr "Web og e-post adresser omdannes automatisk til henvisninger."
+
+#: urlfilter.module:18
+msgid "URL filter"
+msgstr "URL filter"
+
+#: urlfilter.module:21
+msgid "Turns web and e-mail addresses into clickable links."
+msgstr "Omdanner web og e-post adresser til klikbare henvisninger."
+
+#: urlfilter.module:0
+msgid "urlfilter"
+msgstr "urlfilter"
+

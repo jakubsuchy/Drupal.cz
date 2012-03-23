@@ -1,0 +1,129 @@
+April 10, 2007
+------------------
+[Fredrik Jonsson]
+vote_storylink.module:
+- Added a better error message when a duplicate url is submitted.
+- Minor coding style fixes.
+
+April 3, 2007
+------------------
+[Fredrik Jonsson]
+vote_up_down.module:
+- Anonymous voting support
+- Users don't get points for voting on there own comments.
+- Added users/uid/votes that lists all the nodes a user has voted on.
+- Fixed the description for RSS feeds.
+- Minor coding style fixes.
+
+November 3, 2006
+------------------
+[Fredrik Jonsson]
+- Start updating to Drupal 5.
+
+September 15, 2006
+------------------
+[Fredrik Jonsson]
+vote_storylink.module:
+- Minor bug fixes.
+vote_up_down.module:
+- User now don't get Userpoints when voting on there own content.
+- Fixed Vote points display setting "Full page view" bug.
+- "Reset vote" now set the vote to = instead of removing it. 
+  Seems to fix the voting action error.
+- Minor bug fixes.
+
+August 2, 2006
+------------------
+[Fredrik Jonsson]
+vote_storylink.module:
+- Integrated the code from user_navigation.module in to vote_storylink.module.
+- Now check for duplicated url:s on validation.
+- Added a storylink/queue page.
+vote_up_down.module:
+- Integrated with the Userpoints module
+- Adds two userpoints actions in vote_up_down_actions.inc.
+- Add a "Alternative +1 vote style" (digg style) voting widget.
+- Redesigned the settings.
+- Add a "reset vote" link with setting to turn on and off.
+
+April 14, 2006
+------------------
+[Fredrik Jonsson]
+vote_storylink.module:
+- Added top page for this day including RSS feeds and a block with links.
+vote_up_down.module:
+- Removed depreciated call to tablesort_pager().
+
+April 4, 2006
+------------------
+[Fredrik Jonsson]
+- This CHANGELOG.txt file added to track changes
+vote_storylink.module:
+- Fixed title for RSS feeds
+- Added top pages for this week/month/year including RSS feeds and a block with links.
+vote_up_down.module:
+- Added voting to comments. Nothing happens to comments yet, they just get points.
+- Added a vote tracker (node/[nid]/votes) as a MENU_LOCAL_TASK.
+- Added some statistics for user votes (admin/vote_up_down/user_votes).
+
+March 27, 2006
+------------------
+[Fredrik Jonsson]
+- Removed unnecessary node_validate_title().
+- Better url validation and checking.
+
+March 17, 2006
+------------------
+[Fredrik Jonsson]
+- Update for AJAX functionality when voting.
+- Added ajax_vote_up_down.js, JavaScript for AJAX functionality.
+
+March 4, 2006
+------------------
+[Fredrik Jonsson]
+- Put new variables in a template.php file to make them not be set on
+  preview and edit.
+- Fixed bug that made url:s reset when edit node.
+
+March 2, 2006
+------------------
+[Fredrik Jonsson]
+- Added validation of url, breadcrums, activated input filters, made
+  http:// default value for url and more.
+
+March 1, 2006 
+------------------
+[Fredrik Jonsson]
+- New vote path so you must go to admin/modules and save to activate.
+  Now uses checkboxes to choose node types like in taxonomy module.
+- Layout tweaks.
+
+February 26, 2006
+------------------
+[Fredrik Jonsson]
+- Added storylink/uid pages and feeds. Changed some path from
+  storylinks/ to storylink/.
+- Added user_navigation.module, a block that display links for the users
+  account.
+
+February 19, 2006
+------------------
+[Fredrik Jonsson]
+- Removed settings and made the new and top pages display the number of
+  nodes from system settings.
+- Updated css for Explorer bug.
+
+February 17, 2006
+------------------
+[Fredrik Jonsson]
+- Made the more link only show on storylinks nodes.
+
+February 10, 2006
+------------------
+[Fredrik Jonsson]
+- Initial release
+
+
+Last updated:
+------------
+$Id: CHANGELOG.txt,v 1.7 2007/04/10 05:57:45 frjo Exp $

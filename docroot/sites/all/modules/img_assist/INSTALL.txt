@@ -1,0 +1,53 @@
+********************************************************************
+                     D R U P A L    M O D U L E
+********************************************************************
+Name: img_assist.module
+Author: Benjamin Shell <http://www.benjaminshell.com>
+Original Author: Matt Westgate <drupal at asitis dot org>
+Dependancies:
+  * Javascript-enabled web browser
+  * Image Module version 4.7
+  * The optional drupalimage plugin requires TinyMCE 2.0.4+
+
+INSTALLATION
+********************************************************************
+
+1. Place the entire img_assist directory into your Drupal modules/
+   directory.
+
+2. Enable this module by navigating to:
+
+     administer > modules
+
+3. Select the input formats inline images should be allowed for by
+   navigating to:
+
+     administer > input formats
+
+   To add inline images to the 'Filtered HTML' input format, click
+   the 'configure' link and check the Inline images box. Confirm
+   your changes by clicking the 'Save configuration' button.
+
+4. Set permissions for using img_assist by going to:
+
+     administer > access control
+
+5. [OPTIONAL] Fine tune how this module operates by navigating to:
+
+     administer > settings > img_assist
+
+6. [OPTIONAL] If you use the TinyMCE WYSIWYG editor, install
+   the drupalimage plugin.  To do this, move or copy the drupalimage
+   folder to your TinyMCE plugins directory.  This location is
+   \modules\tinymce\tinymce\jscripts\tiny_mce\plugins.
+   
+   Edit the plugin_reg.php file in the tinymce directory.  Add
+   these lines (anywhere above the return statement):
+
+   $plugins['drupalimage'] = array();
+   $plugins['drupalimage']['theme_advanced_buttons1'] = array('drupalimage');
+   $plugins['drupalimage']['extended_valid_elements'] = array('img[class|src|border=0|alt|title|width|height|align|name]');
+
+   Next, go to administer > settings > tinymce and enable the drupalimage plugin.  
+
+********************************************************************

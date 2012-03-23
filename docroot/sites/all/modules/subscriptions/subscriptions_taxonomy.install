@@ -1,0 +1,45 @@
+<?php
+// $Id: subscriptions_taxonomy.install,v 1.1 2008/08/14 14:59:06 salvis Exp $
+
+/**
+ * @file
+ * Subscriptions Taxonomy module installation.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function subscriptions_taxonomy_install() {
+}
+
+/**
+ * Database update function 1.
+ * 
+ * Remove taxonomy subscriptions left over from deleted terms.
+ */
+function subscriptions_taxonomy_update_1() {
+  $result = db_query("SELECT s.value AS tid FROM {subscriptions_queue} s LEFT JOIN {term_data} t ON s.value = CAST(t.tid AS CHAR) WHERE s.module = 'node' AND s.field = 'tid' AND t.tid IS NULL");
+  while ($orphan = db_fetch_array($result)) {
+    $orphans[] = $orphan['tid'];
+    $placeholders[] = "'%s'";
+  }
+  if (isset($orphans)) {
+    db_query("DELETE FROM {subscriptions_queue} WHERE module = 'node' AND field = 'tid' AND value IN (". implode(',', $placeholders) .")", $orphans);
+    $orphans = $placeholders = NULL;
+  }
+  $result = db_query("SELECT s.value AS tid FROM {subscriptions} s LEFT JOIN {term_data} t ON s.value = CAST(t.tid AS CHAR) WHERE s.module = 'node' AND s.field = 'tid' AND t.tid IS NULL");
+  while ($orphan = db_fetch_array($result)) {
+    $orphans[] = $orphan['tid'];
+    $placeholders[] = "'%s'";
+  }
+  if (isset($orphans)) {
+    db_query("DELETE FROM {subscriptions} WHERE module = 'node' AND field = 'tid' AND value IN (". implode(',', $placeholders) .")", $orphans);
+  }
+  return array();
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function subscriptions_taxonomy_uninstall() {
+}

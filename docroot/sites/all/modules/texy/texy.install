@@ -1,0 +1,29 @@
+<?php
+// $Id: texy.install,v 1.1.2.1 2008/01/06 12:08:39 havran Exp $
+
+/**
+ * Implementation of hook_install().
+ */
+function texy_install() {
+  $format_exists = db_result(db_query("SELECT COUNT(*) FROM {filter_formats} WHERE name = 'Texy! filter'"));
+  // Add a Texy! input format, if it does not exist. Do this only for the
+  // first install (or if the format has been manually deleted) as there is no
+  // reliable method to identify the format in an uninstall hook or in
+  // subsequent clean installs.
+  if (!$format_exists) {
+    db_query("INSERT INTO {filter_formats} (name, roles, cache) VALUES ('Texy! filter', '', 0)");
+    $format = db_result(db_query("SELECT MAX(format) FROM {filter_formats}"));
+
+    // Enable the Texy! filter.
+    db_query("INSERT INTO {filters} (format, module, delta, weight) VALUES (%d, 'texy', 0, 0)", $format);
+
+    drupal_set_message(t('A !texy input format has been created.', array('!texy' => l('Texy! filter', 'admin/settings/filters/'. $format))));
+  }
+}
+
+/**
+ * Implementation of hook_disable().
+ */
+function texy_disable() {
+  drupal_set_message(t('The Texy! filter module has been disabled. Please note that any existing content that was using the Texy! filter will now be visible in plain text.'));
+}

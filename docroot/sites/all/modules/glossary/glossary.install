@@ -1,0 +1,140 @@
+<?php
+// $Id: glossary.install,v 1.4.4.5.2.9 2008/07/09 17:05:04 nancyw Exp $
+
+/**
+ * @file
+ *   Glossary module installation functions.
+ */
+
+/* Implementation of hook_update_N. 
+ * In order to make sure we don't turn off the search block, we'll change the blocks table.
+ */
+function glossary_update_6100() {
+  $ret = array();
+  // Find out how many input formats are set.
+  $filter_count = db_result(db_query('SELECT MAX( format ) FROM {filters}'));
+
+  for ($i = 0; $i <= $filter_count; ++$i) {
+    $name = 'glossary_absolute_'. $i;
+    $abs = variable_get($name, null);
+    if (is_null($abs)) {
+      continue;
+    }
+    $link = 'glossary_link_'. $i;
+    if ($abs) {
+      $value = 'absolute';
+    }
+    else {
+      $value = 'normal';
+    }
+    variable_del($name);
+    variable_set($link, $value);
+    watchdog('Glossary', 'Glossary variable %abs deleted; %link set to %new', array('%abs' => $name, '%link' => $link, '%new' => $value));
+  }
+
+  return $ret;
+}
+
+/**
+ * Implementation of hook_requirements().
+ */
+function glossary_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break at install time
+  $t = get_t();
+  
+  // check that php is compiled with ctype support
+  $requirements['ctype'] = array(
+    'title' => $t('Character type functions (ctype)'),
+  );
+  if (function_exists('ctype_alnum')) {
+    $requirements['ctype']['value'] = $t('Enabled');
+    $requirements['ctype']['severity'] = REQUIREMENT_OK;
+  }
+  else {
+    $requirements['ctype']['value'] = $t('Disabled');
+    $requirements['ctype']['description'] = $t('The Glossary module requires that you configure PHP with --enable-ctype.');
+    $requirements['ctype']['severity'] = REQUIREMENT_ERROR;
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implementation of hook_install().
+ * In order to make sure all defaults are consistent, we'll just go ahead and set them all.
+ */
+function glossary_install() {
+  // Find out how many input formats are set.
+  $filter_count = db_result(db_query('SELECT MAX( format ) FROM {filters}'));
+
+  // Set all possible variables.
+  $mypath = '/'. drupal_get_path('module', 'glossary') .'/glossary.gif';
+  for ($i = 0; $i <= $filter_count; ++$i) {
+    variable_set('glossary_case_'. $i, 1);
+    variable_set('glossary_icon_'. $i, $mypath);
+    variable_set('glossary_match_'. $i, 'b');
+    variable_set('glossary_replace_'. $i, 'superscript');
+    variable_set('glossary_replace_all_'. $i, 0);
+    variable_set('glossary_superscript_'. $i, 'i');
+    variable_set('glossary_link_'. $i, false);
+    variable_set('glossary_vids_'. $i, array());
+    variable_set('glossary_blocking_tags_'. $i, 'abbr acronym');
+  }
+  variable_set('glossary_page_per_letter', false);
+  variable_set('glossary_disable_indicator', false);
+  variable_set('glossary_click_option', 0);
+  variable_set('glossary_allow_no_description', false);
+  variable_set('glossary_alphabet', range('a', 'z'));
+  variable_set('glossary_digits', range('0', '9'));
+  variable_set('glossary_hide_menus', false);
+  variable_set('glossary_show_description', false);
+  variable_set('glossary_suppress_unused', false);
+  variable_set('glossary_alphabar_separator', '|');
+  variable_set('glossary_separate_letters', false);
+
+  drupal_set_message(t('The Glossary module has been installed with default settings. To change the settings, <a href="!settings_uri">click here</a>.', array('!settings_uri' => url('admin/settings/glossary'))));
+}
+
+/* Implementation of hook_uninstall.
+ * There are no tables, so we delete all variables and clear the filter cache.
+ * It is left to the user to dispose of any vocabularies that are no longer needed.
+ */
+function glossary_uninstall() {
+  // Find out how many input formats are set.
+  $filter_count = db_result(db_query('SELECT MAX( format ) FROM {filters}'));
+
+  // Delete all possible variables. Even if some don't exist, there is no harm in trying.
+  for ($i = 0; $i <= $filter_count; ++$i) {
+    variable_del('glossary_case_'. $i);
+    variable_del('glossary_icon_'. $i);
+    variable_del('glossary_match_'. $i);
+    variable_del('glossary_replace_'. $i);
+    variable_del('glossary_replace_all_'. $i);
+    variable_del('glossary_superscript_'. $i);
+    variable_del('glossary_absolute_'. $i);
+    variable_del('glossary_vids_'. $i);
+    variable_del('glossary_blocking_tags_'. $i);
+  }
+  variable_del('glossary_page_per_letter');
+  variable_del('glossary_disable_indicator');
+  variable_del('glossary_need_to_clear_cache');
+  variable_del('glossary_click_option');
+  variable_del('glossary_allow_no_description');
+  variable_del('glossary_alphabet');
+  variable_del('glossary_digits');
+  variable_del('glossary_hide_menus');
+  variable_del('glossary_show_description');
+  variable_del('glossary_suppress_unused');
+  variable_del('glossary_alphabar_separator');
+  variable_del('glossary_block_1_interval');
+  variable_del('glossary_block_1_last');
+  variable_del('glossary_block_1_step');
+  variable_del('glossary_block_1_tid');
+  variable_del('glossary_block_1_vids');
+
+  // Let's make sure the filter cache is cleared of our stuff.
+  cache_clear_all(NULL, 'cache_filter');
+
+  drupal_set_message(t('The Glossary module has been uninstalled. You will still need to decide what to do with vocabularies that were used.'), 'warning');
+}

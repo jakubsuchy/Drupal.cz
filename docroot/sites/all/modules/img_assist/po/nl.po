@@ -1,0 +1,278 @@
+# translation of nl.po to 
+# translation of nl.po to
+# LANGUAGE translation of Drupal (img_assist.module)
+# $Id: nl.po,v 1.2 2004/11/28 13:23:31 heeckhau Exp $
+# Hendrik Eeckhaut, 2004.
+# Hendrik Eeckhaut, 2004.
+# Copyright YEAR NAME <EMAIL@ADDRESS>.
+# Hendrik Eeckhaut, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nl\n"
+"POT-Creation-Date: 2004-11-13 15:40-0500\n"
+"PO-Revision-Date: 2004-11-28 14:02+0100\n"
+"Last-Translator: Hendrik Eeckhaut\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+
+#: img_assist.module:14
+msgid "Image reference"
+msgstr "Afbeeldingsreferentie"
+
+#: img_assist.module:34
+msgid "This image appears in..."
+msgstr "Deze afbeelding verschijnt in..."
+
+#: img_assist.module:50
+msgid "Enables users to link images into nodes."
+msgstr "Laat toe dat gebruikers afbeeldingen aan nodes koppelen."
+
+#: img_assist.module:62
+msgid "img assist add"
+msgstr "img_help toevoegen"
+
+#: img_assist.module:63
+msgid "img assist generate image"
+msgstr "img_help afbeelding maken"
+
+#: img_assist.module:64
+msgid "img assist loader"
+msgstr "img_help laden"
+
+#: img_assist.module:80
+msgid "The images in this post are being filtered out by the currently selected input format and will not be displayed. Select a different format or <a href=\"%current-filter-link\">adjust the current one</a> to allow &lt;img&gt; HTML tags."
+msgstr "De afbeeldingen in dit bericht worden gefilterd door de geselecteerde input beperkingen. Ze worden niet weergegeven. Selecteer een ander formaat of <a href=\"%current-filter-link\">pas de instelling aan</a> om de &lt;img&gt; HTML-tags toe te staan."
+
+#: img_assist.module:83
+msgid "The images in this post are being filtered out by the currently selected input format and will not be displayed. Please choose a different input format or contact the site administrator for assistance."
+msgstr "De afbeeldingen in dit bericht worden gefilterd door de geselecteerde input beperkingen. Ze worden niet weergegeven. Selecteer een ander formaat of neem contact met de websitebeheerder."
+
+#: img_assist.module:91
+msgid "<a href=\"%img_assist_link\" onclick=\"window.open(this.href, 'img_assist_link', 'width=500,height=625,scrollbars=yes,status=yes,resizable=yes'); return false\">Add inline images to this post.</a>"
+msgstr "<a href=\"%img_assist_link\" onclick=\"window.open(this.href, 'img_assist_link', 'width=500,height=625,scrollbars=yes,status=yes,resizable=yes'); return false\">Afbeeldingen in dit bericht invoegen.</a>"
+
+#: img_assist.module:92
+msgid "This will not upload images, only insert them into your post."
+msgstr "Hiermee voegt u afbeeldingen aan de tekst toe. De afbeeldingen moeten wel éérst worden ge-upload."
+
+#: img_assist.module:118
+msgid "Img_assist is set to use upload module which is not enabled. Enable that module or adjust your  settings to use an alternative image source."
+msgstr "Img_help is geconfigureerd om gebruikt te maken van de uploadmodule. Activeer de module of verander de instellingen zo dat een alternatieve bron voor afbeeldingen kan worden geselecteerd."
+
+#: img_assist.module:122
+msgid "Img_assist is set to use image module which is not enabled. Enable that module or adjust your  settings to use an alternative image source."
+msgstr "Img_help is geconfigureerd om gebruik te maken van de afbeeldingsmodule. Activeer de module of verander de instellingen zo dat een alternatieve bron voor afbeeldingen kan worden geselecteerd."
+
+#: img_assist.module:125
+msgid "Use images from"
+msgstr "Kies afbeeldingen van"
+
+#: img_assist.module:125
+msgid "Image.module %not_enabled"
+msgstr "Image.module %not_enabled"
+
+#: img_assist.module:125
+msgid "Upload.module %not_enabled"
+msgstr "Upload.module %not_enabled"
+
+#: img_assist.module:125
+msgid "Do not change this once you start adding images."
+msgstr "Verander dit niet meer eens u afbeeldingen begint toe te voegen."
+
+#: img_assist.module:126
+msgid "Maximum size of image to render"
+msgstr "Maximale grootte van de afbeelding"
+
+#: img_assist.module:126
+msgid "Enter, in bytes, the maximum size of an image to display using this module. Default is 2 megabytes."
+msgstr "Geef de maximale grootte (in bytes) van een afbeelding binnen deze module. De standaardinstelling is 2 megabytes."
+
+#: img_assist.module:127
+msgid "Image HTML template"
+msgstr "Image HTML template"
+
+#: img_assist.module:127
+#, fuzzy
+msgid "Enter the HTML wrap around your image tag. You can use the following variables: <strong>%link</strong> - a link to the original image, <strong>%image</strong> - the generated image tag, and <strong>%caption</strong> - an user-defined caption."
+msgstr "Voeg de juiste HTML aan de image tag toe. U kan de volgende variabelen gebruiken:  <strong>%link</strong> - een link naar de oorspronkelijke afbeelding, <strong>%image</strong> - de gegenereerde image tag, of <strong>%caption</strong> - een standaard bijschrift."
+
+#: img_assist.module:128
+msgid "Preload image captions"
+msgstr "De afbeeldingsbijschriften vooraf opladen"
+
+#: img_assist.module:128
+msgid "Disabled"
+msgstr "Uitgezet"
+
+#: img_assist.module:128
+msgid "Enabled"
+msgstr "Aangezet"
+
+#: img_assist.module:128
+msgid "If enabled, The body text from the image will be loaded as the caption by default."
+msgstr "Indien ingeschakeld, wordt de bodytekst van de afbeelding standaard als bijschrift weergegeven."
+
+#: img_assist.module:129
+msgid "Image output settings"
+msgstr "Instellingen afbeeldingsuitvoer"
+
+#: img_assist.module:132;443
+msgid "none"
+msgstr "geen"
+
+#: img_assist.module:138
+msgid "Image preview filter"
+msgstr "Filter voor afbeeldingsvoorbeeldweergave"
+
+#: img_assist.module:138
+msgid "Select the vocabularies you want to be able to filter thumbnails by. This setting changes the behavior of img_assist at startup from loading all image thumbnails to displaying a list of image names until a filter is chosen."
+msgstr "Kies de woordenschatten om miniaturen op te filteren. Deze instelling verandert het gedrag van img_help bij het begin van het laden van alle miniaturen tot het weergeven van alle afbeeldingsnamen totdat een filter gekozen is."
+
+#: img_assist.module:139
+msgid "Default width of image thumbnail previews"
+msgstr "Standaardbreedte van de miniatuurvoorbeeldweergaven"
+
+#: img_assist.module:139
+msgid "Enter, in pixels, the default width of an image to display in the preview pane. The smaller this number, the more images you will be able to see without scrolling."
+msgstr "Voer de standaard breedte (in pixels) van een afbeelding die gebruikt zal worden in het voorbeeldweergave-venster. Hoe kleiner dit getal, hoe meer afbeeldingen zichtbaar zijn zonder dat een schuifbalk nodig is."
+
+#: img_assist.module:140
+msgid "Max number of images to preview"
+msgstr "Maximaal aantal afbeeldingen dat vooraf kan bekeken worden"
+
+#: img_assist.module:140
+msgid "Enter the threshold of the number of images to display in the  directory preview pane. If there are more images for a given view, they will be displayed as hyperlinks."
+msgstr "Vul een limiet in voor het aantal weer te geven afbeeldingen in het voorbeeldweergave-veld. Als er meer afbeeldingen zijn worden die als hyperlinks getoond."
+
+#: img_assist.module:141
+msgid "Preview settings"
+msgstr "Instellingen voorbeeldweergave"
+
+#: img_assist.module:179;276
+msgid "Image Assist"
+msgstr "Img_Help"
+
+#: img_assist.module:185
+msgid "This browser window has lost communication with the parent form, so images can no longer be inserted. This problem is usually solved by reopening this window from the originating link. Would you like to close this browser window now?"
+msgstr "Dit browser-venster staat niet langer in verbinding met het ouderformulier. Hierdoor kunnen geen afbeeldingen meer worden toegevoegd. Dit probleem is te verhelpen door opnieuw een venster te openen via de originele link. Wilt u dit venster nu sluiten?"
+
+#: img_assist.module:435
+msgid "Filter options"
+msgstr "Filteropties"
+
+#: img_assist.module:446
+msgid "Go"
+msgstr "Uitvoeren"
+
+#: img_assist.module:454
+msgid "my images"
+msgstr "mijn afbeeldingen"
+
+#: img_assist.module:454
+msgid "all images"
+msgstr "alle afbeeldingen"
+
+#: img_assist.module:463
+msgid "<p>%name's images</p>"
+msgstr "<p>%name's afbeeldingen</p>"
+
+#: img_assist.module:463
+msgid "<p>No images found for %name.</p>"
+msgstr "<p>Geen afbeeldingen gevonden met de naam %name.</p>"
+
+#: img_assist.module:469
+msgid "<p>No images found.</p>"
+msgstr "<p>Geen afbeeldingen gevonden.</p>"
+
+#: img_assist.module:518
+msgid "Image preview pane"
+msgstr "Voorbeeldweergave-veld afbeeldingen"
+
+#: img_assist.module:537
+msgid "<p><strong>&lt;-</strong> Select an image to preview.</p>"
+msgstr "<p><strong>&lt;-</strong> Selecteer een afbeelding die u vooraf wilt bekijken.</p>"
+
+#: img_assist.module:566
+msgid "Alternate text"
+msgstr "Alternatieve tekst"
+
+#: img_assist.module:566
+msgid "Provide a description of this image for the visually impaired."
+msgstr "Voeg een beschrijvende tekst toe voor slechtzienden."
+
+#: img_assist.module:567
+msgid "Layout"
+msgstr "Vormgeving"
+
+#: img_assist.module:568
+msgid "Align"
+msgstr "Uitlijnen"
+
+#: img_assist.module:570
+msgid "Border"
+msgstr "Rand"
+
+#: img_assist.module:572
+msgid "Spacing in pixels"
+msgstr "Spaciëring in pixels"
+
+#: img_assist.module:573
+msgid "Horizontal"
+msgstr "Horizontaal"
+
+#: img_assist.module:575
+msgid "Vertical"
+msgstr "Vertikaal"
+
+#: img_assist.module:577
+msgid "Image dimensions in pixels"
+msgstr "Afbeeldingsformaat in pixels"
+
+#: img_assist.module:578
+msgid "Width"
+msgstr "Breedte"
+
+#: img_assist.module:580
+msgid "Height"
+msgstr "Hoogte"
+
+#: img_assist.module:582
+msgid "Maintain aspect ratio"
+msgstr "Verhoudingen aanhouden"
+
+#: img_assist.module:588
+msgid "Image caption"
+msgstr "Bijschrift voor de afbeelding"
+
+#: img_assist.module:588
+msgid "Optional: Type a caption to display below your image."
+msgstr "Optie: Voeg een bijschrift aan de afbeelding toe."
+
+#: img_assist.module:589
+msgid "Preview image"
+msgstr "Afbeelding vooraf bekijken"
+
+#: img_assist.module:590
+msgid "Insert image"
+msgstr "Afbeelding toevoegen"
+
+#: img_assist.module:591
+msgid "Image to use"
+msgstr "Gebruik deze afbeelding"
+
+#: img_assist.module:592
+msgid "Use original thumbnail"
+msgstr "Gebruik de originele miniatuur"
+
+#: img_assist.module:649
+msgid "<p>Once you have clicked on an image to preview, you can modify its properties in this pane.</p>"
+msgstr "<p>Klik op de preview om de eigenschappen van de afbeelding te veranderen.</p>"
+
+#: img_assist.module:0
+msgid "img_assist"
+msgstr "img_help"
+

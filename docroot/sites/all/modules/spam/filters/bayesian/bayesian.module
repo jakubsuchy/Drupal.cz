@@ -1,0 +1,189 @@
+<?php
+// $Id: bayesian.module,v 1.1.2.9.2.1 2008/12/25 05:42:10 jeremy Exp $
+
+/**
+ * @file
+ * Bayesian filter module
+ * Copyright(c) 2007-2008
+ *  Jeremy Andrews <jeremy@tag1consulting.com>.  All rights reserved.
+ *
+ * Provides a generic Bayesian filter for use with other modules.
+ *  Defines hooks for use with the Spam API.
+ */
+
+/**
+ * Spam API Hook
+ */
+function bayesian_spamapi($op, $type = NULL, $content = array(), $fields = array(), $extra = NULL) {
+  switch ($op) {
+
+    case 'filter':
+      if (!module_invoke('spam', 'filter_enabled', 'bayesian', $type, $content, $fields, $extra)) return;
+      return bayesian_spam_filter($content, $type, $fields, $extra);
+
+    case 'filter_module':
+      return 'bayesian';
+      break;
+
+    case 'filter_info':
+      return array(
+        'name' => t('Bayesian filter'),
+        'module' => t('bayesian'),
+        'description' => t('A bayesian spam filter.'),
+        'help' => t('The bayesian filter can learn to tell the difference between valid content spam content.'),
+      );
+      break;
+
+    case 'filter_install':
+      return array(
+        'status' => SPAM_FILTER_ENABLED,
+      );
+
+    case 'mark_as_spam':
+    case 'mark_as_not_spam':
+      if (!module_invoke('spam', 'filter_enabled', 'bayesian', $type, $content, $fields, $extra)) return;
+      spam_log(SPAM_DEBUG, 'bayesian_spamapi', t('@op', array('@op' => $op)), $type, $extra['id']);
+      $fields = spam_invoke_module($type, 'filter_fields', $extra['content']);
+      $tokenizer = variable_get('bayesian_tokenizer', 'bayesian_tokenize');
+      $tokens = $tokenizer($extra['content'], $type, $fields, $extra);
+      bayesian_tokens_update('spam', $tokens, ($op == 'mark_as_spam' ? TRUE : FALSE), $type, $extra['id']);
+      break;
+  }
+}
+
+/**
+ * Determine whether or not the content is spam.
+ */
+function bayesian_spam_filter($content, $type, $fields, $extra = array(), $filter_test = FALSE) {
+  $class = 'spam';
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  $tokenizer = variable_get('bayesian_tokenizer', 'bayesian_tokenize');
+  $tokens = $tokenizer($content, $type, $fields, $extra);
+  if (is_array($tokens)) {
+    foreach ($tokens as $token) {
+      $p = db_fetch_object(db_query("SELECT probability FROM {bayesian_tokens} WHERE class = '%s' AND token = '%s'", $class, $token));
+      if (!$p->probability) {
+        $p->probability = variable_get('bayesian_default_probability', 40);
+      }
+      $t["$token,$p->probability"] = abs($p->probability - 50);
+    }
+  }
+  else {
+    // No tokens, return default score.
+    $action['total'] = variable_get('bayesian_default_probability', 40);
+    return $action;
+  }
+
+  /* Sort token array so those tokens with the largest "drift" come first.
+   * Drift is this distance from a median of 50%.
+   */
+  asort($t);
+
+  /* Take the n most "interesting" tokens from the top of the token array.
+   * The larger a token's drift, the more interesting it is.
+   */
+  $keys = array_keys($t);
+  $max = variable_get('bayesian_interesting_tokens', 15);
+  $total = 0;
+  for ($i = 0; $i < $max; $i++) {
+    if ($pair = array_pop($keys)) {
+      $p = explode(',', $pair);
+      $total = $total + $p[1];
+      $action['bayesian'][$i] = array(
+        'token' => $p[0],
+        'probability' => $p[1],
+      );
+      spam_log(SPAM_DEBUG, 'bayesian_spam_filter', t('interesting token [@count] (@token) probability(@probability)', array('@token' => $p[0], '@probability' => $p[1], '@count' => $i + 1)), $type, $id);
+    }
+    else {
+      // we've looked at all the tokens
+      break;
+    }
+  }
+
+  $probability = round($total / $i, 1);
+  spam_log(SPAM_VERBOSE, 'bayesian_spam_filter', t('total(@total) count(@count) probability(@probability)', array('@probability' => $probability, '@total' => $total, '@count' => $i)), $type, $id);
+
+  $action['total'] = $probability;
+  return $action;
+}
+
+/**
+ * Update token probabilities in database.
+ */
+function bayesian_tokens_update($class, $tokens, $yes, $type = NULL, $id = 0) {
+  if (!is_array($tokens) || empty($tokens)) return;
+  foreach ($tokens as $token) {
+    $old = db_fetch_object(db_query("SELECT probability, yes_count, no_count FROM {bayesian_tokens} WHERE class = '%s' AND token = '%s'", $class, $token));
+    if ($old->probability) {
+      $total = $old->yes_count + $old->no_count + 1;
+      $probability = spam_sanitize_score(($old->yes_count + ($yes ? 1 : 0)) / $total * 100);
+      spam_log(SPAM_DEBUG, 'bayesian_tokens_update', t('update token(@token) class(@class) yes(@yes) no(@no) prob(@prob): added @new', array('@token' => $token, '@class' => $class, '@yes' => $old->yes_count + ($yes ? 1 : 0), '@no' => $old->no_count + ($yes ? 0 : 1), '@prob' => $probability, '@new' => $yes ? 'yes' : 'no')), $type, $id);
+      if ($yes) {
+        db_query("UPDATE {bayesian_tokens} SET yes_count = yes_count + 1, probability = %d, last = %d WHERE class = '%s' AND token = '%s'", $probability, time(), $class, $token);
+      }
+      else {
+        db_query("UPDATE {bayesian_tokens} SET no_count = no_count + 1, probability = %d, last = %d WHERE class = '%s' AND token = '%s'", $probability, time(), $class, $token);
+      }
+    }
+    else {
+      $probability = ($yes ? 99 : 1);
+      spam_log(SPAM_DEBUG, 'bayesian_tokens_update', t('insert token(@token) class(@class) probability(@probability)', array('@token' => $token, '@class' => $class, '@probability' => $probability)), $type, $id);
+      db_query("INSERT INTO {bayesian_tokens} (class, token, yes_count, no_count, probability, last) VALUES('%s', '%s', %d, %d, %d, %d)", $class, $token, ($yes ? 1 : 0), ($yes ? 0 : 1), $probability, time());
+    }
+  }
+}
+
+/**
+ * Split content into an array of tokens.
+ */
+function bayesian_tokenize($content, $type, $fields, $extra = array(), $tag = NULL) {
+  static $tokens = array();
+
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+
+  if (is_object($content)) {
+    $content = (array)$content;
+  }
+
+  if (!isset($tokens["$type-$id-$tag"])) {
+    $string = spam_get_text($content, $type, $fields, $extra);
+
+    $URI = "(http://|https://|ftp://|mailto:)";
+    // strip out unwanted html/url noise
+    $sanitized = preg_replace("'(www\.)|(</a>)|(href=)|(target=)|(src=)'i", '', $string);
+    $sanitized = preg_replace($URI, '', $sanitized);
+
+    // Strip out values that should not be considered part of tokens, so
+    // things like '{viagra}' and 'vi.agra' are counted as hits towards
+    // 'viagra'
+    $sanitized = preg_replace("/[()\{\}\[\]#.,]/", '', $sanitized);
+
+    // Force all tokens to lowercase, again to aggregate tokens.  This both
+    // lowers the total token number of rows in the spam_tokens table and
+    // increases the strength of individual tokens by linking them to
+    // capitalized versions.
+    $sanitized = drupal_strtolower($sanitized);
+
+    // divide sanitized string into tokens
+    $delimiters = " \t\n\r-_<>'\"`/|*%^&+=~:;?";
+    $tok = strtok($sanitized, $delimiters);
+    while ($tok !== FALSE) {
+      // Only inspect the token if over minimum length.
+      if (drupal_strlen($tok) >= variable_get('bayesian_minimum_token_length', 3)) {
+        // If the token is longer than 255 characters, truncate it.
+        $toks[] = htmlspecialchars(drupal_substr("$tag$tok", 0, 254));
+      }
+      $tok = strtok($delimiters);
+    }
+
+    // allow external module ability to extract additional tokens
+    $hook = spam_invoke_api('tokenize', $string, $tag);
+    if ($hook['tokens']) {
+      $toks = array_merge($toks, $hook['tokens']);
+    }
+    $tokens["$type-$id-$tag"] = $toks;
+  }
+
+  return $tokens["$type-$id-$tag"];
+}

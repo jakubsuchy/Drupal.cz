@@ -1,0 +1,191 @@
+# LANGUAGE translation of Drupal (userpoints.module)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: userpoints.module,v 1.30.2.1 2006/05/16 14:45:18 kbahey
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2006-07-11 17:54+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: userpoints.module:25;28
+msgid "Users earn points as they post nodes, comments, and vote on nodes"
+msgstr ""
+
+#: userpoints.module:41
+msgid "users by points"
+msgstr ""
+
+#: userpoints.module:48
+msgid "reset points"
+msgstr ""
+
+#: userpoints.module:62
+msgid "Reset all user points. This is useful in certain situations such as monthly contests. Enter YES without the quotes to reset"
+msgstr ""
+
+#: userpoints.module:65
+msgid "NO"
+msgstr ""
+
+#: userpoints.module:69
+msgid "Reset"
+msgstr ""
+
+#: userpoints.module:75
+msgid "YES"
+msgstr ""
+
+#: userpoints.module:77
+msgid "All user points have been reset!"
+msgstr ""
+
+#: userpoints.module:87
+msgid "Points for each event"
+msgstr ""
+
+#: userpoints.module:93
+msgid "Points for posting an %node-name"
+msgstr ""
+
+#: userpoints.module:102
+msgid "Points for posting a comment"
+msgstr ""
+
+#: userpoints.module:110
+msgid "Points for moderating a comment"
+msgstr ""
+
+#: userpoints.module:119
+msgid "Points for voting on a node (requires nodevote module)"
+msgstr ""
+
+#: userpoints.module:129
+msgid "Points for referring a user (requires the user_referral module)"
+msgstr ""
+
+#: userpoints.module:139
+msgid "Points for inviting a user (requires the invite module)"
+msgstr ""
+
+#: userpoints.module:149
+msgid "Points when invited user registers (requires the invite module)"
+msgstr ""
+
+#: userpoints.module:162
+msgid "Ecommerce Options"
+msgstr ""
+
+#: userpoints.module:167
+msgid "Use points as form of payment?"
+msgstr ""
+
+#: userpoints.module:169
+msgid "Disable"
+msgstr ""
+
+#: userpoints.module:169
+msgid "Enable"
+msgstr ""
+
+#: userpoints.module:174
+msgid "Points multiplier for buying"
+msgstr ""
+
+#: userpoints.module:182
+msgid "Points to get on selling (for every dollar)"
+msgstr ""
+
+#: userpoints.module:190
+msgid "Minimum amount for purchase"
+msgstr ""
+
+#: userpoints.module:202
+msgid "Advanced Options"
+msgstr ""
+
+#: userpoints.module:206
+msgid "Reset points"
+msgstr ""
+
+#: userpoints.module:207
+msgid "Reset the points for all users."
+msgstr ""
+
+#: userpoints.module:221
+msgid "User points"
+msgstr ""
+
+#: userpoints.module:224
+msgid "Points"
+msgstr ""
+
+#: userpoints.module:231;288
+msgid "user"
+msgstr ""
+
+#: userpoints.module:231;288
+msgid "points"
+msgstr ""
+
+#: userpoints.module:256;471
+msgid "User Points"
+msgstr ""
+
+#: userpoints.module:257
+msgid "Highest Users"
+msgstr ""
+
+#: userpoints.module:272
+msgid "You have %p %c"
+msgstr ""
+
+#: userpoints.module:275
+msgid "Points are visible to logged in users only"
+msgstr ""
+
+#: userpoints.module:402
+msgid "lost"
+msgstr ""
+
+#: userpoints.module:405
+msgid "earned"
+msgstr ""
+
+#: userpoints.module:410
+msgid "User %uname %op %points points! Total now is %total points."
+msgstr ""
+
+#: userpoints.module:478
+msgid "Minimum points for purchase is %min"
+msgstr ""
+
+#: userpoints.module:483
+msgid "You do not have enough points for this purchase"
+msgstr ""
+
+#: userpoints.module:485
+msgid "This purchase will cost you %points points"
+msgstr ""
+
+#: userpoints.module:526
+msgid "Your purchase using %points points has been completed"
+msgstr ""
+
+#: userpoints.module:272
+msgid "point"
+msgid_plural "points"
+msgstr[0] ""
+msgstr[1] ""
+
+#: userpoints.module:0
+msgid "userpoints"
+msgstr ""
+

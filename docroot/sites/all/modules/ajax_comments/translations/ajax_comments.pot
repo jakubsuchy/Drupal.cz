@@ -1,0 +1,59 @@
+# LANGUAGE translation of PROJECT
+# Copyright (c) YEAR NAME <EMAIL@ADDRESS>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-11-13 18:46+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "AJAXifies comments on site."
+msgstr ""
+
+msgid "AJAX comments"
+msgstr ""
+
+msgid "Form always expanded"
+msgstr ""
+
+msgid "This setting allows to render comments as collapsed link by default."
+msgstr ""
+
+msgid "Default row count"
+msgstr ""
+
+msgid "Allows to control comment forms' textarea size. Leave blank to use system defined."
+msgstr ""
+
+msgid "Row count in replies"
+msgstr ""
+
+msgid "Usually, there is no need in big forms for replies, so this setting allows to reduce their size."
+msgstr ""
+
+msgid "preview"
+msgstr ""
+
+msgid "Are you sure you want to delete the comment? Any replies to this comment will be lost. This action cannot be undone."
+msgstr ""
+
+msgid "Blink new comment"
+msgstr ""
+
+msgid "This effect helps to find new comment after replying to long threads."
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Content types"
+msgstr ""
+
+msgid "Select node types you want to activate ajax comments on. If you select nothing, AJAX Comments will be enabled everywhere."
+msgstr ""

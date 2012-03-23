@@ -1,0 +1,142 @@
+<?php
+// $Id: texy_image.module,v 1.2.2.4 2009/04/24 11:46:02 havran Exp $
+
+/**
+ * @file
+ * Extra image settings for Texy! filter module.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function texy_image_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#texy_image':
+      return '<p>'. t('Texy! Image allows you modify image settings for Texy! filter module.') .'</p>';
+    case 'admin/settings/texy/image':
+      return '<p>'. t('Below is a list of image settings for the Texy! filter module.') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function texy_image_menu() {
+  $items['admin/settings/texy/image'] = array(
+    'title' => 'Image',
+    'description' => 'Customize the Texy! image settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('texy_form_image_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'texy_image.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_texy_settings()
+ */
+function texy_image_texy_settings(&$texy) {
+  // we need real physical path
+  $texy->imageModule->fileRoot = dirname($_SERVER["SCRIPT_FILENAME"]);
+  // path where images are stored and reachable from
+  // (what about private files?)
+  $texy->imageModule->root = base_path() . file_create_path(variable_get('texy_image_dir', 'images'));
+
+  $_imageclassleft = variable_get('texy_image_class_left', '');
+  if (empty($_imageclassleft)) {
+    // default class
+    $texy->imageModule->leftClass = 'left';
+  } else {
+    // specify a class
+    $texy->imageModule->leftClass = $_imageclassleft;
+  }
+
+  $_imageclassright = variable_get('texy_image_class_right', '');
+  if (empty($_imageclassright)) {
+    // default class
+    $texy->imageModule->rightClass = 'right';
+  } else {
+    // specify a class
+    $texy->imageModule->rightClass = $_imageclassright;
+  }
+
+  $_imagealttext = variable_get('texy_image_alt_text', '');
+  if (empty($_imagealttext)) {
+    // default is empty
+    $texy->imageModule->defaultAlt = '';
+  } else {
+    // specify an alt text
+    $texy->imageModule->defaultAlt = $_imagealttext;
+  }
+
+  $_imagedescclass = variable_get('texy_image_desc_class', '');
+  if (empty($_imagedescclass)) {
+    // default class
+    $texy->figureModule->class = 'image-desc';
+  } else {
+    // specify a class
+    $texy->figureModule->class = $_imagedescclass;
+  }
+
+  $_imagedescclassleft = variable_get('texy_image_desc_class_left', '');
+  if (empty($_imagedescclassleft)) {
+    // default class
+    $texy->figureModule->leftClass = 'image-desc-left';
+  } else {
+    // specify a class
+    $texy->figureModule->leftClass = $_imagedescclassleft;
+  }
+
+  $_imagedescclassright = variable_get('texy_image_desc_class_right', '');
+  if (empty($_imagedescclassleft)) {
+    // default class
+    $texy->figureModule->rightClass = 'image-desc-right';
+  } else {
+    // specify a class
+    $texy->figureModule->rightClass = $_imagedescclassright;
+  }
+}
+
+/**
+ * Implementation of hook_texy_handler()
+ */
+function texy_image_texy_handler(&$texy) {
+  // check for use images with descriptions as dl
+  if (variable_get('texy_image_desc_deflist', FALSE)) {
+    $texy->addHandler('figure', 'imageDefListFigureHandler');
+  }
+}
+
+/**
+ * @param TexyHandlerInvocation  handler invocation
+ * @param TexyImage
+ * @param TexyLink
+ * @param string
+ * @param TexyModifier
+ * @return TexyHtml|string|FALSE
+ */
+function imageDefListFigureHandler($invocation, $image, $link, $content, $modifier) {
+  // finish invocation by default way
+  $el = $invocation->proceed();
+
+  // change div -> dl
+  $el->setName('dl');
+
+  // change p -> dd
+  $caption = $el->offsetGet(1);
+  $caption->setName('dd');
+
+  // wrap img into dt
+  $img = $el->offsetGet(0);
+  $el->offsetUnset(0);
+
+  $dt = TexyHtml::el('dt');
+  $dt->add($img);
+  $el->insert(0, $dt);
+
+  return $el;
+}
+

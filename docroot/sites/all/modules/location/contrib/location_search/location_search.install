@@ -1,0 +1,80 @@
+<?php
+// $Id: location_search.install,v 1.3 2008/10/09 22:09:05 bdragon Exp $
+
+/**
+ * @file
+ * Installation routines for location_search_new.
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function location_search_schema() {
+  $schema['location_search_work'] = array(
+    'description' => 'List of lids to index.',
+    'fields' => array(
+      'lid' => array(
+        'description' => 'Primary Key: location ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('lid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function location_search_install() {
+  drupal_install_schema('location_search');
+
+  // Force reindexing.
+  db_query('INSERT INTO {location_search_work} (SELECT lid FROM {location})');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function location_search_uninstall() {
+  drupal_uninstall_schema('location_search');
+  variable_del('location_search_map');
+  variable_del('location_search_map_address');
+  variable_del('location_search_map_macro');
+}
+
+/**
+ * Rewritten location_search -- Uses the fulltext engine.
+ */
+function location_search_update_5300() {
+  $ret = array();
+
+  // Create our worklist table.
+  $schema['location_search_work'] = array(
+    'description' => 'List of lids to index.',
+    'fields' => array(
+      'lid' => array(
+        'description' => 'Primary Key: location ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('lid'),
+  );
+  db_create_table($ret, 'location_search_work', $schema['location_search_work']);
+
+  // Force reindexing.
+  $ret[] = update_sql('INSERT INTO {location_search_work} (SELECT lid FROM {location})');
+
+  // Remove unused variables.
+  variable_del('location_suppress_country');
+  variable_del('location_search_distance_unit');
+
+  return $ret;
+}

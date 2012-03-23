@@ -1,0 +1,12 @@
+; $Id: jstools.info,v 1.5 2008/04/03 18:00:04 nedjo Exp $
+name = Javascript tools
+description = Provides common JavaScript methods used by other modules.
+package = User Interface
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-04-14
+version = "6.x-1.0"
+core = "6.x"
+project = "jstools"
+datestamp = "1208192722"
+

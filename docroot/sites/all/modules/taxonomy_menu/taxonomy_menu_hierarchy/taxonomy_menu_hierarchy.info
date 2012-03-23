@@ -1,0 +1,14 @@
+; $Id: taxonomy_menu_hierarchy.info,v 1.1.2.1 2009/03/01 05:07:35 indytechcook Exp $
+core          = "6.x"
+dependencies[] = taxonomy
+dependencies[] = taxonomy_menu
+description   = "Enables Hierarchy path to Taxonomy Menu"
+name          = "Taxonomy Menu Hierarchy"
+package       = Taxonomy Menu
+
+; Information added by drupal.org packaging script on 2009-03-26
+version = "6.x-2.3"
+core = "6.x"
+project = "taxonomy_menu"
+datestamp = "1238036514"
+

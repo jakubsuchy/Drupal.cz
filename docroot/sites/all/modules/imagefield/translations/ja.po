@@ -1,0 +1,199 @@
+# $Id: ja.po,v 1.1 2008/11/12 04:19:03 pineray Exp $
+#
+# Japanese translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  imagefield_field.inc: n/a
+#  imagefield_widget.inc: n/a
+#  imagefield.module,v 1.71 2008/08/27 15:03:06 drewish
+#  imagefield.install,v 1.16 2008/11/07 00:55:40 drewish
+#  imagefield.info,v 1.11 2008/08/14 23:08:26 drewish
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-11-12 12:42+0900\n"
+"PO-Revision-Date: 2008-11-12 12:42+0900\n"
+"Last-Translator: PineRay <matsudaterutaka@gmail.com>\n"
+"Language-Team: Japanese <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: imagefield_field.inc:17
+msgid "Default image"
+msgstr "デフォルトの画像"
+
+#: imagefield_field.inc:23
+msgid "Use default image"
+msgstr "デフォルトの画像を使用"
+
+#: imagefield_field.inc:25
+msgid "Check here if you want to use a image as default."
+msgstr "画像をデフォルトとして使用する場合はチェックを入れてください。"
+
+#: imagefield_field.inc:35
+msgid "Upload image"
+msgstr "画像をアップロード"
+
+#: imagefield_field.inc:36
+msgid "Choose a image that will be used as default."
+msgstr "デフォルトとして使用する画像を選択してください。"
+
+#: imagefield_field.inc:62
+msgid "Has Image"
+msgstr "画像がある"
+
+#: imagefield_field.inc:80
+msgid "The default image could not be uploaded. The destination(%d) does not exist or is not writable by the webserver."
+msgstr ""
+"デフォルトの画像をアップロードできませんでした。保存先 "
+"(%d) が存在しないか、または書き込みできません。"
+
+#: imagefield_widget.inc:25
+msgid "Maximum resolution for Images"
+msgstr "画像の最大解像度"
+
+#: imagefield_widget.inc:30
+msgid "The maximum allowed image size expressed as WIDTHxHEIGHT (e.g. 640x480). Set to 0 for no restriction. If a larger image is uploaded, it will be resized to reflect the given width and height."
+msgstr ""
+"アップロードを許可する画像サイズの最大値を横幅x高さで表します "
+"(例: "
+"640x480)。0を指定すると無制限となります。もしも最大値より大きな画像がアップロードされていれば、指定の横幅と高さを反映したサイズに画像をリサイズします。"
+
+#: imagefield_widget.inc:35
+msgid "Minimum resolution for Images"
+msgstr "画像の最小解像度"
+
+#: imagefield_widget.inc:40
+msgid "The minimum allowed image size expressed as WIDTHxHEIGHT (e.g. 640x480). Set to 0 for no restriction. If an image that is smaller than these dimensions is uploaded it will be rejected."
+msgstr ""
+"アップロードを許可する画像サイズの最小値を横幅x高さで表します "
+"(例: "
+"640x480)。0を指定すると無制限となります。もしも最小値より小さな画像がアップロードされていれば、画像は拒否されます。"
+
+#: imagefield_widget.inc:46
+msgid "Permitted upload file extensions."
+msgstr "アップロードを許可するファイルの拡張子"
+
+#: imagefield_widget.inc:50
+msgid "Extensions a user can upload to this field. Seperate extensions with a space and do not include the leading dot."
+msgstr "このフィールドにユーザがアップロードできるファイルの拡張子です。拡張子は空白で区切って、最初のドットは含ませないでください。"
+
+#: imagefield_widget.inc:56
+msgid "ALT text settings"
+msgstr "代替テキストの設定"
+
+#: imagefield_widget.inc:63
+msgid "Enable custom alternate text"
+msgstr "代替テキストを独自に指定できるようにする"
+
+#: imagefield_widget.inc:65
+msgid "Enable user input alternate text for images."
+msgstr "ユーザが画像の代替テキストを入力できるようになります。"
+
+#: imagefield_widget.inc:70
+msgid "Default ALT text"
+msgstr "デフォルトの代替テキスト"
+
+#: imagefield_widget.inc:72
+msgid "This value will be used for alternate text by default."
+msgstr "この値を代替テキストのデフォルトとして使用します。"
+
+#: imagefield_widget.inc:78
+msgid "Title text settings"
+msgstr "タイトルテキストの設定"
+
+#: imagefield_widget.inc:85
+msgid "Enable custom title text"
+msgstr "タイトルテキストを独自に指定できるようにする"
+
+#: imagefield_widget.inc:87
+msgid "Enable user input title text for images."
+msgstr "ユーザが画像のタイトルを入力できるようになります。"
+
+#: imagefield_widget.inc:93
+msgid "Default Title text"
+msgstr "デフォルトのタイトルテキスト"
+
+#: imagefield_widget.inc:95
+msgid "This value will be used as the image title by default."
+msgstr "この値をタイトルテキストのデフォルトとして使用します。"
+
+#: imagefield_widget.inc:135
+msgid "Alternate Text"
+msgstr "代替テキスト"
+
+#: imagefield_widget.inc:146
+msgid "Title"
+msgstr "タイトル"
+
+#: imagefield.module:103
+msgid "Changes made to the attachments are not permanent until you save this post."
+msgstr "添付ファイルに加えた変更は、この記事を保存するまでは一時的なものとなります。"
+
+#: imagefield.module:120;162;228
+msgid "Image"
+msgstr "画像"
+
+#: imagefield.module:121
+msgid "Store an image file and optionally text for alt and title tags."
+msgstr "画像ファイルと、タグのalt属性やtitle属性に用いる任意のテキストを保存します。"
+
+#: imagefield.module:170
+msgid "An edit widget for image files, including a preview of the image."
+msgstr "画像ファイルのプレビュー付き編集ウィジェット。"
+
+#: imagefield.module:232;239;246;253;260
+msgid "Displays image files in their original size."
+msgstr "画像ファイルを元のサイズで表示。"
+
+#: imagefield.module:235
+msgid "Image linked to node"
+msgstr "ノードへのリンクを張った画像"
+
+#: imagefield.module:242
+msgid "Image linked to file"
+msgstr "ファイルへのリンクを張った画像"
+
+#: imagefield.module:249
+msgid "Path to file"
+msgstr "ファイルへのパス"
+
+#: imagefield.module:256
+msgid "URL to file"
+msgstr "ファイルへのURL"
+
+#: imagefield.module:342
+msgid "The image %filename was resized to fit within the maximum allowed resolution of %resolution pixels"
+msgstr ""
+"アップロードを許された最大解像度 %resolution "
+"に収まるように、画像 %filename "
+"をリサイズしました。"
+
+#: imagefield.module:24
+msgid "view imagefield uploads"
+msgstr "画像フィールドのアップロードを表示"
+
+#: imagefield.module:0
+msgid "imagefield"
+msgstr "imagefield"
+
+#: imagefield.install:170
+msgid "Migrating filefield values"
+msgstr "ファイルフィールドの値を流用"
+
+#: imagefield.info:0
+msgid "ImageField"
+msgstr "画像フィールド"
+
+#: imagefield.info:0
+msgid "Defines an image field type."
+msgstr "画像のフィールドタイプを定義します。"
+
+#: imagefield.info:0
+msgid "CCK"
+msgstr "CCK"
+

@@ -1,0 +1,105 @@
+<?php
+// $Id: session_expire.module,v 1.2.2.2 2009/02/05 03:03:10 kbahey Exp $
+
+/**
+ * @file
+ * Expires rows from the session table older than a certain time.
+ *
+ * @copyright Copyright 2007 Khalid Baheyeldin http://2bits.com
+ */
+
+define('SESSION_EXPIRE_INTERVAL', 'session_expire_interval');
+define('SESSION_EXPIRE_AGE',      'session_expire_age');
+define('SESSION_EXPIRE_MODE',     'session_expire_mode');
+define('SESSION_EXPIRE_LAST',     'session_expire_last');
+
+/**
+ * Implementation of hook_menu().
+ *
+ * @return array
+ */
+function session_expire_menu() {
+  $items['admin/settings/session_expire'] = array(
+    'type'               => MENU_NORMAL_ITEM,
+    'title'              => 'Session expire',
+    'description'        => 'Settings for session expiry',
+    'page callback'      => 'drupal_get_form',
+    'page arguments'     => array('session_expire_settings'),
+    'access arguments'   => array('administer site configuration'),
+  );
+  return $items;
+}
+
+function session_expire_settings() {
+  $form['session_expire_desc'] = array(
+    '#type'  => 'markup',
+    '#value' => t('This module requires cron to be correctly configured and running for Drupal.'),
+  );
+
+  $interval = drupal_map_assoc(array(0, 7200, 10800, 21600, 43200, 86400, 172800, 259200, 604800), 'format_interval');
+  $interval['0'] = t('Everytime');
+  $form[SESSION_EXPIRE_INTERVAL] = array(
+    '#type'          => 'select',
+    '#title'         => t('Interval'),
+    '#default_value' => variable_get(SESSION_EXPIRE_INTERVAL, 86400),
+    '#options'       => $interval,
+    '#description'   => t('Run the cleanup at the specified interval. This tells Drupal how often to run the cleanup. On a busy site, you want that to be more frequent (e.g. every day at a minimum). You don\'t want it to be too frequent though (e.g. every hour), as it can tie up the sessions table for a long time. Cron must be configured to run more frequently than the value you chose here.')
+  );
+
+  $period = drupal_map_assoc(array(1800, 3600, 7200, 10800, 21600, 43200, 86400, 172800, 259200, 604800, 1209600, 2419200), 'format_interval');
+  $period['1000000000'] = t('Never');
+
+  $form[SESSION_EXPIRE_AGE] = array(
+    '#type'          => 'select',
+    '#title'         => t('Age'),
+    '#default_value' => variable_get(SESSION_EXPIRE_AGE, 604800),
+    '#options'       => $period,
+    '#description'   => t(' Expire sessions that are older than the specified age. Older entries will be discarded.')
+  );
+
+  $form[SESSION_EXPIRE_MODE] = array(
+    '#type'          => 'radios',
+    '#title'         => t('Session types'),
+    '#default_value' => variable_get(SESSION_EXPIRE_MODE, 0),
+    '#options'       => array(
+      t('Anonymous'),
+      t('Both anonymous and authenticated users'),
+      ),
+    '#description'   => t('Types of sessions to discard. This option indicates whether only anonymous users, or both anonymous and authenticated users are expired. Note that if you choose authenticated users, they will be logged off and have to login again after the "age" specified above.'),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implementation of hook_cron().
+ */
+function session_expire_cron() {
+  // Check if it is the first time this hook fires
+  $last_run_time = variable_get(SESSION_EXPIRE_LAST, 0);
+  if (!$last_run_time) {
+    // Set the time
+    variable_set(SESSION_EXPIRE_LAST, time());
+  }
+
+  // Check if we should run, this should only be once a day
+  if (time() > $last_run_time + variable_get(SESSION_EXPIRE_INTERVAL, 86400)) {
+    $timestamp = time() - variable_get(SESSION_EXPIRE_AGE, 604800);
+
+    // Check if we should delete anonymous only or both anonymous and authenticated users
+    $extra_cond = '';
+    $mode = variable_get(SESSION_EXPIRE_MODE, 0);
+    if (!$mode) {
+      $extra_cond = 'AND uid = 0';
+    }
+
+    // Perform the deletion
+    db_query("DELETE FROM {sessions} WHERE timestamp < %d $extra_cond", $timestamp);
+
+    // Write to the watchdog
+    watchdog('cron', 'Number of sessions deleted: '. db_affected_rows());
+
+    // Set the last time we deleted
+    variable_set(SESSION_EXPIRE_LAST, time());
+  }
+}

@@ -1,0 +1,46 @@
+<?php
+// $Id: jabber.module,v 1.2.2.1 2006/11/03 17:38:20 walkah Exp $
+
+/**
+ * hook_help
+ */
+function userauth_help($section = '') {
+  switch ($section) {
+    case 'admin/modules#description':
+      return t('Userauth test');
+  }
+}
+
+function userauth_info($field = 0) {
+  $info['name'] = '602Office';
+  $info['protocol'] = 'XML';
+
+  if ($field) {
+    return $info[$field];
+  }
+  else {
+    return $info;
+  }
+  
+}
+
+function userauth_auth($username, $password, $server) {
+  if ($username == "mrk" && $password == "mrk" && $server == "602.cz") {
+    $_SESSION['602user'] = 1;
+    return 1;
+  } else {
+    return 0;
+  }
+}
+function userauth_user($op, &$edit, &$account, $category = NULL) {
+  if ($op == "insert" && $_SESSION['602user'] == 1) {
+    @db_query('INSERT INTO {users_roles} (uid, rid) VALUES (%d, %d)', $account->uid, 5); 
+  }
+  if ($op == "login") {
+    if ($userisblackbox) {
+      // delete from roles
+    }
+  }
+
+}
+?>

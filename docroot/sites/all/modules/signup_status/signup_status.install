@@ -1,0 +1,135 @@
+<?php
+// $Id: signup_status.install,v 1.7 2009/09/19 18:24:22 dww Exp $
+
+/**
+ * @file
+ * signup_status module installation and upgrade code.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_enable().
+ */
+function signup_status_enable() {
+  drupal_set_message(t('signup_status module successfully installed. Please review the available <a href="@settings">configuration settings</a>.', array('@settings' => url('admin/settings/signup_status'))));
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function signup_status_install() {
+  drupal_install_schema('signup_status');
+
+  $ret = array();
+  db_add_field($ret, 'signup_log', 'status', array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => '0',
+    'description' => t('The status status.'),
+  ));
+
+  return $ret;
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function signup_status_uninstall() {
+  drupal_uninstall_schema('signup_status');
+
+  $ret = array();
+  db_drop_field($ret, 'signup_log', 'status');
+
+  return $ret;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Schema API hooks
+
+/**
+ * Implementation of hook_schema().
+ */
+function signup_status_schema() {
+  return array(
+    'signup_status_codes' => array(
+      'description' => t('Stores signup statuses.'),
+      'fields' => array(
+        'cid' => array(
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'description' => t('The signup status code ID.'),
+        ),
+        'name' => array(
+          'type' => 'varchar',
+          'length' => 128,
+          'not null' => TRUE,
+          'description' => t('The name of the signup status.'),
+        ),
+        'description' => array(
+          'type' => 'text',
+          'size' => 'big',
+          'not null' => TRUE,
+          'description' => t('The description of the signup status.'),
+        ),
+        'mod_signup_count' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+          'size' => 'tiny',
+          'description' => t('A flag showing if users with this signup status should be added to the total count of signed up users.'),
+        ),
+        'show_on_form' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+          'size' => 'tiny',
+          'description' => t('A flag showing if this signup status should be shown on the signup form.'),
+        ),
+        'weight' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+          'description' => t('The weight of this signup status in the UI'),
+        ),
+      ),
+      'primary key' => array('cid'),
+      'unique key' => array('name'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_schema_alter().
+ */
+function signup_status_schema_alter(&$schema) {
+  $schema['signup_log']['fields']['status'] = array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => '0',
+    'description' => t('The status status.'),
+  );
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Schema update functions
+
+/**
+ * Add the {signup_status_codes}.weight column.
+ */
+function signup_status_update_6000() {
+  $ret = array();
+  $field = array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+  );
+  db_add_field($ret, 'signup_status_codes', 'weight', $field);
+  // As an initial default, weight the status codes by the cid. This
+  // replicates the previous cronological order of status codes.
+  $ret[] = update_sql("UPDATE {signup_status_codes} SET weight = cid");
+  return $ret;
+}
+

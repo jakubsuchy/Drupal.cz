@@ -1,0 +1,14 @@
+.image-attach {
+  float: right;
+  margin-left: 1em;
+}
+.image-attach-teaser {
+  float: right;
+  margin-left: 1em;
+}
+.image-attach-preview {
+  margin-bottom: 1em;
+}
+.node {
+  clear: both;
+}

@@ -1,0 +1,358 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: gmap\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-07-03 12:51-0500\n"
+"Last-Translator: Cernick <cernick@hotmail.com>\n"
+"Language-Team: Cernick <cernick@hotmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: CANADA\n"
+
+#: gmap.module:38
+msgid "Filter to allow insertion of a google map into a node"
+msgstr "Filtre pour permettre l'insertion d'une Google Map dans un noeud"
+
+#: gmap.module:722
+msgid "GMap filter"
+msgstr "Filtre GMap"
+
+#: gmap.module:725
+msgid "Google map filter"
+msgstr "Filtre Google Map"
+
+#: gmap.module:728
+msgid "converts a google map  macro into the html required for inserting a google map."
+msgstr "convertit une macro de carte google dans le HTML requis pour insérer une Google Map."
+
+#: gmap.module:749
+msgid "Insert Google Map macro. <a href=\"%href\" target=\"_blank\" >Create a macro</a>"
+msgstr "Insérer une macro de Google Map. <a href=\"%href\" target=\"_blank\" >Créer une macro</a>"
+
+#: gmap.module:758
+msgid "Create a Google Map Macro"
+msgstr "Créer une macro de Google Map"
+
+#: gmap.module:788
+#: gmap_location.module:64
+#: gmap_location.module:116
+#: gmap_location.module:178
+msgid "This map illustrates the extent of users of this website. Each marker indicates a user that has entered their locations."
+msgstr "Cette carte montre l'emplacement des membres du site. Chaque marqueur indique un membre qui a entré son emplacement."
+
+#: gmap.module:818
+msgid "location map"
+msgstr "carte d'emplacement"
+
+#: gmap.module:822
+msgid "Latitude must be between -90 and 90"
+msgstr "La latitude doit être entre -90 et 90"
+
+#: gmap.module:827
+msgid "Longitude must be between -180 and 180"
+msgstr "La longitude doit être entre -180 et 180"
+
+#: gmap.module:879
+msgid "Google Map"
+msgstr "Google Map"
+
+#: gmap.module:881
+msgid "Coordinates"
+msgstr "Coordonnées"
+
+#: gmap.module:884
+msgid "Latitude"
+msgstr "Latitude"
+
+#: gmap.module:888
+msgid "The latitude will automatically be entered here (or you can do it manually)."
+msgstr "La latitude sera entrée automatiquement ici (ou vous pouvez l'entrer manuellement)."
+
+#: gmap.module:891
+msgid "Longitude"
+msgstr "Longitude"
+
+#: gmap.module:895
+msgid "The longitude will automatically be entered here (or you can do it manually)."
+msgstr "La longitude sera entrée automatiquement ici (ou vous pouvez l'entrer manuellement)."
+
+#: gmap.module:921
+msgid "Google Map Initialize"
+msgstr "Initialisation d'une Google Map"
+
+#: gmap.module:922
+msgid "Google map API key"
+msgstr "Clé de l'API de Google Map"
+
+#: gmap.module:922
+msgid "Your personal Googlemaps API key.  You must get this for each separate website at <a href=\"http://www.google.com/apis/maps/\">Google Map API website</a>."
+msgstr "Votre clé personnelle pour l'API de Google Map. Vous devez vous en procurer une pour chaque site web à <a href=\"http://www.google.com/apis/maps/\">Site web API Google Map</a>."
+
+#: gmap.module:923
+msgid "Google map method"
+msgstr "Méthode Google map"
+
+#: gmap.module:923
+msgid "Static"
+msgstr "Statique"
+
+#: gmap.module:923
+msgid "Dynamic"
+msgstr "Dynamique"
+
+#: gmap.module:923
+#: gmap.module:939
+msgid "None"
+msgstr "Aucun"
+
+#: gmap.module:923
+msgid "How is the Google Map initialization script run:<br /><strong>Static</strong> - Loaded on every page, <br /><strong>Dynamic</strong> - Initialization script runs only on pages with google maps, but all pages with the gmap filter will not be cached. <br /><strong>None</strong> - Google map initialization script must be loaded some other way."
+msgstr "Comment le script d'initialisation de Google Map s'exécute: <br /><strong>Statique</strong> - Chargé sur chaque page, <br /><strong>Dynamique</strong> - Le script d'initialisation ne s'exécute que sur les pages avec une google map, mais toutes les pages avec une le filtre gmap ne seront pas mis en cache. <br /><strong>Aucun</strong> -  Le script d'initialisation de Google Map doit être excuté d'une autre manière."
+
+#: gmap.module:927
+msgid "Enable clusterer.js"
+msgstr "Activer clusterer.js"
+
+#: gmap.module:927
+msgid "Enables Jef Poskanzer's excellent <a href=\"http://www.acme.com/javascript/#Clusterer\">clusterer.js</a> script. (useful for a large number of markers on a single map)"
+msgstr "Active l'excellent script <a href=\"http://www.acme.com/javascript/#Clusterer\">clusterer.js</a> de  Jef Poskanzer (utile pour un grand nombre de marqueurs sur une seule map)"
+
+#: gmap.module:929
+msgid "On Click Marker"
+msgstr "Marqueur sur clique de la souris"
+
+#: gmap.module:931
+msgid "Open info window"
+msgstr "Ouvrir la fenêtre d'information"
+
+#: gmap.module:931
+msgid "Open link"
+msgstr "Ouvrir le lien"
+
+#: gmap.module:932
+msgid "For markers that have link associated with them, it can either an info window or go directly to the link."
+msgstr "Pour les marqueurs qui ont un lien associé à eux, il peuvent afficher une bulle d'info ou aller directement au lien."
+
+#: gmap.module:934
+msgid "Default map settings"
+msgstr "Paramètres par défaut"
+
+#: gmap.module:935
+msgid "Default width"
+msgstr "Largeur par défaut"
+
+#: gmap.module:935
+msgid "The default width of a Google map."
+msgstr "La largeur par défaut d'une Google map."
+
+#: gmap.module:936
+msgid "Default height"
+msgstr "Hauteur par défaut"
+
+#: gmap.module:936
+msgid "The default height of a Google map."
+msgstr "La hauteur par défaut d'une Google map."
+
+#: gmap.module:937
+msgid "Default center"
+msgstr "Centre par défaut"
+
+#: gmap.module:937
+msgid "The default longitude, latitude of a Google map."
+msgstr " La latitude et la longitude par défaut de la Google map"
+
+#: gmap.module:938
+msgid "Default zoom"
+msgstr "Zoom par défaut"
+
+#: gmap.module:938
+msgid "The default zoom level of a Google map."
+msgstr "Le zoom par défaut d'une Google map."
+
+#: gmap.module:939
+msgid "Default control type"
+msgstr "Type de contrôle par défaut"
+
+#: gmap.module:939
+msgid "Small"
+msgstr "Petit"
+
+#: gmap.module:939
+msgid "Large"
+msgstr "Grand"
+
+#: gmap.module:940
+msgid "Default map type"
+msgstr "Type de carte par défaut"
+
+#: gmap.module:940
+msgid "Map"
+msgstr "Carte"
+
+#: gmap.module:940
+msgid "Satellite"
+msgstr "Satellite"
+
+#: gmap.module:940
+msgid "Hybrid"
+msgstr "Hybride"
+
+#: gmap.module:941
+msgid "Default Line 1 Color"
+msgstr "Couleur par défaut de la ligne 1"
+
+#: gmap.module:942
+msgid "Default Line 2 Color"
+msgstr "Couleur par défaut de la ligne 2"
+
+#: gmap.module:943
+msgid "Default Line 3 Color"
+msgstr "Couleur par défaut de la ligne 3"
+
+#: gmap.module:945
+msgid "Location settings"
+msgstr "Paramètres de l'emplacement"
+
+#: gmap.module:947
+msgid "Default location map"
+msgstr "Emplacement de la carte par défaut"
+
+#: gmap.module:950
+msgid "The gmap macro for the map to be used in the location.module for setting latitude and longitude."
+msgstr "La macro gmap pour la carte qui sera utilisée dans le location.module pour régler la latitude et la longitude."
+
+#: gmap.module:964
+msgid "Gmap macro creation"
+msgstr "Création de macro gmap"
+
+#: gmap.module:975
+msgid "Map id attribute"
+msgstr "Attribut Id de la carte"
+
+#: gmap.module:982
+msgid "Map type"
+msgstr "Type de carte"
+
+#: gmap.module:991
+msgid "Controls"
+msgstr "Contrôles"
+
+#: gmap.module:1000
+msgid "The Latitude and Longitude of the centre of the map"
+msgstr "La latitude et la longitude du centre de la carte"
+
+#: gmap.module:1008
+msgid "Map width"
+msgstr "Largeur de la carte"
+
+#: gmap.module:1015
+msgid "Map height"
+msgstr "Hauteur de la carte"
+
+#: gmap.module:1024
+msgid "Alignment"
+msgstr "Alignement"
+
+#: gmap.module:1033
+msgid "What happens when you click on the map"
+msgstr "Ce qui arrive lorsque vous cliquez sur la carte"
+
+#: gmap.module:1042
+msgid "The current magnification of the map"
+msgstr "Le zoom actuel de la carte"
+
+#: gmap.module:1050
+msgid "Macro text"
+msgstr "Text de la macro"
+
+#: gmap.module:1061
+msgid "Gmap View"
+msgstr "Vue Gmap"
+
+#: gmap_location.module:20
+msgid "Display location.module information on Google Maps (needs gmap.module)"
+msgstr "Afficher l'information du location.module sur les Google Maps (requiert gmap.module)"
+
+#: gmap_location.module:44
+msgid "User locations"
+msgstr "Emplacements des utilisateurs"
+
+#: gmap_location.module:49
+msgid "Node locations"
+msgstr "Emplacements des noeuds"
+
+#: gmap_location.module:89
+msgid "To add/change your location to the user map, "
+msgstr "Pour ajouter/modifier votre emplacement sur la carte."
+
+#: gmap_location.module:89
+msgid "edit your location"
+msgstr "Modifier votre emplacement"
+
+#: gmap_location.module:105
+msgid "This map illustrates the extent of nodes of this website. "
+msgstr "Cette carte montre l'emplacement des noeuds de ce site."
+
+#: gmap_location.module:169
+msgid "Location settings for users"
+msgstr "Paramètres d'emplacement pour les utilisateurs"
+
+#: gmap_location.module:171
+msgid "Default user map"
+msgstr "Carte par défaut de l'utilisateur"
+
+#: gmap_location.module:175
+#: gmap_location.module:192
+msgid "The gmap macro where the user information will be diplayed on."
+msgstr "La macro gmap oèu l'information de l'utilisateur sera affichée."
+
+#: gmap_location.module:177
+msgid "Text at the top of the map/users page"
+msgstr "Texte en haut de la page de la carte des utilisateurs"
+
+#: gmap_location.module:182
+msgid "Marker for users"
+msgstr "Marqueurs pour les utilisateurs"
+
+#: gmap_location.module:185
+msgid "Location settings for nodes"
+msgstr "Paramètres d'emplacement pour les noeuds"
+
+#: gmap_location.module:187
+msgid "Default node map"
+msgstr "Carte par défaut d'un noeud"
+
+#: gmap_location.module:194
+msgid "Text at the top of the map/nodes page"
+msgstr "Texte en haut de la page de la carte des noeuds"
+
+#: gmap_location.module:195
+msgid "This map illustrates the locations of the nodes on this website. Each marker indicates a node associated with a specific location."
+msgstr "Cette carte montre l'emplacement des noeuds de ce site. Chaque marqueur indique un noeud associé avec un emplacement spécifique."
+
+#: gmap_location.module:203
+msgid "Marker for "
+msgstr "Marqueur pour"
+
+#: gmap_location.module:216
+msgid "Location map"
+msgstr "Carte d'emplacement"
+
+#: gmap_location.module:224
+msgid "Map Macro"
+msgstr "Macro de carte"
+
+#: gmap_location.module:227
+msgid "A macro to be used as a base map for the location block.  This map will be recentered on the location, so the center is not that important. <p>Alternate base map macros can be entered for a specific node type below."
+msgstr "La macro qui sera utilisée en tant que carte de base pour le bloc d'emplacement. Cette carte sera recentrée sur l'emplacement alors le centre n'est pas si important<p>Des cartes de base par défaut peuvent être entrées pour des types de noeuds spécifiques plus bas.</p>"
+
+#: gmap_location.module:237
+msgid "Map Macro for "
+msgstr "Macro de carte pour"
+
+#: gmap_location.module:281
+msgid "Location"
+msgstr "Emplacement"
+

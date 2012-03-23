@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * Implemenation of hook_form_alter. In this function we add some settings for
+ * Drupal's performance page and also add a submit or validate function to every
+ * form.
+ *
+ * @param array $form
+ * @param array $form_state
+ * @param int $form_id
+ */
+function cookie_cache_bypass_adv_form_alter(&$form, $form_state, $form_id) {
+
+  // Add our settings to the Drupal performance form
+  if ($form_id == 'system_performance_settings') {
+    $form['caching']['cookie_cache_bypass_adv_cache_lifetime'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Cookie Expire Time',
+      '#description' => 'Enter the number of seconds to set a cookie for when a user submits any form on the website. This will ensure that any page they see after submitting a form will be dynamic and not cached.',
+      '#default_value' => variable_get('cookie_cache_bypass_adv_cache_lifetime', 300),
+    );
+    $form['caching']['cookie_cache_bypass_adv_cookie_path'] = array(
+      '#type' => 'select',
+      '#title' => 'Cookie Path Selection',
+      '#description' => 'Choose whether or not the cookie will be set for just the path the user is viewing when filling out the form, or it it will be set for the entire website. Please read the Cookie Cache Bypass Advanced module readme before changing this setting.',
+      '#options' => array('entire_site'=>'Entire Site','form_path'=>'Form Path Only'),
+      '#default_value' => variable_get('cookie_cache_bypass_adv_cookie_path', 'entire_site'),
+    );
+    $form['caching']['cookie_cache_bypass_adv_set_time'] = array(
+      '#type' => 'select',
+      '#title' => 'Cookie Set Time/Location',
+      '#description' => 'Choose when to set the cache bypass cookie. The safest time is before any other validation scripts run, but this may cause people spamming your forms to get more non-cached pages than you wish. The least aggressive setting is as the last submit function. However this setting may cause the cookie to not be set in some situations.',
+      '#options' => array('before_validate'=>'Before Validation','after_validate'=>'After Validation','before_submit'=>'Befor Submit','after_submit'=>'After Submit'),
+      '#default_value' => variable_get('cookie_cache_bypass_adv_set_time', 'before_validate'),
+    );
+  }
+
+  // When should we set our cookie? Before validation is perfered
+  $cookie_set = variable_get('cookie_cache_bypass_adv_set_time', 'before_validate');
+  if ($cookie_set == 'before_validate') {
+    $form['#validate'][-1000] = 'cookie_cache_bypass_adv_setcookie';
+    ksort($form['#validate']);
+    reset($form['#validate']);
+  } else
+  if ($cookie_set == 'after_validate') {
+    $form['#validate'][1000] = 'cookie_cache_bypass_adv_setcookie';
+    ksort($form['#validate']);
+    reset($form['#validate']);
+  } else
+  if ($cookie_set == 'before_submit') {
+    $form['#validate'][-1000] = 'cookie_cache_bypass_adv_setcookie';
+    ksort($form['#validate']);
+    reset($form['#validate']);
+  } else
+  if ($cookie_set == 'after_submit') {
+    $form['#validate'][1000] = 'cookie_cache_bypass_adv_setcookie';
+    ksort($form['#validate']);
+    reset($form['#validate']);
+  }
+
+}
+
+/**
+ * Set our NO_CACHE cookie
+ *
+ * @global string $cookie_domain
+ */
+function cookie_cache_bypass_adv_setcookie() {
+  global $cookie_domain;
+  $lifetime = variable_get('cookie_cache_bypass_adv_cache_lifetime', 300);
+  $cookie_path = variable_get('cookie_cache_bypass_adv_cookie_path', 'entire_site');
+  if ($cookie_path == 'entire_site') {
+    $set_cookie_path = '/';
+  } else {
+    $set_cookie_path = request_uri().'/';
+  }
+  print 'moo';
+  setcookie('NO_CACHE', 'Y', $_SERVER['REQUEST_TIME'] + $lifetime , $set_cookie_path, $cookie_domain);
+}

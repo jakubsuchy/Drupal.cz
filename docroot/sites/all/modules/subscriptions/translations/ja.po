@@ -1,0 +1,1112 @@
+# $Id: ja.po,v 1.2 2008/11/13 11:21:48 imagine Exp $
+#
+# Japanese translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  subscriptions.admin.inc,v 1.17 2008/10/26 23:25:43 salvis
+#  subscriptions_ui.module,v 1.11 2008/10/06 21:41:54 salvis
+#  subscriptions.module,v 1.82 2008/08/12 01:13:08 salvis
+#  subscriptions_mail.module,v 1.17 2008/10/15 00:36:19 salvis
+#  subscriptions_taxonomy.module,v 1.8 2008/11/05 18:07:54 salvis
+#  subscriptions.info,v 1.4 2008/05/18 20:43:03 salvis
+#  subscriptions_blog_ui.info,v 1.3 2008/06/22 14:12:54 salvis
+#  subscriptions_cck.info,v 1.3 2008/08/30 16:00:21 salvis
+#  subscriptions_content.info,v 1.3 2008/05/18 20:43:03 salvis
+#  subscriptions_mail.info,v 1.4 2008/06/18 11:28:41 salvis
+#  subscriptions_taxonomy.info,v 1.3 2008/05/18 20:43:03 salvis
+#  subscriptions_ui.info,v 1.3 2008/05/18 20:43:03 salvis
+#  subscriptions_blog_ui.module,v 1.4 2008/10/26 23:25:44 salvis
+#  subscriptions_content.module,v 1.25 2008/11/05 18:07:54 salvis
+#  subscriptions.install.inc,v 1.6 2008/06/18 15:28:56 salvis
+#  subscriptions_mail.templates.inc,v 1.5 2008/08/30 12:42:40 salvis
+#  subscriptions_cck.module,v 1.3 2008/08/30 16:00:21 salvis
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-11-13 16:25+0900\n"
+"PO-Revision-Date: 2008-11-13 18:16+0900\n"
+"Last-Translator: PineRay <matsudaterutaka@gmail.com>\n"
+"Language-Team: Japanese <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: subscriptions.admin.inc:20
+msgid "Links"
+msgstr "リンク"
+
+#: subscriptions.admin.inc:44
+msgid "Run cron manually!"
+msgstr "cronを手動で実行!"
+
+#: subscriptions.admin.inc:48
+msgid "My subscriptions"
+msgstr "配信登録"
+
+#: subscriptions.admin.inc:82
+msgid "Keep showing the installation reminder above."
+msgstr "インストールに関する上記のリマインダを表示し続ける。"
+
+#: subscriptions.admin.inc:84
+msgid "Uncheck this box to permanently remove the reminder, if you have a reason for not enabling the standard selection of Subscriptions modules."
+msgstr "配信モジュールの標準的な組み合わせを有効にできない何らかの理由がある場合、チェックを外すと注意書きが表示されなくなります。"
+
+#: subscriptions.admin.inc:108;424;490;628
+msgid "Send interval"
+msgstr "送信間隔"
+
+#: subscriptions.admin.inc:111
+#: subscriptions_ui.module:257
+msgid "On&nbsp;updates"
+msgstr "更新時"
+
+#: subscriptions.admin.inc:114
+#: subscriptions_ui.module:258
+msgid "On&nbsp;comments"
+msgstr "コメント投稿時"
+
+#: subscriptions.admin.inc:197
+msgid "Your subscriptions were updated."
+msgstr "配信登録を更新しました。"
+
+#: subscriptions.admin.inc:224
+msgid "Admin Information"
+msgstr "管理者向けの情報"
+
+#: subscriptions.admin.inc:232
+msgid "The selected subscriptions will be given to <b>newly created</b> users."
+msgstr "選択した配信は<strong>新しく登録された</strong>ユーザに向けて送られます。"
+
+#: subscriptions.admin.inc:244
+msgid "If a user has one or more roles assigned at creation time, then she will receive the additional subscriptions defined for these roles."
+msgstr "アカウント作成時に1つ以上のロールが割り当てられていれば、そのユーザはここで設定した配信を重複して受け取ります。"
+
+#: subscriptions.admin.inc:249
+msgid "Role(s)"
+msgstr "ロール"
+
+#: subscriptions.admin.inc:252
+msgid "Select the role to load or role(s) to save."
+msgstr "ロードするロールまたは保存するロールを選択してください。"
+
+#: subscriptions.admin.inc:257
+msgid "Load"
+msgstr "ロード"
+
+#: subscriptions.admin.inc:262
+msgid "Current subscriptions:"
+msgstr "現在の配信登録:"
+
+#: subscriptions.admin.inc:269
+#: subscriptions_ui.module:223
+msgid "The master checkboxes on the left turn the given subscription on or off. Depending on the setup of the site, you may have additional options for active subscriptions."
+msgstr "左側のマスターチェックボックスで配信を有効または無効にします。サイトの設定によっては、ここ以外のオプションを設定しなければ配信が有効にならないこともあります。"
+
+#: subscriptions.admin.inc:281;328
+#: subscriptions.module:50;82
+#: subscriptions_mail.module:196
+#: subscriptions_taxonomy.module:160
+#: subscriptions_ui.module:52
+#: subscriptions.info:0;0
+#: subscriptions_blog_ui.info:0
+#: subscriptions_cck.info:0
+#: subscriptions_content.info:0
+#: subscriptions_mail.info:0
+#: subscriptions_taxonomy.info:0
+#: subscriptions_ui.info:0
+msgid "Subscriptions"
+msgstr "配信登録"
+
+#: subscriptions.admin.inc:308
+msgid "Number"
+msgstr "Number"
+
+#: subscriptions.admin.inc:324
+msgid "Note: The counts on this page may differ from the ones on the detail pages for various technical reasons."
+msgstr "注意: このページに表示されている数は、技術的な原因により詳細ページのものと異なる可能性があります。"
+
+#: subscriptions.admin.inc:363
+msgid "The subtabs here under %User_defaults mirror those found at !My_account_Subscriptions, except that the fieldsets here come up already expanded. Please go there now and familiarize yourself with what's there!"
+msgstr "ユーザデフォルトの下にあるサブタブは !My_account_Subscriptions にあるものとそっくり同じですが、フィールドセットはあらかじめ展開されています。ページを表示してその内容に慣れ親しんでください。"
+
+#: subscriptions.admin.inc:373
+msgid "The default settings that you define here are used for those users that haven't (yet) saved their own settings."
+msgstr "ここで行うデフォルトの設定は、独自の設定をまだ行っていないユーザに対して適用されます。"
+
+#: subscriptions.admin.inc:384
+msgid "Auto-subscribe"
+msgstr "自動配信登録"
+
+#: subscriptions.admin.inc:389
+msgid "Auto-subscribe to new content"
+msgstr "新しいコンテンツに自動配信登録"
+
+#: subscriptions.admin.inc:391
+msgid "Automatically subscribes you to items that you create."
+msgstr "自分が作成した記事に自動で配信登録します。"
+
+#: subscriptions.admin.inc:395
+msgid "Auto-subscribe to updated content"
+msgstr "更新したコンテンツに自動配信登録"
+
+#: subscriptions.admin.inc:397
+msgid "Automatically subscribes you to items that you update (if you have that permission)."
+msgstr "自分が更新した記事に自動で配信登録します。"
+
+#: subscriptions.admin.inc:401
+msgid "Auto-subscribe to comments"
+msgstr "コメントに自動配信登録"
+
+#: subscriptions.admin.inc:403
+msgid "Automatically subscribes you to items that you comment on (or where you update a comment, if you have that permission)."
+msgstr "自分がコメントした記事(またはコメントを更新した記事)に自動で配信登録します。"
+
+#: subscriptions.admin.inc:408
+msgid "Notify poster of own posts"
+msgstr "自分の記事に関する通知を送信"
+
+#: subscriptions.admin.inc:410
+msgid "Sends you notifications about your own posts (if you're subscribed)."
+msgstr "(配信登録していれば)あなたが投稿した記事に関する通知を送信します。"
+
+#: subscriptions.admin.inc:414
+msgid "Digest mode"
+msgstr "ダイジェストモード"
+
+#: subscriptions.admin.inc:416
+msgid "Merges your notifications into a single email, sent at the interval you specify."
+msgstr "通知を一通のメールにまとめて、指定した間隔で送信します。"
+
+#: subscriptions.admin.inc:420
+msgid "Preferences"
+msgstr "初期設定"
+
+#: subscriptions.admin.inc:428
+msgid "The frequency of notifications; it may take longer, but notifications will not be sent more frequently than indicated."
+msgstr "通知の頻度。指定した間隔より長くなることはあっても短くなることはありません。"
+
+#: subscriptions.admin.inc:431;491
+msgid "On updates"
+msgstr "更新時"
+
+#: subscriptions.admin.inc:434
+msgid "Sends a notification when an item is updated."
+msgstr "記事が更新されたときに通知を送信します。"
+
+#: subscriptions.admin.inc:437;491
+msgid "On comments"
+msgstr "コメント投稿時"
+
+#: subscriptions.admin.inc:440
+msgid "Sends a notification when an item receives a comment or reply."
+msgstr "記事にコメントがつけられたときに通知を送信します。"
+
+#: subscriptions.admin.inc:443
+msgid "Any changes you make here will only apply to newly created subscriptions."
+msgstr "ここで加えた変更は、これから作成される配信にのみ適用されます。"
+
+#: subscriptions.admin.inc:447
+msgid "Visibility of controls"
+msgstr "設定項目の表示"
+
+#: subscriptions.admin.inc:454
+msgid "The control(s) mentioned below appear(s) as one or more columns<br /> a) in the %Subscribe subform of node pages and<br /> b) on the sibling subtabs of this %Overview page.<br /> After you have set your %Preferences right above, you may want to hide the corresponding column(s), if you never change those values anyway."
+msgstr "下記の設定項目は1つ以上のカラムとして次のように表示されます<br /> a) ノードページで%Subscribeのサブフォームとして<br /> b) %Overviewページで同位のサブタブとして<br />直前の%Preferencesを設定した後、それらの値を決して変更しないのであれば、対応するカラムを非表示に設定しても良いかもしれません。"
+
+#: subscriptions.admin.inc:456
+msgid "Visible"
+msgstr "表示"
+
+#: subscriptions.admin.inc:456
+msgid "Hidden"
+msgstr "非表示"
+
+#: subscriptions.admin.inc:458
+msgid "Permanently hidden, except for the %preferences"
+msgstr "%preferencesを除いて常に非表示"
+
+#: subscriptions.admin.inc:459
+msgid "Completely inaccessible to the user"
+msgstr "ユーザからは完全に操作不可"
+
+#: subscriptions.admin.inc:470
+msgid "Beyond defining the %Visible/%Hidden defaults for your users, you can"
+msgstr "%Visible/%Hidden に関するユーザのデフォルト設定だけでなく、以下の設定を行えます。"
+
+#: subscriptions.admin.inc:475
+msgid "permanently hide the columns (and the corresponding visibility controls), so that the users cannot make them visible anymore (they can still change their %Preferences though), or"
+msgstr "カラム(および対応する設定項目)をユーザからは表示できなくするために、それらを常に非表示 (それでもユーザは自分の%Preferencesを変更できます)。または"
+
+#: subscriptions.admin.inc:479
+msgid "you can even hide the %Preferences, so that what you've set right above is cast in stone."
+msgstr "%Preferencesさえも非表示にして、真上の設定を役に立たなくします。"
+
+#: subscriptions.admin.inc:507;584
+#: subscriptions_blog_ui.module:144
+#: subscriptions_content.module:745;833
+#: subscriptions_taxonomy.module:306
+#: subscriptions_ui.module:228
+msgid "Save"
+msgstr "保存"
+
+#: subscriptions.admin.inc:512
+msgid "Reset to site defaults"
+msgstr "サイトのデフォルトへ戻す"
+
+#: subscriptions.admin.inc:528
+msgid "The site defaults were restored."
+msgstr "サイトのデフォルトに復旧しました。"
+
+#: subscriptions.admin.inc:558
+msgid "The changes have been saved."
+msgstr "変更内容が保存されました。"
+
+#: subscriptions.admin.inc:580
+msgid "Every line has the format of seconds|human readable text"
+msgstr "「秒数|人が読める文字列」の書式で各行に入力します。"
+
+#: subscriptions.admin.inc:648
+#: subscriptions_content.module:368;370
+#: subscriptions_ui.module:83;195;336
+msgid "Subscribe"
+msgstr "配信登録"
+
+#: subscriptions.admin.inc:663
+msgid "Your subscription was activated."
+msgstr "配信を有効にしました。"
+
+#: subscriptions.admin.inc:667
+msgid "Your subscription could not be activated."
+msgstr "配信を有効にできませんでした。"
+
+#: subscriptions.admin.inc:696
+msgid "Your subscription could not be deactivated."
+msgstr "配信を無効にできませんでした。"
+
+#: subscriptions.admin.inc:705
+msgid "As soon as possible"
+msgstr "なるべく早く"
+
+#: subscriptions.admin.inc:706
+msgid "Every 15 minutes"
+msgstr "15分毎"
+
+#: subscriptions.admin.inc:707
+msgid "Hourly"
+msgstr "1時間毎"
+
+#: subscriptions.admin.inc:708
+msgid "Every three hours"
+msgstr "3時間毎"
+
+#: subscriptions.admin.inc:709
+msgid "Daily"
+msgstr "毎日"
+
+#: (duplicate) subscriptions.install.inc:15
+msgid "Note: For standard Subscriptions functionality you need to enable the following modules:"
+msgstr "注意: 標準的な配信機能には下記のモジュールを有効にする必要があります:"
+
+#: (duplicate) subscriptions.install.inc:17
+msgid "(requires !mail_edit for customizing the templates)"
+msgstr "(テンプレートをカスタマイズするには!mail_editが必要となります)"
+
+#: subscriptions_mail.templates.inc:16
+msgid "| --------------------------------------------------------------------\n"
+msgstr "| --------------------------------------------------------------------\n"
+
+#: subscriptions_mail.templates.inc:20
+msgid "[!site] !subs_type subscription for !name: !title"
+msgstr "[!site] !name 宛の !subs_type 配信 : !title"
+
+#: subscriptions_mail.templates.inc:23
+msgid ""
+"| This is an automated message. Please do NOT reply to the sender address!\n"
+"| To manage your subscriptions go to\n"
+"| !manage_url\n"
+msgstr ""
+"| これは自動配信メッセージです。送信者のアドレスに返信しないでください！\n"
+"| 配信を管理するには、下記にアクセスしてください。\n"
+"| !manage_url\n"
+
+#: subscriptions_mail.templates.inc:29
+msgid ""
+"| Greetings, !name.\n"
+"|\n"
+"| Your subscription on !site\n"
+"| notifies you of {{!is_new==0?:a new post:\n"
+"}}{{!is_updated==0?:an updated post:\n"
+"}}{{!is_old==0?:new comments:\n"
+"}}|\n"
+"{{!is_published==1?:| ***** This post is unpublished! *****\n"
+"}}{{!term_name==!term_name?:| Category: !term_name\n"
+"}}{{!sender_name==!sender_name?:| Author: !sender_name\n"
+"}}{{!sender_has_contact_page==0?:| Contact: !sender_contact_page\n"
+"}}| Title: !title\n"
+"{{!is_old==1?:\n"
+"!teaser\n"
+"\n"
+"}}| Link: !url\n"
+"| Direct unsubscribe link (!subs_type):\n"
+"| !unsubscribe_url\n"
+"{{!has_new_comments==1?!SEPARATOR!comments:}}!SEPARATOR!FOOTER"
+msgstr ""
+"| こんにちは、!nameさん。\n"
+"|\n"
+"| !site の{{!is_new==0?:新しい投稿:}}{{!is_updated==0?:記事の更新:}}{{!is_old==0?:新しいコメント:}}についてお知らせします。\n"
+"|\n"
+"{{!is_published==1?:| ***** この投稿は未掲載です！ *****\n"
+"}}{{!term_name==!term_name?:| カテゴリ: !term_name\n"
+"}}{{!sender_name==!sender_name?:| 投稿者: !sender_name\n"
+"}}{{!sender_has_contact_page==0?:| コンタクト: !sender_contact_page\n"
+"}}| タイトル: !title\n"
+"{{!is_old==1?:\n"
+"!teaser\n"
+"\n"
+"}}| リンク: !url\n"
+"| 登録解除用リンク (!subs_type):\n"
+"| !unsubscribe_url\n"
+"{{!has_new_comments==1?!SEPARATOR!comments:}}!SEPARATOR!FOOTER"
+
+#: subscriptions_mail.templates.inc:50
+msgid ""
+"| {{!comment_is_new==1?New:Updated}} {{!comment_is_published==1?:UNPUBLISHED }}comment:\n"
+"| Author: !comment_name\n"
+"| Title: !comment_title\n"
+"\n"
+"!comment_text\n"
+"\n"
+"| Link: !comment_url\n"
+msgstr ""
+"| {{!comment_is_new==1?新しい:更新された}} {{!comment_is_published==1?:未掲載 }}コメント:\n"
+"| 投稿者: !comment_name\n"
+"| タイトル: !comment_title\n"
+"\n"
+"!comment_text\n"
+"\n"
+"| リンク: !comment_url\n"
+
+#: subscriptions_mail.templates.inc:60
+msgid "[!site] Subscription Digest for !name"
+msgstr "[!site] !name 宛のダイジェスト配信"
+
+#: subscriptions_mail.templates.inc:63
+msgid ""
+"| Greetings, !name.\n"
+"|\n"
+"| Your subscriptions on !site\n"
+"| notify you of the following changes since the previous digest:\n"
+"|\n"
+"!bodies!SEPARATOR!FOOTER"
+msgstr ""
+"| こんにちは、!nameさん。\n"
+"|\n"
+"| !site における前回のダイジェストからの、以下の変更をお知らせします:\n"
+"|\n"
+"!bodies!SEPARATOR!FOOTER"
+
+#: subscriptions_mail.templates.inc:71
+msgid ""
+"{{!sender_name==!sender_name?:| Author: !sender_name\n"
+"}}| Title: !title\n"
+"{{!is_new==0?:!teaser\n"
+"}}| Link: !url\n"
+"| Direct unsubscribe link (!subs_type):\n"
+"| !unsubscribe_url\n"
+"{{!has_new_comments!=1?:!comments}}"
+msgstr ""
+"{{!sender_name==!sender_name?:| 投稿者: !sender_name\n"
+"}}| タイトル: !title\n"
+"{{!is_new==0?:!teaser\n"
+"}}| リンク: !url\n"
+"| 登録解除用リンク (!subs_type):\n"
+"| !unsubscribe_url\n"
+"{{!has_new_comments!=1?:!comments}}"
+
+#: subscriptions_mail.templates.inc:80
+msgid "| Comment: !comment_title\n"
+msgstr "| コメント: !comment_title\n"
+
+#: subscriptions.module:28
+msgid "(unavailable to regular users)"
+msgstr "(通常のユーザは利用不可)"
+
+#: subscriptions.module:149;97
+msgid "Add subscription"
+msgstr "配信登録の追加"
+
+#: subscriptions.module:150
+msgid "Remove subscription"
+msgstr "配信登録の削除"
+
+#: subscriptions.module:151;51
+msgid "Enables site settings for user subscriptions."
+msgstr "ユーザの配信に関するサイト全体の設定を行えるようにします。"
+
+#: subscriptions.module:152;57
+msgid "Site settings"
+msgstr "サイト設定"
+
+#: subscriptions.module:153;62
+msgid "User defaults"
+msgstr "ユーザデフォルト"
+
+#: subscriptions.module:154;71;91
+msgid "Overview"
+msgstr "概観"
+
+#: subscriptions.module:155;75
+msgid "Interval"
+msgstr "間隔"
+
+#: subscriptions.module:187;186;187
+msgid "administer user subscriptions"
+msgstr "ユーザの配信登録の管理"
+
+#: subscriptions.module:188;186;188
+#: subscriptions_content.module:339
+msgid "subscribe to all content types"
+msgstr "すべてのコンテンツタイプに配信登録"
+
+#: subscriptions.module:381
+msgid "Are you sure you want to unsubscribe?"
+msgstr "配信登録を本当に解除しますか?"
+
+#: subscriptions.module:381
+msgid "Unsubscribe"
+msgstr "登録解除"
+
+#: subscriptions.module:389
+msgid "Your subscription was deactivated."
+msgstr "配信を無効にしました。"
+
+#: subscriptions.module:529
+msgid "Database error: user !uid not found in !table table!"
+msgstr "データベースエラー: !table テーブルにユーザ !uid が見つかりません！"
+
+#: subscriptions.module:186
+msgid "access"
+msgstr "access"
+
+#: subscriptions.module:0
+#: subscriptions_mail.module:223;231
+msgid "subscriptions"
+msgstr "配信登録"
+
+#: subscriptions_blog_ui.module:47
+msgid "subscribe to blogs"
+msgstr "ブログに配信登録"
+
+#: subscriptions_blog_ui.module:90
+msgid "There are no active blogs."
+msgstr "有効なブログがありません。"
+
+#: subscriptions_blog_ui.module:0
+msgid "subscriptions_blog_ui"
+msgstr "subscriptions_blog_ui"
+
+#: subscriptions_cck.module:21
+msgid "The label for the CCK field %fieldname, as defined for your !content_type."
+msgstr "!content_type に設定したCCKフィールド %fieldname のラベル"
+
+#: subscriptions_cck.module:22
+msgid "The value(s) of the CCK field %fieldname, as defined for your !content_type, comma-separated."
+msgstr "!content_type に設定したCCKフィールド %fieldname の値(コンマ区切り)。"
+
+#: subscriptions_cck.module:23
+msgid "The value(s) of the CCK field %fieldname, as defined for your !content_type, newline-separated."
+msgstr "!content_type に設定したCCKフィールド %fieldname の値(改行区切り)。"
+
+#: subscriptions_cck.module:0
+msgid "subscriptions_cck"
+msgstr "subscriptions_cck"
+
+#: subscriptions_content.module:56;887
+msgid "thread"
+msgstr "スレッド"
+
+#: subscriptions_content.module:61;798;853
+msgid "content type"
+msgstr "コンテンツタイプ"
+
+#: subscriptions_content.module:90;363
+msgid "Subscribe to this page"
+msgstr "このページに配信登録"
+
+#: subscriptions_content.module:111
+msgid "To %type content"
+msgstr "%typeのコンテンツ"
+
+#: subscriptions_content.module:117
+msgid "To %type content by %name"
+msgstr "%nameが投稿した、%typeのコンテンツ"
+
+#: subscriptions_content.module:175
+msgid "subscribe to content"
+msgstr "コンテンツに配信登録"
+
+#: subscriptions_content.module:176
+msgid "subscribe to content types"
+msgstr "コンテンツタイプに配信登録"
+
+#: subscriptions_content.module:177;851
+msgid "Pages"
+msgstr "ページ"
+
+#: subscriptions_content.module:255;398
+msgid "Send subscriptions notifications"
+msgstr "通知を送信"
+
+#: subscriptions_content.module:260
+msgid "Subscriptions notifications are not sent for unpublished comments (except to users who have the %administer_comments permission), but when you change !Status to %Published, Subscriptions will send out \"new\" notifications, unless you suppress this here."
+msgstr "未掲載のコメントに関する通知は(%administer_commentsのアクセス権限を持っているユーザ以外には)送信されません。しかし、!Statusを%Publishedに変更する際に、ここで送信しないように設定していなければ、\"新しい\"通知が送信されます。"
+
+#: subscriptions_content.module:266
+msgid "Subscriptions notifications are not sent for unpublished comments, except to users who have the %administer_comments permission, and you can even suppress the latter here."
+msgstr "未掲載のコメントに関する通知は、%administer_comments permissionのアクセス権限を持っているユーザ以外には送信されません。また、権限を持っているユーザにも送信しないようできます。"
+
+#: subscriptions_content.module:270
+msgid "You can suppress sending subscriptions notifications here; this option is not saved."
+msgstr "ここで配信通知の送信を抑制することができます。このオプションは保存されません。"
+
+#: subscriptions_content.module:309
+#: subscriptions_taxonomy.module:150
+msgid "none"
+msgstr "なし"
+
+#: subscriptions_content.module:316
+msgid "Content settings"
+msgstr "コンテンツ設定"
+
+#: subscriptions_content.module:322
+msgid "Unlisted content types"
+msgstr "リストに表示しないコンテンツタイプ"
+
+#: subscriptions_content.module:325
+msgid "Select content types which should be <strong>removed from subscription listings</strong>.<br />The content may still be available for subscribing via different kinds of subscriptions, but subscribing by content type will be unavailable for the selected types."
+msgstr "<strong>配信リストから削除する</strong>コンテンツタイプを選択してください。<br />コンテンツに異なる種類の配信登録をすることはなおも可能ですが、選択したタイプのコンテンツタイプについての配信登録はできなくなります。"
+
+#: subscriptions_content.module:330
+msgid "Blocked content types"
+msgstr "ブロックするコンテンツタイプ"
+
+#: subscriptions_content.module:333
+msgid "Select content types which should be <strong>completely unavailable for subscribing</strong>, i.e. content of the selected types will never trigger notifications for regular users."
+msgstr "<strong>完全に配信登録できなくする</strong>コンテンツタイプを選択してください。つまり、選択したタイプのコンテンツは、通常のユーザに通知を送信することがなくなります。"
+
+#: subscriptions_content.module:338
+msgid "Note"
+msgstr "注意"
+
+#: subscriptions_content.module:339
+msgid "The %permission permission grants normal access to unlisted and blocked content types; this is intended as an administrative function, and the content types will be marked with a !symbol symbol (and appear in !red_ON red !red_OFF in the case of blocked types)."
+msgstr "%permissionのアクセス権限があれば、リストに表示していないコンテンツタイプやブロックしているコンテンツタイプに通常通りアクセスできます。これは管理用の機能であり、コンテンツタイプに!symbolの印がつきます(またブロックされたタイプの場合は!red_ON赤!red_OFFで表示されます)。"
+
+#: subscriptions_content.module:343
+msgid "Blocked nodes"
+msgstr "ブロックするノード"
+
+#: subscriptions_content.module:347
+msgid "Enter the IDs of nodes that should be <strong>completely unavailable for subscribing</strong>, separated by spaces."
+msgstr "<strong>完全に配信登録できなくする</strong>ノードIDを半角スペース区切りで入力します。"
+
+#: subscriptions_content.module:354
+msgid "Static content"
+msgstr "静的コンテンツ"
+
+#: subscriptions_content.module:360;370
+msgid "Static content types"
+msgstr "静的コンテンツタイプ"
+
+#: subscriptions_content.module:363
+msgid "Select content types which do not change nor receive comments and thus should not have the %option option."
+msgstr "変更もせずコメントを受け付けてもいないコンテンツタイプを選択して、%optionオプションを外してください。"
+
+#: subscriptions_content.module:368
+msgid "Avoid empty %Subscribe links"
+msgstr "空の%Subscribeリンクを非表示"
+
+#: subscriptions_content.module:370
+msgid "Nodes of %Static_content_types may end up with no %Subscribe options at all. Turn this option on to avoid displaying %Subscribe links in this case. The default is OFF, because this option causes processing overhead for each node view operation."
+msgstr "%Static_content_typesのノードは、%Subscribeのオプションが完全には無くならない可能性があります。この場合は、このオプションをオンにして、%Subscribeのリンクを表示させないようにしてください。このオプションはノードを表示する際にかなりのオーバヘッドを引き起こすため、デフォルトはオフとなっています。"
+
+#: subscriptions_content.module:375
+msgid "Generate the %full_node variable"
+msgstr "%full_nodeの変数を生成"
+
+#: subscriptions_content.module:377
+msgid "Generating this variable causes considerable overhead even if it's not used, and <strong>it may even cause errors</strong>, depending on the !content_type! Default is OFF."
+msgstr "たとえ変数を使用しなくとも、それらを生成することによってかなりのオーバーヘッドが発生し、!content_typeによっては<strong>エラーを引き起こすこともあります</strong>! デフォルトはオフです。"
+
+#: subscriptions_content.module:399
+msgid "You may want to turn this OFF when you only change %Promoted_to_front_page or %Sticky_at_top_of_lists, otherwise Subscriptions will send out \"update\" notifications; this option is not saved.<br />Subscriptions does not send notifications for unpublished nodes (except to users who have the %administer_nodes permission), but when you set %Published to ON, Subscriptions will send out \"new\" notifications, unless you turn this off here."
+msgstr "%Promoted_to_front_pageや%Sticky_at_top_of_listsだけを変更した場合には機能をオフにすることもできますが、そうでなければ「更新」の通知が送信されます。このオプションは保存されません。<br />未掲載のノードに関する通知は (%administer_nodesの権限を持つユーザを除いて) 送信されませんが、ここで機能をオフにしない限り、%Publishedをオンにすると「新着」の通知が送信されます。"
+
+#: subscriptions_content.module:549
+msgid "image on website"
+msgstr "ウェブサイト上の画像"
+
+#: subscriptions_content.module:752
+msgid "There are no subscribed pages."
+msgstr "配信登録されたページがありません。"
+
+#: subscriptions_content.module:798
+msgid "This !content_type is blocked."
+msgstr "!content_type はブロックされています。"
+
+#: subscriptions_content.module:837
+#: subscriptions_taxonomy.module:202
+msgid "There are no available !subs_types."
+msgstr "利用可能な !subs_types がありません。"
+
+#: subscriptions_content.module:837
+msgid "content types"
+msgstr "コンテンツタイプ"
+
+#: subscriptions_content.module:851
+msgid "Notifications for %Pages subscriptions"
+msgstr "%Pagesに関する通知"
+
+#: subscriptions_content.module:853
+msgid "Notifications for %type !content_type subscriptions"
+msgstr "%type!content_typeに関する通知"
+
+#: subscriptions_content.module:871
+msgid "The name of the comment author."
+msgstr "コメントの投稿者名"
+
+#: subscriptions_content.module:872
+msgid "The title of the comment."
+msgstr "コメントのタイトル"
+
+#: subscriptions_content.module:873
+msgid "The body text of the comment."
+msgstr "コメントの本文"
+
+#: subscriptions_content.module:874
+msgid "The direct URL of the comment."
+msgstr "コメントのダイレクトURL"
+
+#: subscriptions_content.module:875
+msgid "The type of comment notification: 1 = new comment, 0 = updated comment."
+msgstr "コメント通知の種類: 1 = 新規コメント、0 = コメント更新。"
+
+#: subscriptions_content.module:876
+msgid "The comment publication state: 1 = published, 0 = unpublished.<br />(Unpublished comments are sent to users with the %administer_comments permission only.)"
+msgstr "コメント掲載状況: 1 = 掲載済み、0 = 未掲載。<br />(未掲載のコメントに関する通知は、%administer_commentsのアクセス権限を持つユーザにだけ送信されます)"
+
+#: subscriptions_content.module:882
+msgid "The user can unsubscribe by clicking this link."
+msgstr "このリンクをクリックすることで、配信登録を解除できます。"
+
+#: subscriptions_content.module:883
+msgid "The name of the sender (if the sender is visible)."
+msgstr "送信者の名前 (送信者を表示可能な場合)。"
+
+#: subscriptions_content.module:884
+msgid "The user page of the sender (if the sender is visible)."
+msgstr "送信者のユーザページ (送信者を表示可能な場合)。"
+
+#: subscriptions_content.module:885
+msgid "The sender's contact setting: 1 = contact form enabled, 0 = disabled."
+msgstr "送信者のコンタクトの設定: 1 = コンタクトフォームが有効、0 = 無効。"
+
+#: subscriptions_content.module:886
+msgid "The contact page of the sender."
+msgstr "送信者のコンタクトページ。"
+
+#: subscriptions_content.module:887
+msgid "The type of the subscription, like '!thread' or '!category'."
+msgstr "「!thread」や「!category」といった配信タイプ。"
+
+#: subscriptions_content.module:888
+msgid "The type of the node, like '!forum' or '!story'."
+msgstr "「!forum」や「!story」といったコンテンツタイプ。"
+
+#: subscriptions_content.module:889
+msgid "The title of the subscriptions item."
+msgstr "配信記事のタイトル。"
+
+#: subscriptions_content.module:890
+msgid "An excerpt of the subscriptions item."
+msgstr "配信記事の要約。"
+
+#: subscriptions_content.module:891
+msgid "The body of the subscriptions item."
+msgstr "配信記事の本文。"
+
+#: subscriptions_content.module:900
+msgid "The full node as it appears on the website (must be specifically enabled !here)."
+msgstr "ウェブサイトで表示されるものと同じノード全体 (!hereで特に有効とする必要あり)。"
+
+#: subscriptions_content.module:900
+#: subscriptions_ui.module:329
+msgid "here"
+msgstr "こちら"
+
+#: subscriptions_content.module:903
+msgid "The URL of the item."
+msgstr "記事のURL"
+
+#: subscriptions_content.module:904
+msgid "The type of notification: 1 = new item, 0 = otherwise."
+msgstr "通知の種類: 1 = 新規記事、0 = その他。"
+
+#: subscriptions_content.module:905
+msgid "The type of notification: 1 = updated (possibly new and already updated) item, 0 = otherwise."
+msgstr "通知の種類: 1 = 更新記事(新規やすでに更新されたものも含む)、0 = その他。"
+
+#: subscriptions_content.module:906
+msgid "The type of notification: 1 = neither new nor updated item, 0 = otherwise."
+msgstr "通知の種類: 1 = 新規でも更新でもない記事、0 = その他。"
+
+#: subscriptions_content.module:907
+msgid "The publication state: 1 = published, 0 = unpublished.<br />(Unpublished nodes are sent to users with the %administer_nodes permission only.)"
+msgstr "掲載状況: 1 = 掲載済み、0 = 未掲載。<br />(未掲載のノードに関する通知は、%administer_nodesのアクセス権限を持つユーザにのみ送信されます)"
+
+#: subscriptions_content.module:908
+msgid "The comments state: 1 = comments are available in !comments, 0 = no comments."
+msgstr "コメントの状況: 1 = !commentsで利用可能、0 = コメントなし。"
+
+#: subscriptions_content.module:909
+msgid "One or more comments if available, otherwise empty."
+msgstr "もしあれば1つ以上のコメント、無ければ空。"
+
+#: subscriptions_content.module:912
+msgid "The rendering of the comments is defined by the template below."
+msgstr "コメントのレンダリングを下記のテンプレートで定義しています。"
+
+#: subscriptions_content.module:915
+msgid "The rendering of the comments is defined by the !link."
+msgstr "コメントのレンダリングを!linkで定義しています。"
+
+#: subscriptions_content.module:916
+msgid "comment templates"
+msgstr "コメントのテンプレート"
+
+#: subscriptions_content.module:953
+msgid "Comment body"
+msgstr "コメント本文"
+
+#: subscriptions_content.module:957
+msgid "The body of each comment."
+msgstr "各コメントの本文"
+
+#: subscriptions_content.module:977
+msgid "Comment separator"
+msgstr "コメントの区切り"
+
+#: subscriptions_content.module:981
+msgid "The separator between comments (if needed)."
+msgstr "コメントとコメントの間に挿入する区切り(任意)。"
+
+#: subscriptions_content.module:0
+msgid "subscriptions_content"
+msgstr "subscriptions_content"
+
+#: subscriptions_mail.module:113
+msgid "(disabled)"
+msgstr "(無効)"
+
+#: subscriptions_mail.module:252
+msgid "Your installation returns %url as the base URL of the site. This is probably not what you want, and it can usually be fixed by setting the %variable variable in your %file file."
+msgstr "サイトのベースURLが %url でインストールされています。あなたが予期していないことかもしれません。%file の %variable 変数を設定することで修正することができます。"
+
+#: subscriptions_mail.module:257
+msgid "Mail settings"
+msgstr "メール設定"
+
+#: subscriptions_mail.module:262
+msgid "E-mail address"
+msgstr "メールアドレス"
+
+#: subscriptions_mail.module:264
+msgid "A valid e-mail address to be used as the \"From\" address by the auto-mailer for !module notifications.  To lessen the likelihood of e-mail being marked as spam, this e-mail address should use the same domain as the website."
+msgstr "!moduleの通知で自動的に送られるメールの「差出人」アドレスに使用する有効なメールアドレス。スパムと判断される可能性を低くするために、サイトと同じドメインのメールアドレスを使用してください。"
+
+#: subscriptions_mail.module:264
+msgid "Clear this field to use the default site e-mail address."
+msgstr "サイトのデフォルトのメールアドレスを使用する場合は空欄にします。"
+
+#: subscriptions_mail.module:268
+msgid "Maximum number of notifications to send per cron job"
+msgstr "送信する通知のcronジョブあたりの最大数"
+
+#: subscriptions_mail.module:270
+msgid "!module tries to use a good part of the remaining time during each cron run. If it's using too much time or you need to limit the number of outgoing e-mails for some other reason, then set the number here. The default is 0, which means unlimited."
+msgstr "!moduleは、cronが実行されるまでの残り時間を効率よく使用しようとします。もしも、時間が多くかかっていたり、または他の理由で送信するメールの数を制限する必要があるなどすれば、ここで数を設定します。デフォルトは無制限を意味する0です。"
+
+#: subscriptions_mail.module:274
+msgid "Display watchdog entries for successful mailings"
+msgstr "メール送信成功でwatchdogエントリ表示"
+
+#: subscriptions_mail.module:276
+msgid "Logs successful mailings to the watchdog log.  Default is ON, but with many subscribers this will generate a huge number of log entries."
+msgstr "メールの送信に成功すればwatchdogにログを記録します。デフォルトはオンですが、配信登録者が多ければそれだけ膨大なログが生成されます。"
+
+#: subscriptions_mail.module:280
+msgid "Display summary watchdog entries per cron job"
+msgstr "cronジョブ毎にwatchdogエントリ表示"
+
+#: subscriptions_mail.module:282
+msgid "Logs the mailing counts, time spent, and size of the remaining queue to the watchdog log.  This is valuable information for estimating the load on the cron job and on your mail server.  Default is ON."
+msgstr "メール送信数および経過時間と残りの予定表サイズをwatchdogのログに記録します。これはcronジョブとメールサーバの不可状況を推定するための価値ある情報です。デフォルトはオンです。"
+
+#: subscriptions_mail.module:294
+msgid "Digest subscriptions notifications"
+msgstr "ダイジェスト配信通知"
+
+#: subscriptions_mail.module:309
+msgid "The digested items (separated by a separator), as defined below:"
+msgstr "下記で設定する、区切り文字で分けられたダイジェスト記事:"
+
+#: subscriptions_mail.module:330
+msgid "The name of the site."
+msgstr "サイト名"
+
+#: subscriptions_mail.module:331
+msgid "Name of the recipient."
+msgstr "受信者の名前。"
+
+#: subscriptions_mail.module:332
+msgid "The user page of the recipient."
+msgstr "受信者のユーザページ。"
+
+#: subscriptions_mail.module:333
+msgid "The URL where the user can manage her subscriptions."
+msgstr "自分の配信を管理する画面のURL。"
+
+#: subscriptions_mail.module:386
+msgid "Digest subject"
+msgstr "ダイジェストの件名"
+
+#: subscriptions_mail.module:387
+msgid "Digest body"
+msgstr "ダイジェストの本文"
+
+#: subscriptions_mail.module:395
+msgid "Digest item"
+msgstr "ダイジェスト記事"
+
+#: subscriptions_mail.module:418
+msgid "Digest item comment"
+msgstr "ダイジェスト記事のコメント"
+
+#: subscriptions_mail.module:422
+msgid "The comments inside a digest item body."
+msgstr "ダイジェスト記事の本文中に挿入するコメント。"
+
+#: subscriptions_mail.module:432
+msgid "Replacement patterns"
+msgstr "置換パターン"
+
+#: subscriptions_mail.module:442
+msgid "Digest item separator"
+msgstr "ダイジェスト記事の区切り文字"
+
+#: subscriptions_mail.module:446
+msgid "The separator between digest items (if needed)."
+msgstr "ダイジェスト記事の間に挿入する区切りの文字（任意）。"
+
+#: subscriptions_mail.module:223
+msgid "notification for @name at @to"
+msgstr "@name <@to> へ通知"
+
+#: subscriptions_mail.module:231
+msgid "error mailing notification for @name at @to"
+msgstr "@name <@to> への通知メール送信エラー"
+
+#: subscriptions_mail.module:0
+msgid "subscriptions_mail"
+msgstr "subscriptions_mail"
+
+#: subscriptions_taxonomy.module:90
+msgid "To content in %term"
+msgstr "%termに属するコンテンツ"
+
+#: subscriptions_taxonomy.module:95
+msgid "To content in %term by %name"
+msgstr "%nameが投稿した、%termに属するコンテンツ"
+
+#: subscriptions_taxonomy.module:127
+msgid "subscribe to taxonomy terms"
+msgstr "タクソノミータームに配信登録"
+
+#: subscriptions_taxonomy.module:144
+msgid "Taxonomy settings"
+msgstr "タクソノミーの設定"
+
+#: subscriptions_taxonomy.module:157
+msgid "Restricted vocabularies"
+msgstr "制限するボキャブラリ"
+
+#: subscriptions_taxonomy.module:160
+msgid "Select vocabularies for which only the subscribed terms should be listed on the %Subscriptions | %Categories page.<br />This helps to reduce the size of the listing, especially for free-tagging vocabularies with large numbers of terms."
+msgstr "配信登録のカテゴリページで登録したタームしか表示しないボキャブラリを選択してください。<br />特に数多くのタームがあるフリータギングボキャブラリにおいて、リストのサイズを小さくするのに役立ちます。"
+
+#: subscriptions_taxonomy.module:165
+msgid "Omitted vocabularies"
+msgstr "省略するボキャブラリ"
+
+#: subscriptions_taxonomy.module:168
+msgid "Select vocabularies which should be <strong>omitted</strong> from subscription listings; this means the terms of those vocabularies will be unlisted, i.e. they will be removed from subscription listings.<br />The content may still be available for subscribing via different kinds of subscriptions, but subscribing by category will be unavailable for the terms in the selected vocabularies."
+msgstr "配信リストから<strong>省略する</strong>ボキャブラリを選択してください。これは、選択したボキャブラリのタームがリストに表示されないことを意味します。つまり、それらのタームを配信リストから取り除きます。<br />コンテンツに異なる種類の配信登録をすることはなおも可能ですが、選択したボキャブラリのタームについての配信登録はできなくなります。"
+
+#: subscriptions_taxonomy.module:202
+msgid "category groups"
+msgstr "カテゴリグループ"
+
+#: subscriptions_taxonomy.module:251
+msgid "This is a restricted category group; to subscribe to an unlisted category, go to a post in that category and subscribe from there."
+msgstr "制限されたカテゴリグループです。リストに無いカテゴリに配信登録するには、そのカテゴリに属する記事を表示して、そこから配信登録してください。"
+
+#: subscriptions_taxonomy.module:288
+msgid "This is a restricted category group; only subscribed categories show up in this list.<br />To subscribe to a category in this group, go to a post in that category and subscribe from there."
+msgstr "制限されたカテゴリグループです。配信登録のあるカテゴリだけを表示しています。<br />このグループのカテゴリに配信登録するには、そのカテゴリに属する記事を表示して、そこから配信登録してください。"
+
+#: subscriptions_taxonomy.module:298
+msgid "There are no active categories."
+msgstr "有効なカテゴリがありません。"
+
+#: subscriptions_taxonomy.module:320
+msgid "Notifications for %Categories subscriptions"
+msgstr "%Categoriesに関する通知"
+
+#: subscriptions_taxonomy.module:320
+msgid "Categories"
+msgstr "カテゴリ"
+
+#: subscriptions_taxonomy.module:334
+msgid "The name of the term/category/tag/forum/etc."
+msgstr "ターム/カテゴリ/タグ/フォーラム/その他の名前。"
+
+#: subscriptions_taxonomy.module:0
+msgid "subscriptions_taxonomy"
+msgstr "subscriptions_taxonomy"
+
+#: subscriptions_ui.module:43;326
+msgid "Subscriptions interface"
+msgstr "配信登録インターフェース"
+
+#: subscriptions_ui.module:85
+msgid "Receive notifications about changes and/or comments to this page (and possibly similar pages)."
+msgstr "このページ(および類似のページ)の変更やコメントに関する通知を受け取る。"
+
+#: subscriptions_ui.module:105
+msgid "Enable the !module block <!link_tag_begin>here<!link_tag_end>!"
+msgstr "!module ブロックを<!link_tag_begin>こちら<!link_tag_end>で有効にしてください!"
+
+#: subscriptions_ui.module:317
+msgid "Display settings"
+msgstr "表示設定"
+
+#: subscriptions_ui.module:323
+msgid "Node form position"
+msgstr "フォームの位置"
+
+#: subscriptions_ui.module:325
+msgid "Fieldset above node links (and comments)"
+msgstr "フィールドセットをリンク（とコメント）より上部に表示"
+
+#: subscriptions_ui.module:326
+msgid "Fieldset in %block block (below the comments)"
+msgstr "フィールドセットを%blockブロックの中に表示（コメントより下）"
+
+#: subscriptions_ui.module:329
+msgid "How to display the subscriptions sub-form on node pages.  Default is the first option.<br />To use the block, <b>you must enable the block</b> !here; put it into the %content region and set the %block_title to !none."
+msgstr "ノードページで配信フォームをどのように表示するか。デフォルトは最初のオプションです。<br />ブロックを使用するには、!hereで<strong>ブロックを有効にしなくてはいけません</strong>。%contentの領域に配置して、%block_titleを !none にします。"
+
+#: subscriptions_ui.module:333
+msgid "Node form visibility"
+msgstr "フォームの表示"
+
+#: subscriptions_ui.module:335
+msgid "Always display the fieldset"
+msgstr "フィールドセットを常に表示"
+
+#: subscriptions_ui.module:336
+msgid "Display only a @subscribe link that makes the fieldset visible"
+msgstr "フィールドセットを表示させる@subscribeリンクだけを表示"
+
+#: subscriptions_ui.module:339
+msgid "What to display.  Default is the first option."
+msgstr "何を表示するか。デフォルトは最初のオプションです。"
+
+#: subscriptions_ui.module:343
+msgid "Expand the node form fieldset"
+msgstr "フォームのフィールドセットを展開"
+
+#: subscriptions_ui.module:345
+msgid "Displays the fieldset with the node page subscriptions sub-form in expanded state.  Default is OFF."
+msgstr "ノードページにある配信フォームのフィールドセットを展開した状態で表示します。デフォルトはオフです。"
+
+#: subscriptions_ui.module:348
+msgid "Note: Our <b>favorite display settings</b> are the exact opposites of the defaults, but we chose the defaults, because they work without enabling the Subscriptions block."
+msgstr "注意: 私達の<strong>好みの表示設定</strong>はデフォルトと全く正反対です。しかし、配信ブロックを有効にしなくとも動作するので、デフォルトを選択しました。"
+
+#: subscriptions_ui.module:352
+msgid "Show 'by author' subscriptions options"
+msgstr "\"投稿者から\"の配信オプションを表示"
+
+#: subscriptions_ui.module:354
+msgid "If you don't want your users to subscribe 'by author', then turn this off.  Default is ON."
+msgstr "オフにすると\"投稿者から\"の配信登録ができなくなります。デフォルトはオンです。"
+
+#: subscriptions_ui.module:0
+msgid "subscriptions_ui"
+msgstr "subscriptions_ui"
+
+#: subscriptions.info:0
+msgid "The basic Subscriptions framework."
+msgstr "基本的な配信フレームワーク。"
+
+#: subscriptions_blog_ui.info:0
+msgid "Blog Subscriptions UI"
+msgstr "ブログ配信登録UI"
+
+#: subscriptions_blog_ui.info:0
+msgid "Provides a separate blogs subscriptions page."
+msgstr "ブログごとの配信登録ページを提供します。"
+
+#: subscriptions_cck.info:0
+msgid "CCK Fields"
+msgstr "CCKフィールド"
+
+#: subscriptions_cck.info:0
+msgid "Provides CCK field data as mail variables."
+msgstr "CCKフィールドのデータをメールの変数として提供します。"
+
+#: subscriptions_content.info:0
+msgid "Content Subscriptions"
+msgstr "コンテンツ配信登録"
+
+#: subscriptions_content.info:0
+msgid "Allows users to subscribe to nodes."
+msgstr "ノードに関する配信の登録ができるようになります。"
+
+#: subscriptions_mail.info:0
+msgid "Subscriptions Mail"
+msgstr "配信メール"
+
+#: subscriptions_mail.info:0
+msgid "Sends out mails with drupal_mail, customizable with the separate mail_edit module."
+msgstr "drupal_mailでメールを送信し、mail_editモジュールでメールをカスタマイズすることができます。"
+
+#: subscriptions_taxonomy.info:0
+msgid "Taxonomy Subscriptions"
+msgstr "タクソノミーに関する配信"
+
+#: subscriptions_taxonomy.info:0
+msgid "Allows users to subscribe to taxonomy terms."
+msgstr "タクソノミータームに配信登録できるようになります。"
+
+#: subscriptions_ui.info:0
+msgid "Subscriptions UI"
+msgstr "配信登録UI"
+
+#: subscriptions_ui.info:0
+msgid "Provides a UI to Subscriptions."
+msgstr "配信登録用のUIを提供します。"
+

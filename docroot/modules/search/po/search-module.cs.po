@@ -1,0 +1,250 @@
+# Czech translation of Drupal (modules/search/search.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: modules/search/search.module:99
+msgid ""
+"The search module adds the ability to search for content by keywords. Search "
+"is often the only practical way to find content on a large site. Search is "
+"useful for finding users and posts by searching on keywords."
+msgstr ""
+"Modul search přidává možnost vyhledávat obsah podle klíčových slov. Hledání "
+"je často jediný použitelný způsob, jak najít obsah na velkém webu. Hodí se "
+"pro hledání uživatelů a příspěvků podle klíčových slov."
+
+#: modules/search/search.module:100
+msgid ""
+"The search engine works by maintaining an index of the words in your site's "
+"content. It indexes the posts and users. You can adjust the settings to "
+"tweak the indexing behaviour. Note that the search requires cron to be set "
+"up correctly. The index percentage sets the maximum amount of items that "
+"will be indexed in one cron run. Set this number lower if your cron is "
+"timing out or if PHP is running out of memory."
+msgstr ""
+"Vyhledávací nástroj si udržuje index slov z obsahu webu. Indexuje příspěvky "
+"a uživatele. Nastavením můžete upravit chování vyhledávání. Pro vyhledávání "
+"je potřeba správně nastavený cron. Můžete určit maximální počet položek, "
+"které se indexují v jednom spuštění cronu. Nastavte toto číslo na nižší, "
+"pokud se cron neprovede z časových nebo paměťových důvodů."
+
+#: modules/search/search.module:101
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@search\">Search page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href=\"@search"
+"\">stránce Search</a>."
+
+#: modules/search/search.module:104
+msgid ""
+"The search engine works by maintaining an index of the words in your site's "
+"content. You can adjust the settings below to tweak the indexing behaviour. "
+"Note that the search requires cron to be set up correctly."
+msgstr ""
+"Vyhledávací nástroj si udržuje index slov z obsahu webu. Nastavením můžete "
+"upravit chování vyhledávání. Pro vyhledávání je potřeba správně nastavený "
+"cron."
+
+#: modules/search/search.module:106
+msgid ""
+"<ul>\n"
+"<li>Check if your spelling is correct.</li>\n"
+"<li>Remove quotes around phrases to match each word individually: <em>\"blue "
+"smurf\"</em> will match less than <em>blue smurf</em>.</li>\n"
+"<li>Consider loosening your query with <em>OR</em>: <em>blue smurf</em> will "
+"match less than <em>blue OR smurf</em>.</li>\n"
+"</ul>"
+msgstr ""
+"<p><ul>\n"
+"<li>Zkontrolujte, zda je slovo správně zadáno.</li>\n"
+"<li>Odstraňte uvozovky kolem frází, aby se slova hledala samostatně: <em>"
+"\"modrý šmoula\"</em> najde méně než <em>modrý šmoula</em>.</li><li>Zkuste "
+"zvolnit dotaz pomocí <em>OR</em>: <em>modrý šmoula</em> najde méně než "
+"<em>modrý OR šmoula</em>.</li></ul></p>"
+
+#: modules/search/search.module:126
+msgid "Search form"
+msgstr "Vyhledávání"
+
+#: modules/search/search.module:149
+msgid "Search settings"
+msgstr "Nastavení vyhledávání"
+
+#: modules/search/search.module:150
+msgid "Configure relevance settings for search and other indexing options"
+msgstr "Nastavit relevanci vyhledávání a další parametry indexování webu"
+
+#: modules/search/search.module:156
+msgid "Clear index"
+msgstr "Vyčistit index"
+
+#: modules/search/search.module:161
+msgid "Top search phrases"
+msgstr "Nejhledanější fráze"
+
+#: modules/search/search.module:162
+msgid "View most popular search phrases."
+msgstr "Zobrazit nejhledanější fráze na tomto webu."
+
+#: modules/search/search.module:188;218;242
+msgid "Re-index site"
+msgstr "Přeindexovat web"
+
+#: modules/search/search.module:194;251
+msgid "The index will be rebuilt."
+msgstr "Index bude přegenerován."
+
+#: modules/search/search.module:215
+msgid "%percentage of the site has been indexed."
+msgstr "Bylo indexováno %percentage webu."
+
+#: modules/search/search.module:216
+msgid "Indexing status"
+msgstr "Stav indexování"
+
+#: modules/search/search.module:223
+msgid "Indexing throttle"
+msgstr "Rychlost indexace"
+
+#: modules/search/search.module:224
+msgid "Items to index per cron run"
+msgstr "Během jednoho spuštění cronu indexovat položek"
+
+#: modules/search/search.module:224
+msgid ""
+"The maximum amount of items that will be indexed in one cron run. Set this "
+"number lower if your cron is timing out or if PHP is running out of memory."
+msgstr ""
+"Maximální počet položek, které se indexují při jednom běhu cronu. Pokud se "
+"cron nedokončí kvůli vypršení času nebo PHP dochází paměť, snižte toto číslo."
+
+#: modules/search/search.module:226
+msgid "Indexing settings"
+msgstr "Nastavení indexování"
+
+#: modules/search/search.module:227
+msgid ""
+"<p>Changing the settings below will cause the site index to be rebuilt. The "
+"search index is not cleared but systematically updated to reflect the new "
+"settings. Searching will continue to work but new content won't be indexed "
+"until all existing content has been re-indexed.</p><p>The default settings "
+"should be appropriate for the majority of sites.</p>"
+msgstr ""
+"<p>Při změně tohoto nastavení se vytvoří nový index. Vyhledávací index se "
+"nesmaže, ale systematicky se aktualizuje, aby odpovídal novému nastavení. "
+"Vyhledávání bude fungovat, ale nový obsah nebude indexován, dokud se "
+"neaktualizuje index existujícího obsahu.</p><p>Výchozí nastavení by mělo být "
+"vhodné pro většinu webů.</p>"
+
+#: modules/search/search.module:228
+msgid "Minimum word length to index"
+msgstr "Minimální délka slova k indexaci"
+
+#: modules/search/search.module:228
+msgid ""
+"The number of characters a word has to be to be indexed. A lower setting "
+"means better search result ranking, but also a larger database. Each search "
+"query must contain at least one keyword that is this size (or longer)."
+msgstr ""
+"Počet znaků, které musí mít slovo, aby bylo indexováno. Nižší číslo znamená "
+"lepší výsledky hledání, ale větší databázi. Každý vyhledávací dotaz musí "
+"obsahovat alespoň jedno slovo této délky (nebo delší)."
+
+#: modules/search/search.module:229
+msgid "Simple CJK handling"
+msgstr "Zpracování Simple CJK"
+
+#: modules/search/search.module:229
+msgid ""
+"Whether to apply a simple Chinese/Japanese/Korean tokenizer based on "
+"overlapping sequences. Turn this off if you want to use an external "
+"preprocessor for this instead. Does not affect other languages."
+msgstr ""
+"Určuje, zda se má použít zjednodušený tokenizer čínštiny/japonštiny/"
+"korejštiny založený na překrývajících se sekvencích. Vypněte, pokud chcete "
+"použít externí preprocessor. Neovliňuji jiné jazyky."
+
+#: modules/search/search.module:241
+msgid "Are you sure you want to re-index the site?"
+msgstr "Určitě chcete přeindexovat web?"
+
+#: modules/search/search.module:242
+msgid ""
+" The search index is not cleared but systematically updated to reflect the "
+"new settings. Searching will continue to work but new content won't be "
+"indexed until all existing content has been re-indexed. This action cannot "
+"be undone."
+msgstr ""
+"Vyhledávací index se nesmaže, ale systematicky se aktualizuje, aby odpovídal "
+"novému nastavení. Vyhledávání bude fungovat, ale nový obsah nebude "
+"indexován, dokud se neaktualizuje index existujícího obsahu. Tuto akci nelze "
+"vrátit zpět."
+
+#: modules/search/search.module:842
+msgid ""
+"You must include at least one positive keyword with @count characters or "
+"more."
+msgstr "Musíte zadat alespoň jedno klíčové slovo s nejméně @count znaky."
+
+#: modules/search/search.module:910
+msgid "%keys (@type)."
+msgstr "Hledáno: %keys (@type)."
+
+#: modules/search/search.module:910
+msgid "results"
+msgstr "výsledky"
+
+#: modules/search/search.module:916
+msgid "Search results"
+msgstr "Výsledky vyhledávání"
+
+#: modules/search/search.module:919
+msgid "Your search yielded no results"
+msgstr "Vyhledávání nepřineslo žádné výsledky."
+
+#: modules/search/search.module:985
+msgid "Enter your keywords"
+msgstr "Zadejte hledaný termín"
+
+#: modules/search/search.module:1026
+msgid "Please enter some keywords."
+msgstr "Zadejte prosím vyhledávaný termín."
+
+#: modules/search/search.module:1043
+msgid "Enter the terms you wish to search for."
+msgstr "Zadejte hledaný termín."
+
+#    modules/comment.module:104 modules/node.module:649 modules/search.module:41,  ;52;60;0 modules/user.module:667
+#: modules/search/search.module:910;0
+msgid "search"
+msgstr "vyhledávání"
+
+#: modules/search/search.module:213
+msgid "There is 1 item left to index."
+msgid_plural "There are @count items left to index."
+msgstr[0] "Zbývá indexovat @count položku."
+msgstr[1] "Zbývá indexovat @count položky."
+msgstr[2] "Zbývá indexovat @count položek."
+
+#: modules/search/search.module:118
+msgid "search content"
+msgstr "hledat obsah"
+
+#: modules/search/search.module:118
+msgid "use advanced search"
+msgstr "použít pokročilé vyhledávání"
+
+#: modules/search/search.module:118
+msgid "administer search"
+msgstr "administrace vyhledávání"

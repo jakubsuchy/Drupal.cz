@@ -1,0 +1,254 @@
+<?php
+// $Id: signup_status_mailer.module,v 1.6 2009/08/19 22:21:50 dww Exp $
+
+
+/// Permission string for administering Signup status mailer settings.
+define('SIGNUP_STATUS_MAILER_ADMIN_PERM', 'administer signup status mailer settings');
+
+/// Permission string to change Signup status mailer settings on own content.
+define('SIGNUP_STATUS_MAILER_ADMIN_OWN_PERM', 'administer signup status mailer settings for own content');
+
+
+/**
+ * Implement hook_menu().
+ */
+function signup_status_mailer_menu() {
+  $items['admin/settings/signup_status/mailer'] = array(
+    'title' => t('Mailer defaults'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('signup_status_mailer_settings'),
+    'access arguments' => array(SIGNUP_STATUS_MAILER_ADMIN_PERM),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+    'file' => 'signup_status_mailer.settings.inc',
+  );
+  $items['node/%node/signups/status-email-settings'] = array(
+    'title' => 'Signup status e-mail',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('signup_status_mailer_settings', 1),
+    'access callback' => '_signup_status_mailer_menu_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 15,
+    'file' => 'signup_status_mailer.settings.inc',
+  );
+  return $items;
+}
+
+/**
+ * Menu access callback handler.
+ *
+ * Ensures the given node is configured to allow signups, and that the current
+ * user either has permission to administer signup_status_mailer settings
+ * site-wide, or they can administer signup_status_mailer on their own content
+ * and they own the node in question.
+ *
+ * @param $node
+ *   The node to test signup_status_mailer access on.
+ * @return
+ *   TRUE if the node is signup-enabled and the user can administer Signup
+ *   status mailer settings, otherwise FALSE.
+ */
+function _signup_status_mailer_menu_access($node) {
+  global $user;
+  if (!empty($node->signup)) {
+    return user_access(SIGNUP_STATUS_MAILER_ADMIN_PERM) || (user_access(SIGNUP_STATUS_MAILER_ADMIN_OWN_PERM) && ($user->uid == $node->uid));
+  }
+}
+
+/**
+ * Implement hook_perm().
+ */
+function signup_status_mailer_perm() {
+  return array(
+    SIGNUP_STATUS_MAILER_ADMIN_PERM,
+    SIGNUP_STATUS_MAILER_ADMIN_OWN_PERM,
+  );
+}
+
+/**
+ * Implement hook_nodeapi().
+ *
+ * When a node is deleted, remove any rows in {signup_status_mailer_settings}.
+ */
+function signup_status_mailer_nodeapi(&$node, $op, $arg) {
+  if ($op == 'delete') {
+    $query = db_query("DELETE FROM {signup_status_mailer_settings} WHERE nid = %d", $node->nid);
+  }
+}
+
+/**
+ * Implement hook_signup_status().
+ *
+ * If so configured, send an e-mail to the user notifying them of their new
+ * signup status, either when the status is first set ($action == 'add') or
+ * when the status is changed ($action == 'update').
+ *
+ * @param $action
+ *   String describing what action was taken to get to the current status (can
+ *   be either 'add' for when a status is first associated with a signup or
+ *   'update' for when a status is modified).
+ * @param $signup
+ *   Fully loaded signup object.
+ */
+function signup_status_mailer_signup_status($action, $signup) {
+  $params = array();
+  $node = node_load($signup->nid);
+
+  // See if there are any admin notifications configured for this site.
+  $notify_emails = variable_get('signup_status_mailer_admin_notify_emails', array());
+  if (!empty($notify_emails)) {
+    $params['node'] = $node;
+    $params['account'] = $account = user_load($signup->uid);
+    $params['signup'] = $signup;
+    $params['subject'] = variable_get('signup_status_mailer_admin_notify_subject', '');
+    $params['body'] = variable_get('signup_status_mailer_admin_notify_body', '');
+    $language = language_default();
+    foreach ($notify_emails as $email) {
+      // TODO: see if there's a registered user with this email and use their
+      // preferred language?
+      drupal_mail('signup_status_mailer', 'admin_notify', $email, $language, $params);
+    }
+  }
+
+  // See what signup_status_mailer settings are in effect for this node,
+  // status and action.
+  $settings = signup_status_mailer_get_active_settings($node, $signup->status, $action);
+
+  // Configured not to send e-mail to the user, abort.
+  if ($settings['notification'] == 'none') {
+    return;
+  }
+
+  // Build up the metadata we need to send the right message.
+  $status_codes = signup_status_codes();
+  $status_name = $status_codes[$signup->status]['name'];
+  $mail_key = "{$action}_{$status_name}";
+  // If we're sending a node-specific custom template, add the nid to the key.
+  if ($settings['notification'] == 'custom') {
+    $mail_key .= '_' . $node->nid;
+  }
+  else {
+    $mail_key .= '_default';
+  }
+
+  if (empty($account)) {
+    $account = user_load($signup->uid);
+  }
+  $language = user_preferred_language($account);
+  if (empty($params)) {
+    $params['node'] = $node;
+    $params['account'] = $account;
+    $params['signup'] = $signup;
+  }
+  $params['subject'] = $settings['subject'];
+  $params['body'] = $settings['body'];
+
+  // Actually try to send it and log what happened.
+  if (drupal_mail('signup_status_mailer', $mail_key, $account->mail, $language, $params)) {
+    watchdog('signup_status_mail', 'Signup status message sent to %name at %mail for %action %status', array('%name' => $account->name, '%mail' => $account->mail, '%action' => $action, '%status' => $status_name), WATCHDOG_NOTICE, l(t('view'), 'node/'. $node->nid .'/signups'));
+  }
+  else {
+    watchdog('signup_status_mail', 'Error sending signup status message to %name at %mailfor %action %status', array('%name' => $account->name, '%mail' => $mail, '%action' => $action, '%status' => $status_name), WATCHDOG_ERROR, l(t('view'), 'node/'. $node->nid .'/signups'));
+  }
+}
+
+/**
+ * Implement hook_mail().
+ *
+ * This is where we invoke token_replace_multiple() to fill in the dynamic
+ * token values in the e-mail message templates if token.module is enabled.
+ */
+function signup_status_mailer_mail($key, &$message, $params) {
+  if (module_exists('token')) {
+    $node = $params['node'];
+    $account = $params['account'];
+    $signup = $params['signup'];
+    $message['body'] = token_replace_multiple($params['body'], array('node' => $node, 'signup' => $signup, 'user' => $account, 'global' => NULL));
+    $message['subject'] = token_replace_multiple($params['subject'], array('node' => $node, 'signup' => $signup, 'user' => $account, 'global' => NULL));
+  }
+  else {
+    $message['body'] = $params['body'];
+    $message['subject'] = $params['subject'];
+  }
+}
+
+/**
+ * Return an array of signup_status_mailer settings for a given node.
+ *
+ * The results are cached in a static array. Since we often need both per-node
+ * and site-wide defaults, we pre-fetch the site-wide defaults (nid 0) if this
+ * is called with a non-zero node ID.
+ *
+ * @param $node
+ *   Either a node object or an integer node ID (nid) to get settings for.
+ *
+ * @return
+ *   A nested array of settings, keyed by signup_status code ID (cid) and then
+ *   action string. Each subsubarray is an associative array with the keys
+ *   'notification', 'body', and 'subject'.
+ */
+function signup_status_mailer_get_settings($node) {
+  $nid = is_numeric($node) ? $node : $node->nid;
+  static $settings = array();
+  $get_defaults = empty($settings[0]);
+  if (empty($settings[$nid])) {
+    $settings[$nid] = array();
+    if ($get_defaults && $nid != 0) {
+      $where = 'nid IN (0, %d)';
+      $settings[0] = array();
+    }
+    else {
+      $where = 'nid = %d';
+    }
+    $query = db_query("SELECT nid, cid, action, notification, body, subject FROM {signup_status_mailer_settings} WHERE $where", $nid);
+    while ($data = db_fetch_array($query)) {
+      $tmp_nid = $data['nid'];
+      $cid = $data['cid'];
+      $action = $data['action'];
+      unset($data['nid'], $data['cid'], $data['action']);
+      $settings[$tmp_nid][$cid][$action]= $data;
+    }
+  }
+  return $settings[$nid];
+}
+
+/**
+ * Return an array of active signup_status_mailer settings for a node/cid pair.
+ *
+ * @param $node
+ *   Fully loaded node object or numeric node ID (nid).
+ * @param $cid
+ *   The signup status code ID (cid).
+ * @param $action
+ *   The action string for the kind of status change ('add', 'update').
+ *
+ * @return
+ *   If the node is configured to override the site-wide defaults, those
+ *   node-specific overrides are returned. Otherwise, the current site-wide
+ *   defaults are returned.
+ */
+function signup_status_mailer_get_active_settings($node, $cid, $action) {
+  $nid = is_numeric($node) ? $node : $node->nid;
+  // Settings to use if the status mailer is disabled for this node/cid/action.
+  $disabled = array('notification' => 'none', 'body' => '', 'subject' => '');
+  $node_settings = signup_status_mailer_get_settings($nid);
+  if (isset($node_settings[$cid][$action])) {
+    switch ($node_settings[$cid][$action]['notification']) {
+      case 'none':
+        return $disabled;
+
+      case 'custom':
+        return $node_settings[$cid][$action];
+    }
+  }
+
+  // Either the node has no settings, or it's configured to use 'default',
+  // so look up the site-wide defaults for this cid/action and return those.
+  $site_settings = signup_status_mailer_get_settings(0);
+  if (isset($site_settings[$cid][$action])) {
+    return $site_settings[$cid][$action];
+  }
+  return $disabled;
+}
+

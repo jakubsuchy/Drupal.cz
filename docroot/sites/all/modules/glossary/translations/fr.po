@@ -1,0 +1,246 @@
+# $Id: fr.po,v 1.1.2.1 2008/02/26 17:54:41 nancyw Exp $
+# LANGUAGE translation of Drupal (glossary.module)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: glossary.module,v 1.88.2.2 2005/04/14 17:19:16 frodo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal 4.6 - Glossary module 4.6cvs\n"
+"POT-Creation-Date: 2005-10-09 19:26+0200\n"
+"PO-Revision-Date: 2005-10-24 00:10+0100\n"
+"Last-Translator: Erik de Zeeuw <erik@syllance.fr>\n"
+"Language-Team: French <drupal@syllance.fr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: French\n"
+
+#: glossary.module:9
+msgid ""
+"<p>Glossary helps newbies understand the jargon which always crops up when specialists talk about a topic. Doctors discuss CBC and EKG and CCs. Web developers keep talking about CSS, P2P, XSLT, etc. This is all intimidating for newbies.</p>\n"
+"      <p>The Glossary module scans posts for glossary terms (and their synonyms) in the body. If found, the glossary indicator is inserted after the term, or the term is turned into an indicator link depending on the settings. By hovering over the indicator, users may learn the definition of that term. Clicking leads the user to that term presented within the whole glossary.</p>\n"
+"      <p>Glossary terms are managed as vocabularies within the taxonomy.module. To get started with glossary, create a new vocabulary on the %taxonomy_admin page. The vocabulary need not be associated with any modules, although you can add detailed description to terms by attaching (story or other type of) nodes to them. Add a few terms to the vocabulary. The term title should be the glossary entry and the description should be its definition. You can make use of the hierarchy, synonym, and related terms features. These features impact the display of the glossary when viewed in an overview.</p>\n"
+"      <p>Next, you have to setup the input formats you want to use the glossary with. At the %input_formats page select an input format to configure. Select the Glossary filter checkbox and press Save configuration. Now select the configure filters tab and select the vocabulary and apply other settings.</p>\n"
+"      <p>You can see how a vocabulary would function as a glossary by going to the %glossaries page and selecting the vocabulary to view.</p>\n"
+"      <p>Administration of glossary requires <em>%permissions</em> permissions.</p>"
+msgstr ""
+"<p>Un glossaire aide les nouveaux venus à comprendre le jargon qui peuple la plupart du temps les publications des utilisateurs initiés à un sujet précis. Les médecins parlent d'ECG, les développeurs web vous parleront de CSS, XSLT ou autres, ce qui n'est pas fait pour rassurer les nouveaux venus.</p>\n"
+"      <p>Le module Glossary analyse les publications pour y trouver des termes du glossaire (ou leurs synonymes). Si un terme est trouvé, l'indicateur du glossaire est associé au terme, ou le terme est transformé en lien vers sa définition, selon la configuration. En passant la souris sur un terme, les utilisateurs verront la définition s'afficher, et un clic suffira à les amener à la définition sur la page complète du glossaire.</p>\n"
+"      <p>Les termes des glossaires sont gérés à l'aide de vocabulaires au sein du module taxonomy. Pour débuter avec le glossaire, créez un nouveau vocabulaire en utilisant la page %taxonomy_admin. Le vocabulaire ne doit pas forcément être associé à un module, vous pourrez cependant ajouter des définitions plus détaillées aux termes du glossaire en y associant du contenu (récit ou autre). Ajoutez ensuite quelques termes à ce vocabulaire. Le titre du terme sera l'entrée dans le glossaire, et la description vous permet d'en spécifier la définition. Vous pouvez utiliser la hiérarchie, les synonymes, et termes communs. Ces fonctionnalités modifient l'affichage du glossaire lorsqu'il est utilisé dans une vue d'ensemble.</p>\n"
+"      <p>Vous devez ensuite configurer les formats d'entrée avec lesquels sera utilisé le glossaire. Sélectionnez un format d'entrée à configurer sur la page %input_formats. Sélectionnez la case du filtre Glossaire, et sauvegardez la configuration. Vous pouvez alors utiliser l'onglet configurer du filtre afin de sélectionner le vocabulaire du glossaire, et modifier les autres options.</p>\n"
+"      <p>Vous pouvez voir comment fonctionne un vocabulaire en tant que glossaire en utilisant la page %glossaries, et en sélectionnant le vocabulaire à afficher.</p>\n"
+"      <p>L'administration du glossaire nécessite les permissions <em>%permissions</em>.</p>"
+
+#: glossary.module:15;28
+msgid "administer glossary"
+msgstr "gestion glossaire"
+
+#: glossary.module:15
+msgid "administer taxonomy"
+msgstr "gestion vocabulaire"
+
+#: glossary.module:15
+msgid "access administration pages"
+msgstr "accès aux pages d'administration"
+
+#: glossary.module:15;15
+msgid "administer"
+msgstr "administration"
+
+#: glossary.module:15
+msgid "categories"
+msgstr "catégories"
+
+#: glossary.module:15
+msgid "input formats"
+msgstr "formats d'entrée"
+
+#: glossary.module:15
+msgid "glossaries"
+msgstr "glossaires"
+
+#: glossary.module:18
+msgid "Maintain a glossary on your site."
+msgstr "Permet de gérer un glossaire sur votre site."
+
+#: glossary.module:22
+msgid "Glossary terms will be automatically marked with links to their descriptions"
+msgstr "Les termes du glossaire seront automatiquement accompagnés d'un lien vers leur description"
+
+#: glossary.module:48;0
+msgid "glossary"
+msgstr "glossaire"
+
+#: glossary.module:61
+msgid "<none>"
+msgstr "<aucun>"
+
+#: glossary.module:66
+msgid "Select Vocabulary"
+msgstr "Sélectionner le vocabulaire"
+
+#: glossary.module:66
+msgid "Select one or more vocabularies which hold all terms for your glossary. When enabled, posts will be scanned for glossary terms. An icon or a superscripted link is inserted beside each term. Hover over the icon or link to learn the meaning of that term."
+msgstr "Sélectionner un ou plusieurs vocabulaires qui contiennent les termes de votre glossaire. Si cette option est activée, les publications seront analysées pour y trouver des termes du glossaire. Une icone ou lien en exposant sera associée à chaque terme. Passer la souris sur le lien ou l'icone affichera sa définition."
+
+#: glossary.module:67
+msgid "Match type"
+msgstr "Type de recherche"
+
+#: glossary.module:67
+msgid "word"
+msgstr "mot complet"
+
+#: glossary.module:67
+msgid "right or left substring"
+msgstr "chaine trouvée à droite ou à gauche d'un mot"
+
+#: glossary.module:67
+msgid "left substring"
+msgstr "chaine trouvée à gauche d'un mot"
+
+#: glossary.module:67
+msgid "right substring"
+msgstr "chaine trouvée à droite d'un mot"
+
+#: glossary.module:67
+msgid "any substring"
+msgstr "n'importe où"
+
+#: glossary.module:67
+msgid "Choose the match type of glossary links."
+msgstr "Sélectionner le type "
+
+#: glossary.module:68
+msgid "Case sensitivity"
+msgstr "Sensible à la casse"
+
+#: glossary.module:68
+msgid "case insensitive"
+msgstr "Insensible à la casse"
+
+#: glossary.module:68
+msgid "case sensitive"
+msgstr "sensible à la casse"
+
+#: glossary.module:68
+msgid "Match either case sensitive or not. Case sensitive matches are far not that resource intensive."
+msgstr "Sélectionner la sensibilité à la casse. La recherche sensible à la casse n'est pas très consommatrice de ressources."
+
+#: glossary.module:69
+msgid "Replace matches"
+msgstr "Remplacer les occurences"
+
+#: glossary.module:69
+msgid "only the first match"
+msgstr "seulement la première"
+
+#: glossary.module:69
+msgid "all matches"
+msgstr "toutes les occurences"
+
+#: glossary.module:69
+msgid "Whether only the first match should be replaced or all matches."
+msgstr "Remplacer seulement la première occurence, ou toutes les occurences."
+
+#: glossary.module:70
+msgid "General settings"
+msgstr "Paramètres généraux"
+
+#: glossary.module:72
+msgid "Term Indicator"
+msgstr "Indicateur de terme défini dans le glossaire"
+
+#: glossary.module:72;73
+msgid "superscript"
+msgstr "exposant"
+
+#: glossary.module:72;74
+msgid "icon"
+msgstr "icone"
+
+#: glossary.module:72
+msgid "replace with acronym link"
+msgstr "remplacer avec un lien vers la définition"
+
+#: glossary.module:72
+msgid "Display terms using either a superscript formatted link, an icon, or an &lt;acronym&gt; tag."
+msgstr "Afficher les termes en utilisant un lien en exposant, une icone, ou un lien vers la définition."
+
+#: glossary.module:73
+msgid "Superscript"
+msgstr "Exposant"
+
+#: glossary.module:73
+msgid "If you choose %superscript above, enter the superscript text."
+msgstr "Si %superscript est sélectionné, entrer le texte devant s'afficher."
+
+#: glossary.module:74
+msgid "Glossary Icon URL"
+msgstr "URL de l'icone de glossaire"
+
+#: glossary.module:74
+msgid "If you choose %icon above, enter the URL of the glossary icon relative to the root of your Drupal site."
+msgstr "Si %icon est sélectionnée, entrez l'URL vers cette icone, relative à la racine de votre site Drupal."
+
+#: glossary.module:75
+msgid "Indicator settings"
+msgstr "options d'indication"
+
+#: glossary.module:77;89
+msgid "Glossary filter"
+msgstr "Filtre glossaire"
+
+#: glossary.module:240;260;267
+msgid "Home"
+msgstr "Accueil"
+
+#: glossary.module:240;261;269
+msgid "Glossaries"
+msgstr "Glossaires"
+
+#: glossary.module:271
+msgid "Glossary: %vocabulary"
+msgstr "Glossaire : %vocabulary"
+
+#: glossary.module:343
+msgid "edit term"
+msgstr "éditer le terme"
+
+#: glossary.module:343
+msgid "edit this term and definition."
+msgstr "éditer ce terme et sa définition"
+
+#: glossary.module:347
+msgid "Detailed description"
+msgstr "Definition détaillée"
+
+#: glossary.module:350
+msgid "See also"
+msgstr "Voir aussi"
+
+#: glossary.module:361
+msgid "add term"
+msgstr "ajouter un terme"
+
+#: glossary.module:362
+msgid "edit glossary"
+msgstr "editer le glossaire"
+
+#: glossary.module:378
+msgid "Glossary"
+msgstr "Glossaire"
+
+#: glossary.module:378
+msgid "Operations"
+msgstr "Opérations"
+
+#: glossary.module:383
+msgid "view"
+msgstr "voir"
+
+#: glossary.module:385
+msgid "edit"
+msgstr "éditer"
+

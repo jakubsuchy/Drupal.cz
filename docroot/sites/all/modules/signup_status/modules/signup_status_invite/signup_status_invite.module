@@ -1,0 +1,225 @@
+<?php
+// $Id: signup_status_invite.module,v 1.1 2009/01/30 18:44:47 miglius Exp $
+
+/**
+ * @file
+ * Implements signup statuse invite
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+define('SIGNUP_STATUS_INVITE_STATUS', variable_get('signup_status_invite_status', 0));
+
+define('SIGNUP_STATUS_INVITE_PERMISSION', 'invite people to signup');
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_perm().
+ */
+function signup_status_invite_perm() {
+  return array(SIGNUP_STATUS_INVITE_PERMISSION);
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function signup_status_invite_menu() {
+  return array(
+    'admin/settings/signup_status_invite' => array(
+      'title' => 'Signup status invite',
+      'description' => 'Configure signup status invite settings.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('signup_status_invite_admin_settings'),
+      'access arguments' => array('administer site configuration'),
+      'file' => 'signup_status_invite.admin.inc',
+    ),
+    'node/%node/signup-invite' => array(
+      'title' => 'Invite',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('signup_status_invite_form', 1),
+      'access callback' => 'signup_status_invite_can_invite',
+      'access arguments' => array(1),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 21,
+    ),
+    'node/%node/signup-invite/autocomplete' => array(
+      'title' => 'Invite autocomlete',
+      'page callback' => 'signup_status_invite_autocomplete',
+      'page arguments' => array(1),
+      'access callback' => 'signup_status_invite_can_invite',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+    ),
+  );
+}
+
+/**
+ * Check if a user can invite other users to signup.
+ */
+function signup_status_invite_can_invite($node, $account = NULL) {
+  return user_access(SIGNUP_STATUS_INVITE_PERMISSION, $account) && node_access('update', $node, $account) && isset($node->signup) && $node->signup == 1;
+}
+
+/**
+ * Implementation of hook_mail().
+ */
+function signup_status_invite_mail($key, &$message, $params) {
+  $language = $message['language'];
+  $account = isset($params['account']) ? $params['account'] : (object)array();
+  $variables = array_merge(user_mail_tokens($account, $language), $params['variables'] ? $params['variables'] : array());
+  $message['subject'] .= _signup_status_invite_mail_text($key .'_subject', $language, $variables);
+  $message['body'][] = _signup_status_invite_mail_text($key .'_body', $language, $variables);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Mail strings
+
+/**
+ * Returns a mail string for a variable name.
+ *
+ * Used by signup_status_invite_mail() and the settings forms to retrieve strings.
+ */
+function _signup_status_invite_mail_text($key, $language = NULL, $variables = array()) {
+  $langcode = isset($language) ? $language->language : NULL;
+
+  if ($admin_setting = variable_get('signup_status_invite_mail_'. $key, FALSE)) {
+    // An admin setting overrides the default string.
+    return strtr($admin_setting, $variables);
+  }
+  else {
+    // No override, return default string.
+    switch ($key) {
+      case 'invite_subject':
+        return t('You have been invited to the !site', $variables, $langcode);
+      case 'invite_body':
+        return t("Your friend, !name has invited you to join \"!title\" at !site site.\n\nYou may now confirm your status at\n\n!signup_url\n\n----------\n\n!message\n\n--  !site team", $variables, $langcode);
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Invites
+
+/**
+ * Invites form.
+ */
+function signup_status_invite_form(&$form_state, $node) {
+  $form = array();
+  $form['invite'] = array(
+    '#type' => 'fieldset',
+  );
+  $form['invite']['#title'] = t('Invite a user to the node');
+  $form['invite']['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('To'),
+    '#description' => t('Type the comma separated list of e-mails of the people you would like to invite to the node.'),
+    '#required' => TRUE,
+    '#autocomplete_path' => 'node/'. $node->nid .'/signup-invite/autocomplete',
+  );
+  $form['invite']['message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Your message'),
+    '#required' => FALSE,
+    '#description' => t('This message will be added to the e-mails sent to the people you are inviting to the node.'),
+  );
+  $form['invite']['nid'] = array(
+    '#type' => 'hidden',
+    '#value' => $node->nid,
+  );
+  $form['invite']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Invite'),
+  );
+
+  return $form;
+}
+
+/**
+ * Invite form validation.
+ */
+function signup_status_invite_form_validate($form, &$form_state) {
+  global $user;
+  $values = $form_state['values'];
+
+  $mails = array_filter(array_map(create_function('$a', 'return trim($a);'), explode(',', $values['mail'])));
+  if (in_array($user->mail, $mails)) {
+    form_set_error('mail', t('You may not invite yourself - @self.', array('@self' => $user->mail)));
+  }
+
+  $bad_mails = array();
+  foreach ($mails as $mail) {
+    if (($account = user_load(array('mail' => $mail))) && $account->status == 0) {
+      form_set_error('mail', t('A user %name with the e-mail address %mail is blocked.', array('%name' => $account->name, '%mail' => $mail)));
+    }
+    else if ($account && db_result(db_query_range("SELECT sid FROM {signup_log} WHERE uid = %d AND nid = %d", $account->uid, $values['nid'], 0, 1))) {
+      form_set_error('mail', t('A user %name with the e-mail address %mail is already signuped to the node.', array('%name' => $account->name, '%mail' => $mail)));
+    }
+    else if (!$account) {
+      form_set_error('mail', t('There is no user with the e-mail address %mail.', array('%mail' => $mail)));
+    }
+    else if (valid_email_address($mail)) {
+      $form_state['valid_mails'][] = $mail;
+    }
+    else {
+      $bad_mails[] = $mail;
+    }
+  }
+  if (count($bad_mails)) {
+    form_set_error('mail', t('Invalid email address: @value.', array('@value' => implode(', ', $bad_mails))));
+  }
+}
+
+/**
+ * Invite form submission.
+ */
+function signup_status_invite_form_submit($form, &$form_state) {
+  global $user;
+  $values = $form_state['values'];
+  $node = node_load($values['nid']);
+
+  $variables = array(
+    '!title' => $node->title,
+    '!site' => variable_get('site_name', 'drupal'),
+    '!message' => $values['message'],
+    '!name' => $user->name,
+  );
+
+  foreach ($form_state['valid_mails'] as $mail) {
+    $account = user_load(array('mail' => $mail));
+    db_query("INSERT INTO {signup_log} (uid, nid, anon_mail, signup_time, form_data, status) VALUES (%d, %d, '%s', %d, '%s', %d)", $account->uid, $values['nid'], '', time(), serialize(array()), SIGNUP_STATUS_INVITE_STATUS);
+    $sid = db_last_insert_id('signup_log', 'sid');
+    _signup_status_change('invite', (object)array('sid' => $sid, 'uid' => $account->uid, 'nid' => $values['nid'], 'anon_mail' => '', 'status' => SIGNUP_STATUS_INVITE_STATUS));
+    $signup_url = url('signup/edit/'. $sid, array('absolute' => TRUE));
+    $message = drupal_mail('signup_status_invite', 'invite', $mail, $GLOBALS['language'], array('account' => $account, 'variables' => array_merge($variables, array('!signup_url' => $signup_url))), $user->mail);
+    if ($message['result']) {
+      watchdog('signup_status_invite', 'Invite e-mail was mailed from %name to %mail.', array('%name' => $user->name, '%mail' => $mail));
+      drupal_set_message(t('The invite has been mailed to e-mail address %mail.', array('%mail' => $mail)));
+    }
+    else {
+      watchdog('signup_status_invite', 'Error mailing invite e-mail from %user to %mail.', array('%name' => $user->name, '%mail' => $mail), WATCHDOG_ERROR);
+      drupal_set_message(t('Unable to send mail. Please contact the site admin.'), 'error');
+    }
+  }
+}
+
+/**
+ * Invite form autocomplete function.
+ */
+function signup_status_invite_autocomplete($node, $string = '') {
+  global $user;
+
+  $matches = array();
+  if (!empty($string)) {
+    $mails = array_map(create_function('$a', 'return trim($a);'), explode(',', $string));
+    if ($string = array_pop($mails)) {
+      $result = db_query_range("SELECT u.name, u.mail FROM {users} u LEFT JOIN {signup_log} sl ON u.uid = sl.uid WHERE u.status = '1' AND (LOWER(u.name) LIKE LOWER('%s%%') OR LOWER(u.mail) LIKE LOWER('%s%%')) AND (sl.nid <> %d OR sl.nid IS NULL) AND u.uid <> %d ORDER BY u.mail", $string, $string, $node->nid, $user->uid, 0, 10);
+      while ($account = db_fetch_object($result)) {
+        $matches[(!empty($mails) ? implode(', ', $mails) .', ' : '') . $account->mail] = check_plain($account->mail) .' ('. check_plain($account->name) .')';
+      }
+    }
+  }
+  drupal_json($matches);
+}
+

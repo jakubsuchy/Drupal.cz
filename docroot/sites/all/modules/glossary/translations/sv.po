@@ -1,0 +1,266 @@
+# $Id: sv.po,v 1.1.2.1 2008/02/26 17:54:41 nancyw Exp $
+#
+# Swedish translation of Drupal (general)
+# Copyright 2007 Maria Tingvall <drupal@9manader.nu>
+# Generated from file: glossary.module,v 1.100 2007/05/05 12:57:09 weitzman
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: glossary-5.x-1.x-dev\n"
+"POT-Creation-Date: 2007-09-12 23:54+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: Maria Tingvall <drupal@9manader.nu>\n"
+"Language-Team: Swedish <drupal@9manader.nu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: glossary.module:11
+msgid "<p>Glossary helps newbies understand the jargon which always crops up when specialists talk about a topic. Doctors discuss CBC and EKG and CCs. Web developers keep talking about CSS, P2P, XSLT, etc. This is all intimiadating for newbies.</p>\n      <p>The Glossary module scans posts for glossary terms (and their synonyms) in the body. If found, the glossary indicator is inserted after the term, or the term is turned into an indicator link depending on the settings. By hovering over the indicator, users may learn the definition of that term. Clicking leads the user to that term presented within the whole glossary.</p>\n      <p>Glossary terms are managed as vocabularies within the taxonomy.module. To get started with glossary, create a new vocabulary on the !taxonomy_admin page. The vocabulary need not be associated with any modules, although you can add detailed description to terms by attaching (story or other type of) nodes to them. Add a few terms to the vocabulary. The term title should be the glossary entry and the description should be its definition. You can make use of the hierarchy, synonym, and related terms features. These features impact the display of the glossary when viewed in an overview.</p>\n      <p>Next, you have to setup the input formats you want to use the glossary with. At the !input_formats page select an input format to configure. Select the Glossary filter checkbox and press Save configuration. Now select the configure filters tab and select the vocabulary and apply other settings.</p>\n      <p>You can see how a vocabulary would function as a glossary by going to the !glossaries page and selecting the vocabulary to view.</p>\n      <p>Administration of glossary requires <em>%permissions</em> permissions.</p>"
+msgstr "<p>Glossary (glosor) hjälper nykomlingar att förstå jargongen som alltid uppstår när små grupper eller specialister pratar om ett ämne. Läkare pratar om EKG, CT och liknande, webbutvecklare pratar om CSS, P2P, XSLT, e.t.c. vilket kan vara förvirrande för nykomlingar.</p>\n      <p>Glossarymodulen söker efter glostermer (och synonymer) i brödtexten. Om termer hittas dyker en indikator upp efter termen eller så görs termen om till en indikatorlänk beroende på vilken inställning som gjorts. Genom att flytta musen över länken dyker en ordförklaring upp i en liten ruta. Genom att klicka på länken kommer man till en lista över sidor som innehåller termen.</p>\n      <p>Glosorna hanteras som vokabulär i taxonomy.module. Börja med att skapa ett vokabulär på !taxonomy_admin-sidan. Vokabulären behöver inte vara associerad med någon modul även om det går att koppla noder (artikel, statisk sida eller vad du vill) till dem. Lägg till några termer i vokabulären. Titeln är själva ordet eller förkortningen medan beskrivningen/brödtexten innehåller beskrivningen av ordet/förkortningen. Det går att använda sig av hierarkier, synonymer och relaterade termer, dessa påverkar dock utsseendet när de visas i översikten.</p>\n      <p>Sedna ska inmatningsformatet anpassas till glosorna. På sidan för !input_formats görs inställningarna. Välj Glosfilter (glossary filter) och klicka Spara inställningar. Välj fliken för Inställning av filter (configure filters), välj vokabulär och gör övriga inställningar efter tycke och smak.</p>\n      <p>Genom att gå till !glossaries page och välja vokabulär kan du se hur det hela fungerar.</p>\n      <p>Administration av glosorna kräver <em>%permissions</em> att man har beehörighet.</p>"
+
+#: glossary.module:18;70
+msgid "administer glossary"
+msgstr "administrera glosor"
+
+#: glossary.module:18
+msgid "administer taxonomy"
+msgstr "administrera taxonomi"
+
+#: glossary.module:18
+msgid "access administration pages"
+msgstr "åtgång till administrationssidor"
+
+#: glossary.module:19;20
+msgid "administer"
+msgstr "administrera"
+
+#: glossary.module:19
+msgid "content"
+msgstr "innehåll"
+
+#: glossary.module:19
+msgid "categories"
+msgstr "kategorier"
+
+#: glossary.module:20
+msgid "site configuration"
+msgstr "inställningar för sajten"
+
+#: glossary.module:20
+msgid "input formats"
+msgstr "Inmatningsformat"
+
+#: glossary.module:21
+msgid "glossaries"
+msgstr "glosor"
+
+#: glossary.module:24
+msgid "Maintain a glossary on your site."
+msgstr "Underhåll av glosor på sajten"
+
+#: glossary.module:28
+msgid "Glossary terms will be automatically marked with links to their descriptions"
+msgstr "Glostermer kommer automatiskt att märkas med länkar till sina förklaringar"
+
+#: glossary.module:44
+msgid "Glossary block (@name)"
+msgstr "Glosblock (@name)"
+
+#: glossary.module:47
+msgid "Search for glossary terms"
+msgstr "Sök efter glostermer"
+
+#: glossary.module:52
+msgid "Search Glossary"
+msgstr "Sök glosor"
+
+#: glossary.module:87;94;105;626
+msgid "Glossary"
+msgstr "Glosor"
+
+#: glossary.module:128
+msgid "Search"
+msgstr "Sök"
+
+#: glossary.module:170
+msgid "<none>"
+msgstr "<ingen>"
+
+#: glossary.module:178;284
+msgid "Glossary filter"
+msgstr "Glosfilter"
+
+#: glossary.module:184
+msgid "General settings"
+msgstr "Allmäna inställningar"
+
+#: glossary.module:190
+msgid "Select Vocabulary"
+msgstr "Välj vokabulär"
+
+#: glossary.module:193
+msgid "Select one or more vocabularies which hold all terms for your glossary. When enabled, posts will be scanned for glossary terms. An icon or a superscripted link is inserted beside each term. Hover over the icon or link to learn the meaning of that term."
+msgstr "Välj ett eller flera vokabulär som innehåller alla termer med dina glosor. När dessa gjorts tilgängliga kommer posterna att genomsökas efter glostermer. En ikon eller länk visas bredvid varje term. Flytta musen över ikonen eller länken för att få en förklaring."
+
+#: glossary.module:200
+msgid "Show glossary across many smaller pages"
+msgstr "Visa lista över glosor på flera småsidor"
+
+#: glossary.module:202
+msgid "Do you want to show all terms on one glossary page or break up the glossary into a page for each first letter (i.e. many pages)."
+msgstr "Vill du visa alla termer på en glossida eller bryta isär den på en sida för varje begynnelsebokstav?"
+
+#: glossary.module:206
+msgid "Match type"
+msgstr "Passa typ"
+
+#: glossary.module:209
+msgid "word"
+msgstr "ord"
+
+#: glossary.module:210
+msgid "right or leftmb_substring"
+msgstr "höger eller vänster mb_substring"
+
+#: glossary.module:211
+msgid "leftmb_substring"
+msgstr "vänster mb_substring"
+
+#: glossary.module:212
+msgid "rightmb_substring"
+msgstr "höger mb_substring"
+
+#: glossary.module:213
+msgid "anymb_substring"
+msgstr "någon mb_substring"
+
+#: glossary.module:215
+msgid "Choose the match type of glossary links."
+msgstr "Välj matchningstyp för gloslänkar"
+
+#: glossary.module:219
+msgid "Case sensitivity"
+msgstr "Bokstavsberoende"
+
+#: glossary.module:222
+msgid "case insensitive"
+msgstr "bokstavsberoende"
+
+#: glossary.module:223
+msgid "case sensitive"
+msgstr "bokstavsberoende"
+
+#: glossary.module:225
+msgid "Match either case sensitive or not. Case sensitive matches are far not that resource intensive."
+msgstr "Välj bokstavsberoende eller ej. Bokstavsberoende passningar är inte särskilt resurskrävande."
+
+#: glossary.module:229
+msgid "Replace matches"
+msgstr "Ändra matchningar"
+
+#: glossary.module:232
+msgid "only the first match"
+msgstr "bara första matchningen"
+
+#: glossary.module:233
+msgid "all matches"
+msgstr "alla matchningar"
+
+#: glossary.module:235
+msgid "Whether only the first match should be replaced or all matches."
+msgstr "Välj om bara första eller alla matchningar ska ändras."
+
+#: glossary.module:240
+msgid "Indicator settings"
+msgstr "Indikatorinställningar"
+
+#: glossary.module:246
+msgid "Term Indicator"
+msgstr "Termindikator"
+
+#: glossary.module:249;262
+msgid "superscript"
+msgstr "text"
+
+#: glossary.module:250;271
+msgid "icon"
+msgstr "ikon"
+
+#: glossary.module:251
+msgid "replace with acronym link"
+msgstr "ersätt med förkortningslänk"
+
+#: glossary.module:253
+msgid "Display terms using either a superscript formatted link, an icon, or an &lt;acronym&gt; tag."
+msgstr "Visa termer som använder antingen textlänk, ikon eller &lt;förkortning&gt;."
+
+#: glossary.module:257
+msgid "Superscript"
+msgstr "Text"
+
+#: glossary.module:261
+msgid "If you choose !superscript above, enter the superscript text."
+msgstr "Om du väljer !superscript ovan, välj text."
+
+#: glossary.module:266
+msgid "Glossary Icon URL"
+msgstr "Länk till glosikon"
+
+#: glossary.module:270
+msgid "If you choose !icon above, enter the URL of the glossary icon relative to the root of your Drupal site."
+msgstr "Om du väljer !icon ovan ska du skriva in relativa länken (i förhållande till rotkatalogen i din Drupalinstallation) till ikonen."
+
+#: glossary.module:452;459
+msgid "Home"
+msgstr "Hem"
+
+#: glossary.module:453;461
+msgid "Glossaries"
+msgstr "Glosor"
+
+#: glossary.module:463
+msgid "Glossary: %vocabulary"
+msgstr "Glosor: %vocabulary"
+
+#: glossary.module:578
+msgid "edit term"
+msgstr "redigera term"
+
+#: glossary.module:579
+msgid "edit this term and definition."
+msgstr "redigera denna term och dess definition"
+
+#: glossary.module:583
+msgid "Detailed definition"
+msgstr "Detaljerad definition"
+
+#: glossary.module:590
+msgid "See also"
+msgstr "Se även"
+
+#: glossary.module:605
+msgid "add term"
+msgstr "lägg till term"
+
+#: glossary.module:609
+msgid "edit glossary"
+msgstr "redigera glosor"
+
+#: glossary.module:626
+msgid "Operations"
+msgstr "Operationer"
+
+#: glossary.module:631
+msgid "view"
+msgstr "visa"
+
+#: glossary.module:633
+msgid "edit"
+msgstr "redigera"
+
+#: glossary.module:0
+msgid "glossary"
+msgstr "glosor"

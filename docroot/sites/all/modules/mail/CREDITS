@@ -1,0 +1,14 @@
+mail.module
+
+CREDITS
+
+Written by
+  - Nedjo Rogers <nedjo AT gworks DOT ca>
+
+based on code from the story module.
+
+Use of activeMailLib.php and related improvements (attachment handling,
+mail format and encoding options, etc.) contributed by drupal.org user
+Dublin Drupaller.
+
+Thanks to drupal.org users for fixes: gollyg

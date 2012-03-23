@@ -1,0 +1,151 @@
+Preparation
+===========
+
+1. Go to 'administer -> settings' and configure the file system settings. Make
+   sure that 'Download method' is set to 'Public'. (The module will work if
+   you use the private download method, but you will have to grant anonymous
+   users access to download files.)
+
+2. Go to 'administer -> modules' and enable upload.module if you wish to use
+   uploaded images or text files as banners.
+
+3. Optional: Download and install scheduler.module if you wish to schedule
+   publishing and unpublishing of your banners.
+
+
+Installation and configuration
+==============================
+
+1. Copy the banner directory to your Drupal modules directory.
+
+2. Copy the files 'banner_db.php' and 'banner_file.php' to your site root.
+
+3. Go to 'administer -> modules' and enable the banner module. The module will
+   automatically create the banner table in the database.
+
+4. Go to 'administer -> settings -> banner' and configure the banner module.
+   At a minimum, you will have to configure the cache settings.
+
+   Cache settings: Choose the cache handler you wish to use. The database
+   handler always works and has more advanced taxonomy filtering than the
+   file handler. The file handler is much faster than the database handler.
+
+   FIXME: Description of taxonomy filtering
+
+5. If you don't want new banners to be displayed on the front page with your
+   other nodes, go to 'administer -> settings -> content types -> banner' and
+   uncheck the 'Promoted to front page' setting.
+
+6. Go to 'administer -> access control' and configure the banner permissions.
+   The following permissions are available:
+
+      'administer banners' - users can add/edit/delete all banners on your site
+      'create banners' - users can create and manage banners
+      'view banners' - users can view banners
+
+
+Create banners
+==============
+
+Banners are just another type of node. Go to 'create content -> banner' to
+create a new banner.
+
+The banner module supports four banner modes: Upload, text, JavaScript and
+remote. The following fields are used by all the modes:
+
+   Title: Shown in admin overviews and when viewing the banner as a node
+   Description: Shown when viewing the banner as a node
+
+   URL: The URL users are taken to when clicking the banner
+   Target: The frame target for the banner URL
+   Status: Set to 'enabled' to publish the banner immediately
+   Group: The banner group the new banner belongs to
+
+Modes
+-----
+
+Upload: Use the upload mode if you want to use an uploaded image or a text file
+as a banner. Enter the basic banner information and click 'File attachments' on
+the node edit form. You can add as many files as you wish to your banner, but
+only the first file on the list will be used. If you are uploading a text file,
+the text '%url' is replaced by the banner URL (e.g. banner/7) when the banner
+is displayed.
+
+Text: Use the text mode if you wish to enter the banner text directly on the
+node edit form. Enter the banner text in the 'Content' field. The text '%url'
+is replaced by the banner URL (e.g. banner/7) when the banner is displayed.
+
+JavaScript: Use the JavaScript mode if you wish to use a piece of JavaScript to
+display your banner. Enter the JavaScript in the 'Content' field. This won't
+support Google ads without manual modification of your site template to include
+Google's JavaScript.
+
+Remote: Use the remote mode to use a remote image as a banner. Enter the URL of
+the remote image in the 'Content' field.
+
+
+Show banners
+============
+
+You can either use the banner blocks provided by the module or create your own.
+If you need special banner placements, you can modify your theme to insert
+banners anywhere you want.
+
+Banner blocks
+-------------
+
+1. Go to 'administer -> blocks' and click the 'configure' link next to the
+   'Banner group 1' block. The following setting is available:
+
+      Banner count: Show this many different banners from the banner group
+
+2. Select the placement of the block and enable it.
+
+One block is created for each banner group on the site. You can add banner
+groups by adding terms to the Banner groups vocabulary (go to 'administer ->
+categories').
+
+Theme
+-----
+
+Insert a the following PHP code in your template to display banners:
+
+  <?php print banner_display(1, 3) ?>
+
+The code above will try to display three different banners from banner group 1.
+Each banner will only be shown once for each call to banner_display().
+
+To show one banner from banner group 1 and one banner from banner group 4,
+you can use the following PHP code:
+
+  <?php print banner_display(1, 1); print banner_display(4, 1) ?>
+
+
+Frequently asked questions
+==========================
+
+Q. I don't see any images. What's wrong?
+A. Be sure you installed 'banner_db_php' and 'banner_file.php', and
+   properly set the permissions on these files so they can be read
+   by your webserver. (See step 2 of "Installation and configuration"
+   in INSTALL.txt.)
+
+   Alternatively, you may have to add the correct path to magic.mime to your
+   php.ini file, e.g.:
+
+   mime_magic.magicfile = "/usr/share/misc/file/magic.mime"
+
+Q. I did install the files correctly, but I still don't see any images.
+   What's wrong?
+A. Try refreshing the banner cache.
+   Go to: 'administer -> banner -> refresh cache'
+
+Q. I've refreshed my cache, but I'm still not seeing images. What's wrong?
+A. Edit the banner and be sure that the MIME type was properly detected. Go
+   to:
+      administer -> banner -> list
+   then click 'edit' next to problematic banner. At the bottom of the page
+   you can update the MIME type.
+
+
+$Id: INSTALL.txt,v 1.7.2.1 2006/09/23 14:39:43 wulff Exp $

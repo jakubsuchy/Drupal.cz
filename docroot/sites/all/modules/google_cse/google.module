@@ -1,0 +1,75 @@
+<?php
+// $Id: google.module,v 1.1.2.7 2008/07/02 01:25:34 mfb Exp $
+
+/**
+ * @file
+ * Integrates Google Custom Search Engine with the Drupal core search API.
+ */
+
+/**
+ * Implementation of hook_search().
+ */
+function google_search($op = 'search', $keys = NULL) {
+  if (user_access('search Google CSE')) {
+    switch ($op) {
+      case 'name':
+        return google_cse_results_tab();
+      case 'search':
+        google_cse_results_set_title();
+        return array(0);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_search_page().
+ */
+function google_search_page($results) {
+  return theme('google_cse_results', FALSE);
+}
+
+/**
+ * Implementation of hook_init().
+ */
+function google_init() {
+  if (arg(0) == 'search' && arg(1) == 'google' && (is_null(arg(2)) || !isset($_GET['query']))) {
+    if ($_SERVER['REQUEST_METHOD'] != 'POST' && $keys = isset($_GET['query']) ? $_GET['query'] : arg(2)) {
+      drupal_goto('search/google/'. $keys, google_build_query($keys));
+    }
+  }
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function google_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'search_form' && $form['module']['#value'] == 'google') {
+    drupal_add_js(array('googleCSE' => array('searchForm' => TRUE)), 'setting', 'footer');
+    google_cse_sitesearch_form($form);
+    if (variable_get('google_cse_results_gadget', 1)) {
+      $form['basic']['inline']['submit']['#suffix'] = theme('google_cse_results_gadget');
+    }
+    $form['#submit'][] = 'google_submit_redirect';
+  }
+}
+
+/**
+ * Redirect form submission to URL with query parameters.
+ */
+function google_submit_redirect($form, &$form_state) {
+  $keys = $form_state['values']['processed_keys'];
+  $sitesearch = isset($form_state['values']['sitesearch']) ? $form_state['values']['sitesearch'] : NULL;
+  $form_state['redirect'] = array('search/google/'. $keys, google_build_query($keys, $sitesearch));
+}
+
+/**
+ * Build a query array based on Google CSE settings.
+ */
+function google_build_query($keys, $sitesearch = NULL) {
+  return array(
+    'query' => $keys,
+    'cx' => variable_get('google_cse_cx', ''),
+    'cof' => variable_get('google_cse_cof_here', 'FORID:11'),
+    'sitesearch' => isset($sitesearch) ? $sitesearch : google_cse_sitesearch_default(),
+  ) + google_cse_advanced_settings();
+}

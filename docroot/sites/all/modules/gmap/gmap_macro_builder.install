@@ -1,0 +1,26 @@
+<?php
+// $Id: gmap_macro_builder.install,v 1.1 2008/11/24 17:49:55 bdragon Exp $
+
+/**
+ * @file
+ * Install / update routines for gmap_macro_builder.
+ */
+
+/**
+ * Rename 'create macro' permission.
+ */
+function gmap_macro_builder_update_6100() {
+  $ret = array();
+  $result = db_query('SELECT pid, perm FROM {permission}');
+  while ($row = db_fetch_object($result)) {
+    // We leave "create macro" in for now just in case someone else already had that permission.
+    // It should get removed automatically the next time an admin tweaks the permissions.
+    $permissions = explode(', ', $row->perm);
+    if (in_array('create macro', $permissions) && !in_array('create gmap macro', $permissions)) {
+      $permissions[] = 'create gmap macro';
+    }
+    $permissions = implode(', ', $permissions);
+    db_query("UPDATE {permission} SET perm = '%s' WHERE pid = %d", $permissions, $row->pid);
+  }
+  return $ret;
+}

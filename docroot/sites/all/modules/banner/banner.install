@@ -1,0 +1,103 @@
+<?php
+// $Id: banner.install,v 1.8.2.2 2006/10/01 12:40:59 wulff Exp $
+// FIXME: fix pgsql support
+function banner_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      db_query("
+        CREATE TABLE {banner} (
+          vid INT(10) UNSIGNED NOT NULL DEFAULT '0',
+          nid INT(10) UNSIGNED NOT NULL DEFAULT '0',
+
+          -- basic information
+          url VARCHAR(255) NOT NULL DEFAULT '',
+          target VARCHAR(8) NOT NULL DEFAULT '',
+          workflow TINYINT UNSIGNED NOT NULL DEFAULT '0',
+          mode TINYINT UNSIGNED NOT NULL DEFAULT '0',
+          content TEXT,
+          cache TEXT,
+
+          -- notifications
+          notify_day TINYINT UNSIGNED NOT NULL DEFAULT '0',
+          notify_week TINYINT UNSIGNED NOT NULL DEFAULT '0',
+          notify_failed INT(3) UNSIGNED NOT NULL DEFAULT '0',
+          notify_send TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+          notify_sent TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+
+          -- limits
+          chance INT UNSIGNED NOT NULL DEFAULT '1',
+          clicks_max INT UNSIGNED NOT NULL DEFAULT '0',
+          views_max INT UNSIGNED NOT NULL DEFAULT '0',
+          views_week_max INT UNSIGNED NOT NULL DEFAULT '0',
+          views_day_max INT UNSIGNED NOT NULL DEFAULT '0',
+
+          -- statistics
+          views INT UNSIGNED NOT NULL DEFAULT '0',
+          views_week INT UNSIGNED NOT NULL DEFAULT '0',
+          views_day INT UNSIGNED NOT NULL DEFAULT '0',
+          clicks INT UNSIGNED NOT NULL DEFAULT '0',
+          clicks_week INT UNSIGNED NOT NULL DEFAULT '0',
+          clicks_day INT UNSIGNED NOT NULL DEFAULT '0',
+
+          -- file information
+          width INT UNSIGNED NOT NULL DEFAULT '0',
+          height INT UNSIGNED NOT NULL DEFAULT '0',
+
+          PRIMARY KEY (vid),
+          KEY (nid),
+          KEY (workflow)
+        ) /*!40100 DEFAULT CHARACTER SET utf8 */;
+      ");
+      break;
+    case 'pgsql':
+      db_query("
+        CREATE TABLE {banner} (
+          nid integer NOT NULL DEFAULT '0',
+          vid integer NOT NULL DEFAULT '0',
+
+          url varchar(255) NOT NULL DEFAULT '',
+          target varchar(8) NOT NULL DEFAULT '',
+          workflow smallint NOT NULL DEFAULT '0',
+          mode smallint NOT NULL DEFAULT '0',
+          content text NOT NULL DEFAULT '',
+          cache text NOT NULL DEFAULT '',
+
+          notify_day smallint NOT NULL DEFAULT '0',
+          notify_week smallint NOT NULL DEFAULT '0',
+          notify_failed smallint NOT NULL DEFAULT '0',
+          notify_send smallint NOT NULL DEFAULT '0',
+          notify_sent smallint NOT NULL DEFAULT '0',
+
+          chance smallint NOT NULL DEFAULT '1',
+          clicks_max integer NOT NULL DEFAULT '0',
+          views_max integer NOT NULL DEFAULT '0',
+          views_week_max integer NOT NULL DEFAULT '0',
+          views_day_max integer NOT NULL DEFAULT '0',
+
+          views integer NOT NULL DEFAULT '0',
+          views_week integer NOT NULL DEFAULT '0',
+          views_day integer NOT NULL DEFAULT '0',
+          clicks integer NOT NULL DEFAULT '0',
+          clicks_week integer NOT NULL DEFAULT '0',
+          clicks_day integer NOT NULL DEFAULT '0',
+
+          width integer NOT NULL DEFAULT '0',
+          height integer NOT NULL DEFAULT '0',
+
+          PRIMARY KEY (vid)
+        );
+      ");
+
+      db_query("
+        CREATE INDEX {banner}_nid_idx ON {banner} (nid);
+      ");
+      db_query("
+        CREATE INDEX {banner}_workflow_idx ON {banner} (workflow);
+      ");
+
+      break;
+  }
+
+  _banner_create_vocabulary();
+}

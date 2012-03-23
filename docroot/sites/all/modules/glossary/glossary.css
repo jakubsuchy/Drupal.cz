@@ -1,0 +1,242 @@
+/* $Id: glossary.css,v 1.5.2.5.2.18 2008/09/03 18:40:32 nancyw Exp $ */ 
+
+abbr.glossary-indicator,
+acronym.glossary-indicator,
+sup.glossary-indicator,
+span.glossary-indicator,
+a.glossary-indicator,
+a.glossary-icon,
+dfn.glossary-indicator,
+img.glossary-indicator {
+  cursor: help;
+}
+
+span.glossary-term {
+  text-decoration: none;
+  border-bottom: 1px dotted;
+  cursor: help;
+}
+
+a.glossary-term {
+  text-decoration: none;
+  border-bottom: 1px dotted #080;
+  color: #080;
+  cursor: help;
+}
+
+dl.glossary-list > dt {
+  font-weight: bold;
+}
+
+dl.glossary-list > dd {
+  font-weight: normal;
+  font-size: 75%;
+  margin-left: 15px;
+}
+
+dl.glossary-list dt.depth1 {
+  padding-left: 10px;
+}
+
+dl.glossary-list dt.depth2 {
+  padding-left: 20px;
+}
+
+dl.glossary-list dt.depth3 {
+  padding-left: 30px;
+}
+
+.glossary-list dt {
+  padding-top: 7px;
+  clear: both;
+}
+
+td.glossary-list-description {
+  padding-left: 1em !important;
+  font-style: italic;
+  font-size: 90%;
+}
+
+a.glossary-edit-term {
+  font-size: 75%;
+  font-weight: normal;
+  margin-left: 2.0em;
+}
+
+a.glossary-search-term {
+  font-size: 75%;
+  font-weight: normal;
+  margin-left: 2.0em;
+}
+
+p.glossary-description {
+  margin: 0px 2.0em 0.5em 2.0em;
+  text-indent: 0;
+}
+
+div.glossary-letter {
+  clear: both;
+  text-align: center;
+  font-size: 150%;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.glossary-synonyms {
+  font-style: italic;
+  color: #888888;
+  margin-left: 1em;
+}
+
+.glossary-related {
+  font-style: italic;
+  color: green;
+  margin-left: 6px;
+}
+
+.glossary-related a {
+  text-decoration: underline;
+  color: green;
+}
+
+.glossary-related a:visited {
+  text-decoration: underline;
+  color: green;
+}
+
+.glossary-related a:link {
+  text-decoration: underline;
+  color: green;
+}
+
+.glossary-links {
+  text-align: center;
+  background-color: #eeeeff;
+  color: #888888;
+}
+
+.glossary-links a {
+  font-size: 140%;
+  text-transform: uppercase;
+}
+
+.glossary-alphabar-instructions {
+  font-size: 89%;
+  font-style: italic;
+}
+
+.glossary-admin-links {
+  clear: both;
+  margin: 0.5em 0 0 3.0em;
+}
+
+.glossary-admin-links li a {
+  padding: 5px;
+}
+
+.glossary-list dt img {
+  float: left;
+}  
+
+.glossary-list .taxonomy_image_wrapper {
+  width: 70px;
+  float: left;
+}
+
+html > body .hovertip_wrap3 {
+  background-color: #ffdab9;
+  border: 3px outset chocolate;
+}
+
+.hovertip h2 {
+  margin: 0;
+  padding: 0;
+  background-color: #D2691E;
+  color: #ffffff;
+}
+
+a.hovertip_target {
+  font-style:normal;
+  border-bottom: 3px double #992222;
+}
+
+span.hovertip_target {
+  font-style:normal;
+  border-bottom: 3px double #992222;
+}
+
+.glossary_radios .form-radios {
+  margin-top: 0;
+}
+
+.glossary_radios .form-item {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.glossary_checkboxes .form-checkboxes {
+  margin-top: 0;
+}
+
+.glossary_checkboxes .form-item {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.glossary_radios label.option {
+  margin-right: 1em;
+  float: left;
+  border: 1px dotted #666666;
+  padding: 0 4px 1px 0;
+}
+
+.glossary_radios .form-item .description {
+  clear: both;
+}
+
+.glossary_checkboxes label.option {
+  margin-right: 1em;
+  float: left;
+  /* background: #ffffff; */
+  padding: 0 4px 1px 0;
+}
+
+.glossary_checkboxes .form-item .description {
+  clear: both; 
+}
+
+.glossary-detailed {
+  /* clear: both; */
+}
+
+.glossary-detailed h2 {
+  margin-left: 10px;
+}
+
+.glossary-detailed legend {
+  text-indent: 0;
+}
+
+.glossary-detailed-link {
+  font-size: 89%;
+  text-indent: 2em;
+}
+
+.glossary-interval .description {
+  display: block;
+}
+
+.block-glossary {
+  font-size: 89%;
+}
+
+.glossary-block-term-name {
+  font-weight: bold;
+  font-size: 110%;
+  text-align: center;
+}
+
+span.hovertip img {
+  text-align: left;
+  margin-right: 5px;
+}

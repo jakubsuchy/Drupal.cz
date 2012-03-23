@@ -1,0 +1,123 @@
+# Czech translation of Drupal (modules/system/system.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: includes/common.inc:322
+msgid "Site off-line"
+msgstr "Tento web je offline"
+
+#: includes/common.inc:351
+msgid "Page not found"
+msgstr "Stránka nenalezena"
+
+#: includes/common.inc:380
+msgid "Access denied"
+msgstr "Přístup odepřen"
+
+#: includes/common.inc:381
+msgid "You are not authorized to access this page."
+msgstr "Nemáte oprávnění přistupovat na tuto stránku."
+
+#: includes/common.inc:555
+msgid "%message in %file on line %line."
+msgstr "%message v souboru %file na řádku %line."
+
+#: includes/common.inc:997
+msgid "KB"
+msgstr "KB"
+
+#: includes/common.inc:1002
+msgid "@size @suffix"
+msgstr "@size @suffix"
+
+#: includes/common.inc:1031
+msgid "0 sec"
+msgstr "0 sekund"
+
+#: includes/common.inc:2001
+msgid "Cron has been running for more than an hour and is most likely stuck."
+msgstr "Cron již běží déle než hodinu a je pravděpodobné, že se zasekl."
+
+#: includes/common.inc:2008
+msgid "Attempting to re-run cron while it is already running."
+msgstr "Cron právě běží, není možno ho spustit znovu."
+
+#: includes/common.inc:2023
+msgid "Cron run completed."
+msgstr "Běh cronu dokončen."
+
+#: includes/common.inc:2039
+msgid "Cron run exceeded the time limit and was aborted."
+msgstr "Délka běhu cronu překročila limit a proto byl ukončen."
+
+#: includes/common.inc:333
+msgid "page not found"
+msgstr "stránka nenalezena"
+
+#: includes/common.inc:362
+msgid "access denied"
+msgstr "přístup odepřen"
+
+#: includes/common.inc:2001;2008;2023;2039
+msgid "cron"
+msgstr "cron"
+
+#: includes/common.inc:993
+msgid "1 byte"
+msgid_plural "@count bytes"
+msgstr[0] "@count byte"
+msgstr[1] "@count bytes"
+msgstr[2] "@count bytes"
+
+#: includes/common.inc:0
+msgid "1 year"
+msgid_plural "@count years"
+msgstr[0] "@count rok"
+msgstr[1] "@count roky"
+msgstr[2] "@count let"
+
+#: includes/common.inc:0
+msgid "1 week"
+msgid_plural "@count weeks"
+msgstr[0] "@count týden"
+msgstr[1] "@count týdny"
+msgstr[2] "@count týdnů"
+
+#: includes/common.inc:0
+msgid "1 day"
+msgid_plural "@count days"
+msgstr[0] "@count den"
+msgstr[1] "@count dny"
+msgstr[2] "@count dnů"
+
+#: includes/common.inc:0
+msgid "1 hour"
+msgid_plural "@count hours"
+msgstr[0] "@count hod"
+msgstr[1] "@count hod"
+msgstr[2] "@count hod"
+
+#: includes/common.inc:0
+msgid "1 min"
+msgid_plural "@count min"
+msgstr[0] "@count min"
+msgstr[1] "@count min"
+msgstr[2] "@count min"
+
+#: includes/common.inc:0
+msgid "1 sec"
+msgid_plural "@count sec"
+msgstr[0] "@count sek"
+msgstr[1] "@count sek"
+msgstr[2] "@count sek"

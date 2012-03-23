@@ -1,0 +1,11 @@
+; $Id: spam.info,v 1.1.4.4.2.3.2.1 2008/12/25 05:42:09 jeremy Exp $
+name = Spam API
+description = The core Spam API for autodetecting and managing spam.
+package = Spam
+core = 6.x
+; Information added by drupal.org packaging script on 2009-08-10
+version = "6.x-1.0"
+core = "6.x"
+project = "spam"
+datestamp = "1249930375"
+

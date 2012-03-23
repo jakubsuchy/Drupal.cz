@@ -1,0 +1,22 @@
+<?php
+/**
+ * Implementation of hook_help().
+ */
+function updatetracker_help($section) {
+  switch ($section) {
+   case 'admin/modules#description':
+      return t('The module updates last comment timestamp to match tracker when publishing node');
+      break;
+  }
+}
+
+function updatetracker_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+  switch ($op) {
+    case "update":
+      if ($node->orig_status == 0 && $node->status == 1) {
+        db_query("UPDATE {node_comment_statistics} SET last_comment_timestamp = %d WHERE nid = %d", mktime(), $node->nid);
+      }
+      break;
+    }
+}
+?>

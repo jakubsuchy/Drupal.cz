@@ -1,0 +1,711 @@
+# LANGUAGE translation of PROJECT
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: banner.module $Id: fr.po,v 1.1 2006/04/17 07:27:48 wulff Exp $\n"
+"POT-Creation-Date: 2004-04-03 01:13+0200\n"
+"PO-Revision-Date: 2005-12-07 22:01+0100\n"
+"Last-Translator: Chantal Lordya PIERREVIL-DESIR <lordya.d@laposte.net>\n"
+"Language-Team: LANGUAGE <lordya.d@laposte.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: banner.module:7
+msgid "A banner system."
+msgstr "Un système de bannière."
+
+#: banner.module:9
+msgid "<p>For each of your advertisements previewed above you are able to view live statistics.  The three rows below offer daily, weekly, and total statistics.  The column 'views' shows how many times your ad has been displayed to visitors of this web site.  The column 'click' shows how many times a visitor has clicked your ad and been redirected to your website.  The column '%' is what percentage of ad views result in a click-through.</p><p>It is possible to throttle your ad to prevent it from being displayed more than a certain number of times in one day.  In the 'max views' column you can enter a number in the 'day' or 'week' column, then click 'Update' below.  If you purchased your ad \"by the click-through\", the 'max clicks' column below will reflect how many click-throughs you purchased.  The 'views left' and 'clicks left' columns display how many clicks and views are left for your ad.</p><p>If you are interested in automatically receiving emails that summarize your ad's activity, put a check mark in the 'notify' column.  To receive daily emails, put a check in the 'today' row.  To receive weekly emails, put a check in the 'this week' row.  Finally, it is possible to enable or disable your ad in real time with the drop-down menu.  After making any changes, be sure to click 'Update' for the ad that you have modified.</p>"
+msgstr "<p> Pour chacune de vos annonces visionnées au-dessus, vous pouvez voir des statistiques en direct.  Les trois rangées en-dessous offrent des statistiques quotidiennes, hebdomadaires, et totales. La colonne 'visualisation' montre combien de fois votre annonce a été affichée aux visiteurs de ce site Web.  La colonne 'clique' montre combien de fois un visiteur a cliqué sur votre annonce et a été redirigé vers votre site web. La colonne '%' correspond au pourcentage de visualisations de l'annonce, suite aux cliques publicitaires.</p><p>Il est possible pour réguler votre annonce pour éviter qu'elle soit montrée plus d'un certain nombre de fois en une journée.  Dans la colonne de 'visualisations max' vous pouvez entrer un nombre dans la colonne de 'jour 'ou 'semaine ', puis cliquez sous 'mise à jour' ci-dessous. Si vous avez acquis votre annonce \"par des cliques publicitaires\", la colonne de 'cliques max' ci-dessous renverra combien de cliques vous avez acquis.  Les colonnes de 'visualisations abandonnées' et de 'cliques abandonnés' montre combien de cliques et de visualisations sont été abandonnés pour votre annonce.</p><p>Si vous souhaitez recevoir automatiquement les emails qui récapitulent l'activité de votre annonce, cochez la colonne 'notification'. Pour recevoir les email quotidiens, cochez la rangée 'aujourd'hui'.  Pour recevoir les emails hebdomadaires, cochez la rangée 'cette semaine'. Enfin, il est possible d'activer ou de désactiver votre annonce en temps réel avec le menu déroulant.  Après avoir effectué tous les changements, soyez sûr de cliquer la 'mise à jour' pour l'annonce que vous avez modifiée.</p >"
+
+#: banner.module:27
+msgid "Cache handler"
+msgstr "Gestionnaire de cache"
+
+#: banner.module:27
+msgid "Choose a cache handler. No caching has horrible performance but works always. File caching needs write permissions for apache user to misc/ directory."
+msgstr "Choisir le gestionnaire de cache. Sans système de cache les performances sont mauvaises, mais fonctionne. Le fichier de cache a besoin des droits d'écriture pour les utilisateur apache dans le répertoire misc/ directory."
+
+#: banner.module:28
+msgid "Cache key"
+msgstr "Clé de cache"
+
+#: banner.module:28
+msgid "Cache key for this site: it must be an unique numeric value."
+msgstr "La clé de cache pour ce site: il doit être une valeur numérique unique."
+
+#: banner.module:29
+msgid "Cache settings"
+msgstr "Paramètres de cache"
+
+#: banner.module:31
+msgid "Body of daily notification e-mail"
+msgstr "Corps de l'email de notification journalière"
+
+#: banner.module:31
+msgid "Customize the body of the daily notification e-mail, only sent to banner owners when they enable daily notification."
+msgstr "Personnaliser le corps de l'email de notification journalière, envoyé uniquement aux propriétaires des bannières lorsqu'ils activent la notification journalière."
+
+#: banner.module:31;32;39
+msgid "Available variables are:"
+msgstr "Les variables disponibles sont:"
+
+#: banner.module:32
+msgid "Body of weekly notification e-mail"
+msgstr "Corps de l'email de notification hebdomadaire"
+
+#: banner.module:32
+msgid "Customize the body of the weekly notification e-mail, only sent to banner owners when they enable weekly notification."
+msgstr "Personnaliser le corps de l'email de notification hebdomadaire, envoyé uniquement aux propriétaires de bannières lorsqu'ils activent la notification hebdomadaire."
+
+#: banner.module:33
+msgid "Disable notifications to user after how many failed mail attempts"
+msgstr "Désactiver les notifications aux utilisateurs après combien de tentatives d'envoi échouées"
+
+#: banner.module:33;36
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: banner.module:34
+msgid "User notification settings"
+msgstr "Paramètres de notification utilisateur"
+
+#: banner.module:36
+msgid "Automatic renewal reminder"
+msgstr "Rappel automatique de renouvellement"
+
+#: banner.module:36
+msgid "Enabled"
+msgstr "Activé"
+
+#: banner.module:36
+msgid "If enabled, an automatic reminder can be emailed when an advertisement is about to expire.  This email can remind your customers that they need to renew their advertisement on your site."
+msgstr "Si activé, un rappel automatique peut-être envoyé dès qu'une annonce est sous le point d'expirer. Ce message peut rappeler les utilisateurs qu'ils ont besoin de renouveler leurs annonces sur le site."
+
+#: banner.module:38
+msgid "Send reminder"
+msgstr "Envoyer un rappel"
+
+#: banner.module:38
+msgid "Send the renewal reminder this long before the advertisement expires."
+msgstr "Envoyer un nouveau rappel ceci longtemps avant que l'annonce expire. "
+
+#: banner.module:39
+msgid "Body of renewal reminder e-mail"
+msgstr "Corps de l'email de notification de rappel"
+
+#: banner.module:39
+msgid "Customize the body of the renewal reminder e-mail, only sent once to banner owners when their ad is about to expire."
+msgstr "Personnaliser le corps de l'email de notification de rappel, envoyé une fois aux propriétaires des bannières lorsque leurs annonces est sous le point d'expirer."
+
+#: banner.module:40
+msgid "Renewal reminder settings"
+msgstr "Paramètres de rappel de renouvellement"
+
+#: banner.module:47;63
+msgid "banners"
+msgstr "bannières"
+
+#: banner.module:47
+msgid "View your banners."
+msgstr "Voir vos bannières."
+
+#: banner.module:51;0
+msgid "banner"
+msgstr "bannière"
+
+#: banner.module:53
+msgid "my banners"
+msgstr "mes bannières"
+
+#: banner.module:54
+msgid "view my banners"
+msgstr "voir mes bannières"
+
+#: banner.module:55
+msgid "upload new banner"
+msgstr "charger nouvelle bannière"
+
+#: banner.module:58
+msgid "view all banners"
+msgstr "voir toutes les bannières"
+
+#: banner.module:59
+msgid "view all pending banners"
+msgstr "voir toutes les bannières suspendues"
+
+#: banner.module:60
+msgid "view all active banners"
+msgstr "voir toutes les bannières actives"
+
+#: banner.module:61
+msgid "view all enabled banners"
+msgstr "voir toutes les bannières activées"
+
+#: banner.module:62
+msgid "view all blocked banners"
+msgstr "voir toutes les bannières bloquées"
+
+#: banner.module:64
+msgid "add new banner"
+msgstr "ajouter nouvelle bannière"
+
+#: banner.module:65
+msgid "edit banner"
+msgstr "éditer bannière"
+
+#: banner.module:66
+msgid "view banner"
+msgstr "voir bannière"
+
+#: banner.module:67
+msgid "refresh cache"
+msgstr "cache de rafraîchissement"
+
+#: banner.module:81
+msgid "upload a new banner"
+msgstr "charger une nouvelle bannière"
+
+#: banner.module:84;105;596
+msgid "Status"
+msgstr "Etat"
+
+#: banner.module:97;134
+msgid "Access denied"
+msgstr "Accès refusé"
+
+#: banner.module:99;136
+msgid "Help"
+msgstr "Aide"
+
+#: banner.module:162;549;561;571;614;732
+msgid "views"
+msgstr "visualisations"
+
+#: banner.module:162;549;561;571;614;733
+msgid "clicks"
+msgstr "cliques"
+
+#: banner.module:162;549;561;571
+msgid "max views"
+msgstr "visualisations max"
+
+#: banner.module:162;549
+msgid "max clicks"
+msgstr "cliques max"
+
+#: banner.module:162
+msgid "views left"
+msgstr "visualisations abandonnées"
+
+#: banner.module:162
+msgid "clicks left"
+msgstr "cliques abandonnées"
+
+#: banner.module:162
+msgid "notify"
+msgstr "notifier"
+
+#: banner.module:162;504;729
+msgid "status"
+msgstr "statut"
+
+#: banner.module:165;617
+msgid "today"
+msgstr "aujourd'hui"
+
+#: banner.module:171;172;194;195;218;219
+msgid "unlimited"
+msgstr "illimité"
+
+#: banner.module:176;199;768;789
+msgid "pending"
+msgstr "en suspend"
+
+#: banner.module:179;203;224;227;230;276;281;603;604;606;771;789
+msgid "enabled"
+msgstr "activé"
+
+#: banner.module:182;206;224;227;230;276;281;603;604;606;780;789
+msgid "disabled"
+msgstr "désactivé"
+
+#: banner.module:188;623
+msgid "this week"
+msgstr "cette semaine"
+
+#: banner.module:212
+msgid "all time"
+msgstr "depuis toujours"
+
+#: banner.module:227;230
+msgid "limit reached"
+msgstr "limite atteinte"
+
+#: banner.module:241
+msgid "This advertisement is waiting approval."
+msgstr "Cette annonce est en attente d'approbation."
+
+#: banner.module:247
+msgid "This advertisement will be displayed until %date."
+msgstr "Cette annonce sera affichée jusqu'à %date."
+
+#: banner.module:252
+msgid "This advertisement is expired."
+msgstr "Cette annonce est expirée."
+
+#: banner.module:256
+msgid "Update"
+msgstr "Mise à jour"
+
+#: banner.module:293
+msgid "Banner '%banner' updated successfully."
+msgstr "Bannière '%banner' mise à jour réussie."
+
+#: banner.module:303
+msgid "Banner title"
+msgstr "Titre de bannière"
+
+#: banner.module:303
+msgid "Please enter a name for this banner.  This field is only used for administrative purposes.  For example, you might enter 'banner-1'."
+msgstr "Veuillez entrer un nom pour cette bannière. Ce champ est utilisé uniquement pour des tâches administratives. Par exemple, vous devriez entrer 'banner-1'."
+
+#: banner.module:304
+msgid "Click-through destination URL"
+msgstr "URL de destination pour les cliques publicitaires"
+
+#: banner.module:304
+msgid "Please enter a complete URL where users will be sent that click on your banner.  For example, you might enter 'http://example.com/'."
+msgstr "Veuillez entrer une URL complète où les utilisateurs seront envoyés lorsqu'ils cliquent sur la bannière. Par exemple, vous devriez entrer 'http://example.com/'."
+
+#: banner.module:306;638
+msgid "Banner file"
+msgstr "Fichier de bannière"
+
+#: banner.module:306
+msgid "Please enter the local path and filename of your banner, or click browse to locate your banner.  You can upload an image, a flash, or an html/text file."
+msgstr "Veuillez entrer le chemin local et le nom de votre bannière, ou cliquer sur explorer pour localiser votre bannière. Vous pouvez charger une image, un flash, ou un fichier html/text."
+
+#: banner.module:308
+msgid "Upload"
+msgstr "Charger"
+
+#: banner.module:333
+msgid "Your new banner has been uploaded.  Please check back later to see if it has been approved."
+msgstr "Votre nouvelle bannière a été mise à jour. Veuillez vérifier après si elle a été approuvée."
+
+#: banner.module:351
+msgid "'%banner' banner daily notification"
+msgstr "'%banner' notification journalière de bannière"
+
+#: banner.module:360
+msgid "'%banner' banner expiring soon"
+msgstr "'%banner' bannière expirant bientôt"
+
+#: banner.module:376
+msgid "'%banner' banner weekly notification"
+msgstr "'%banner' notification hebdomadaire de bannière"
+
+#: banner.module:460;641
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: banner.module:464;644
+msgid "Delete"
+msgstr "Supprimer"
+
+#: banner.module:471
+msgid "Cache refreshed."
+msgstr "Rafraîchissement de cache."
+
+#: banner.module:500;601
+msgid "Overview"
+msgstr "Vue d'ensemble"
+
+#: banner.module:502;727
+msgid "title"
+msgstr "titre"
+
+#: banner.module:503;730
+msgid "owner"
+msgstr "propriétaire"
+
+#: banner.module:505;731
+msgid "position"
+msgstr "position"
+
+#: banner.module:506
+msgid "link"
+msgstr "lien"
+
+#: banner.module:507
+msgid "created"
+msgstr "crée"
+
+#: banner.module:520
+msgid "This banner will be auto-enabled on %date"
+msgstr "Cette bannière s'activera le %date"
+
+#: banner.module:523
+msgid "This banner will be auto-blocked on %date"
+msgstr "Cette bannière se bloquera le %date"
+
+#: banner.module:526;607
+msgid "Notifications"
+msgstr "Notifications"
+
+#: banner.module:529
+msgid "A daily notification email is sent to '%owner'."
+msgstr "Un email de notification journalier est envoyé à '%owner'."
+
+#: banner.module:532
+msgid "A weekly notification email is sent to '%owner'."
+msgstr "Un email de notification hebdomadaire est envoyé à '%owner'."
+
+#: banner.module:535
+msgid "There %failed."
+msgstr "Il y a %failed."
+
+#: banner.module:538
+msgid "A renewal reminder has already been sent to '%name'"
+msgstr "Un renouvellement de rappel a déjà été envoyé à '%name'"
+
+#: banner.module:544
+msgid "[none]"
+msgstr "[aucun]"
+
+#: banner.module:547;636
+msgid "Statistics"
+msgstr "Statistiques"
+
+#: banner.module:548
+msgid "Overall"
+msgstr "Général"
+
+#: banner.module:549;561;571
+msgid "%"
+msgstr "%"
+
+#: banner.module:549
+msgid "chance"
+msgstr "chance"
+
+#: banner.module:560
+msgid "This week"
+msgstr "Cette semaine"
+
+#: banner.module:570
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: banner.module:580;752
+msgid "edit"
+msgstr "Editer"
+
+#: banner.module:594
+msgid "Title"
+msgstr "Titre"
+
+#: banner.module:594
+msgid "A name for this banner, used in administration only. e.g.: banner-1"
+msgstr "Un nom pour cette bannière, utilisé dans l'administration uniquement. Par exemple: banner-1"
+
+#: banner.module:595
+msgid "URL"
+msgstr "URL"
+
+#: banner.module:595
+msgid "Target URL for this banner."
+msgstr "URL cible pour cette bannière."
+
+#: banner.module:596
+msgid "Status of banner.  A 'pending' banner requires administrative approval before it will be displayed.  An 'enabled' banner is approved and actively being displayed. A 'disabled' banner is approved but disabled by the user.  A 'blocked' banner is approved but disabled by the admin, for example after being displayed 'max views' times.  A 'denied' banner was not approved by the admin."
+msgstr "Statut de la bannière. Une bannière 'suspendue' requière une appobation administrative avant de pouvoir s'afficher. Une bannière 'activée' est approuvée et s'affiche activement. Une bannière 'désactivée' est approuvée mais désactivée par l'utilisateur. Une bannière 'bloquée' est approuvée mais désactivée par l'administrateur, par exemple après avoir affiché 'visualisations max' fois. Une bannière 'refusée' n'a pas été approuvée par l'administrateur."
+
+#: banner.module:597
+msgid "Owner"
+msgstr "Propriétaire"
+
+#: banner.module:597
+msgid "Optional UID of site user that own this banner.  This user will be able to view banner statistics."
+msgstr "UID facultatif pour l'utilisateur du site propriétaire de cette bannière. Cet utilisateur pourra voir les statistiques de la bannière. "
+
+#: banner.module:598
+msgid "Position"
+msgstr "Position"
+
+#: banner.module:598
+msgid "Position of this banner in the page."
+msgstr "Position de cette bannière dans la page."
+
+#: banner.module:599
+msgid "Automatically publish banner"
+msgstr "Bannière automatiquement publiée"
+
+#: banner.module:599
+msgid "The date at which this banner will be automatically published.  Leave empty if you don't want to schedule this banner, or fill out a string containing an English date format.  Example input:"
+msgstr "La date à laquelle cette bannière sera automatiquement publiée. Laissez vide si vous ne voulez pas plannifier cette bannière, ou compléter une chaîne de caractères comportant une date au format Anglais. Exemple d'entrée:"
+
+#: banner.module:600
+msgid "Automatically unpublish banner"
+msgstr "Bannière automatiquement dépubliée"
+
+#: banner.module:600
+msgid "The date at which this banner will be automatically unpublished.  Leave empty if you don't want to schedule this banner, or fill out a string containing an English date format.  Example input:"
+msgstr "La date à laquelle cette bannière sera automatiquement dépubliée. Laissez vide si vous ne voulez pas plannifier cette bannière, ou compléter une chaîne de caractères comportant une date au format Anglais. Exemple d'entrée:"
+
+#: banner.module:603
+msgid "Daily notification"
+msgstr "Notification journalière"
+
+#: banner.module:603
+msgid "Daily notification of banner statistics.  If enabled, the owner of this banner will receive daily notification emails summarizing banner activity."
+msgstr "Notification journalière pour les statistiques de bannière. Si activé, le propriétaire de cette bannière recevra un email de notification journalier récapitulant l'activité de la bannière."
+
+#: banner.module:604
+msgid "Weekly notification"
+msgstr "Notification hebdomadaire"
+
+#: banner.module:604
+msgid "Weekly notification of banner statistics.  If enabled, the owner of this banner will receive weekly notification emails summarizing banner activity."
+msgstr "Notification hebdomadaire pour les statistiques de bannière. Si activé, le propriétaire de cette bannière recevra un email de notification hebdomadaire récapitulant l'activité de la bannière."
+
+#: banner.module:605
+msgid "Notification failures"
+msgstr "Echecs de notification"
+
+#: banner.module:605
+msgid "Total number of failed notifications for this banner."
+msgstr "Nombre total de notifications échoué pour cette bannière."
+
+#: banner.module:606
+msgid "Reminder notification"
+msgstr "Notification de rappel"
+
+#: banner.module:606
+msgid "Banner expiration notification.  If enabled and properly configured, prior to this banner expiring a reminder email will be sent to the banners owner."
+msgstr "Notification d'expiration de bannière. Si activé et correctement configuré, avant l'expiration de la bannière une notification de rappel est envoyée aux propriétaires des bannières."
+
+#: banner.module:609
+msgid "Chance"
+msgstr "Chance"
+
+#: banner.module:609
+msgid "Chance of this banner to show, related to other banners. If a banner has chance 1 and another has chance 2, the second will show twice as much."
+msgstr "Chance de cette bannière d'être montrée, relative aux autres bannières.  Si une bannière a la chance 1 et une autre a la chance 2, la seconde sera montrée deux fois plus."
+
+#: banner.module:610
+msgid "Maximum total clicks"
+msgstr "Total de cliques maximum"
+
+#: banner.module:610
+msgid "Maximum number of clicks this banner can have. After this the banner will be automatically blocked. Set to 0 to allow for unlimited clicks."
+msgstr "Nombre de cliques maximum supporté par cette bannière. Ensuite cette bannière sera automatiquement bloquée. Mettre à 0 pour permettre d'illimiter les cliques. "
+
+#: banner.module:611
+msgid "Maximum total views"
+msgstr "Total de visualisations maximum"
+
+#: banner.module:611
+msgid "Maximum number of views this banner can have. After this the banner will be automatically blocked. Set to 0 to allow for unlimited views."
+msgstr "Nombre de visualisations maximum supporté par cette bannière. Ensuite cette bannière sera automatiquement bloquée. Mettre à 0 pour permettre d'illimiter les visualisations. "
+
+#: banner.module:612
+msgid "Maximum weekly views"
+msgstr "Visualisations hebdomadaires maximum"
+
+#: banner.module:612
+msgid "Maximum number of weekly views this banner can have. After this the banner will be automatically disabled. Set to 0 to allow for unlimited weekly views."
+msgstr "Nombre de visualisations hebdomadaires maximum supporté par cette bannière. Ensuite cette bannière sera automatiquement désactivée. Mettre à 0 pour permettre d'illimiter les visualisations hebdomadaires. "
+
+#: banner.module:613
+msgid "Maximum daily views"
+msgstr "Visualisations journalières maximum"
+
+#: banner.module:613
+msgid "Maximum number of daily views this banner can have. After this the banner will be automatically disabled. Set to 0 to allow for unlimited daily views."
+msgstr "Nombre maximum de visualisations journalières supporté par cette annonce. Ensuite cette bannière sera automatiquement désactivée. Mettre à 0 pour permettre d'illimiter les visualisations journalières."
+
+#: banner.module:614
+msgid "reset"
+msgstr "réinitialiser"
+
+#: banner.module:629
+msgid "total"
+msgstr "total"
+
+#: banner.module:635
+msgid "You can reset all values in one or more of the above rows by checking the appropriate checkbox(es) then clicking 'Save' below.  CAUTION:  This can not be undone.  Once you check 'reset' and then click 'Save' below you will not be able to restore the previous values."
+msgstr "Vous pouvez réinitialiser toutes les valeurs dans une ou plusieurs colonnes en vérifiant la (les) case(s) appropriée(s) puis en cliquant sur 'Sauvegarder' ci-dessous. AVERTISSEMENT: Ceci ne peut pas être défait. Une fois que vous avez 'réinitialiser' et cliquer 'Sauvegarder' ci-dessous vous ne pourrez plus restaurer les valeurs antérieures."
+
+#: banner.module:638
+msgid "The file to use for this banner.  You can upload an image, a flash or an html/txt file.  If you are editing the banner you don't need to re-upload the image."
+msgstr "Le fichier à utiliser pour cette bannière. Vous pouvez charger une image, un flash ou un fichier html/txt. Si vous éditez la bannière vous n'avez pas besoin de re-charger l'image."
+
+#: banner.module:639
+msgid "File"
+msgstr "Fichier"
+
+#: banner.module:695
+msgid "banner updated."
+msgstr "bannière mise à jour."
+
+#: banner.module:708
+msgid "banner added."
+msgstr "bannière ajoutée."
+
+#: banner.module:721
+msgid "banner deleted."
+msgstr "bannière supprimée."
+
+#: banner.module:728
+msgid "url"
+msgstr "url"
+
+#: banner.module:734
+msgid "options"
+msgstr "options"
+
+#: banner.module:752
+msgid "view"
+msgstr "voir"
+
+#: banner.module:774;789
+msgid "day's limit reached"
+msgstr "Limite quotidienne atteinte"
+
+#: banner.module:777;789
+msgid "week's limit reached"
+msgstr "Limite hebdomadaire atteinte"
+
+#: banner.module:783;789
+msgid "blocked"
+msgstr "verroullé"
+
+#: banner.module:786;789
+msgid "denied"
+msgstr "refusé"
+
+#: banner.module:796
+msgid ""
+"Hello %username,\n"
+"\n"
+"  Here is your daily summary for your '%bannername' banner on %sitename:\n"
+"\n"
+"  Today:\n"
+"    Views:  %day_views\n"
+"    Clicks: %day_clicks\n"
+"\n"
+"  This week:\n"
+"    Views:  %week_views\n"
+"    Clicks: %week_clicks\n"
+"\n"
+"  All time:\n"
+"    Views:  %total_views\n"
+"    Clicks: %total_clicks\n"
+"\n"
+"--\n"
+"This email was automatically generated at your request.\n"
+"Unsubscribe here: %url"
+msgstr ""
+"Bonjour %username,\n"
+"\n"
+"  Voici un résumé journalier pour votre '%bannername' annonce du %sitename:\n"
+"\n"
+"  Aujourd'hui:\n"
+"    Visualisations:  %day_views\n"
+"    Cliques: %day_clicks\n"
+"\n"
+"  Cette semaine:\n"
+"    Visualisations:  %week_views\n"
+"    Cliques: %week_clicks\n"
+"\n"
+"  Depuis toujours:\n"
+"    Visualisations:  %total_views\n"
+"    Cliques: %total_clicks\n"
+"\n"
+"--\n"
+"Cet email a été généré automatiquement à votre demande.\n"
+"Se désabonner ici: %url"
+
+#: banner.module:798
+msgid ""
+"Hello %username,\n"
+"\n"
+"  Here is your weekly summary for your '%bannername' banner on %sitename:\n"
+"\n"
+"  Today:\n"
+"    Views:  %day_views\n"
+"    Clicks: %day_clicks\n"
+"\n"
+"  This week:\n"
+"    Views:  %week_views\n"
+"    Clicks: %week_clicks\n"
+"\n"
+"  All time:\n"
+"    Views:  %total_views\n"
+"    Clicks: %total_clicks\n"
+"\n"
+"--\n"
+"This email was automatically generated at your request.\n"
+"Unsubscribe here: %url"
+msgstr ""
+"Bonjour %username,\n"
+"\n"
+"  Voici un résumé hebdomadaire pour votre '%bannername' annonce du %sitename:\n"
+"\n"
+"  Aujourd'hui:\n"
+"    Visualisations:  %day_views\n"
+"    Cliques: %day_clicks\n"
+"\n"
+"  Cette semaine:\n"
+"    Visualisations:  %week_views\n"
+"    Cliques: %week_clicks\n"
+"\n"
+"--\n"
+"Cet email a été généré automatiquement à votre demande.\n"
+"Se désabonner ici: %url"
+
+#: banner.module:800
+msgid ""
+"Hello %username,\n"
+"\n"
+" Your advertisement '%bannername' on %sitename will expire on %expire.  Please let us know if you are interested in renewing.\n"
+"\n"
+" To date, this ad has been viewed %total_views times and clicked %total_clicks times.\n"
+"\n"
+"Thank you!\n"
+" %sitename team"
+msgstr ""
+"Bonjour %username,\n"
+"\n"
+"Votre annonce '%bannername' sur %sitename expirera le %expire.  Veuillez nous informer si vous souhaitez renouveler.\n"
+"\n"
+"A ce jour, cette annonce a été visualisée %total_views fois et cliquée %total_clicks fois.\n"
+"\n"
+"Merci!\n"
+" %sitename équipe"
+
+#: banner.module:910
+msgid "Cache disabled"
+msgstr "Cache désactivé"
+
+#: banner.module:535
+msgid "has been 1 failed notification attempt"
+msgid_plural "have been %count failed notification attempts"
+msgstr[0] "1 tentative de notification a échoué"
+msgstr[1] ""
+
+#: banner.module:14
+msgid "administer banners"
+msgstr "administrer les bannières"
+
+#: banner.module:14
+msgid "manage banners"
+msgstr "gérer les bannières"
+

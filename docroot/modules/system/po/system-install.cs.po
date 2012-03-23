@@ -1,0 +1,144 @@
+# Czech translation of Drupal (modules/system/system.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: modules/system/system.install:81
+msgid "You can <a href=\"@cron\">run cron manually</a>."
+msgstr "Cron můžete spustit i <a href=\"@cron\">manuálně</a>."
+
+#: modules/system/system.install:3223
+msgid ""
+"If you want to add a static page, like a contact page or an about page, use "
+"a page."
+msgstr ""
+"Pokud chcete přidat statickou stránku, např. výpis kontaktů nebo informací, "
+"použijte stránku."
+
+#: modules/system/system.install:3230
+msgid "Story"
+msgstr "Článek"
+
+#: modules/system/system.install:3232
+msgid ""
+"Stories are articles in their simplest form: they have a title, a teaser and "
+"a body, but can be extended by other modules. The teaser is part of the body "
+"too. Stories may be used as a personal blog or for news articles."
+msgstr ""
+"Články v nejčistější podobě: mají titulek, upoutávku a tělo, ale je možno je "
+"rozšířit dalšími moduly. Upoutávka je také součástí těla. Články lze použít "
+"jako osobní blogy nebo novinky."
+
+#: modules/system/system.install:3332
+msgid ""
+"URL Filter module was disabled; this functionality has now been added to "
+"core."
+msgstr ""
+"Modul URL Filter byl vypnut. Tato funkce je nyní integrována přímo do jádra "
+"Drupalu."
+
+#: modules/system/system.install:29
+msgid "Web server"
+msgstr "Web server"
+
+#: modules/system/system.install:39
+msgid ""
+"Your PHP installation is too old. Drupal requires at least PHP %version."
+msgstr ""
+"Vaše PHP instalace je příliš stará. Drupal vyžaduje alespoň PHP %version."
+
+#: modules/system/system.install:53
+msgid "Not protected"
+msgstr "Není chráněný"
+
+#: modules/system/system.install:55
+msgid ""
+"The file %file is not protected from modifications and poses a security "
+"risk. You must change the file's permissions to be non-writable."
+msgstr ""
+"Soubor %file není chráněn proti změnám a proto je bezpečnostním rizikem. "
+"Musíte změnit práva tohoto souboru, aby nebyl zapisovatelný pro všechny."
+
+#: modules/system/system.install:60
+msgid "Protected"
+msgstr "Chráněný"
+
+#: modules/system/system.install:63
+msgid "Configuration file"
+msgstr "Konfigurační soubor"
+
+#: modules/system/system.install:71
+msgid "Last run !time ago"
+msgstr "Naposled před !time"
+
+#: modules/system/system.install:75
+msgid ""
+"Cron has not run. It appears cron jobs have not been setup on your system. "
+"Please check the help pages for <a href=\"@url\">configuring cron jobs</a>."
+msgstr ""
+"Cron neběží. Spouštění cronu zřejmě nemáte v systému nastaveno. Podívejte se "
+"prosím na stránky nápovědy o <a href=\"@url\">nastavení cronu</a>."
+
+#: modules/system/system.install:77
+msgid "Never run"
+msgstr "Nikdy"
+
+#: modules/system/system.install:83
+msgid "Cron maintenance tasks"
+msgstr "Údržba webu pomocí cron"
+
+#: modules/system/system.install:96
+msgid "The directory %directory is not writable."
+msgstr "Do adresáře %directory nelze zapisovat"
+
+#: modules/system/system.install:99
+msgid "Not writable"
+msgstr "Není zapisovatelný"
+
+#: modules/system/system.install:101
+msgid ""
+"You may need to set the correct directory at the <a href=\"@admin-file-system"
+"\">file system settings page</a> or change the current directory's "
+"permissions so that it is writable."
+msgstr ""
+"Je potřeba nastavit správný adresář na stránce <a href=\"@admin-file-system"
+"\">nastavenení souborového systému</a> nebo změnit práva současného adresáře "
+"tak, aby byl zapisovatelný."
+
+#: modules/system/system.install:107
+msgid "Writable (<em>public</em> download method)"
+msgstr "Zapisovatelný (<em>veřejný</em> přístup)"
+
+#: modules/system/system.install:112
+msgid "Writable (<em>private</em> download method)"
+msgstr "Zapisovatelný (<em>neveřejný</em> přístup)"
+
+#: modules/system/system.install:122
+msgid "Database schema"
+msgstr "Databázové schéma"
+
+#: modules/system/system.install:124
+msgid "Up to date"
+msgstr "Aktuální"
+
+#: modules/system/system.install:134
+msgid "Out of date"
+msgstr "Neaktuální"
+
+#: modules/system/system.install:135
+msgid ""
+"Some modules have database schema updates to install. You should run the <a "
+"href=\"@update\">database update script</a> immediately."
+msgstr ""
+"Některé moduly obsahují změny v databázovém schématu. Je potřeba bezodkladně "
+"spustit <a href=\"@update\">update.php skript</a>."

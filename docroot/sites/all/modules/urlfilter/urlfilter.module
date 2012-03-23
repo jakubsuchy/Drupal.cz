@@ -1,0 +1,84 @@
+<?php
+// $Id: urlfilter.module,v 1.18.2.5 2006/06/08 16:07:07 unconed Exp $
+
+function urlfilter_help($section) {
+  switch ($section) {
+    case 'admin/help#urlfilter':
+      $output = '<p>'. t('The URLfilter module automatically converts text web addresses (URLs, e-mail addresses, ftp links, etc.) into hyperlinks.  This is useful for users if content authors do not explicitly create a hyperlink for the URL.') .'</p>';
+      $output .= t('<p>Use Input Formats to enable the URL filter</p>
+<ol>
+<li>Select an existing Input Format or add a new one</li>
+<li>Configure the Input Format</li>
+<li>Enable URL filter and Save configuration</li>
+<li>Rearrange the weight of the URL filter depending on what filters exist in the format</li>
+</ol>');
+      $output .= t('<p>You can</p>
+      <ul><li>enable the urlfilter in an input format from <a href="%admin-filters">administer &gt;&gt; Input Filter</a>.</li></ul>', array('%admin-filters' => url('admin/filters')));
+      $output .= '<p>'. t('For more information please read the configuration and customization handbook <a href="%urlfilter">URL filter page</a>.', array('%urlfilter' => 'http://www.drupal.org/handbook/modules/urlfilter/')) .'</p>';
+      return $output;
+    case 'admin/modules#description':
+      return t('Automatically turns web and e-mail addresses into clickable links.');
+  }
+}
+
+function urlfilter_filter_tips($delta, $format, $long = false) {
+  return t('Web and e-mail addresses are automatically converted into links.');
+}
+
+function urlfilter_filter($op, $delta = 0, $format = -1, $text = '') {
+  switch ($op) {
+    case 'list':
+      return array(0 => t('URL filter'));
+
+    case 'description':
+      return t('Turns web and e-mail addresses into clickable links.');
+
+    case 'settings':
+        $form['filter_urlfilter'] = array('#type' => 'fieldset', '#title' => t('URL filter'), '#collapsible' => TRUE, '#collapsed' => TRUE);
+        $form['filter_urlfilter']['urlfilter_length'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Maximum link text length'),
+          '#default_value' => variable_get('urlfilter_length_'. $format, 72),
+          '#maxlength' => 4,
+          '#description' => t('URLs longer than this number of characters will be truncated to prevent long strings that break formatting. The link itself will be retained, just the text portion of the link will be truncated.'),
+          );
+        return $form;
+      break;
+
+    case 'process':
+      global $urlfilter_length;
+      $urlfilter_length = variable_get('urlfilter_length_'. $format, 72);
+      $text   = ' ' . $text . ' ';
+
+      $text = preg_replace_callback("!(<p>|<li>|<br\s*/?>|[ \n\r\t\(])((http://|https://|ftp://|mailto:|smb://|afp://|file://|gopher://|news://|ssl://|sslv2://|sslv3://|tls://|tcp://|udp://)([a-zA-Z0-9@:%_+*~#?&=.,/;-]*[a-zA-Z0-9@:%_+*~#&=/;-]))([.,?]?)(?=(</p>|</li>|<br\s*/?>|[ \n\r\t\)]))!i", 'urlfilter_replace1', $text);
+      $text = preg_replace("!(<p>|<li>|<br\s*/?>|[ \n\r\t\(])([A-Za-z0-9._-]+@[A-Za-z0-9._+-]+\.[A-Za-z]{2,4})([.,?]?)(?=(</p>|</li>|<br\s*/?>|[ \n\r\t\)]))!i", '\1<a href="mailto:\2">\2</a>\3', $text);
+      $text = preg_replace_callback("!(<p>|<li>|[ \n\r\t\(])(www\.[a-zA-Z0-9@:%_+*~#?&=.,/;-]*[a-zA-Z0-9@:%_+~#\&=/;-])([.,?]?)(?=(</p>|</li>|<br\s*/?>|[ \n\r\t\)]))!i", 'urlfilter_replace2', $text);
+      $text = substr($text, 1, -1);
+      unset($urlfilter_length);
+      return $text;
+
+    default:
+      return $text;
+  }
+}
+
+function urlfilter_replace1($match) {
+  $match[2] = decode_entities($match[2]);
+  $caption = check_plain(urlfilter_trim($match[2]));
+  $match[2] = check_url($match[2]);
+  return $match[1] . '<a href="'. $match[2] .'" title="'. $match[2] .'">'. $caption .'</a>'. $match[5];
+}
+
+function urlfilter_replace2($match) {
+  $match[2] = decode_entities($match[2]);
+  $caption = check_plain(urlfilter_trim($match[2]));
+  $match[2] = check_plain($match[2]);
+  return $match[1] . '<a href="http://'. $match[2] .'" title="'. $match[2] .'">'. $caption .'</a>'. $match[3];
+}
+
+function urlfilter_trim($text) {
+  global $urlfilter_length;
+  return (strlen($text) > $urlfilter_length) ? substr($text, 0, $urlfilter_length) .'...' : $text;
+}
+
+?>

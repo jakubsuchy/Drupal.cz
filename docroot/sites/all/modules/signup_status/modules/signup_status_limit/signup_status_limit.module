@@ -1,0 +1,203 @@
+<?php
+// $Id: signup_status_limit.module,v 1.5 2009/09/21 05:25:02 dww Exp $
+
+/**
+ * @file
+ * The Signup Status Limit module provides limits on the number of signups for
+ * each signup status on any node.
+ */
+
+/**
+ * Implement hook_form_alter().
+ */
+function signup_status_limit_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'signup_node_settings_form':
+      module_load_include('inc', 'signup_status_limit', 'signup_status_limit.settings');
+      return signup_status_limit_alter_signup_node_settings_form($form);
+
+    case 'signup_settings_form':
+      module_load_include('inc', 'signup_status_limit', 'signup_status_limit.settings');
+      return signup_status_limit_alter_signup_site_settings_form($form);
+
+    case 'signup_form':
+      module_load_include('inc', 'signup_status_limit', 'signup_status_limit.signup_form');
+      return signup_status_limit_alter_signup_form($form, $form_state);
+
+    case 'signup_edit_form':
+      module_load_include('inc', 'signup_status_limit', 'signup_status_limit.signup_form');
+      return signup_status_limit_alter_signup_edit_form($form, $form_state);
+
+    case 'signup_node_admin_summary_form':
+      return signup_status_limit_alter_signup_node_admin_summary_form($form, $form_state);
+
+  }
+}
+
+/**
+ * Alter the signup summary form on the node/N/signups/admin page.
+ *
+ * Depending on what kind of signup limit the node is configured to use,
+ * modify the summary fieldset to display the right limit information and
+ * provide a link to the settings page.
+ */
+function signup_status_limit_alter_signup_node_admin_summary_form(&$form, &$form_state) {
+  $node = node_load($form['nid']['#value']);
+  $form['signup_limit_type'] = array(
+    '#type' => 'item',
+    '#title' => t('Signup limit type'),
+    '#value' => l(($node->signup_status_limit_type == 'status') ? t('Per-status limits') : t('Limit on total signups'), 'node/' . $node->nid . '/signups/settings', array('fragment' => 'signup-limit')),
+  );
+  if ($node->signup_status_limit_type == 'global') {
+    $form['limit'] = array(
+      '#type' => 'item',
+      '#title' => t('Limit on total signups'),
+      '#value' => $node->signup_close_signup_limit,
+      '#weight' => 1,
+    );
+    $form['slots_used']['#weight'] = 2;
+  }
+  else {
+    unset($form['slots_used']);
+    unset($form['limit']);
+    $header = array(
+      t('Signup status'),
+      t('Limit'),
+      t('Total'),
+    );
+    $signup_status_codes = signup_status_codes();
+    $rows = array();
+    foreach (signup_status_codes() as $cid => $code) {
+      $rows[] = array(
+        check_plain($code['name']),
+        isset($node->signup_status_limit[$cid]['limit']) ? $node->signup_status_limit[$cid]['limit'] : 0,
+        isset($node->signup_status_limit[$cid]['total']) ? $node->signup_status_limit[$cid]['total'] : 0,
+      );
+    }
+    $form['signup_status_limits'] = array(
+      '#type' => 'item',
+      '#value' => theme('table', $header, $rows),
+    );
+  }
+}
+
+
+/**
+ * Implement hook_theme().
+ */
+function signup_status_limit_theme() {
+  return array(
+    'signup_status_limit_node_limits' => array(
+      'file' => 'signup_status_limit.settings.inc',
+      'arguments' => array(
+        'form' => NULL,
+      ),
+    ),
+    'signup_status_limit_site_limits' => array(
+      'file' => 'signup_status_limit.settings.inc',
+      'arguments' => array(
+        'form' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implement hook_nodeapi().
+ */
+function signup_status_limit_nodeapi(&$node, $op, $arg) {
+  switch ($op) {
+    case 'delete':
+      return signup_status_limit_nodeapi_delete($node);
+
+    case 'load':
+      return signup_status_limit_nodeapi_load($node);
+
+    case 'insert':
+      return signup_status_limit_nodeapi_insert($node);
+
+    case 'update':
+      return signup_status_limit_nodeapi_update($node);
+
+  }
+}
+
+/**
+ * When a node is deleted, remove any rows in {signup_status_limit_*} tables.
+ */
+function signup_status_limit_nodeapi_delete($node) {
+  db_query("DELETE FROM {signup_status_limit_node_limit} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {signup_status_limit_node_setting} WHERE nid = %d", $node->nid);
+}
+
+/**
+ * When a node is loaded, add the signup status limit settings.
+ */
+function signup_status_limit_nodeapi_load($node) {
+  $query = db_query("SELECT cid, status_limit FROM {signup_status_limit_node_limit} WHERE nid = %d", $node->nid);
+  while ($limit = db_fetch_object($query)) {
+    $limits[$limit->cid] = $limit->status_limit;
+  }
+  $query = db_query("SELECT COUNT(*) as total, status FROM signup_log WHERE nid = %d GROUP BY status", $node->nid);
+  while ($total = db_fetch_object($query)) {
+    $totals[$total->status] = $total->total;
+  }
+
+  foreach (signup_status_codes() as $cid => $code) {
+    $node->signup_status_limit[$cid]['limit'] = isset($limits[$cid]) ? $limits[$cid] : 0;
+    $node->signup_status_limit[$cid]['total'] = isset($totals[$cid]) ? $totals[$cid] : 0;
+  }
+  $limit_type = db_result(db_query("SELECT limit_type FROM {signup_status_limit_node_setting} WHERE nid = %d", $node->nid));
+  $node->signup_status_limit_type = !empty($limit_type) ? $limit_type : 'global';
+}
+
+/**
+ * When a node is created, set the appropriate default status limits.
+ */
+function signup_status_limit_nodeapi_insert(&$node) {
+  // If the node is explicitly configured to be signup-enabled or if the node
+  // type is signup-enabled by default, insert the current default status
+  // limits into the DB for this new node.
+  if ((isset($node->signup_enabled) && $node->signup_enabled == 1) || (!isset($node->signup_enabled) && variable_get('signup_node_default_state_'. $node->type, 'disabled') == 'enabled_on')) {
+    // Load the current site-wide defaults.
+    $defaults = new StdClass();
+    $defaults->nid = 0;
+    signup_status_limit_nodeapi_load($defaults);
+    // Insert the records into the DB so this node uses those defaults.
+    db_query("INSERT INTO {signup_status_limit_node_setting} (nid, limit_type) VALUES (%d, '%s')", $node->nid, $defaults->signup_status_limit_type);
+    if ($defaults->signup_status_limit_type == 'status') {
+      foreach ($defaults->signup_status_limit as $cid => $limit) {
+        db_query("INSERT INTO {signup_status_limit_node_limit} (nid, cid, status_limit) VALUES (%d, %d, %d)", $node->nid, $cid, $limit['limit']);
+      }
+    }
+  }
+}
+
+/**
+ * When a node is updated, see if the status limits need to be adjusted.
+ */
+function signup_status_limit_nodeapi_update(&$node) {
+  if (isset($node->signup_enabled)) {
+    // If someone with signup administration permissions is editing the node,
+    // they might have changed the signup_enabled setting, in which case, we
+    // might need to update the DB regarding signup status limits.
+    switch ($node->signup_enabled) {
+      case 1: // Enabled
+        // See if we already have limit data for this node.
+        $limit_type = db_result(db_query("SELECT limit_type FROM {signup_status_limit_node_setting} WHERE nid = %d", $node->nid));
+        if (empty($limit_type)) {
+          // No limit info, insert the site-wide defaults for this node.
+          db_query("DELETE FROM {signup_status_limit_node_limit} WHERE nid = %d", $node->nid);
+          signup_status_limit_nodeapi_insert($node);
+        }
+        break;
+
+      case 0: // The two disabled cases
+      case 2:
+        // Treat as if this node was deleted (for signup status limits).
+        signup_status_limit_nodeapi_delete($node);
+        break;
+    }
+  }
+}
+

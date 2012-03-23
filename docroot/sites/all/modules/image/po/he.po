@@ -1,0 +1,418 @@
+# translation of event.pot to Hebrew
+# Hebrew translation of drupal-event
+# Copyright 2004 Haggai Eran <he3@bezeqint.net>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: he\n"
+"POT-Creation-Date: 2004-04-22 21:45+0200\n"
+"PO-Revision-Date: 2004-09-20 22:48+0300\n"
+"Last-Translator: Haggai Eran <he3@bezeqint.net>\n"
+"Language-Team: Hebrew <ivrix-discuss@ivrix.org.il>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.3.1\n"
+
+#: event.module:21
+msgid "Lets users make events and keep calendars."
+msgstr "מאפשר למשתמשים ליצור אירועים ולהחזיק לוחות שנה."
+
+#: event.module:25
+msgid "Events are happenings scheduled for a specific date and time."
+msgstr "אירועים הם התרחשויות שמתקיימות בתאריך ובשעה מסויימת."
+
+#: event.module:35
+msgid "Calendar to browse events."
+msgstr "לוח שנה לדפדף בארועים."
+
+#: event.module:36
+msgid "List of upcoming events."
+msgstr "רשימה של אירועים קרובים."
+
+#: event.module:43
+msgid "Browse events"
+msgstr "דפדוף באירועים"
+
+#: event.module:47
+msgid "Upcoming events"
+msgstr "אירועים קרובים"
+
+#: event.module:49
+msgid "more"
+msgstr "עוד"
+
+#: event.module:49
+msgid "More events."
+msgstr "עוד אירועים."
+
+#: event.module:57
+msgid "Explanation or submission guidelines"
+msgstr "הסבר או הנחיות לשולחים"
+
+#: event.module:57
+msgid ""
+"This text will be displayed at the top of the event submission form.  Useful "
+"for helping or instructing your users."
+msgstr "הטקסט הזה יוצג בראש טופס שליחת האירוע. יכול לתת עזרה או הנחיות למשתמשים שלך."
+
+#: event.module:58
+msgid "Start of week"
+msgstr "תחילת השבוע"
+
+#: event.module:58
+msgid "Sunday"
+msgstr "ראשון"
+
+#: event.module:58
+msgid "Monday"
+msgstr "שני"
+
+#: event.module:58
+msgid "The day the weeks starts in the block calendar."
+msgstr "היום בו השבוע מתחיל בתיבת לוח השנה."
+
+#: event.module:59
+msgid "Time notation preference"
+msgstr "העדפת ציון זמן"
+
+#: event.module:59
+msgid "24h"
+msgstr "24 שעות"
+
+#: event.module:59
+msgid "12h"
+msgstr "12 שעות"
+
+#: event.module:59
+msgid "The time notation system used for entering event start times."
+msgstr "מערכת ציון הזמן משמשת להכנסת זמני התחלת האירועים."
+
+#: event.module:60
+msgid "Timezone handling"
+msgstr "טיפול באיזורי זמן"
+
+#: event.module:60
+msgid "Yes"
+msgstr "כן"
+
+#: event.module:60
+msgid "No"
+msgstr "לא"
+
+#: event.module:60
+msgid ""
+"Yes: Times are saved relative to the user's timezone. No: Times are "
+"displayed exactly as the user inputted them."
+msgstr "כן: זמנים ישמרו באופן יחסי לאיזור הזמן של המשתמש/ת. לא: זמנים יוצגו בדיוק כפי שהמשתמש/ת הכניס/ה אותם."
+
+#: event.module:61
+msgid "Type of overview"
+msgstr "סוג התצוגה"
+
+#: event.module:61
+msgid "Calendar"
+msgstr "לוח שנה"
+
+#: event.module:61
+msgid "Table"
+msgstr "טבלה"
+
+#: event.module:61
+msgid "The type of overview to show the user when he clicks on the block calendar."
+msgstr "מבנה המידע שיוצג למשתמש/ת בלחיצה על תיבת לוח השנה."
+
+#: event.module:68 ;590
+msgid "Date"
+msgstr "תאריך"
+
+#: event.module:68 ;590
+msgid "Title"
+msgstr "כותרת"
+
+#: event.module:68 ;590
+msgid "Teaser"
+msgstr "תקציר"
+
+#: event.module:68 ;590
+msgid "Body"
+msgstr "גוף"
+
+#: event.module:69
+msgid "Table headers"
+msgstr "כותרות הטבלה"
+
+#: event.module:69
+msgid ""
+"The table headers used in the table view. Only entries that have their own "
+"database column in the event table and are of type \"textfield\", \"textarea"
+"\", or \"select\" can be used."
+msgstr "כותרות הטבלה שיופיעו בתצוגת טבלה. רק שדות שיש להם עמודה משלהם במסד הנתונים בטבלת האירועים (event) והם מסוג \"textfield\", \"textarea\" או \"select\" ניתנים לבחירה."
+
+#: event.module:73
+msgid "Jan"
+msgstr "ינו'"
+
+#: event.module:73
+msgid "Feb"
+msgstr "פבר'"
+
+#: event.module:73
+msgid "Mar"
+msgstr "מרץ"
+
+#: event.module:73
+msgid "Apr"
+msgstr "אפר'"
+
+#: event.module:73 ;275
+msgid "May"
+msgstr "מאי"
+
+#: event.module:73
+msgid "Jun"
+msgstr "יונ'"
+
+#: event.module:73
+msgid "Jul"
+msgstr "יול'"
+
+#: event.module:73
+msgid "Aug"
+msgstr "אוג'"
+
+#: event.module:73
+msgid "Sep"
+msgstr "ספט'"
+
+#: event.module:73
+msgid "Oct"
+msgstr "אוק'"
+
+#: event.module:73
+msgid "Nov"
+msgstr "נוב'"
+
+#: event.module:73
+msgid "Dec"
+msgstr "דצמ'"
+
+#: event.module:79 ;251
+msgid "Home"
+msgstr "בית"
+
+#: event.module:80 ;119;252;663
+msgid "Events"
+msgstr "אירועים"
+
+#: event.module:84 ;669;741
+msgid "Search"
+msgstr "חיפוש"
+
+#: event.module:85
+msgid "Search Events"
+msgstr "חיפוש אירועים"
+
+#: event.module:94
+msgid "Upcoming"
+msgstr "בקרוב"
+
+#: event.module:99
+msgid "Upcoming Events"
+msgstr "אירועים קרובים"
+
+#: event.module:113
+msgid "search events"
+msgstr "חיפוש אירועים"
+
+#: event.module:132
+msgid "edit event"
+msgstr "עריכת אירוע"
+
+#: event.module:132
+msgid "Edit this event."
+msgstr "עריכת האירוע"
+
+#: event.module:135 ;151
+msgid "calendar"
+msgstr "לוח שנה"
+
+#: event.module:141 ;150
+msgid "events"
+msgstr "אירועים"
+
+#: event.module:141
+msgid "Show events"
+msgstr "הצגת אירועים"
+
+#: event.module:147 ;164;0
+msgid "event"
+msgstr "אירוע"
+
+#: event.module:152
+msgid "search"
+msgstr "חיפוש"
+
+#: event.module:208
+msgid "Required."
+msgstr "נדרש."
+
+#: event.module:220 ;314
+msgid "Start"
+msgstr "התחלה"
+
+#: event.module:264
+msgid "g"
+msgstr "g"
+
+#: event.module:269
+msgid "H"
+msgstr "H"
+
+#: event.module:275
+msgid "January"
+msgstr "ינואר"
+
+#: event.module:275
+msgid "February"
+msgstr "פברואר"
+
+#: event.module:275
+msgid "March"
+msgstr "מרץ"
+
+#: event.module:275
+msgid "April"
+msgstr "אפריל"
+
+#: event.module:275
+msgid "June"
+msgstr "יוני"
+
+#: event.module:275
+msgid "July"
+msgstr "יולי"
+
+#: event.module:275
+msgid "August"
+msgstr "אוגוסט"
+
+#: event.module:275
+msgid "September"
+msgstr "ספטמבר"
+
+#: event.module:275
+msgid "October"
+msgstr "אוקטובר"
+
+#: event.module:275
+msgid "November"
+msgstr "נובמבר"
+
+#: event.module:275
+msgid "December"
+msgstr "דצמבר"
+
+#: event.module:279
+msgid "am"
+msgstr "AM"
+
+#: event.module:279
+msgid "pm"
+msgstr "PM"
+
+#: event.module:314
+msgid "When is this event taking place."
+msgstr "הזמן בו האירוע מתרחש."
+
+#: event.module:325
+msgid "Details"
+msgstr "פרטים"
+
+#: event.module:439
+msgid "g:ia"
+msgstr "g:ia"
+
+#: event.module:442
+msgid "G:i"
+msgstr "G:i"
+
+#: event.module:524 ;528
+msgid "Mon"
+msgstr "ב'"
+
+#: event.module:524 ;528
+msgid "Tue"
+msgstr "ג'"
+
+#: event.module:524 ;528
+msgid "Wed"
+msgstr "ד'"
+
+#: event.module:524 ;528
+msgid "Thu"
+msgstr "ה'"
+
+#: event.module:524 ;528
+msgid "Fri"
+msgstr "ו'"
+
+#: event.module:524 ;528
+msgid "Sat"
+msgstr "ש'"
+
+#: event.module:524 ;528
+msgid "Sun"
+msgstr "א'"
+
+#: event.module:621
+msgid "Click here to see the full event."
+msgstr "לחץ/י כאן על מנת לראות את האירוע המלא."
+
+#: event.module:626
+msgid "M, j"
+msgstr "M, j"
+
+#: event.module:675
+msgid "No matches found."
+msgstr "לא נמצאו התאמות."
+
+#: event.module:727
+msgid "Date period"
+msgstr "תקופת תאריכים"
+
+#: event.module:727
+msgid "From"
+msgstr "מ"
+
+#: event.module:727
+msgid "To"
+msgstr "עד"
+
+#: event.module:775
+msgid "NOW"
+msgstr "כעת"
+
+#: event.module:778
+msgid "1 minute"
+msgid_plural "%count minutes"
+msgstr[0] "דקה אחת"
+msgstr[1] "%count דקות"
+
+#: event.module:781
+msgid "1 hour"
+msgid_plural "%count hours"
+msgstr[0] "שעה אחת"
+msgstr[1] "%count שעות"
+
+#: event.module:784
+msgid "1 day"
+msgid_plural "%count days"
+msgstr[0] "יום אחד"
+msgstr[1] "%count ימים"
+
+#: event.module:123
+msgid "maintain events"
+msgstr "ניהול אירועים"
+

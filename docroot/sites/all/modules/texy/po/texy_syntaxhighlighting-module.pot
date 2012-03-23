@@ -1,0 +1,91 @@
+# $Id: texy_syntaxhighlighting-module.pot,v 1.1 2007/08/15 11:49:26 havran Exp $
+#
+# LANGUAGE translation of Drupal (texy_syntaxhighlighting.module)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from file: texy_syntaxhighlighting.module,v 1.1 2007/08/15 11:13:35 havran
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2007-08-15 13:44+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: texy_syntaxhighlighting.module:15
+msgid "<p>Texy! Syntaxhighlighting allows you to use code syntaxhighlighting together with Texy!.</p>"
+msgstr ""
+
+#: texy_syntaxhighlighting.module:17
+msgid "<p>Below is a list of syntaxhighlighting settings for the Texy! module. You must configure syntaxhighlighter.</p>"
+msgstr ""
+
+#: texy_syntaxhighlighting.module:30
+msgid "Syntaxhighlighting"
+msgstr ""
+
+#: texy_syntaxhighlighting.module:31
+msgid "Customize the Texy! syntaxhighlighting settings."
+msgstr ""
+
+#: texy_syntaxhighlighting.module:57
+msgid "Syntax highlighting"
+msgstr ""
+
+#: texy_syntaxhighlighting.module:63
+msgid "Use source code syntax highlighting"
+msgstr ""
+
+#: texy_syntaxhighlighting.module:64
+msgid "Check this option if you would like to highlight entered source code."
+msgstr ""
+
+#: texy_syntaxhighlighting.module:70
+msgid "Syntax highlighter's name"
+msgstr ""
+
+#: texy_syntaxhighlighting.module:71
+msgid "Name of a tool which you wish to use for syntax highlighting. For example, if you plan to use <a href=\"http://hvge.sk/scripts/fshl/\">FSHL</a> you should enter <code>fshl</code> and install the tool into the <code>!module_path/lib/fshl</code> directory, together with a corresponding <code>!module_path/lib/fshl.php</code> file which would be a PHP implementation of the highlighter."
+msgstr ""
+
+#: texy_syntaxhighlighting.module:76
+msgid "Syntax highlighter's stylesheet"
+msgstr ""
+
+#: texy_syntaxhighlighting.module:77
+msgid "Path to a stylesheet wich will be used together with the syntax highlighter. For example, if you plan to use <a href=\"http://hvge.sk/scripts/fshl/\">FSHL</a> you should enter <code>fshl/styles/COHEN_style.css</code>."
+msgstr ""
+
+#: texy_syntaxhighlighting.module:101
+msgid "Syntax highlighter <em>!syntaxhighlighter_name</em> is not ready..."
+msgstr ""
+
+#: texy_syntaxhighlighting.module:0
+msgid "texy_syntaxhighlighting"
+msgstr ""
+
+#: texy.info:0 texy_image.info:0 texy_syntaxhighlighting.info:0
+msgid "Texy"
+msgstr ""
+
+#: texy_image.info:0
+msgid "Texy! Image"
+msgstr ""
+
+#: texy_image.info:0
+msgid "This module enable extra image settings for Texy!."
+msgstr ""
+
+#: texy_syntaxhighlighting.info:0
+msgid "Texy! Syntaxhighlighting"
+msgstr ""
+
+#: texy_syntaxhighlighting.info:0
+msgid "This module enable syntaxhighlighting support for Texy!."
+msgstr ""
+

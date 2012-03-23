@@ -1,0 +1,83 @@
+# Czech translation of Drupal (modules/tracker/tracker.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: modules/tracker/tracker.module:15
+msgid ""
+"The tracker module displays the most recently added or updated content to "
+"the website allowing users to see the most recent contributions. The tracker "
+"module provides user level tracking for those who like to follow the "
+"contributions of particular authors."
+msgstr ""
+"Modul tracker zobrazuje nejnovější přidaný nebo aktualizovaný obsah. "
+"Poskytuje také možnost sledovat obsah podle autorů pro ty, které zajímají "
+"příspěvky určitých autorů."
+
+#: modules/tracker/tracker.module:16
+msgid ""
+"The  &quot;recent posts&quot; page is available via a link in the navigation "
+"menu block and contains a reverse chronological list of new and recently-"
+"updated content. The table displays  the content type, the title, the "
+"author's name, how many comments that item has received, and when it was "
+"last updated. Updates include any changes to the text, either by the "
+"original author or someone else, as well as any new comments added to an "
+"item. To use the tracker module to <em>watch</em> for a user's updated "
+"content, click on that user's profile, then the <em>track</em> tab."
+msgstr ""
+"Stránka &quot;poslední příspěvky&quot; je přístupná pomocí odkazu v "
+"navigačním bloku a zobrazuje nové či nově upravené příspěvky v pořadí od "
+"nejnovějšího ke starším. V tabulce se zobrazuje typ obsahu, název, jméno "
+"autora, počet komentářů a také počet nových komentářů. Chcete-li "
+"<em>sledovat</em> obsah jednoho uživatele, klikněte na profil uživatele a "
+"poté na záložku <em>sledovat</em>."
+
+#: modules/tracker/tracker.module:17
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@tracker\">Tracker page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href="
+"\"@tracker\">stránce Tracker</a>."
+
+#: modules/tracker/tracker.module:30
+msgid "Recent posts"
+msgstr "Poslední příspěvky"
+
+#: modules/tracker/tracker.module:35
+msgid "All recent posts"
+msgstr "Všechny poslední příspěvky"
+
+#: modules/tracker/tracker.module:37
+msgid "My recent posts"
+msgstr "Moje poslední příspěvky"
+
+#: modules/tracker/tracker.module:46
+msgid "Track posts"
+msgstr "Přehled příspěvků"
+
+#: modules/tracker/tracker.module:113
+msgid "!time ago"
+msgstr "před !time"
+
+#: modules/tracker/tracker.module:121
+msgid "Post"
+msgstr "Vloženo"
+
+#: modules/tracker/tracker.module:121
+msgid "Last updated"
+msgstr "Poslední změna"
+
+#: modules/tracker/tracker.module:0
+msgid "tracker"
+msgstr "sledování příspěvků"

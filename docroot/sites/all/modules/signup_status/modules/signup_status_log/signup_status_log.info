@@ -1,0 +1,14 @@
+; $Id: signup_status_log.info,v 1.4 2009/09/19 09:18:45 dww Exp $
+name = Signup status log
+description = Log changes to users' signup status.
+package = Signup
+dependencies[] = signup_status
+dependencies[] = views
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-09-24
+version = "6.x-1.0-alpha2"
+core = "6.x"
+project = "signup_status"
+datestamp = "1253775363"
+

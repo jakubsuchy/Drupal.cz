@@ -1,0 +1,111 @@
+<?php
+// $Id: taxonomy_menu.install,v 1.2.2.1.2.7 2009/03/25 21:29:13 indytechcook Exp $
+
+/**
+ * @file
+ * Install and uninstall all required databases. Also do incremental database updates.
+ */
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function taxonomy_menu_uninstall() {
+  
+  //remove menu items
+  db_query("DELETE FROM {menu_links} WHERE module = '%s'", 'taxonomy_menu');
+
+  //rebuild the menus
+  variable_set('menu_rebuild_needed', TRUE);
+
+  // Delete variables
+  $variables = db_query('SELECT * from {variable}');
+  while ($variable = db_fetch_object($variables)) {
+    if (strpos($variable->name, 'taxonomy_menu') !== FALSE) {
+      variable_del($variable->name);
+    }
+  }
+
+  // remove table
+  drupal_uninstall_schema('taxonomy_menu');
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function taxonomy_menu_install() {
+  drupal_install_schema('taxonomy_menu');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function taxonomy_menu_schema() {
+
+  $schema['taxonomy_menu'] = array(
+    'description' => t('Links a taxonomy term to a menu item'),
+    'fields' => array(
+      'mlid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The taxonomy terms {menu_link}.mlid'),
+      ),
+      'tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('tid that is linked to the mlid'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('vid for the tid'),
+      ),
+    ),
+    'primary key' => array('mlid', 'tid'),
+    'indexes' => array(
+      'vid' => array('vid'),
+    ),
+  );
+  return $schema;
+}
+
+function taxonomy_menu_update_6200() {
+  $schema['taxonomy_menu'] = array(
+    'description' => t('Links a taxonomy term to a menu item'),
+    'fields' => array(
+      'mlid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The taxonomy terms {menu_link}.mlid'),
+      ),
+      'tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('tid that is linked to the mlid'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('vid for the tid'),
+      ),
+    ),
+    'primary key' => array('mlid', 'tid'),
+    'indexes' => array(
+      'vid' => array('vid'),
+    ),
+  );
+  $ret = array();
+  db_create_table($ret, 'taxonomy_menu', $schema['taxonomy_menu']);
+  return $ret;
+}

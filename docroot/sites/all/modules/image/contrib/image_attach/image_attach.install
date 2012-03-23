@@ -1,0 +1,24 @@
+<?php
+// $Id: image_attach.install,v 1.1 2006/05/03 20:04:25 walkah Exp $
+function image_attach_version($type) {
+  switch ($type) {
+    case SCHEMA:
+      return 1;
+  }
+}
+
+function image_attach_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysqli':
+    case 'mysql':
+      db_query("
+CREATE TABLE {image_attach} (
+  nid int(10) unsigned NOT NULL default '0',
+  iid int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (nid)
+) TYPE=MyISAM
+/*!40100 DEFAULT CHARACTER SET utf8 */;");
+      break;
+  }
+  
+}

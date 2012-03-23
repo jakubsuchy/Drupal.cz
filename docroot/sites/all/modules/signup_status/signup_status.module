@@ -1,0 +1,453 @@
+<?php
+// $Id: signup_status.module,v 1.27 2009/09/20 23:15:16 dww Exp $
+
+/**
+ * @file
+ * Implements signup statuses
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+define('SIGNUP_STATUS_MANAGE_PERMISSION', 'manage signup status codes');
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_perm().
+ */
+function signup_status_perm() {
+  return array(SIGNUP_STATUS_MANAGE_PERMISSION);
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function signup_status_menu() {
+  $items['admin/settings/signup_status'] = array(
+    'title' => 'Signup status',
+    'description' => 'Configure signup status settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('signup_status_admin_settings_form', 4),
+    'access arguments' => array(SIGNUP_STATUS_MANAGE_PERMISSION),
+    'file' => 'signup_status.admin.inc',
+  );
+  $items['admin/settings/signup_status/delete'] = array(
+    'title' => 'Configure status code',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('signup_status_admin_delete', 4),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array(SIGNUP_STATUS_MANAGE_PERMISSION),
+    'file' => 'signup_status.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_action_info().
+ */
+function signup_status_action_info() {
+  return array(
+    'signup_status_alter_action' => array(
+      'type' => 'signup',
+      'description' => t('Alter signup status'),
+      'configurable' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implement hook_theme().
+ */
+function signup_status_theme() {
+  return array(
+    'signup_status_admin_settings_form' => array(
+      'file' => 'signup_status.admin.inc',
+      'arguments' => array(
+        'form' => NULL,
+      ),
+    ),
+  );
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Views integration
+
+/**
+ * Implementation of hook_views_api().
+ */
+function signup_status_views_api() {
+  return array(
+    'api' => 2.0,
+    'path' => drupal_get_path('module', 'signup_status') .'/views',
+  );
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Actions integration
+
+/**
+ * Perform the action to alter the signup status of a given signup.
+ */
+function signup_status_alter_action(&$signup, $context) {
+  if ($context['signup_status'] != $signup->status) {
+    $status_codes = signup_status_codes();
+    $signup->old_status = $signup->status;
+    $signup->status = $context['signup_status'];
+    db_query("UPDATE {signup_log} SET status = %d WHERE sid = %d", $signup->status, $signup->sid);
+    watchdog('action', 'Set status of %signup_label to %status_name.', array('%signup_label' => $signup->label, '%status_name' => $status_codes[$signup->status]['name']));
+    _signup_status_change('update', $signup);
+  }
+}
+
+/**
+ * Create the configuration form to select which signup status to use.
+ */
+function signup_status_alter_action_form($context) {
+  $options = array();
+  foreach (signup_status_codes() as $cid => $code) {
+    $options[$cid] = $code['name'];
+  }
+  $form['signup_status'] = array(
+    '#type' => 'select',
+    '#title' => t('Signup status'),
+    '#options' => $options,
+  );
+  return $form;
+}
+
+/**
+ * Validate the form to select which signup status to use for the alter action.
+ */
+function signup_status_alter_action_validate($form, $form_state) {
+  if ($form_state['values']['signup_status'] == 0) {
+    form_set_error('signup_status', t('You must select a status.'));
+  }
+}
+
+/**
+ * Submit handler for the form to select which signup status to use.
+ */
+function signup_status_alter_action_submit($form, $form_state) {
+  return array('signup_status' => $form_state['values']['signup_status']);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Signup integration
+
+/**
+ * Implementation of hook_signup_cancel().
+ */
+function signup_status_signup_cancel($signup, $node) {
+  _signup_status_change('delete', $signup);
+}
+
+/**
+ * Implement hook_signup_data_alter().
+ */
+function signup_status_signup_data_alter(&$signup, $form_values) {
+  // Save the signup status in the $signup object.
+  if (!empty($form_values['signup_status'])) {
+    $signup->status = $form_values['signup_status'];
+  }
+
+  // See if the current status should impact the signup total or not.
+  if (!empty($signup->status)) {
+    $signup_status_codes = signup_status_codes();
+    if (empty($signup_status_codes[$signup->status]['mod_signup_count'])) {
+      $signup->count_towards_limit = 0;
+    }
+    else {
+      $signup->count_towards_limit = 1;
+    }
+  }
+}
+
+/**
+ * Implement hook_signup_insert().
+ */
+function signup_status_signup_insert($signup) {
+  _signup_status_change('add', $signup);
+}
+
+// Note: we don't want to always invoke _signup_status_change('update') via
+// hook_signup_update(), since by the time that hook is invoked, we don't
+// actually know if the status itself changed during the edit. So, we still
+// have our own submit handler on the signup_edit_form for this.
+
+//////////////////////////////////////////////////////////////////////////////
+// Signup form altering
+
+/**
+ * Helper function to generate the signup status form element.
+ *
+ * @param $current_status
+ *   Optional code for the current signup status to use as the default.
+ *
+ * @return
+ *   FormAPI array defining the signup status form element.
+ */
+function _signup_status_status_form_element($current_status = NULL) {
+  $element = array();
+  $options = array();
+  foreach (signup_status_codes() as $cid => $code) {
+    if ($code['show_on_form']) {
+      $options[$cid] = $code['name'];
+    }
+  }
+  if (!empty($options)) {
+    if (!isset($current_status)) {
+      $options = array(-1 => t('- Please choose -')) + $options;
+    }
+    $element = array(
+      '#type' => 'select',
+      '#title' => t('Status'),
+      '#options' => $options,
+      '#weight' => 1,
+      '#required' => TRUE,
+    );
+    if (isset($current_status)) {
+      $element['#default_value'] = $current_status;
+    }
+  }
+  return $element;
+}
+
+/**
+ * Alter the signup form to add a status selector, if available.
+ */
+function signup_status_form_signup_form_alter(&$form, $form_state) {
+  $status_element = _signup_status_status_form_element();
+  if (!empty($status_element)) {
+    $form['collapse']['signup_status'] = $status_element;
+    $form['collapse']['submit']['#weight'] = 2;
+    $form['#validate'][] = 'signup_status_signup_form_validate_status';
+    // The status is saved automatically during signup_save_signup(), and
+    // we're notified about the change via hook_signup_insert(), so we don't
+    // need our own submit handler here at all.
+  }
+}
+
+/**
+ * Validate the status field on the altered signup form.
+ */
+function signup_status_signup_form_validate_status($form, $form_state) {
+  if (!isset($form_state['values']['signup_status']) || $form_state['values']['signup_status'] == -1) {
+    form_set_error('signup_status', t('You must select a valid status.'));
+  }
+}
+
+/**
+ * Alter the signup edit form to add a status selector, if available.
+ */
+function signup_status_form_signup_edit_form_alter(&$form, $form_state) {
+  $signup = $form['#signup'];
+  $status_element = _signup_status_status_form_element($signup->status);
+  if (!empty($status_element)) {
+    $form['elements']['signup_status'] = $status_element;
+    if (empty($form['elements']['save'])) {
+      // The user can't edit their own signup, disable the status selector.
+      $form['elements']['signup_status']['#disabled'] = TRUE;
+    }
+    else {
+      // Even though the status itself is recorded to the DB automagically via
+      // signup_save_signup(), we need to see if we should invoke
+      // _signup_status_change('update') based on if the status actually
+      // changed or not, and that requires our own submit handler, since
+      // hook_signup_changed() doesn't provide enough info for us to decide.
+      $form['elements']['save']['#submit'][] = 'signup_status_alter_signup_edit_form_submit';
+      $form['elements']['save']['#weight'] = 2;
+      $form['elements']['cancel-signup']['#weight'] = 3;
+    }
+  }
+}
+
+/**
+ * Handle submission of the altered signup edit form.
+ *
+ * This is just responsible for seeing if the status actually changed, and if
+ * so, calling _signup_status_change('update').
+ *
+ * @see signup_status_form_signup_edit_form_alter()
+ * @see _signup_status_change()
+ */
+function signup_status_alter_signup_edit_form_submit($form, &$form_state) {
+  $values = $form_state['values'];
+  $signup = $form['#signup'];
+  if (isset($values['signup_status']) && $values['signup_status'] != $signup->status) {
+    $signup->old_status = $signup->status;
+    $signup->status = $values['signup_status'];
+    _signup_status_change('update', $signup);
+  }
+}
+
+/**
+ * Alter the broadcast form to allow broadcasting to just a single status.
+ */
+function signup_status_form_signup_broadcast_form_alter(&$form, $form_state) {
+  $options = array();
+  $codes = signup_status_codes();
+  $options[-1] = t('- All -');
+  foreach ($codes as $cid => $code) {
+    $options[$cid] = $code['name'];
+  }
+
+  $form['signup_status_codes'] = array(
+    '#type' => 'select',
+    '#title' => t('Limit recipients'),
+    '#description' => t('Send this email to a specific set of users based on signup status.'),
+    '#multiple' => TRUE,
+    '#options' => $options,
+    '#default_value' => -1,
+  );
+  $form['send']['#weight'] = 10;
+
+  $form['#validate'][] = 'signup_status_signup_broadcast_form_validate';
+  // Replace the default submit handler in case the user restricts by status.
+  foreach ($form['#submit'] as $key => $handler) {
+    if ($handler == 'signup_broadcast_form_submit') {
+      unset($form['#submit'][$key]);
+      break;
+    }
+  }
+  $form['#submit'][] = 'signup_status_signup_broadcast_form_submit';
+}
+
+/**
+ * Validate altered broadcast form.
+ */
+function signup_status_signup_broadcast_form_validate($form, &$form_state) {
+  $codes = $form_state['values']['signup_status_codes'];
+  if (!in_array(-1, $codes)) {
+    $signups = signup_get_signups($form_state['values']['nid']);
+    $count = 0;
+    foreach ($signups as $signup) {
+      if (in_array($signup->status, $codes)) {
+        $count++;
+      }
+    }
+    if (!$count) {
+      form_set_error('signup_status_codes', t('No users are signed up with that status.'));
+    }
+  }
+}
+
+/**
+ * Handles submission of the altered broadcast form.
+ */
+function signup_status_signup_broadcast_form_submit($form, &$form_state) {
+  global $user;
+
+  if (user_access('administer site configuration')) {
+    $from = $form_state['values']['from'];
+  }
+  else {
+    $from = $user->mail;
+  }
+
+  $signups = array();
+  $codes = $form_state['values']['signup_status_codes'];
+  if (!in_array(-1, $codes)) {
+    foreach (signup_get_signups($form_state['values']['nid']) as $signup) {
+      if (in_array($signup->status, $codes)) {
+        $signups[] = $signup;
+      }
+    }
+  }
+
+  module_load_include('inc', 'signup', 'includes/broadcast');
+  signup_send_broadcast($form_state['values']['nid'], $form_state['values']['subject'], $form_state['values']['message'], $from, !empty($form_state['values']['copy']), $signups);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Auxiliary functions
+
+/**
+ * Retrieve all available status codes.
+ *
+ * @return
+ *   An array of status code arrays, keyed using the status code id, cid.
+ *   Each status code array contains the following keys / values:
+ *   - "name": The display name of the status code.
+ *   - "description": The long-form description of the status code.
+ *   - "mod_signup_count": A boolean value stating whether signups using the
+ *     status code should modify the total signup count (i.e. for the "wait
+ *     listed" status code).
+ *   - "show_on_form": A boolean value stating if this status should be
+ *     available on the signup form.
+ */
+function signup_status_codes() {
+  static $codes = array();
+  if (empty($codes)) {
+    $result = db_query("SELECT * FROM {signup_status_codes} ORDER BY weight");
+    while ($row = db_fetch_array($result)) {
+      $codes[$row['cid']] = $row;
+    }
+  }
+  return $codes;
+}
+
+/**
+ * Fire the hook on the signup status change.
+ * @param $action
+ *   A string representing signup status change.
+ * @param $signup
+ *   A signup object.
+ */
+function _signup_status_change($action, $signup) {
+  module_invoke_all('signup_status', $action, $signup);
+}
+
+/**
+ * Implement hook_token_list() (from token.module)
+ */
+function signup_status_token_list($type) {
+  $tokens = array();
+  if ($type == 'signup') {
+    $tokens['signup'] = array(
+      'signup-status' => t('The current signup status.'),
+      'signup-status-raw' => t('Unfiltered current signup status. WARNING - raw user input.'),
+      'signup-status-description' => t('The description of the current signup status.'),
+      'signup-status-description-raw' => t('Unfiltered description of the current signup status. WARNING - raw user input.'),
+      'signup-status-previous' => t('The previous signup status (only available when a signup is being modified).'),
+      'signup-status-previous-raw' => t('Unfiltered previous signup status (only available when a signup is being modified). WARNING - raw user input.'),
+      'signup-status-previous-description' => t('The description of the previous signup status (only available when a signup is being modified).'),
+      'signup-status-previous-description-raw' => t('Unfiltered description of the previous signup status (only available when a signup is being modified). WARNING - raw user input.'),
+    );
+  }
+  return $tokens;
+}
+
+/**
+ * Implement hook_token_values() (from token.module)
+ */
+function signup_status_token_values($type = 'all', $object = NULL) {
+  $values = array();
+  if ($type == 'signup') {
+    $values = array(
+      'signup-status' => '',
+      'signup-status-raw' => '',
+      'signup-status-description' => '',
+      'signup-status-description-raw' => '',
+      'signup-status-previous' => '',
+      'signup-status-previous-raw' => '',
+      'signup-status-description-previous' => '',
+      'signup-status-description-previous-raw' => '',
+    );
+    $codes = signup_status_codes();
+    if (!empty($object->status)) {
+      $values['signup-status'] = check_plain($codes[$object->status]['name']);
+      $values['signup-status-raw'] = $codes[$object->status]['name'];
+      $values['signup-status-description'] = filter_xss($codes[$object->status]['description']);
+      $values['signup-status-description-raw'] = $codes[$object->status]['description'];
+    }
+    if (!empty($object->old_status)) {
+      $values['signup-status-previous'] = check_plain($codes[$object->old_status]['name']);
+      $values['signup-status-previous-raw'] = $codes[$object->old_status]['name'];
+      $values['signup-status-description-previous'] = filter_xss($codes[$object->old_status]['description']);
+      $values['signup-status-description-previous-raw'] = $codes[$object->old_status]['description'];
+    }
+  }
+  return $values;
+}
+

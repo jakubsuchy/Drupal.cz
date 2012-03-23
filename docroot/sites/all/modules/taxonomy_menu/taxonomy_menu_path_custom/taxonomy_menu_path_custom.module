@@ -1,0 +1,84 @@
+<?php
+
+// $Id: taxonomy_menu_path_custom.module,v 1.1.2.4 2009/03/14 21:21:07 indytechcook Exp $
+
+/**
+ * @file
+ * Implementation of hook_taxonomy_menu_options().
+ *
+ * @return array
+ *  Uses the value to set the variable taxonomy_menu_<value>_$vid
+ *  $options[value]
+ *   default - optional.  this is what will be used if the varialbe is not set.  if empty then FALSE is used
+ *   #title - required.
+ *   any other form element
+ */
+function taxonomy_menu_path_custom_taxonomy_menu_options() {
+
+  $options['taxonomy_menu_path_custom_depth'] = array(
+    '#title' => t('Display Depth in Custom Path'),
+    '#weight' => -2,
+    '#description' => t("Only used with a Custom Path. <br />
+	  To use depth the path in the view has to have the path of '<Base Path for Custom Path>/%/%' The two arguments must be 'Term ID (with depth)' and 'Depth Modifier'.<br />
+	  Have this view setup <strong>before</strong> you create this taxonomy menu. Otherwise leave this field empty!"),
+    'default' => '',
+    '#type' => 'textfield',
+  );
+  $options['taxonomy_menu_path_custom_base_path'] = array(
+    '#title' => t('Base Path for Custom Path'),
+    '#weight' => -3,
+    '#type' => 'textfield',
+    'default' => 'category',
+    '#description' => t("Only used with a Custom Path.<br />
+	  You need to have a view with path 'custom path/%' and an argument 'Term ID' <strong>before</strong> you create this taxonomy menu."),
+  );
+
+  return $options;
+}
+
+/**
+ * Implementation of hook_taxonomy_menu_path().
+ */
+function taxonomy_menu_path_custom_taxonomy_menu_path() {
+  $output = array(
+    'taxonomy_menu_path_custom_path' => t('Custom Path'),
+  );
+
+  return $output;
+}
+
+/**
+ * Callback for taxonomy_menu_path
+ */
+function taxonomy_menu_path_custom_path($vid, $tid) {
+  $base_path = variable_get('taxonomy_menu_taxonomy_menu_path_custom_base_path_'. $vid, 'category');
+  $depth = variable_get('taxonomy_menu_taxonomy_menu_path_custom_depth_'. $vid, '');
+
+  //if tid = 0 then we are creating the vocab menu item format will be taxonomy/term/$tid+$tid+$tid....
+  if ($tid == 0) {
+    //get all of the terms for the vocab
+    $vtids = _taxonomy_menu_get_terms($vid);
+    $end = implode(' ', $vtids);
+    $path = $base_path .'/'. $end;
+  }
+  else {
+    $path = $base_path .'/'. $tid;
+    if (variable_get('taxonomy_menu_display_descendants_'. $vid, FALSE)) {
+      //we wait to run this instead of durning the if above
+      //because we only wan to run it once.
+      $terms = taxonomy_get_tree($vid, $tid);
+      foreach ($terms as $term) {
+        $tids[] = $term->tid;
+      }
+      if ($tids) {
+        $end = implode(' ', $tids);
+        $path .= ' '. $end;
+      }
+    }
+  }
+  if ($depth != '') {
+    $path .= '/'. $depth;
+  }
+
+  return $path;
+}

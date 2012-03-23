@@ -1,0 +1,13 @@
+; $Id: signup_status_mailer.info,v 1.4 2009/09/19 09:18:46 dww Exp $
+name = "Signup Status Mailer"
+description = "Send emails to users when their signup status has been changed."
+package = Signup
+dependencies[] = signup_status
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-09-24
+version = "6.x-1.0-alpha2"
+core = "6.x"
+project = "signup_status"
+datestamp = "1253775363"
+

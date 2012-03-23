@@ -1,0 +1,163 @@
+<?php
+// $Id: signup_status_log.install,v 1.3 2009/01/30 18:34:11 miglius Exp $
+
+/**
+ * @file
+ * signup_status_log module installation and upgrade code.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_enable().
+ */
+function signup_status_log_enable() {
+  drupal_set_message(t('signup_status_log module successfully installed. Please review the available <a href="@settings">configuration settings</a>.', array('@settings' => url('admin/settings/signup_status_log'))));
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function signup_status_log_install() {
+  drupal_install_schema('signup_status_log');
+
+  // Insert default values for all existing signups.
+  db_query("INSERT INTO {signup_status_log} (sid, nid, uid, anon_mail, cid, timestamp) SELECT sid, nid, uid, anon_mail, status, signup_time FROM {signup_log}");
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function signup_status_log_uninstall() {
+  drupal_uninstall_schema('signup_status_log');
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Schema API hooks
+
+/**
+ * Implementation of hook_schema().
+ */
+function signup_status_log_schema() {
+  return array(
+    'signup_status_log' => array(
+      'description' => t('Stores changes of the signup statuses.'),
+      'fields' => array(
+        'lid' => array(
+          'description' => t('The signup status log ID.'),
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'sid' => array(
+          'description' => t('Primary key: signup ID'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'uid' => array(
+          'description' => t('Key: the user ID of the user who signed up.'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'nid' => array(
+          'description' => t('Key: the node ID of the node the user signed up for.'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'anon_mail' => array(
+          'description' => t('The email address for an anonymous user who signed up, or an empty string for authenticated users.'),
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => '',
+        ),
+        'cid' => array(
+          'description' => t('The signup status code ID.'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'timestamp' => array(
+          'description' => t('Integer timestamp of when the signup was changed.'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'admin_uid' => array(
+          'description' => t('Key: the user ID of the user who made the change.'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'action' => array(
+          'description' => t('The action performed - add, update or delete.'),
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => '',
+        ),
+      ),
+      'primary key' => array('lid'),
+      'indexes' => array(
+        'sid' => array('sid'),
+        'nid' => array('nid'),
+        'uid' => array('uid'),
+        'cid' => array('cid'),
+      ),
+    ),
+  );
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Updates
+
+function signup_status_log_update_1() {
+  $ret = array();
+  $ret[] = update_sql("ALTER TABLE {signup_status_log} ADD admin_uid int unsigned NOT NULL");
+  return $ret;
+}
+
+
+function signup_status_log_update_2() {
+  $ret = array();
+  $ret[] = update_sql("ALTER TABLE {signup_status_log} ADD lid int NOT NULL auto_increment FIRST,  ADD PRIMARY KEY (lid)");
+  return $ret;
+}
+
+function signup_status_log_update_6001() {
+  $ret = array();
+
+  db_add_field($ret, 'signup_status_log', 'sid', array(
+    'description' => t('Primary key: signup ID'),
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+  ), array('indexes' => array('sid' => array('sid'))));
+
+  db_add_field($ret, 'signup_status_log', 'action', array(
+    'description' => t('The action performed - add, update or delete.'),
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
+    'default' => '',
+  ));
+
+  $result = db_query("SELECT * FROM {signup_log}");
+  while ($row = db_fetch_object($result)) {
+    $ret[] = db_query("UPDATE {signup_status_log} SET sid = %d, action='%s' WHERE uid = %d AND nid = %d AND anon_mail = '%s'", $row->sid, 'update', $row->uid, $row->nid, $row->anon_mail);
+  }
+
+  return $ret;
+}
+

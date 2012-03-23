@@ -1,0 +1,220 @@
+# $Id: taxonomy_menu.de_.po,v 1.1.2.1 2009/03/17 21:43:13 indytechcook Exp $
+#
+# German translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  taxonomy_menu.module,v 1.19.2.2.2.22 2009/03/10 02:20:20 indytechcook
+#  taxonomy_menu.install,v 1.2.2.1.2.4 2009/03/01 04:02:18 indytechcook
+#  taxonomy_menu.info,v 1.2.4.3 2009/02/20 17:49:51 indytechcook
+#  taxonomy_menu_hierarchy.info,v 1.1.2.1 2009/03/01 05:07:35 indytechcook
+#  taxonomy_menu_path_custom.info,v 1.1.2.1 2009/03/08 18:54:00 indytechcook
+#  taxonomy_menu_hierarchy.module,v 1.1.2.1 2009/03/01 05:07:35 indytechcook
+#  taxonomy_menu_path_custom/taxonomy_menu_path_custom.module: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal Taxonomy Menu V6.x-2.0\n"
+"POT-Creation-Date: 2009-03-17 18:34+0100\n"
+"PO-Revision-Date: 2009-03-17 18:39+0100\n"
+"Last-Translator: Frank Tartler <frank.tartler@googlemail.com>\n"
+"Language-Team: Frank Tartler <frank.tartler@googlemail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: taxonomy_menu.module:34
+msgid "Taxonomy menu"
+msgstr "Taxonomie-Menü"
+
+#: taxonomy_menu.module:41
+msgid "Menu"
+msgstr "Menü"
+
+#: taxonomy_menu.module:44
+msgid "With this option enabled, an entry will be created in the menu system for this vocabulary."
+msgstr "Wenn diese Option aktiviert ist, wird für dieses Vokabular ein Eintrag im Menüsystem erstellt."
+
+#: taxonomy_menu.module:48
+#, fuzzy
+msgid "Menu Path Type"
+msgstr "Art des Menüpfads"
+
+#: taxonomy_menu.module:51
+msgid ""
+"If Default is selected then the path is taxonomy/term/tid <br />\n"
+"        The menu path will be passed through drupal_get_path_alias() function so all aliases will be applied"
+msgstr "Wenn Standard ausgewählt wird, dann ist der Pfad taxonomy/term/tid<br />Der Menüpfad wird an die Funktion drupal_get_path_alias() übergeben, daher werden alle Aliase angewendet."
+
+#: taxonomy_menu.module:62
+msgid "Select to rebuild the menu on submit."
+msgstr "Auswählen, damit das Menü beim Speichern neu aufgebaut wird."
+
+#: taxonomy_menu.module:65
+msgid "Rebuild the menu on submit.  Warning:  This will delete then re-create all of the menu items.  Only use this option if you are experiencing issues."
+msgstr "Menü beim Speichern neu aufbauen. WARNUNG: Dies löscht alle Menüelemente und erstellt sie dann neu. Diese Option sollte nur verwendet werden, wenn Schwierigkeiten auftreten."
+
+#: taxonomy_menu.module:156
+msgid "The Taxonomy Menu has been rebuilt"
+msgstr "Das Taxonomie-Menü wurde neu aufgebaut"
+
+#: taxonomy_menu.module:159
+msgid "The Taxonomy Menu has been removed"
+msgstr "Das Taxonomie-Menü wurde entfernt"
+
+#: taxonomy_menu.module:484
+msgid "Could not save the menu link for the taxonomy menu"
+msgstr "Der Menü-Link für das Taxonomie-Menü konnte nicht gespeichert werden"
+
+#: taxonomy_menu.module:523
+msgid "Default"
+msgstr "Standard"
+
+#: taxonomy_menu.module:765
+msgid "Options"
+msgstr "Optionen"
+
+#: taxonomy_menu.module:794
+msgid "Syncronise changes to this vocabulary"
+msgstr "Änderungen in diesem Vokabular synchronisieren"
+
+#: taxonomy_menu.module:795
+msgid "Every time a term is added/deleted/modified, the corresponding menu link will be altered too."
+msgstr "Jedes Mal, wenn ein Begriff hinzugefügt/gelöscht/geändert wird, wird der entsprechende Menüeintrag auch angepasst."
+
+#: taxonomy_menu.module:800
+msgid "Display Number of Nodes"
+msgstr "Anzahl Beiträge anzeigen"
+
+#: taxonomy_menu.module:801
+msgid "Display the number of Items per taxonomy Terms.  Will not show up for vocabulary menu items."
+msgstr "Zeit die Anzahl Elemente pro Taxonomie-Begriff an. Wird bei Elementen des Vokabular-Menüs nicht angezeigt."
+
+#: taxonomy_menu.module:806
+msgid "Hide Empty Terms"
+msgstr "Leere Begriffe verbergen"
+
+#: taxonomy_menu.module:807
+msgid "Hide terms with no nodes attached to them."
+msgstr "Leere Begriffe verbergen, wenn keine Beiträge damit verbunden sind."
+
+#: taxonomy_menu.module:812
+msgid "Item for Vocabulary"
+msgstr "Element für Vokabular"
+
+#: taxonomy_menu.module:813
+msgid "Shall the vocabulary have it's own item."
+msgstr "Soll das Vokabular sein eigenes Element haben."
+
+#: taxonomy_menu.module:818
+msgid "Auto Expand Menu Item"
+msgstr "Menü-Element automatisch aufklappen"
+
+#: taxonomy_menu.module:819
+msgid "Sets the expand setting to TRUE"
+msgstr "Stellt die Aufklapp-Einstellung auf WAHR"
+
+#: taxonomy_menu.module:824
+msgid "Display Descendants"
+msgstr "Untergeordnete Einträge anzeigen"
+
+#: taxonomy_menu.module:0
+msgid "taxonomy_menu"
+msgstr ""
+
+#: taxonomy_menu.install:44;78
+msgid "Links a taxonomy term to a menu item"
+msgstr ""
+
+#: taxonomy_menu.install:51;85
+msgid "The taxonomy terms {menu_link}.mlid"
+msgstr ""
+
+#: taxonomy_menu.install:58;92
+msgid "tid that is linked to the mlid"
+msgstr ""
+
+#: taxonomy_menu.install:65;99
+msgid "vid for the tid"
+msgstr ""
+
+#: taxonomy_menu.info:0;0
+#: taxonomy_menu_hierarchy/taxonomy_menu_hierarchy.info:0
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.info:0
+msgid "Taxonomy Menu"
+msgstr ""
+
+#: taxonomy_menu.info:0
+msgid "Adds links to taxonomy terms to a menu."
+msgstr "Fügt Links zu Taxonomie-Begriffen einem Menü hinzu."
+
+#: taxonomy_menu_hierarchy/taxonomy_menu_hierarchy.module:17
+msgid "Hierarchy"
+msgstr "Hierarchie"
+
+#: taxonomy_menu_hierarchy/taxonomy_menu_hierarchy.module:54
+msgid "Base Path for Hierarchy Path"
+msgstr "Basispfad für den Hierarchie-Pfad"
+
+#: taxonomy_menu_hierarchy/taxonomy_menu_hierarchy.module:55
+msgid "Only used when the Hierarchy path type is selected"
+msgstr "Wird nur verwendet, wenn die Art ‚Hierarchie-Pfad‘ ausgewählt wird"
+
+#: taxonomy_menu_hierarchy/taxonomy_menu_hierarchy.module:0
+msgid "taxonomy_menu_hierarchy"
+msgstr ""
+
+#: taxonomy_menu_hierarchy/taxonomy_menu_hierarchy.info:0
+msgid "Taxonomy Menu Hierarchy"
+msgstr ""
+
+#: taxonomy_menu_hierarchy/taxonomy_menu_hierarchy.info:0
+msgid "Enables Hierarchy path to Taxonomy Menu"
+msgstr "Ermöglicht Hierarchie-Pfade im Taxonomie-Menü"
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.module:19
+msgid "Display Depth in Custom Path"
+msgstr "Anzeigetiefe im benutzerdefinierten Pfad"
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.module:21
+#, fuzzy
+msgid ""
+"Only used with a Custom Path. <br />\n"
+"\t  To use depth the path in the view has to have the path of '<Base Path for Custom Path>/%/%' The two arguments must be 'Term ID (with depth)' and 'Depth Modifier'.<br />\n"
+"\t  Have this view setup <strong>before</strong> you create this taxonomy menu. Otherwise leave this field empty!"
+msgstr ""
+"Wird nur mit einem benutzerdefinierten Pfad verwendet. <br />\n"
+"\t  Um die Tiefe zu verwenden, muss der Pfad in der Ansicht '<Basispfad für benutzerdefinierten Pfad>/%/%' lauten. Die zwei Argumente müssen ‚Begriffs-ID (mit Tiefe)‘ und ‚Tiefen-Modifizierer‘ sein.<br />\n"
+"\t  Die Ansicht muss erstellt sein, <strong>bevor</strong> dieses Taxonomie-Menü erstellt wird. Andernfalls muss dieses Feld leer gelassen werden!"
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.module:28
+msgid "Base Path for Custom Path"
+msgstr "Basispfad für benutzerdefinierten Pfad"
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.module:32
+msgid ""
+"Only used with a Custom Path.<br />\n"
+"\t  You need to have a view with path 'custom path/%' and an argument 'Term ID' <strong>before</strong> you create this taxonomy menu."
+msgstr ""
+"Wird nur mit einem benutzerdefinierten Pfad verwendet.<br />\n"
+"\t  Es muss eine Ansicht mit dem Pfad ‚benutzerdefinierter Pfad/%‘ existieren, <strong>bevor</strong> dieses Taxonomie-Menü erstellt wird."
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.module:44
+msgid "Custom Path"
+msgstr "Benutzerdefinierter Pfad"
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.module:0
+msgid "taxonomy_menu_path_custom"
+msgstr ""
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.info:0
+msgid "Taxonomy Menu Custom Path"
+msgstr ""
+
+#: taxonomy_menu_path_custom/taxonomy_menu_path_custom.info:0
+msgid "Enables Custom path base to Taxonomy Menu"
+msgstr "Ermöglicht eine Basis für einen benutzerdefinierten Pfad zum Taxonomie-Menü"
+

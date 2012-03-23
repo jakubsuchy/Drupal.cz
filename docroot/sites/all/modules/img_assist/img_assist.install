@@ -1,0 +1,35 @@
+<?php
+// $Id: img_assist.install,v 1.1.2.2 2006/05/04 21:35:40 bjshell Exp $
+
+/**
+ * Implementation of hook_install()
+ */
+function img_assist_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      db_query('CREATE TABLE {img_assist_map} (
+        nid INT(10) UNSIGNED NOT NULL ,
+        iid INT(10) UNSIGNED NOT NULL ,
+        PRIMARY KEY (nid, iid)
+      ) TYPE=MyISAM /*!40100 DEFAULT CHARACTER SET utf8 */;');
+      break;
+      
+    case 'pgsql':
+		  db_query('create table {img_assist_map} (
+        nid integer not null,
+        iid integer not null,
+        primary key (nid, iid)
+      );');
+      break;
+  }
+  drupal_set_message(t('img_assist has been setup.'));
+}
+
+/**
+ * Updates to img_assist
+ */
+function img_assist_update_1() {
+  return _system_update_utf8(array('img_assist_map'));
+}
+?>

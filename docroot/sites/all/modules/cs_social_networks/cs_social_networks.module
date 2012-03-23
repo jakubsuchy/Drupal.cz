@@ -1,0 +1,119 @@
+<?php
+// $Id: cs_social_networks.module,v 1.4.2.2 2008/06/21 12:18:53 meba Exp $
+
+/**
+ * @file
+ * Main file of module Czech & Slovak social networks.
+ *
+ * Czech & Slovak social networks is module which displays links to
+ * add current displayed node to Czech and Slovak social networks.
+ */
+function cs_social_networks_help($path, $arg) {
+  if ($path == 'admin/modules#description') {
+    return t('Provides an add link to Czechoslovakian social networks (such as Jagg.cz, Linkuj.cz)');
+  }
+}
+function cs_social_networks_perm() {
+  return array("view links");
+}
+
+/**
+ * Implementation of social networks database. First draft - should be set in the settings
+ * TODO
+ */
+function _get_social_networks() {
+  return array(
+      'Jagg.cz' => '<a href="http://www.jagg.cz">Jagg.cz</a>',
+      'Linkuj.cz' => '<a href="http://www.linkuj.cz">Linkuj.cz</a>',
+      'CoJeNoveho.cz' => '<a href="http://www.cjn.cz">CoJeNoveho.cz</a>',
+      'Asdf.sk' => '<a href="http://www.asdf.sk">Asdf.sk</a> (Nepodporuje title)',
+      'Mojelinky.sk' => '<a href="http://www.mojelinky.sk">Mojelinky.sk</a>',
+      'Redmedia.sk' => '<a href="http://www.redmedia.sk">Redmedia.sk</a> (Nepodporuje title)',
+      );
+}
+/**
+ * Return add link to social network
+ * Every link has %path and %title, these variables are replaced by actual node path and title
+ * TODO
+ */
+function _get_add_link($network) {
+  $add_links = array(
+      'Jagg.cz' => 'http://www.jagg.cz/bookmarks.php?action=add&address=%path&title=%title',
+      'Linkuj.cz' => 'http://linkuj.cz/?id=linkuj&url=%path&title=%title',
+      'CoJeNoveho.cz' => 'http://www.cojenoveho.cz/news/NewLink.do?jump=close&u=%path&title=%title',
+      'Asdf.sk' => 'http://asdf.sk/submit.php?url=%path',
+      'Mojelinky.sk' => 'http://www.mojelinky.sk/bookmarks.php?action=add&address=%path&title=%title',
+      'Redmedia.sk' => 'http://www.redmedia.sk/redmedia/pridajspravu.jsp?backlink=%path',
+      );
+  if (!empty($add_links[$network])) {
+    return $add_links[$network];
+  }
+}
+/**
+ * Implementation of hook_settings().
+ */
+function cs_social_networks_menu() {
+  $items = array();
+
+  $items['admin/content/cs_social_networks'] = array(
+      'title' => 'C&S Social Networks',
+      'description' => 'Add/Remove/Modify social networks and allowed node types for links',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('cs_social_networks_admin_settings'),
+      'access arguments' => array('administer site configuration'),
+      'type' => MENU_NORMAL_ITEM, // optional
+      );
+  return $items;
+}
+function cs_social_networks_admin_settings() {
+  $types = node_get_types();
+  while (list($type, $type_name) = each($types))  {
+    $options[$type] = $type_name->name;
+  }
+
+  $form['nodesettings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Node type settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE);
+  $form['nodesettings']['socialnodetypes'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Content types'),
+      '#default_value' => variable_get('socialnodetypes', array()),
+      '#options' => $options,
+      '#description' => t('Select node types, for which links will be displayed.'),
+      );
+  $form['networks'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Social networks'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE);
+  $form['networks']['enablednetworks'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Servers'),
+      '#default_value' => variable_get('enablednetworks', array()),
+      '#options' => _get_social_networks(),
+      '#description' => t('Select enabled social networks.'),
+      );
+
+  return system_settings_form($form);
+}
+function cs_social_networks_link($type, $node=0, $teaser=0) {
+  global $base_url;
+  if (user_access("view links")) {
+    $allowed = variable_get('socialnodetypes', array());
+    $networks = variable_get('enablednetworks', array());
+    if ($allowed[$node->type]) {
+      $links = array();
+      foreach ($networks as $network => $networkhref) {
+        if ($networks[$network]) {
+          $link = str_replace('%title', $node->title, _get_add_link($network));
+          $link = str_replace('%path', $base_url . url('node/'. $node->nid), $link);
+          $links["cs_social_$network"] = array('title' => t($network), 'href' => $link, 'attributes' => array('class' => "cs_social_networks $network-link"));
+        }
+      }
+
+    }
+    return $links;
+  }
+}

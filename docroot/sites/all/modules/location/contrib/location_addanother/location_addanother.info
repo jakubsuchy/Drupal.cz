@@ -1,0 +1,14 @@
+; $Id: location_addanother.info,v 1.3.2.1 2009/02/25 20:51:52 bdragon Exp $
+name = Location Add Another
+description = Allows you to quickly add locations directly from a node without having to click 'edit' first.
+dependencies[] = location
+dependencies[] = location_node
+package = Location
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-03-03
+version = "6.x-3.1-rc1"
+core = "6.x"
+project = "location"
+datestamp = "1236112547"
+

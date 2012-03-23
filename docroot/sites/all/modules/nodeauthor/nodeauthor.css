@@ -1,0 +1,15 @@
+.nodeauthor-info {
+	position: relative;
+border: 1px solid black;
+padding: 15px;
+}
+.nodeauthor-info span { 
+display: block;
+position: absolute;
+top: -15px;
+background: white;
+padding: 5px;
+	 font-weight: bold;
+	 font-size: 110%;
+}
+

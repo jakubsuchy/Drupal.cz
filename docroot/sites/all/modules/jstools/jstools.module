@@ -1,0 +1,84 @@
+<?php
+// $Id: jstools.module,v 1.14 2008/04/03 18:01:02 nedjo Exp $
+
+/**
+ * @file
+ * Provide common methods used by jstools package modules.
+ */
+
+/**
+ * Add a JavaScript file to the output.
+ *
+ * The first time this function is invoked per page request,
+ * it adds jstools files to the output. Other jstools scripts
+ * depend on the methods and css in them.
+ */
+function jstools_add_js($files) {
+  static $core_sent;
+  if (!$core_sent) {
+    $path = drupal_get_path('module', 'jstools');
+    drupal_add_js($path . '/jstools.js');
+    drupal_add_js(array(
+      'jstools' => array(
+        'cleanurls' => (bool) variable_get('clean_url', '0'),
+        'basePath' => base_path(),
+      ),
+    ), 'setting');
+    $core_sent = TRUE;
+  }
+  if (is_array($files)) {
+    foreach ($files as $file) {
+      drupal_add_js($file);
+    }
+  }
+  else {
+    drupal_add_js($files);
+  }
+}
+
+/**
+ * Load an include file for the current theme.
+ *
+ * To avoid having to prematurely initialize the theme, call
+ * this function from a hook_footer() implementation. hook_footer()
+ * typically is called after the theme has been initiated, but
+ * before the header has been generated.
+ */
+function jstools_theme_include($module) {
+  global $theme;
+
+  $current_theme = $theme ? $theme : variable_get('theme_default', 'garland');
+
+  $file = drupal_get_path('module', $module) .'/theme/'. $current_theme .'.inc';
+  if (file_exists($file)) {
+    include_once $file;
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Load theme-specific data.
+ *
+ * Allows loading e.g. of theme-specific jQuery selectors.
+ * To avoid having to prematurely initialize the theme, call
+ * this function from a hook_footer() implementation. hook_footer()
+ * typically is called after the theme has been initiated, but
+ * before the header has been generated.
+ */
+function jstools_theme_data($module) {
+  return jstools_theme_include($module) ? module_invoke($module, 'theme_data') : array();
+}
+
+/**
+ * Load available types by module.
+ */
+function jstools_modules_includes($module) {
+  $path = drupal_get_path('module', $module) .'/modules';
+  $files = file_scan_directory($path, '\.inc$');
+  foreach ($files as $file) {
+    if (module_exists($file->name)) {
+      include_once $file->filename;
+    }
+  }
+}

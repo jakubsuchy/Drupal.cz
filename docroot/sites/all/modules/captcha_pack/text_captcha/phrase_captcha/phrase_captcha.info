@@ -1,0 +1,13 @@
+; $Id: phrase_captcha.info,v 1.4 2008/02/13 21:39:52 soxofaan Exp $
+name = "Phrase CAPTCHA"
+description = "Provides CAPTCHA that requires to pick for the right word/character out of a CAPTCHA phrase."
+package = "Spam control"
+dependencies[] = captcha
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-09-04
+version = "6.x-1.0-beta3"
+core = "6.x"
+project = "captcha_pack"
+datestamp = "1252092630"
+

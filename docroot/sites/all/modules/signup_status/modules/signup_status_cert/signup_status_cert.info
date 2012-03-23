@@ -1,0 +1,12 @@
+; $Id: signup_status_cert.info,v 1.3 2009/09/19 09:18:45 dww Exp $
+name = "Signup Status Certificates"
+description = "Allow signup-enabled node creators to grant users a certificate when they 'complete' a signup."
+package = Signup
+dependencies = signup_status token
+
+; Information added by drupal.org packaging script on 2009-09-24
+version = "6.x-1.0-alpha2"
+core = "6.x"
+project = "signup_status"
+datestamp = "1253775363"
+

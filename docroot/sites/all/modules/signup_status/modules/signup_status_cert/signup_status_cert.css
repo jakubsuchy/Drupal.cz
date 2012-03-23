@@ -1,0 +1,9 @@
+/* $Id: signup_status_cert.css,v 1.2 2009/01/12 18:10:25 jrbeeman Exp $ */
+
+/**
+ * Add page breaks around each certificate, for when several certificates are
+ * being printed at once.
+ */
+.signup-status-cert {
+  page-break-after:always;
+}

@@ -1,0 +1,82 @@
+<?php
+// $Id: signup_status_limit.install,v 1.3 2009/09/21 03:38:03 dww Exp $
+
+/**
+ * @file
+ * Database installation and upgrade code for the Signup Status Limit module.
+ */
+
+
+/**
+ * Implement hook_install().
+ */
+function signup_status_limit_install() {
+  drupal_install_schema('signup_status_limit');
+  if (db_table_exists('signup_status_node_limits')) {
+    db_query("INSERT INTO {signup_status_limit_node_limit} (nid, cid, status_limit) SELECT nid, cid, close_signup_limit FROM {signup_status_node_limits}");
+    db_query("INSERT INTO {signup_status_limit_node_setting} (nid, limit_type) SELECT DISTINCT nid, 'status' FROM {signup_status_limit_node_limit}");
+    $ret = array();
+    db_drop_table($ret, 'signup_status_node_limits');
+  }
+}
+
+/**
+ * Implement hook_uninstall().
+ */
+function signup_status_limit_uninstall() {
+  drupal_uninstall_schema('signup_status_limit');
+}
+
+/**
+ * Implement hook_schema().
+ */
+function signup_status_limit_schema() {
+  $schema['signup_status_limit_node_limit'] = array(
+    'description' => t('Signup status per-node limits'),
+    'fields' => array(
+      'nid' => array(
+        'description' => 'Foreign key: {node}.nid of the node with the limits',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'cid' => array(
+        'description' => 'Foreign key: {signup_status_codes}.cid of the status',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status_limit' => array(
+        'description' => 'The limit for this node and status',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid, cid'),
+  );
+  $schema['signup_status_limit_node_setting'] = array(
+    'description' => t('Signup status per-node limit settings'),
+    'fields' => array(
+      'nid' => array(
+        'description' => 'Primary key: {node}.nid of the node to hold settings for',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'limit_type' => array(
+        'description' => "The kind of signup limits in effect for this node (can be either 'status' for per-status limits, or 'global')",
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 'global',
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+  return $schema;
+}

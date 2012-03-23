@@ -1,0 +1,139 @@
+# Czech translation of Drupal (modules/blog/blog.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: modules/blog/blog.module:15
+msgid "Blog entry"
+msgstr "Příspěvek v blogu"
+
+#: modules/blog/blog.module:17
+msgid ""
+"A blog is a regularly updated journal or diary made up of individual posts "
+"shown in reversed chronological order. Each member of the site may create "
+"and maintain a blog."
+msgstr ""
+"Blog je pravidelně aktualizovaný deník složený z jednotlivých záznamů, které "
+"se zobrazují v chronologickém pořadí (od nejnovějšího k nejstaršímu). Blog "
+"je úzce spojen s autorem, každý uživatel může mít vlastní blog."
+
+#: modules/blog/blog.module:52
+msgid "View recent blog entries"
+msgstr "Projít nejnovější příspěvky"
+
+#: modules/blog/blog.module:52;241
+msgid "Read @username's latest blog entries."
+msgstr "Přečíst nejnovější příspěvky uživatele @username."
+
+#: modules/blog/blog.module:65
+msgid ""
+"The blog module allows registered users to maintain an online weblog "
+"(commonly known as a blog), often referred to as an online journal or diary. "
+"Blogs are made up of individual posts that are time stamped and are "
+"typically viewed by date as you would a diary. Blogs often contain links to "
+"web pages users have read and/or agree/disagree with."
+msgstr ""
+"Modul blog umožňuje registrovaným uživatelům vést si online blog (deník). "
+"Blogy se skládají z jednotlivých záznamů, u kterých je vyznačen čas a "
+"zobrazují se seřazené jako v deníku. Blogy často obsahují odkazy na weby, ke "
+"kterým se uživatel vyjadřuje."
+
+#: modules/blog/blog.module:66
+msgid ""
+"The blog module adds a <em>user blogs</em> navigation link to the site, "
+"which takes any visitor to a page that displays the most recent blog entries "
+"from all the users on the site. The navigation menu has a <em>create a blog "
+"entry</em> link (which takes you to a submission form) and a <em>view "
+"personal blog</em> link (which displays your blog entries as other people "
+"will see them). The blog module also creates a <em>recent blog posts</em> "
+"block that can be enabled."
+msgstr ""
+"Modul blog přidá do navigace odkaz <em>blogy uživatelů</em>, který zobrazí "
+"stránku s přehledem nejnovějších záznamů z blogů všech uživatelů. Navigační "
+"nabídka také zobrazuje odkaz <em>vytvořit obsah - příspěvek v blogu</em> "
+"(zobrazí formulář pro odeslání) a <em>můj blog</em> (zobrazí Vaše záznamy, "
+"jak je uvidí ostatní lidé). Modul blog také vytvoří blok <em>Nejnovější "
+"příspěvky blogu</em>, který můžete povolit."
+
+#: modules/blog/blog.module:67
+msgid ""
+"If a user has the ability to post blogs, then the import module (news "
+"aggregator) will display a blog-it link next to each news item in its lists. "
+"Clicking on this takes the user to the blog submission form, with the title, "
+"a link to the item, and a link to the source into the body text already in "
+"the text box, ready for the user to add a comment or explanation. This "
+"actively encourages people to add blog entries about things they see and "
+"hear elsewhere in the website and from your syndicated partner sites."
+msgstr ""
+"Pokud má uživatel možnost psát do blogu, zobrazuje se v agregátoru novinek u "
+"každého příspěvku odkaz na vytvoření zápisu v blogu. Po kliknutí na tento "
+"odkaz se zobrazí formulář pro odeslání příspěvku s vyplněným názvem, odkazem "
+"na novinku a odkazem na zdroj v těle, stačí jen doplnit komentář nebo "
+"vysvětlení. Tím aktivně pobízíte uživatele, aby blogovali o tom, co si "
+"přečtou jinde na webu nebo v obsahu syndikovaném z příbuzných webů."
+
+#: modules/blog/blog.module:68
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@blog\">Blog page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href=\"@blog"
+"\">stránce Blog</a>."
+
+#: modules/blog/blog.module:134;223
+msgid "@name's blog"
+msgstr "Blog uživatele @name"
+
+#: modules/blog/blog.module:137
+msgid "Post new blog entry."
+msgstr "Odeslat nový záznam do blogu."
+
+#: modules/blog/blog.module:140
+msgid "You are not allowed to post a new blog entry."
+msgstr "Nemáte oprávnění odeslat nový záznam do blogu."
+
+#: modules/blog/blog.module:155
+msgid "RSS - !title"
+msgstr "RSS - !title"
+
+#: modules/blog/blog.module:178
+msgid "RSS - blogs"
+msgstr "RSS - blogy"
+
+#: modules/blog/blog.module:222;257
+msgid "Blogs"
+msgstr "Blogy"
+
+#: modules/blog/blog.module:239
+msgid "@username's blog"
+msgstr "Blog uživatele @username"
+
+#: modules/blog/blog.module:261
+msgid "My blog"
+msgstr "Můj blog"
+
+#: modules/blog/blog.module:277;286
+msgid "Recent blog posts"
+msgstr "Nejnovější příspěvky blogu"
+
+#: modules/blog/blog.module:285
+msgid "Read the latest blog entries."
+msgstr "Přečíst nejnovější záznamy v blogu."
+
+#: modules/blog/blog.module:26
+msgid "edit own blog"
+msgstr "upravit vlastní blog"
+
+#: modules/blog/blog.module:0
+msgid "blog"
+msgstr "blog"

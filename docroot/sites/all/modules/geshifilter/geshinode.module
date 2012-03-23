@@ -1,0 +1,185 @@
+<?php
+// $Id: geshinode.module,v 1.9 2008/07/21 17:44:23 soxofaan Exp $
+
+/**
+ * @file
+ * Implementation of a GeSHi node.
+ */
+
+/**
+ * Implementation of hook_menu()
+ */
+function geshinode_menu() {
+  $items = array();
+  $items['admin/settings/geshifilter/geshinode'] = array(
+    'title' => 'GeSHi node',
+    'description' => 'Settings of the GeSHi source code node type.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('geshinode_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function geshinode_help($path, $arg) {
+  if ($path == 'admin/settings/geshifilter/geshinode') {
+    return '<p>'. t('Settings of the GeSHi source code node type.') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_node_info().
+ */
+function geshinode_node_info() {
+  return array(
+    'geshinode' => array(
+      'name' => t('Source code node'),
+      'module' => 'geshinode',
+      'description' => t('Source code with GeSHi syntax highlighting.'),
+      'has_title' => TRUE,
+      'title_label' => t('Title'),
+      'has_body' => TRUE,
+      'body_label' => t('Source code'),
+    )
+  );
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function geshinode_perm() {
+  return array('create source code node', 'edit source code node', 'edit own source code node');
+}
+
+/**
+ * Implementation of hook_access().
+ */
+function geshinode_access($op, $node) {
+  global $user;
+  if ($op == 'create') {
+    return user_access('create source code node');
+  }
+  if ($op == 'update' || $op == 'delete') {
+    return user_access('edit source code node') ||
+      user_access('edit own source code node') && ($user->uid == $node->uid);
+  }
+}
+
+/**
+ * Implementation of hook_form().
+ */
+function geshinode_form(&$node, $form_state) {
+  require_once drupal_get_path('module', 'geshifilter') .'/geshifilter.inc';
+
+  $type = node_get_types('type', $node);
+
+  // set the title field
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => -5,
+  );
+
+  // the body field
+  $form['body_field'] = node_body_field($node, $type->body_label, $type->min_word_count);
+  unset($form['body_field']['format']);
+
+  // the source code language field
+  $form['source_code_language'] = array(
+    '#type' => 'select',
+    '#title' => t('Syntax highlighting mode'),
+    '#default_value' => isset($node->source_code_language) ? $node->source_code_language: variable_get('geshinode_default_language', 'php'),
+    '#options' => _geshifilter_get_enabled_languages(),
+    '#description' => t('Select the syntax highlighting mode to use.')
+  );
+  return $form;
+}
+
+/**
+ * Implementation of hook_validate().
+ */
+function geshinode_validate($node) {
+    ///TODO
+}
+
+/**
+ * Implementation of hook_insert().
+ */
+function geshinode_insert($node) {
+  db_query("INSERT INTO {geshinode} (nid, vid, language) VALUES (%d, %d, '%s')",
+    $node->nid, $node->vid, $node->source_code_language);
+}
+
+/**
+ * Implementation of hook_update().
+ */
+function geshinode_update($node) {
+  if ($node->revision) {
+    geshinode_insert($node);
+  }
+  else {
+    db_query("UPDATE {geshinode} SET language = '%s' WHERE vid=%d", $node->source_code_language, $node->vid);
+  }
+}
+
+/**
+ * Implementation of hook_delete().
+ */
+function geshinode_delete(&$node) {
+  db_query("DELETE FROM {geshinode} WHERE nid = '%d'", $node->nid);
+}
+
+/**
+ * Implementation of hook_load().
+ */
+function geshinode_load($node) {
+  return db_fetch_object(db_query('SELECT language AS source_code_language FROM {geshinode} WHERE vid = %d', $node->vid));
+}
+
+/**
+ * Implementation of hook_view()
+ */
+function geshinode_view($node, $teaser = FALSE, $page = FALSE) {
+  require_once drupal_get_path('module', 'geshifilter') .'/geshifilter.pages.inc';
+  $node->readmore = (strlen($node->teaser) < strlen($node->body));
+  $line_numbering = variable_get('geshinode_line_numbering', GESHIFILTER_LINE_NUMBERS_DEFAULT_NONE);
+  $source_code = $teaser ? $node->teaser : $node->body;
+  $node->content['body'] = array(
+    '#value' => geshifilter_process($source_code, $node->source_code_language, $line_numbering),
+    '#weight' => 0,
+  );
+  return $node;
+}
+
+/**
+ * Callback for geshinode settings form
+ */
+function geshinode_settings() {
+  require_once drupal_get_path('module', 'geshifilter') .'/geshifilter.inc';
+  $form = array();
+  $form['geshinode_line_numbering'] = array(
+    '#type' => 'select',
+    '#title' => t('Line numbering'),
+    '#default_value' => variable_get('geshinode_line_numbering', GESHIFILTER_LINE_NUMBERS_DEFAULT_NONE),
+    '#options' => array(
+      GESHIFILTER_LINE_NUMBERS_DEFAULT_NONE => t('no line numbers'),
+      GESHIFILTER_LINE_NUMBERS_DEFAULT_NORMAL => t('normal line numbers'),
+      GESHIFILTER_LINE_NUMBERS_DEFAULT_FANCY5 => t('fancy line numbers (every @n lines)', array('@n' => GESHIFILTER_LINE_NUMBERS_DEFAULT_FANCY5)),
+      GESHIFILTER_LINE_NUMBERS_DEFAULT_FANCY10 => t('fancy line numbers (every @n lines)', array('@n' => GESHIFILTER_LINE_NUMBERS_DEFAULT_FANCY10)),
+      GESHIFILTER_LINE_NUMBERS_DEFAULT_FANCY20 => t('fancy line numbers (every @n lines)', array('@n' => GESHIFILTER_LINE_NUMBERS_DEFAULT_FANCY20)),
+    ),
+  );
+  $form['geshinode_default_language'] = array(
+    '#type' => 'select',
+    '#title' => t('Default language'),
+    '#options' => _geshifilter_get_enabled_languages(),
+    '#default_value' => variable_get('geshinode_default_language', 'php'),
+ );
+  return system_settings_form($form);
+}

@@ -1,0 +1,28 @@
+// $Id
+
+02/11/06
+--------
+First stab at Views integration with VotingAPI. Configuring it is a little ugly -- mainly useful for custom modules that want to expose a vote-based default_view without coding all the table/field/filter stuff for Views.
+
+04/21/06
+--------
+Expose public votingapi_add_vote and votingapi_delete_vote functions to allow modules to override normal behavior. This makes it possible to implement anonymous voting, though future explicit support is coming.
+
+04/22/06
+--------
+There is now a working infrastructure for modules to expose their own 'voting actions' without requiring user customization.
+
+04/23/06
+--------
+Major enhancements to the actions subsystem, the addition of an experimental widgets library, and the (beginnings) of major enhancements to views integration.
+Using the latest CVS version of Views.module, it's now possible to display a particular vote result (say, the number of people who've voted) without using esoteric combinations of filters.
+
+04/29/06
+--------
+A new setting has been introduced -- vote result calculation can be deferred until cron-time. This can be useful on heavy-load sites where MANY votes are being cast and complex, db-intensive calculations are used to weight the results.
+
+05/01/06
+--------
+The action loading and caching infrastructure has been made much more robust, and CRUD functions are in place for reading and writing actions. voting_actions.module has now been added to facilitate direct user manipulation of action criteria, etc. It's the part that's still heavily under development. In many installations, it'll be unecessary.
+The votingapi_delete_vote() function no longer automatically recalculates. Modules using it should call recalculate manually after explicitly removing a vote.
+Those needing a consistent, stable VotingAPI should probably still stick with the 4.7 branch. This version will be branched as soon as the issues are ironed out.

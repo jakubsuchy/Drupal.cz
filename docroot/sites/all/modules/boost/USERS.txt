@@ -1,0 +1,65 @@
+// $Id: USERS.txt,v 1.1.2.1.2.5 2008/10/23 19:41:25 arto Exp $
+
+This lists some of the users of Boost, describing the setup of the website
+in question as well as providing rationale on how Boost benefits the site.
+It is hoped that the cases described here may serve as useful guides for new
+Boost users evaluating how to best implement static caching on their site.
+
+
+  Stand Against Poverty <http://www.standagainstpoverty.org>
+
+    United Nations campaign website used to organize events and report event
+    attendance for events at which nearly 117 million people worldwide
+    participated. The events seek to raise awareness about poverty and
+    highlight effort around the United Nations Millennium Development Goals
+    that seek toward reducing global poverty. The website runs on a cluster
+    of 4 load-balanced Apache web servers and a single database server.
+    Boost is used to reduce the overall resource usage consumed by anonymous
+    visitors on the site in order to devote more infrastructure resources
+    toward event organizers who sign in as authenticated users to create
+    events and report event attendance tallies. The Stand Against Poverty
+    site is is 4 languages, and uses the i18n module. Boost was used with
+    this patch http://drupal.org/node/174380#comment-663794 to allow for the
+    use of Boost on i18n sites. While there is still a substantial amount of
+    traffic on the website during the 3 day campaign, the impact of
+    anonymous traffic (which includes all traffic, until users sign in) is
+    greatly reduced.
+
+    Hosting infrastructure for StandAgainstPoverty.org provided by the good
+    folks at http://www.advomatic.com
+
+    Development Seed writes more about the campaign on their blog at:
+    http://www.developmentseed.org/blog/2008/oct/22/united-nations-uses-drupal-huge-anti-poverty-event
+    http://www.developmentseed.org/blog/2008/oct/23/improving-drupals-performance-boost-module-uns-millennium-campaign
+
+
+  Environmental Working Group <http://www.ewg.org/>
+
+    The Environmental Working Group (EWG) uses the power of public
+    information to protect public health and the environment. Boost is used
+    to cache all public-facing pages on the site (13,000+ and counting) and
+    has been critical in sustaining EWG's large amounts of traffic since the
+    site relaunched using Drupal in early 2007. EWG frequently receives
+    traffic from multiple press outlets on a given day and Boost allows EWG
+    to manage its infrastructure in-house and at a fraction of the price
+    that would otherwise be required.
+
+
+  Arto Bendiken <http://bendiken.net/>
+
+    Personal website of the author. Boost is used to cache virtually every
+    page on the site, quite significantly improving response times despite
+    the sometimes sluggish shared hosting the site runs on. An additional
+    benefit provided by Boost is that when the backend MySQL database server
+    goes down, as happens now and then, the site still keeps on trucking
+    instead of just showing the Drupal database error page (dynamic features
+    such as posting comments obviously don't work until MySQL access is
+    restored, however).
+
+
+If you would like to add your website to this list, please contact the
+author at http://drupal.org/user/26089/contact, describing your site and
+setup. Try to keep the description to a paragraph or two, and don't forget
+to include your name and the URL to your website. Note that additions to
+this list are posted at the author's sole discretion, and submissions may be
+abridged or edited for grammar.

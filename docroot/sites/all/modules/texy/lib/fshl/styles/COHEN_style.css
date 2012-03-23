@@ -1,0 +1,87 @@
+	/* (c) 2002 Martin Cohen - www.martincohen.info */
+	
+	/* P H P */
+	.php-keyword1 {color:#d24; font-weight:bold;}
+	.php-keyword2 {color:#d24; }
+	.php-var {color:#fa0; font-weight:bold;}
+	.php-num {color:red;}
+	.php-quote {color:#843; font-weight:bold;}
+	.php-vquote {color:#fa0;}
+	.php-comment {color:#999; background-color:#ffe;}
+
+	/* H T M L */
+	.html-tag {color:#598527; font-weight:bold;}
+	.html-tagin {color:#89A315}
+	.html-quote {color:#598527; font-weight:bold;}
+	.html-comment {color:#999; background-color:#F1FAE4;}
+	.html-entity {color:#89A315}
+
+	/* C S S */
+	.css-class {color:#004A80; }
+	.css-id {color:#7DA7D9; font-weight:bold; }
+	.css-def {color:#5674B9;}
+	.css-property {color:#003663; font-weight:bold; }
+	.css-value {color:#448CCB;}
+	.css-color {color:#0076A3;}
+	.css-comment { background-color:#E5F8FF; color:#999; }
+	
+	/* C P P */
+	.cpp-keywords1 {color:blue; font-weight:bold;}
+	.cpp-num {color:red;}
+	.cpp-quote {color:brown; font-weight:bold;}
+	.cpp-comment {color:green;}
+	.cpp-preproc {color:grey;}
+
+	/* J A V A */
+	.java-keywords1 {color:blue; font-weight:bold;}
+	.java-num {color:red;}
+	.java-quote {color:brown; font-weight:bold;}
+	.java-comment {color:green;}
+	.java-preproc {color:grey;}
+
+	/* J a v a S c r i p t */
+	.js-out {color:#898993;}
+	.js-keywords1 {color:#575757; font-weight:bold;}
+	.js-num {color:#575757;}
+	.js-quote {color:#575757; font-weight:bold;}
+	.js-comment {color:#898993; background-color:#F4F4F4;}
+
+	/* S Q L */
+	.sql-keyword1 {color: #DD0000; font-weight: bold;}
+	.sql-keyword2 {color: #DD2222;}
+	.sql-keyword3 {color: #0000FF; font-weight: bold;}
+	.sql-value {color: #5674B9;}
+	.sql-comment {color: #FFAA00;}
+	.sql-num {color:red;}
+	.sql-option {color: #004A80; font-weight: bold;}
+
+	/* P y t h o n */
+	.py-keyword1 {color: #0033CC; font-weight: bold;}
+	.py-keyword2 {color: #CE3333; font-weight: bold;}
+	.py-keyword3 {color: #660066; font-weight: bold;}
+	.py-number {color: #993300;}
+	.py-docstring {color: #E86A18;}
+	.py-quote {color: #878787; font-weight: bold;}
+	.py-comment {color: #009900; font-style: italic;}
+
+	/* T E X Y */
+	.texy-hlead {color:#44B; font-weight:bold;}			/* header leadIN == and leadOUT == */
+	.texy-hbody {background-color:#eeF;color:#44B; }	/* header body */
+	.texy-hr {color:#B44; }								/* horizontal line */
+	
+	.texy-code {color:#666;}							/* /---code */
+	.texy-html {color:#6a6;}							/* /---html */
+	.texy-text {color:#66a;}							/* /---html */
+	
+	.texy-err {background-color:red; color:white;}		/* error (TODO) */
+	
+
+
+	/* C O M M O N */
+	.normal {color:black;}
+	.xlang {color:red; font-weight:bold;}
+	.count {color:black; background-color:#FFF;}
+
+  /* for DRUPAL */
+  .content pre { display: block; padding: 18px; border: 1px solid #e0e0e0; overflow: auto; font-size: 0.9em; line-height: 1.3em; }
+

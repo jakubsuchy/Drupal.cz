@@ -1,0 +1,1551 @@
+# Czech translation of Drupal (modules/system/system.module)
+# Adam Rambousek <xrambous@fi.muni.cz>, 2005, 2006.
+# Jakub Suchy <redakce@drupal.cz>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: general\n"
+"POT-Creation-Date: 2007-07-27 23:37+0200\n"
+"PO-Revision-Date: 2007-01-12 23:39+0100\n"
+"Last-Translator: Jakub Suchy <redakce@drupal.cz>\n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: includes/common.inc:324 modules/system/system.module:872
+msgid ""
+"@site is currently under maintenance. We should be back shortly. Thank you "
+"for your patience."
+msgstr ""
+"Na @site momentálně probíhá údržba. Zakrátko by měla být opět v provozu. "
+"Děkujeme vám za trpělivost."
+
+#: includes/common.inc:1000 modules/upload/upload.module:201;210
+msgid "MB"
+msgstr "MB"
+
+#: includes/common.inc:555 includes/image.inc:61 includes/unicode.inc:151;184
+#: modules/system/system.install:2318;2548
+msgid "php"
+msgstr "php"
+
+#: includes/database.mysql.inc:24 includes/database.mysqli.inc:27
+msgid "MySQL database"
+msgstr "MySQL databáze"
+
+#: includes/database.mysql.inc:30 includes/database.mysqli.inc:33
+msgid "Your MySQL Server is too old. Drupal requires at least MySQL %version."
+msgstr ""
+"Váš MySQL Server je moc starý. Drupal vyžaduje MySQL alespoň verze %version."
+
+#: includes/file.inc:97 modules/system/system.install:93
+msgid "The directory %directory does not exist."
+msgstr "Adresář %directory neexistuje."
+
+#: includes/file.inc:124 modules/user/user.module:1232;1481;2202
+msgid "security"
+msgstr "bezpečnost"
+
+#: includes/form.inc:557;563 modules/filter/filter.module:848
+msgid ""
+"An illegal choice has been detected. Please contact the site administrator."
+msgstr "Zjištěna neplatná volba. Kontaktujte administrátora webu."
+
+#: includes/form.inc:564 modules/filter/filter.module:849
+msgid "Illegal choice %choice in %name element."
+msgstr "Neplatná volba %choice v elementu %name."
+
+#: includes/form.inc:1114 modules/user/user.module:495;915
+msgid "Password"
+msgstr "Heslo"
+
+#: includes/form.inc:558;564 modules/filter/filter.module:849
+msgid "form"
+msgstr "formulář"
+
+#    modules/filter.module:352 ;421 modules/locale.module:279,  modules/node.module:802 ;831 modules/system.module:487 ;511;527;54
+#: includes/locale.inc:77 modules/filter/filter.module:463;553
+#: modules/system/system.module:1077;1170;1202;1363
+msgid "Save configuration"
+msgstr "Uložit nastavení"
+
+#: includes/locale.inc:90 modules/blogapi/blogapi.module:242
+#: modules/filter/filter.module:783 modules/forum/forum.module:697
+msgid "n/a"
+msgstr "není"
+
+#    modules/block.module:182 modules/book.module:672 modules/comment.module:270,  ;711;1039 modules/donations.module:283 modules/
+#: includes/locale.inc:90;1397 modules/block/block.module:247
+#: modules/book/book.module:865 modules/comment/comment.module:837
+#: modules/contact/contact.module:148 modules/filter/filter.module:320
+#: modules/menu/menu.module:686 modules/node/content_types.inc:30
+#: modules/node/node.module:1693 modules/path/path.module:309
+#: modules/profile/profile.module:402 modules/user/user.module:1744
+msgid "delete"
+msgstr "smazat"
+
+#    modules/block.module:175 modules/comment.module:344,  modules/drupal.module:46 modules/filter.module:340 modules/queue.module
+#: includes/locale.inc:93 modules/comment/comment.module:545
+#: modules/drupal/drupal.module:64;111
+#: modules/statistics/statistics.module:364
+#: modules/system/system.module:596;703;820;1191;1533
+#: modules/upload/upload.module:347 modules/user/user.module:2321
+msgid "Enabled"
+msgstr "Povoleno"
+
+#: includes/locale.inc:93 modules/filter/filter.module:349
+#: modules/system/system.module:1191
+msgid "Default"
+msgstr "Výchozí"
+
+#    modules/aggregator.module:704 ;715 modules/block.module:175,  modules/book.module:696 ;744 modules/comment.module:266 ;1023;1
+#: includes/locale.inc:93;1389 modules/aggregator/aggregator.module:983;994
+#: modules/block/block.module:352 modules/book/book.module:854;973
+#: modules/comment/comment.module:1181 modules/contact/contact.module:150
+#: modules/filter/filter.module:349 modules/forum/forum.module:587
+#: modules/menu/menu.module:610 modules/node/content_types.inc:15
+#: modules/node/node.module:1600;1663 modules/path/path.module:302
+#: modules/profile/profile.module:408
+#: modules/statistics/statistics.module:208;235;263;317
+#: modules/system/system.module:1191 modules/taxonomy/taxonomy.module:167;179
+#: modules/user/user.module:1739;1984;2012;2080
+#: modules/watchdog/watchdog.module:120
+msgid "Operations"
+msgstr "Operace"
+
+#: includes/locale.inc:141 modules/locale/locale.module:77
+msgid "Add language"
+msgstr "Přidat jazyk"
+
+#: includes/locale.inc:248 modules/locale/locale.module:83
+msgid "Import"
+msgstr "Import"
+
+#: includes/locale.inc:286;297 modules/locale/locale.module:89
+msgid "Export"
+msgstr "Export"
+
+#    modules/locale.module:437 modules/search.module:388 includes/common.inc:714,  includes/locale.inc:1054 themes/engines/xtempla
+#: includes/locale.inc:341;360 modules/search/search.module:131;144;1005;1045
+#: modules/search/search.info:0 modules/user/user.module:2336
+msgid "Search"
+msgstr "Hledat"
+
+#: includes/locale.inc:351 modules/locale/locale.module:146
+msgid "Language"
+msgstr "Jazyk"
+
+#    modules/aggregator.module:707 ;718 modules/block.module:180,  modules/book.module:672 modules/comment.module:270 ;712;717;103
+#: includes/locale.inc:1397 modules/aggregator/aggregator.module:986;997
+#: modules/book/book.module:864 modules/comment/comment.module:841;852;1193
+#: modules/contact/contact.module:148 modules/menu/menu.module:665
+#: modules/node/content_types.inc:26 modules/node/node.module:1588
+#: modules/path/path.module:309 modules/profile/profile.module:402
+#: modules/taxonomy/taxonomy.module:198;209;308;312;474;478
+#: modules/user/user.module:1008;1244;1744;2057
+msgid "edit"
+msgstr "upravit"
+
+#: includes/locale.inc:32;270;498;1157;1178 modules/locale/locale.module:340;0
+msgid "locale"
+msgstr "locale"
+
+#: includes/menu.inc:540 modules/node/node.module:2267
+#: themes/bluemarine/page.tpl.php:17;17;18
+#: themes/chameleon/chameleon.theme:51;51
+#: themes/pushbutton/page.tpl.php:19;19;25
+msgid "Home"
+msgstr "Domů"
+
+#: includes/menu.inc:1047 modules/user/user.module:520;564
+msgid "Navigation"
+msgstr "Navigace"
+
+#: includes/pager.inc:382 modules/book/book.module:489
+msgid "Go to previous page"
+msgstr "Přejít na předchozí stranu"
+
+#: includes/pager.inc:383 modules/book/book.module:497
+msgid "Go to next page"
+msgstr "Přejít na další stranu"
+
+#: includes/theme.inc:904 themes/engines/phptemplate/phptemplate.engine:306
+msgid "new"
+msgstr "novinka"
+
+#: includes/theme.inc:1052 modules/user/user.module:635
+msgid "View user profile."
+msgstr "Zobrazit profil uživatele."
+
+#: includes/theme.inc:1073 modules/comment/comment.module:1523;1532
+#: modules/node/node.module:2080 modules/system/system.module:575
+#: modules/user/user.module:632
+msgid "Anonymous"
+msgstr "Anonym"
+
+#: modules/aggregator/aggregator.module:49 modules/contact/contact.module:59
+msgid "Add category"
+msgstr "Přidat kategorii"
+
+#: modules/aggregator/aggregator.module:65 modules/block/block.module:72
+#: modules/book/book.module:100 modules/comment/comment.module:160
+#: modules/contact/contact.module:53 modules/filter/filter.module:65
+#: modules/forum/forum.module:50 modules/locale/locale.module:71
+#: modules/menu/menu.module:47 modules/node/node.module:1097;1133
+#: modules/path/path.module:56 modules/system/system.module:155;194;198
+#: modules/taxonomy/taxonomy.module:83;129 modules/upload/upload.module:818
+#: modules/user/user.module:734;757
+msgid "List"
+msgstr "Seznam"
+
+#: modules/aggregator/aggregator.module:69 modules/comment/comment.module:174
+#: modules/contact/contact.module:81 modules/forum/forum.module:67
+#: modules/menu/menu.module:102 modules/poll/poll.module:187
+msgid "Settings"
+msgstr "Nastavení"
+
+#: modules/aggregator/aggregator.module:86;1387
+#: modules/taxonomy/taxonomy.module:77;752
+msgid "Categories"
+msgstr "Kategorie"
+
+#: modules/aggregator/aggregator.module:91 modules/node/node.module:1155
+msgid "RSS feed"
+msgstr "RSS zdroj"
+
+#    modules/aggregator.module:174 ;190 modules/blogapi.module:152 ;212,  modules/book.module:672 modules/comment.module:270 ;565;
+#: modules/aggregator/aggregator.module:124;146
+#: modules/comment/comment.module:200 modules/filter/filter.module:105
+#: modules/legacy/legacy.module:58;64;70
+#: modules/node/node.module:1176;1193;1198 modules/user/user.module:814
+msgid "View"
+msgstr "Zobrazit"
+
+#    modules/aggregator.module:151 ;179;195 modules/archive.module:218,  modules/comment.module:101 modules/node.module:638 module
+#: modules/aggregator/aggregator.module:134;156
+#: modules/filter/filter.module:113 modules/system/system.module:164
+msgid "Configure"
+msgstr "Konfigurace"
+
+#    modules/aggregator.module:88 modules/forum.module:62 ;69,  modules/taxonomy.module:198 ;337
+#: modules/aggregator/aggregator.module:195 modules/block/block.module:226
+#: modules/system/system.module:681 modules/taxonomy/taxonomy.module:432;629
+msgid "none"
+msgstr "žádné"
+
+#: modules/aggregator/aggregator.module:199
+#: modules/filter/filter.module:162;164;1048
+msgid "Allowed HTML tags"
+msgstr "Povolené HTML značky"
+
+#    modules/aggregator.module:245 ;251;965;1014 modules/blog.module:296,  modules/forum.module:130
+#: modules/aggregator/aggregator.module:288;296 modules/blog/blog.module:285
+#: modules/forum/forum.module:280
+msgid "more"
+msgstr "více"
+
+#    modules/aggregator.module:598 ;633;704;715 modules/book.module:696 ;744,  modules/comment.module:266 modules/menu.module:255
+#: modules/aggregator/aggregator.module:319;423;983;994
+#: modules/book/book.module:854 modules/filter/filter.module:202
+#: modules/menu/menu.module:195;315;351 modules/node/content_types.inc:62
+#: modules/node/node.module:390;1600 modules/profile/profile.module:238;408
+#: modules/statistics/statistics.module:188
+msgid "Title"
+msgstr "Nadpis"
+
+#    modules/aggregator.module:599 modules/filter.module:340,  modules/menu.module:264 modules/system.module:451,  modules/taxonom
+#: modules/aggregator/aggregator.module:325 modules/forum/forum.module:450;505
+#: modules/menu/menu.module:201;357 modules/node/content_types.inc:15;107
+#: modules/system/system.module:1539;1693;1784
+#: modules/taxonomy/taxonomy.module:241;409 modules/upload/upload.module:818
+msgid "Description"
+msgstr "Popis"
+
+#    modules/aggregator.module:601 ;645;727;778;807 modules/comment.module:948,  ;966 modules/menu.module:137 ;219;288 modules/nod
+#: modules/aggregator/aggregator.module:328;342;459;473
+#: modules/contact/contact.module:195 modules/forum/forum.module:466;518
+#: modules/menu/menu.module:325;405 modules/node/node.module:2107
+#: modules/taxonomy/taxonomy.module:290;450 modules/user/user.module:1440
+msgid "Submit"
+msgstr "Poslat"
+
+#    modules/aggregator.module:604 ;648;739;775;804 modules/locale.module:296,  ;324 modules/menu.module:180 ;190 modules/node.mod
+#: modules/aggregator/aggregator.module:331;361;462;497
+#: modules/block/block.module:530 modules/comment/comment.module:1101
+#: modules/contact/contact.module:259 modules/filter/filter.module:368
+#: modules/forum/forum.module:469;478;520;569 modules/locale/locale.module:326
+#: modules/menu/menu.module:438;620 modules/node/content_types.inc:398
+#: modules/node/node.module:1207;1258;1305;1785;2109;2339;2469
+#: modules/path/path.module:101 modules/profile/profile.module:376
+#: modules/taxonomy/taxonomy.module:292;384;455;608;1424;1437
+#: modules/upload/upload.module:818
+#: modules/user/user.module:820;1428;1442;1455;1676
+msgid "Delete"
+msgstr "Smazat"
+
+#    modules/aggregator.module:174 ;190 modules/blogapi.module:152 ;212,  modules/book.module:672 modules/comment.module:270 ;565;
+#: modules/aggregator/aggregator.module:390;526
+#: modules/blogapi/blogapi.module:221;277 modules/book/book.module:863;938
+#: modules/comment/comment.module:715;795;1229
+#: modules/contact/contact.module:238;244 modules/menu/menu.module:541
+#: modules/node/content_types.inc:339 modules/node/node.module:2309;2314
+#: modules/profile/profile.module:349;389
+msgid "view"
+msgstr "zobrazit"
+
+#: modules/aggregator/aggregator.module:430 modules/profile/profile.module:793
+#: modules/statistics/statistics.module:187
+msgid "URL"
+msgstr "URL"
+
+#: modules/aggregator/aggregator.module:986;1301
+#: modules/comment/comment.module:281 modules/statistics/statistics.module:354
+#: modules/user/user.module:2056
+msgid "@time ago"
+msgstr "před @time"
+
+#: modules/aggregator/aggregator.module:986;986;1304
+#: modules/user/user.module:2056
+msgid "never"
+msgstr "nikdy"
+
+#: modules/aggregator/aggregator.module:1207 modules/node/node.module:1892
+msgid "read more"
+msgstr "číst dál"
+
+#: modules/aggregator/aggregator.info:0
+msgid "Aggregator"
+msgstr "Agregátor"
+
+#: modules/aggregator/aggregator.info:0
+msgid "Aggregates syndicated content (RSS, RDF, and Atom feeds)."
+msgstr "Používá se k agregaci syndikovaného obsahu (RSS, RDF a Atom)."
+
+#: modules/aggregator/aggregator.info:0 modules/blog/blog.info:0
+#: modules/blogapi/blogapi.info:0 modules/book/book.info:0
+#: modules/color/color.info:0 modules/comment/comment.info:0
+#: modules/contact/contact.info:0 modules/drupal/drupal.info:0
+#: modules/forum/forum.info:0 modules/help/help.info:0
+#: modules/legacy/legacy.info:0 modules/locale/locale.info:0
+#: modules/menu/menu.info:0 modules/path/path.info:0 modules/ping/ping.info:0
+#: modules/poll/poll.info:0 modules/profile/profile.info:0
+#: modules/search/search.info:0 modules/statistics/statistics.info:0
+#: modules/taxonomy/taxonomy.info:0 modules/throttle/throttle.info:0
+#: modules/tracker/tracker.info:0 modules/upload/upload.info:0
+msgid "Core - optional"
+msgstr "Jádro - nepovinné"
+
+#    modules/aggregator.module:151 ;179;195 modules/archive.module:218,  modules/comment.module:101 modules/node.module:638 module
+#: modules/block/block.module:245 modules/filter/filter.module:319
+#: modules/system/system.module:1160
+msgid "configure"
+msgstr "konfigurace"
+
+#    modules/comment.module:233 ;240;344 modules/drupal.module:46,  modules/statistics.module:446 ;453;454;458;465 modules/system.
+#: modules/block/block.module:328 modules/comment/comment.module:376;395;545
+#: modules/drupal/drupal.module:64;111
+#: modules/statistics/statistics.module:364;469
+#: modules/system/system.module:596;676;703;820
+#: modules/taxonomy/taxonomy.module:261 modules/upload/upload.module:347
+#: modules/user/user.module:2321
+msgid "Disabled"
+msgstr "Vypnuto"
+
+#: modules/block/block.module:348 modules/block/block.info:0
+msgid "Block"
+msgstr "Blok"
+
+#    modules/block.module:175 modules/book.module:221 ;268;696;744,  modules/comment.module:1156 ;1172 modules/filter.module:413,
+#: modules/block/block.module:348 modules/book/book.module:236;269;854
+#: modules/contact/contact.module:181 modules/filter/filter.module:562
+#: modules/forum/forum.module:457;512 modules/menu/menu.module:220;393
+#: modules/node/node.module:969 modules/profile/profile.module:263
+#: modules/taxonomy/taxonomy.module:285;442
+msgid "Weight"
+msgstr "Váha"
+
+#: modules/block/block.module:350 modules/system/system.module:1535
+#: modules/throttle/throttle.module:16;116 modules/throttle/throttle.info:0
+msgid "Throttle"
+msgstr "Urychlení"
+
+#    modules/locale.module:325 modules/menu.module:118 ;123;164;169;185;190,  modules/taxonomy.module:167 ;293
+#: modules/block/block.module:530 modules/comment/comment.module:1102;1293
+#: modules/contact/contact.module:259 modules/filter/filter.module:368
+#: modules/forum/forum.module:569 modules/locale/locale.module:326
+#: modules/menu/menu.module:494
+#: modules/node/node.module:1032;1644;1727;1785;2339
+#: modules/path/path.module:101 modules/poll/poll.module:246
+#: modules/profile/profile.module:376 modules/search/search.module:242
+#: modules/system/system.module:1420;1671;2156
+#: modules/taxonomy/taxonomy.module:385;609
+#: modules/user/user.module:1455;1677;2283
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: modules/block/block.info:0
+msgid "Controls the boxes that are displayed around the main content."
+msgstr "Nastavení bloků, které se zobrazují kolem hlavního obsahu."
+
+#: modules/block/block.info:0 modules/filter/filter.info:0
+#: modules/node/node.info:0 modules/system/system.info:0
+#: modules/user/user.info:0 modules/watchdog/watchdog.info:0
+msgid "Core - required"
+msgstr "Jádro - požadováno"
+
+#: modules/blog/blog.module:51 modules/blog/blog.info:0
+#: modules/legacy/legacy.module:52
+msgid "Blog"
+msgstr "Blog"
+
+#: modules/blog/blog.module:55 modules/user/user.module:463
+msgid "History"
+msgstr "Historie"
+
+#: modules/blog/blog.info:0
+msgid "Enables keeping easily and regularly updated user web pages or blogs."
+msgstr "Umožňuje uživateli vést si jednoduchý blog."
+
+#: modules/blogapi/blogapi.module:221;277 modules/book/book.module:938
+#: modules/comment/comment.module:715;722;795;814;1229;1844;1850
+#: modules/forum/forum.module:578
+#: modules/node/node.module:1742;1793;2309;2314;2376
+#: themes/engines/phptemplate/phptemplate.engine:30
+msgid "content"
+msgstr "obsah"
+
+#: modules/blogapi/blogapi.info:0
+msgid "Blog API"
+msgstr "Blog API"
+
+#: modules/blogapi/blogapi.info:0
+msgid ""
+"Allows users to post content using applications that support XML-RPC blog "
+"APIs."
+msgstr ""
+"Umožňuje uživatelům posílat obsah pomocí externích GUI aplikací, které "
+"podporují XML-RPC blog API."
+
+#: modules/book/book.module:212;263 modules/forum/forum.module:455;510
+#: modules/taxonomy/taxonomy.module:424
+msgid "Parent"
+msgstr "Nadřazený"
+
+#: modules/book/book.module:275 modules/node/node.module:2064
+msgid "Log message"
+msgstr "Zpráva do logu"
+
+#: modules/book/book.module:489 modules/forum/forum.module:1083
+msgid "‹ "
+msgstr "‹ "
+
+#: modules/book/book.module:497 modules/forum/forum.module:1090
+msgid " ›"
+msgstr " ›"
+
+#: modules/book/book.module:973 modules/book/book.info:0
+msgid "Book"
+msgstr "Kniha"
+
+#: modules/book/book.info:0
+msgid "Allows users to collaboratively author a book."
+msgstr "Pomocí knihy uživatelé společně editují knihu."
+
+#: modules/color/color.module:164 modules/menu/menu.module:181
+#: modules/node/node.module:2106;2120;2140;2266
+msgid "Preview"
+msgstr "Náhled"
+
+#: modules/color/color.module:220
+#: modules/node/content_types.inc:211;284;308;329
+#: modules/system/system.module:1078;1094;1120;1130;1171
+msgid "Reset to defaults"
+msgstr "Zpět k výchozím"
+
+#: modules/color/color.info:0
+msgid "Color"
+msgstr "Barvy"
+
+#: modules/color/color.info:0
+msgid "Allows the user to change the color scheme of certain themes."
+msgstr "Generátor barevných schémat pro některá témata."
+
+#: modules/comment/comment.module:153 themes/garland/template.php:51
+msgid "Comments"
+msgstr "Komentáře"
+
+#: modules/comment/comment.module:553 modules/node/node.module:1012
+msgid "Optional"
+msgstr "Nepovinné"
+
+#    modules/comment.module:345 modules/node.module:592,  modules/taxonomy.module:104
+#: modules/comment/comment.module:553 modules/node/node.module:1012
+#: modules/taxonomy/taxonomy.module:280
+msgid "Required"
+msgstr "Povinné"
+
+#: modules/comment/comment.module:1164 modules/node/node.module:1570
+#: modules/user/user.module:2021
+msgid "Update options"
+msgstr "Nastavení aktualizace"
+
+#: modules/comment/comment.module:1172 modules/node/node.module:1579
+#: modules/user/user.module:2036;2653
+msgid "Update"
+msgstr "Aktualizovat"
+
+#: modules/comment/comment.module:1178;1540
+#: modules/contact/contact.module:336;445 modules/forum/forum.module:110
+msgid "Subject"
+msgstr "Předmět"
+
+#    modules/comment.module:266 ;961;1020 modules/node.module:780,  modules/queue.module:121 modules/tracker.module:83
+#: modules/comment/comment.module:1179 modules/node/node.module:1600
+#: modules/tracker/tracker.module:121
+msgid "Author"
+msgstr "Autor"
+
+#: modules/comment/comment.module:1180
+#: modules/statistics/statistics.module:205
+msgid "Time"
+msgstr "Čas"
+
+#: modules/comment/comment.module:1233 modules/node/node.module:1538
+#: modules/user/user.module:2130
+msgid "The update has been performed."
+msgstr "Byla provedena aktualizace."
+
+#: modules/comment/comment.module:1292 modules/contact/contact.module:259
+#: modules/menu/menu.module:438 modules/node/content_types.inc:396
+#: modules/node/node.module:1643;1785;2338 modules/path/path.module:100
+#: modules/system/system.module:2147 modules/user/user.module:1675;2282
+msgid "This action cannot be undone."
+msgstr "Tuto akci nelze vrátit."
+
+#: modules/comment/comment.module:1381 modules/node/node.module:1986
+msgid "You have to specify a valid date."
+msgstr "Musíte zadat platné datum."
+
+#: modules/comment/comment.module:1471;1487 modules/node/node.module:2080
+msgid "Authored by"
+msgstr "Autor"
+
+#: modules/comment/comment.module:1495;1526;1534
+#: modules/user/user.module:1577;1714
+msgid "E-mail"
+msgstr "E-mail"
+
+#: modules/comment/comment.module:1499;1526;1534
+#: modules/profile/profile.module:619
+msgid ""
+"The content of this field is kept private and will not be shown publicly."
+msgstr "Obsah tohoto pole je soukromý a nebude veřejně zobrazen."
+
+#: modules/comment/comment.module:1511 modules/node/node.module:2081
+msgid "Authored on"
+msgstr "Napsáno dne"
+
+#    modules/comment.module:964 ;1021 modules/node.module:780,  modules/user.module:1001 ;1483
+#: modules/comment/comment.module:1513 modules/node/node.module:1600
+#: modules/user/user.module:1336;2008;2076
+msgid "Status"
+msgstr "Stav"
+
+#: modules/comment/comment.module:1513 modules/node/content_types.inc:160
+#: modules/node/node.module:2096
+msgid "Published"
+msgstr "Vydáno"
+
+#: modules/comment/comment.module:1517;1523;1532
+#: modules/contact/contact.module:433
+msgid "Your name"
+msgstr "Vaše jméno"
+
+#: modules/comment/comment.module:1543 modules/comment/comment.info:0
+msgid "Comment"
+msgstr "Komentář"
+
+#: modules/comment/comment.module:1885 modules/forum/forum.module:193
+msgid "Date - newest first"
+msgstr "Datum - od nejnovějších"
+
+#: modules/comment/comment.module:1886 modules/forum/forum.module:193
+msgid "Date - oldest first"
+msgstr "Datum - od nejstarších"
+
+#: modules/comment/comment.module:304;436 modules/node/node.module:68
+msgid "1 comment"
+msgid_plural "@count comments"
+msgstr[0] "@count komentář"
+msgstr[1] "@count komentáře"
+msgstr[2] "@count komentářů"
+
+#: modules/comment/comment.info:0
+msgid "Allows users to comment on and discuss published content."
+msgstr "Umožňuje uživatelům komentovat příspěvky."
+
+#: modules/contact/contact.module:89;101 modules/contact/contact.info:0
+msgid "Contact"
+msgstr "Kontakt"
+
+#: modules/contact/contact.module:148;187 modules/menu/menu.module:706
+#: modules/upload/upload.module:183
+msgid "Yes"
+msgstr "Ano"
+
+#: modules/contact/contact.module:148;187 modules/menu/menu.module:706
+#: modules/upload/upload.module:183
+msgid "No"
+msgstr "Ne"
+
+#: modules/contact/contact.module:150;163;456
+#: modules/profile/profile.module:231;408
+msgid "Category"
+msgstr "Kategorie"
+
+#: modules/contact/contact.module:150;186 modules/system/system.module:522
+msgid "Selected"
+msgstr "Vybráno"
+
+#: modules/contact/contact.module:206 modules/profile/profile.module:319
+msgid "You must enter a category."
+msgstr "Musíte zadat kategorii."
+
+#: modules/contact/contact.module:341;470
+#: modules/watchdog/watchdog.module:118;167;224
+msgid "Message"
+msgstr "Zpráva"
+
+#: modules/contact/contact.info:0
+msgid "Enables the use of both personal and site-wide contact forms."
+msgstr "Poskytuje osobní i globální kontaktní formulář."
+
+#: modules/drupal/drupal.module:356 modules/drupal/drupal.info:0
+#: modules/system/system.install:19
+msgid "Drupal"
+msgstr "Drupal"
+
+#: modules/drupal/drupal.info:0
+msgid ""
+"Lets you register your site with a central server and improve ranking of "
+"Drupal projects by posting information on your installed modules and themes"
+msgstr ""
+"Umožňuje registrovat web na centrálním serveru a podporuje zasílání "
+"statistik modulů a témat."
+
+#    modules/comment.module:1210 modules/filter.module:182 ;219;340;413,  modules/profile.module:506 modules/system.module:151 ;17
+#: modules/filter/filter.module:349;562 modules/forum/forum.module:587
+#: modules/node/content_types.inc:15;76 modules/profile/profile.module:408
+#: modules/system/system.module:522;541;1191;1537;1692
+#: modules/taxonomy/taxonomy.module:167;179 modules/user/user.module:1984
+msgid "Name"
+msgstr "Jméno"
+
+#: modules/filter/filter.module:349;418
+#: modules/user/user.module:747;1342;2009;2077
+msgid "Roles"
+msgstr "Role"
+
+#: modules/filter/filter.info:0 modules/node/node.module:1440;1497
+#: modules/user/user.module:2574;2637 modules/watchdog/watchdog.module:98
+msgid "Filter"
+msgstr "Filtr"
+
+#: modules/filter/filter.info:0
+msgid "Handles the filtering of content in preparation for display."
+msgstr "Stará se o filtrování obsahu při přípravě na jeho zobrazení."
+
+#: modules/forum/forum.module:634 modules/taxonomy/taxonomy.module:424;427
+msgid "root"
+msgstr "kořen"
+
+#: modules/forum/forum.module:780 modules/tracker/tracker.module:121
+msgid "Replies"
+msgstr "Odpovědí"
+
+#: modules/forum/forum.module:938 modules/forum/forum.info:0
+msgid "Forum"
+msgstr "Fórum"
+
+#: modules/forum/forum.module:969;1004 modules/tracker/tracker.module:104
+msgid "1 new"
+msgid_plural "@count new"
+msgstr[0] "1 nový"
+msgstr[1] "@count nové"
+msgstr[2] "@count nových"
+
+#: modules/forum/forum.info:0
+msgid "Enables threaded discussions about general topics."
+msgstr "Poskytuje diskusní fórum členěné do vláken."
+
+#: modules/help/help.module:18 modules/help/help.info:0
+#: modules/user/user.module:720
+msgid "Help"
+msgstr "Nápověda"
+
+#: modules/help/help.info:0
+msgid "Manages the display of online help."
+msgstr "Obstarává zobrazení online nápovědy."
+
+#: modules/legacy/legacy.module:42;47 modules/taxonomy/taxonomy.info:0
+msgid "Taxonomy"
+msgstr "Taxonomy"
+
+#: modules/legacy/legacy.module:0 modules/system/system.install:2764
+msgid "legacy"
+msgstr "legacy"
+
+#: modules/legacy/legacy.info:0
+msgid "Legacy"
+msgstr "Legacy"
+
+#: modules/legacy/legacy.info:0
+msgid "Provides legacy handlers for upgrades from older Drupal installations."
+msgstr "Poskytuje starší volání pro aktualizace ze starších instalací Drupalu."
+
+#: modules/locale/locale.module:97 modules/system/system.module:2165
+msgid "Confirm"
+msgstr "Potvrzení"
+
+#: modules/locale/locale.module:0;0 modules/system/system.module:852
+msgid "Thursday"
+msgstr "Čtvrtek"
+
+#: modules/locale/locale.module:0 modules/system/system.module:852
+msgid "Friday"
+msgstr "Pátek"
+
+#: modules/locale/locale.module:0 modules/system/system.module:852
+msgid "Saturday"
+msgstr "Sobota"
+
+#: modules/locale/locale.module:0 modules/system/system.module:852
+msgid "Sunday"
+msgstr "Neděle"
+
+#: modules/locale/locale.module:0 modules/system/system.module:852
+msgid "Monday"
+msgstr "Pondělí"
+
+#: modules/locale/locale.module:0 modules/system/system.module:852
+msgid "Tuesday"
+msgstr "Úterý"
+
+#: modules/locale/locale.module:0 modules/system/system.module:852
+msgid "Wednesday"
+msgstr "Středa"
+
+#: modules/locale/locale.info:0
+msgid "Locale"
+msgstr "Lokalizace"
+
+#: modules/locale/locale.info:0
+msgid ""
+"Enables the translation of the user interface to languages other than "
+"English."
+msgstr "Umožňuje překlad uživatelského rozhraní do jiných jazyků."
+
+#: modules/menu/menu.module:364;372 modules/path/path.info:0
+msgid "Path"
+msgstr "Cesty"
+
+#: modules/menu/menu.module:466 modules/node/node.module:1443;1513
+#: modules/user/user.module:2581;2650
+msgid "Reset"
+msgstr "Reset"
+
+#    modules/aggregator.module:707 ;718 modules/block.module:180,  modules/book.module:672 modules/comment.module:270 ;712;717;103
+#: modules/menu/menu.module:617 modules/node/node.module:1201
+#: modules/user/user.module:817
+msgid "Edit"
+msgstr "Upravit"
+
+#: modules/menu/menu.module:660 modules/user/user.module:1991
+msgid "locked"
+msgstr "zamčeno"
+
+#: modules/menu/menu.module:450;454;541;0 modules/node/content_types.inc:409
+msgid "menu"
+msgstr "menu"
+
+#: modules/menu/menu.info:0
+msgid "Menu"
+msgstr "Menu"
+
+#: modules/menu/menu.info:0
+msgid "Allows administrators to customize the site navigation menu."
+msgstr "Umožňuje administrátorům upravit navigační menu."
+
+#    modules/node.module:780 modules/profile.module:506 modules/queue.module:121,  modules/tracker.module:83 modules/user.module:1
+#: modules/node/content_types.inc:15;85;99 modules/node/node.module:1600
+#: modules/profile/profile.module:408 modules/taxonomy/taxonomy.module:167
+#: modules/tracker/tracker.module:121 modules/watchdog/watchdog.module:116;204
+msgid "Type"
+msgstr "Typ"
+
+#: modules/node/content_types.inc:46 modules/node/node.module:2217
+msgid "No content types available."
+msgstr "Nejsou k dispozici žádné typy obsahu."
+
+#    modules/blog.module:213 modules/book.module:217 modules/forum.module:277,  modules/page.module:121 modules/story.module:121
+#: modules/node/content_types.inc:63 modules/node/node.module:397
+msgid "Body"
+msgstr "Text"
+
+#: modules/node/content_types.inc:161 modules/node/node.module:2097
+msgid "Promoted to front page"
+msgstr "Zobrazit na titulní stránce"
+
+#: modules/node/content_types.inc:162 modules/node/node.module:2098
+msgid "Sticky at top of lists"
+msgstr "Přilepit nahoru v seznamu"
+
+#: modules/node/content_types.inc:163 modules/node/node.module:2099
+msgid "Create new revision"
+msgstr "Vytvořit novou revizi"
+
+#: modules/node/content_types.inc:339 modules/node/node.module:0
+msgid "node"
+msgstr "uzel"
+
+#: modules/node/node.module:1004 modules/poll/poll.module:183
+msgid "Unlimited"
+msgstr "Neomezené"
+
+#: modules/node/node.module:1358 modules/user/user.module:2502
+msgid "status"
+msgstr "stav"
+
+#: modules/node/node.module:1440;1498 modules/user/user.module:2574;2637
+msgid "Refine"
+msgstr "Omezit"
+
+#: modules/node/node.module:1442;1510 modules/user/user.module:2578;2647
+msgid "Undo"
+msgstr "Zpět"
+
+#: modules/node/node.module:1471 modules/user/user.module:2610
+msgid "and"
+msgstr "a"
+
+#: modules/node/node.module:1471 modules/user/user.module:2610
+msgid "where"
+msgstr "kde"
+
+#: modules/node/node.module:1477 modules/user/user.module:2616
+msgid "is"
+msgstr "je"
+
+#: modules/node/node.module:1617 modules/tracker/tracker.module:118
+msgid "No posts available."
+msgstr "Nejsou k dispozici žádné příspěvky."
+
+#: modules/node/node.module:1644 modules/user/user.module:2283
+msgid "Delete all"
+msgstr "Smazat vše"
+
+#: modules/node/node.info:0
+msgid "Node"
+msgstr "Uzly"
+
+#: modules/node/node.info:0
+msgid "Allows content to be submitted to the site and displayed on pages."
+msgstr "Umožňuje zasílání obsahu."
+
+#: modules/path/path.module:301 modules/system/system.info:0
+msgid "System"
+msgstr "Systém"
+
+#: modules/path/path.info:0
+msgid "Allows users to rename URLs."
+msgstr "Umožňuje uživatelům tvořit vlastní URL stránek."
+
+#: modules/ping/ping.info:0
+msgid "Ping"
+msgstr "Ping"
+
+#: modules/ping/ping.info:0
+msgid "Alerts other sites when your site has been updated."
+msgstr "Upozorní jiné weby na aktualizaci Vašeho webu."
+
+#: modules/poll/poll.module:54;320 modules/poll/poll.info:0
+msgid "Poll"
+msgstr "Anketa"
+
+#: modules/poll/poll.module:184 modules/user/user.module:1336
+msgid "Active"
+msgstr "Aktivní"
+
+#: modules/poll/poll.module:489 modules/statistics/statistics.module:315
+msgid "Visitor"
+msgstr "Návštěvník"
+
+#: modules/poll/poll.info:0
+msgid ""
+"Allows your site to capture votes on different topics in the form of "
+"multiple choice questions."
+msgstr "Modul pro vytváření uživatelských anket."
+
+#: modules/profile/profile.info:0
+msgid "Profile"
+msgstr "Profily"
+
+#: modules/profile/profile.info:0
+msgid "Supports configurable user profiles."
+msgstr "Poskytuje nastavitelné uživatelské profily."
+
+#: modules/search/search.info:0
+msgid "Enables site-wide keyword searching."
+msgstr "Povoluje vyhledávání obsahu dle klíčových slov."
+
+#: modules/statistics/statistics.module:135
+#: modules/watchdog/watchdog.module:49
+msgid "Details"
+msgstr "Detaily"
+
+#: modules/statistics/statistics.module:163 modules/tracker/tracker.module:43
+msgid "Track"
+msgstr "Sledovat"
+
+#: modules/statistics/statistics.module:189;206
+#: modules/watchdog/watchdog.module:220
+msgid "Referrer"
+msgstr "Odkazovač"
+
+#: modules/statistics/statistics.module:190
+#: modules/watchdog/watchdog.module:117;208
+msgid "Date"
+msgstr "Datum"
+
+#: modules/statistics/statistics.module:191;207;262
+#: modules/user/user.module:810 modules/user/user.info:0
+#: modules/watchdog/watchdog.module:119;212
+msgid "User"
+msgstr "Uživatel"
+
+#: modules/statistics/statistics.module:192 modules/user/user.module:1586
+#: modules/watchdog/watchdog.module:232
+msgid "Hostname"
+msgstr "Hostitel"
+
+#: modules/statistics/statistics.module:234;261;291
+#: modules/system/system.install:3221
+msgid "Page"
+msgstr "Stránka"
+
+#    modules/comment.module:964 ;1021 modules/node.module:780,  modules/user.module:1001 ;1483
+#: modules/statistics/statistics.info:0
+msgid "Statistics"
+msgstr "Statistiky"
+
+#: modules/statistics/statistics.info:0
+msgid "Logs access statistics for your site."
+msgstr "Loguje statistiky přístupů."
+
+#: modules/system/system.module:93 modules/upload/upload.module:94
+msgid "File download"
+msgstr "Stažení souboru"
+
+#: modules/system/system.module:237 modules/system/system.install:116
+msgid "File system"
+msgstr "Systém souborů"
+
+#: modules/system/system.module:295 modules/system/system.install:35
+msgid "PHP"
+msgstr "PHP"
+
+#: modules/system/system.module:548 modules/user/user.module:1315
+msgid "E-mail address"
+msgstr "E-mailová adresa"
+
+#: modules/system/system.info:0
+msgid "Handles general site configuration for administrators."
+msgstr "Stará se o základní nastavení webu pro administrátory."
+
+#: modules/taxonomy/taxonomy.info:0
+msgid "Enables the categorization of content."
+msgstr "Poskytuje možnost kategorizace obsahu."
+
+#: modules/throttle/throttle.module:110 modules/user/user.module:596;599
+msgid "1 user"
+msgid_plural "@count users"
+msgstr[0] "@count uživatel"
+msgstr[1] "@count uživatelé"
+msgstr[2] "@count uživatelů"
+
+#: modules/throttle/throttle.info:0
+msgid "Handles the auto-throttling mechanism, to control site congestion."
+msgstr "Stará se o mechanismus urychlení - omezení funkcí při velké zátěži."
+
+#: modules/tracker/tracker.info:0
+msgid "Tracker"
+msgstr "Sledování příspěvků"
+
+#: modules/tracker/tracker.info:0
+msgid "Enables tracking of recent posts for users."
+msgstr "Umožňuje uživatelům zobrazit si nejnovější příspěvky."
+
+#: modules/upload/upload.info:0
+msgid "Upload"
+msgstr "Nahrávání souborů"
+
+#: modules/upload/upload.info:0
+msgid "Allows users to upload and attach files to content."
+msgstr "Umožňuje uživatelům nahrávat soubory a připojovat je k obsahu."
+
+#: modules/user/user.info:0
+msgid "Manages the user registration and login system."
+msgstr "Stará se o registraci uživatelů a jejich přihlašování."
+
+#: modules/watchdog/watchdog.module:109;109;198
+#: themes/engines/phptemplate/phptemplate.engine:379
+msgid "error"
+msgstr "chyba"
+
+#: modules/watchdog/watchdog.info:0
+msgid "Watchdog"
+msgstr "Hlídací pes"
+
+#: modules/watchdog/watchdog.info:0
+msgid "Logs and records system events."
+msgstr "Loguje systémové události."
+
+#: themes/chameleon/chameleon.theme:19
+#: themes/engines/phptemplate/phptemplate.engine:28
+msgid "left sidebar"
+msgstr "levý boční panel"
+
+#: themes/chameleon/chameleon.theme:20
+#: themes/engines/phptemplate/phptemplate.engine:29
+msgid "right sidebar"
+msgstr "pravý boční panel"
+
+#: themes/garland/comment.tpl.php:5 themes/garland/node.tpl.php:12
+msgid "!date — !username"
+msgstr "!date od !username"
+
+#: themes/garland/color/color.inc:8 themes/garland/minnelli/color/color.inc:8
+msgid "Blue Lagoon (Default)"
+msgstr "Blue Lagoon (výchozí)"
+
+#: themes/garland/color/color.inc:9 themes/garland/minnelli/color/color.inc:9
+msgid "Ash"
+msgstr "Ash (Jasan)"
+
+#: themes/garland/color/color.inc:10
+#: themes/garland/minnelli/color/color.inc:10
+msgid "Aquamarine"
+msgstr "Aquamarine (Akvamarín)"
+
+#: themes/garland/color/color.inc:11
+#: themes/garland/minnelli/color/color.inc:11
+msgid "Belgian Chocolate"
+msgstr "Belgian Chocolate (Belgická čokoláda)"
+
+#: themes/garland/color/color.inc:12
+#: themes/garland/minnelli/color/color.inc:12
+msgid "Bluemarine"
+msgstr "Bluemarine (Modrá laguna)"
+
+#: themes/garland/color/color.inc:13
+#: themes/garland/minnelli/color/color.inc:13
+msgid "Citrus Blast"
+msgstr "Citrus Blast (Citrusový poryv)"
+
+#: themes/garland/color/color.inc:14
+#: themes/garland/minnelli/color/color.inc:14
+msgid "Cold Day"
+msgstr "Cold Day (Studený den)"
+
+#: themes/garland/color/color.inc:15
+#: themes/garland/minnelli/color/color.inc:15
+msgid "Greenbeam"
+msgstr "Greenbeam (Zelená vlna)"
+
+#: themes/garland/color/color.inc:16
+#: themes/garland/minnelli/color/color.inc:16
+msgid "Mediterrano"
+msgstr "Mediterrano (Středozemní červená)"
+
+#: themes/garland/color/color.inc:17
+#: themes/garland/minnelli/color/color.inc:17
+msgid "Mercury"
+msgstr "Mercury (Rtuť)"
+
+#: themes/garland/color/color.inc:18
+#: themes/garland/minnelli/color/color.inc:18
+msgid "Nocturnal"
+msgstr "Nocturnal (Noční)"
+
+#: themes/garland/color/color.inc:19
+#: themes/garland/minnelli/color/color.inc:19
+msgid "Olivia"
+msgstr "Olivia (Olivová zelená)"
+
+#: themes/garland/color/color.inc:20
+#: themes/garland/minnelli/color/color.inc:20
+msgid "Pink Plastic"
+msgstr "Pink Plastic (Růžový plast)"
+
+#: themes/garland/color/color.inc:21
+#: themes/garland/minnelli/color/color.inc:21
+msgid "Shiny Tomato"
+msgstr "Shiny Tomato (Zářivé rajče)"
+
+#: themes/garland/color/color.inc:22
+#: themes/garland/minnelli/color/color.inc:22
+msgid "Teal Top"
+msgstr "Teal Top (Zelená myš)"
+
+#: includes/database.pgsql.inc:23
+msgid "PostgreSQL database"
+msgstr "PostgreSQL databáze"
+
+#: includes/database.pgsql.inc:29
+msgid ""
+"Your PostgreSQL Server is too old. Drupal requires at least PostgreSQL %"
+"version."
+msgstr ""
+"Váš PostgreSQL server je moc starý. Drupal vyžaduje PostgreSQL alespoň verze "
+"%version."
+
+#: includes/database.pgsql.inc:405
+msgid ""
+"Your PostgreSQL database is set up with the wrong character encoding (%"
+"encoding). It is possible it will not work as expected. It is advised to "
+"recreate it with UTF-8/Unicode encoding. More information can be found in "
+"the <a href=\"@url\">PostgreSQL documentation</a>."
+msgstr ""
+"Vaše PostgreSQL databáze má nastaveno špatné kódování znaků (%encoding). Je "
+"možné, že nebude fungovat správně. Doporučujeme databázi znovu vytvořit s "
+"kódováním UTF-8/Unicode. Více informací naleznete v <a href=\"@url"
+"\">dokumentaci PostgreSQL</a>."
+
+#: includes/image.inc:21
+msgid "Built-in GD2 toolkit"
+msgstr "Interní GD2 toolkit"
+
+#: includes/image.inc:61
+msgid ""
+"The selected image handling toolkit %toolkit can not correctly process %"
+"function."
+msgstr ""
+"Vybraný toolkit pro práci s obrázky '%toolkit' nedovede správně provést '%"
+"function'."
+
+#: includes/image.inc:185
+msgid "The built-in GD2 toolkit is installed and working properly."
+msgstr "Vestavěný GD2 toolkit je nainstalován a pracuje správně."
+
+#: includes/image.inc:189
+msgid "JPEG quality"
+msgstr "Kvalita JPEG obrázků"
+
+#: includes/image.inc:190
+msgid ""
+"Define the image quality for JPEG manipulations. Ranges from 0 to 100. "
+"Higher values mean better image quality but bigger files."
+msgstr ""
+"Nastavte kvalitu obrázků při jejich změnách. Kvalita je vyjádřena číslem od "
+"0 do 100. Větší číslo znamená lepší kvalitu, ale také objemnější soubor."
+
+#: includes/image.inc:194
+msgid "%"
+msgstr "%"
+
+#: includes/image.inc:200
+msgid ""
+"The built-in GD image toolkit requires that the GD module for PHP be "
+"installed and configured properly. For more information see <a href=\"@url"
+"\">PHP's image documentation</a>."
+msgstr ""
+"Vestavěný GD toolkit vyžaduje, aby byl nainstalován a správně nastaven modul "
+"GD pro PHP. Pro více informací se podívejte na stránku <a href=\"@url"
+"\">dokumentace PHP</a>."
+
+#: includes/install.inc:734
+msgid "Currently using !item !version"
+msgstr "Právě se používá !item !version"
+
+#: includes/menu.inc:875
+msgid "Edit primary links"
+msgstr "Upravit primární odkazy"
+
+#: includes/menu.inc:1383
+msgid "Operating in off-line mode."
+msgstr "Funguje v offline režimu."
+
+#: includes/pager.inc:118;381
+msgid "« first"
+msgstr "« první"
+
+#: includes/pager.inc:119;382
+msgid "‹ previous"
+msgstr "‹ předchozí"
+
+#: includes/pager.inc:121;383
+msgid "next ›"
+msgstr "následující ›"
+
+#: includes/pager.inc:122;384
+msgid "last »"
+msgstr "poslední »"
+
+#: includes/pager.inc:381
+msgid "Go to first page"
+msgstr "Přejít na první stranu"
+
+#: includes/pager.inc:384
+msgid "Go to last page"
+msgstr "Přejít na poslední stranu"
+
+#: includes/pager.inc:391
+msgid "Go to page @number"
+msgstr "Přejít na stranu @number"
+
+#: includes/tablesort.inc:66
+msgid "sort by @s"
+msgstr "řadit podle @s"
+
+#: includes/xmlrpc.inc:450
+msgid "Parse error. Not well formed"
+msgstr "Chyba zpracování, not well formed."
+
+#: includes/xmlrpcs.inc:62
+msgid "Parse error. Request not well formed."
+msgstr "Chyba zpracování, not well formed."
+
+#: includes/xmlrpcs.inc:65
+msgid "Server error. Invalid XML-RPC. Request must be a methodCall."
+msgstr "Chyba serveru. Neplatné XML-RPC. Požadavek musí být methodCall."
+
+#: includes/xmlrpcs.inc:152;296
+msgid "Server error. Requested method %methodname not specified."
+msgstr "Chyba serveru. Požadovaná metoda %methodname není zadána."
+
+#: includes/xmlrpcs.inc:163
+msgid "Server error. Wrong number of method parameters."
+msgstr "Chyba serveru. Špatný počet parametrů metody"
+
+#: includes/xmlrpcs.inc:200
+msgid "Server error. Invalid method parameters."
+msgstr "Chyba serveru. Neplatné parametry metody."
+
+#: includes/xmlrpcs.inc:211
+msgid "Server error. Requested function %method does not exist."
+msgstr "Chyba serveru. Požadovaná funkce %method neexistuje."
+
+#: includes/xmlrpcs.inc:224
+msgid "Invalid syntax for system.multicall."
+msgstr "Invalid syntax pro system.multicall."
+
+#: includes/xmlrpcs.inc:230
+msgid "Recursive calls to system.multicall are forbidden."
+msgstr "Rekurzivní volání system.multicall jsou zakázána."
+
+#: includes/xmlrpcs.inc:299
+msgid "Server error. Requested method %methodname signature not specified."
+msgstr "Chyba serveru. Podpis požadované metody %methodname není určen."
+
+#: modules/color/color.install:21
+msgid ""
+"The GD library for PHP is enabled, but was compiled without PNG support. "
+"Please check the <a href=\"@url\">PHP image documentation</a> for "
+"information on how to correct this."
+msgstr ""
+"Knihovna GD v PHP je povolena, ale není zkompilována s podporou PNG obrázků. "
+"Prosím, podívejte se do <a href=\"@url\">dokumentace PHP</a>, nebo "
+"kontaktujte administrátora Vašeho webhostingu pro informace, jak chybu "
+"napravit."
+
+#: modules/color/color.install:26
+msgid "Not installed"
+msgstr "Nenainstalován"
+
+#: modules/color/color.install:28
+msgid ""
+"The GD library for PHP is missing or outdated. Please check the <a href="
+"\"@url\">PHP image documentation</a> for information on how to correct this."
+msgstr ""
+"Knihovna GD v PHP chybí. Prosím, podívejte se do <a href=\"@url"
+"\">dokumentace PHP</a>, nebo kontaktujte administrátora Vašeho webhostingu "
+"pro informace, jak chybu napravit."
+
+#: modules/color/color.install:31
+msgid "GD library"
+msgstr "GD knihovna"
+
+#: modules/help/help.module:42
+msgid ""
+"\n"
+"  <h2>Help topics</h2>\n"
+"  <p>Help is available on the following items:</p>\n"
+"  !help_pages\n"
+"  <h2>Glossary of Drupal terminology</h2>\n"
+"  <dl>\n"
+"   <dt>Block</dt><dd>A small box containing information or content placed in "
+"a region of a web page (e.g. in a sidebar, below or above the content, or in "
+"any other region the current theme allows).</dd>\n"
+"   <dt>Comment</dt><dd>Text attached to a post intended to clarify, explain, "
+"criticize, or express an opinion on the original post.</dd>\n"
+"   <dt>Node</dt><dd>The basic unit of content in Drupal, often referred to "
+"as a \"post\". All content that can be created using the \"create content\" "
+"menu is a node. Keep in mind that comments, blocks, and users are <em>not</"
+"em> nodes.</dd>\n"
+"   <dt>Published</dt><dd>A post that is viewable by every visitor of the "
+"site, regardless of whether he is logged in (see also \"Unpublished\").</"
+"dd>\n"
+"   <dt>Role</dt><dd>A classification users are placed into for the purpose "
+"of setting users' permissions. A user receives the combined permissions of "
+"all roles to which he or she is subscribed.</dd>\n"
+"   <dt>Taxonomy</dt><dd>A categorization system that allows the building of "
+"complex hierarchial or relational structures and tagging of content (see <a "
+"href=\"@taxonomy\">taxonomy help</a>).</dd>\n"
+"   <dt>Unpublished</dt><dd>A post that is only viewable by administrators "
+"and moderators.</dd>\n"
+"   <dt>User</dt><dd>A person who has an account at your Drupal site, and is "
+"currently logged in with that account.</dd>\n"
+"   <dt>Visitor</dt><dd>A person who does not have an account at your Drupal "
+"site or a person who has an account at your Drupal site but is <em>not</em> "
+"currently logged in with that account. A visitor is also called an "
+"\"anonymous user\".</dd>\n"
+"  </dl>"
+msgstr ""
+"\n"
+"<h2>Témata nápovědy</h2>\n"
+"<p>K dipozici je nápověda pro následující položky:</p>\n"
+"  !help_pages\n"
+"<h2>Glosář terminologie Drupalu</h2>\n"
+"<dl>\n"
+"<dt>Blok</dt><dd>Malý box, který obsahuje informace nebo obsah, umístěný v "
+"levém či pravém sloupci stránky.</dd>\n"
+"<dt>Komentář</dt><dd>Poznámka připojená k uzlu. Obvykle se používá k "
+"vyjasnění, vysvětlení, kritice či vyjádření názoru k původnímu materiálu.</"
+"dd>\n"
+"<dt>Moderování</dt><dd>Činnost, která zajišťuje, že obsah webu odpovídá "
+"očekávání. <dl>\n"
+"<dt>Schváleno</dt><dd>Moderovaný příspěvek, který byl moderátory schvále k "
+"vydání. (viz vydáno)</dd>\n"
+"<dt>Čeká</dt><dd>Moderovaný příspěvek, o kterém se hlasuje. (viz vydáno).</"
+"dd>\n"
+"</dl></dd>\n"
+"<dt>Uzel</dt><dd>Základní jednotka obsahu v Drupalu. Všechno je uzel nebo "
+"jeho rozšíření.</dd>\n"
+"<dt>Veřejně.</dt><dd>Viz vydáno.</dd>\n"
+"<dt>Vydáno</dt><dd>Uzel, který je viditelný komukoliv. (Viz nevydáno)</dd>\n"
+"<dt>Role</dt><dd>Rozdělení uživatelů do skupin za účelem přidělení oprávění."
+"</dd>\n"
+"<dt>Taxonomie</dt><dd>Rozdělení položek do uspořádaných skupin. (Viz <a href="
+"\"@taxonomy\">nápověda taxonomie</a>.)</dd>\n"
+"<dt>Nevydáno</dt><dd>Uzel, který vidí jen administrátoři a moderátoři.</dd>\n"
+"<dt>Uživatel</dt><dd>Osoba, která má účet na webu a je přihlášena.</dd>\n"
+"<dt>Návštěvník</dt><dd>Osoba, která nemá účet na webu nebo není přihlášena. "
+"Také \"anonymní uživatel\".</dd>\n"
+"</dl>"
+
+#: modules/help/help.module:93
+msgid ""
+"<p>This guide explains what the various modules in <a href=\"@Drupal"
+"\">Drupal</a> do and how to configure them. Additionally, you will find a "
+"glossary of basic Drupal terminology to help get you started.</p>\n"
+"<p>It is not a substitute for the <a href=\"@handbook\">Drupal handbook</a> "
+"available online and should be used in conjunction with it. The online "
+"reference handbook might be more up-to-date and has helpful user-contributed "
+"comments. It is your definitive reference point for all Drupal documentation."
+"</p>\n"
+msgstr ""
+"<p>Tato nápověda vysvětluje, co dělají různé moduly v <a href=\"@Drupal"
+"\">Drupalu</a> a jak je nastavit.</p>\n"
+"<p>Nemá nahradit <a href=\"@handbook\">Drupal příručku</a>, která je k "
+"dispozici online. Online příručka obsahuje aktuálnější informace a užitečné "
+"komentáře uživatelů. To je základní prvek dokumentace Drupalu.</p>\n"
+
+#: modules/help/help.module:98
+msgid ""
+"The help module displays context sensitive help information. Users can learn "
+"how to use modules and accomplish tasks quicker with less errors by clicking "
+"on links in provided by the help module."
+msgstr ""
+"Modul help zobrazuje kontextovou nápovědu k obsahu. Uživatelé se mohou "
+"dozvědět, jak používat moduly a rychleji pracovat s webem."
+
+#: modules/help/help.module:99
+msgid ""
+"<p>Modules can make documentation available to other modules with this "
+"module. All user help should be presented using this module. Some examples "
+"of help: </p>\n"
+"<ul>\n"
+"<li>The module's help text, displayed on the <a href=\"@help\">help page</a> "
+"and through the module's individual help link.</li>\n"
+"<li>More elaborate help text on sites a module defines.</li>\n"
+"<li>The help for a distributed authorization module (if applicable).</li>\n"
+"</ul>\n"
+msgstr ""
+"<p>Moduly mohou obsahovat dokumentaci, kterou využije modul nápovědy. Pomocí "
+"tohoto modulu je prezentována veškerá nápověda. Některé příklady nápovědy:</"
+"p>\n"
+"<ul>\n"
+"<li>Název modulu (nepoužívá se, ale je tam).</li>\n"
+"<li>Popis pro stránku administrace/systém/moduly.</li>\n"
+"<li>Text nápovědy modulu, který se zobrazuje na stránkách administrace/"
+"nápověda.</li>\n"
+"<li>Nápověda pro modul distribuované autentizace (pokud je k dispozici).</"
+"li>\n"
+"<li>Popis typu příspěvku (pokud je k dispozici).</li>\n"
+"</ul>\n"
+
+#: modules/help/help.module:106
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@help\">Help page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a upravení na <a href=\"@help"
+"\">stránce Help</a>."
+
+#: modules/help/help.module:123
+msgid "No help is available for module %module."
+msgstr "Pro modul %module není k dispozici nápověda."
+
+#: modules/help/help.module:131
+msgid "@module administration pages"
+msgstr "administrace modulu @module"
+
+#: modules/help/help.module:0
+msgid "help"
+msgstr "nápověda"
+
+#: modules/legacy/legacy.module:15
+msgid ""
+"The legacy module provides legacy handlers for upgrades from older "
+"installations. These handlers help automatically redirect references to "
+"pages from old installations and prevent <em>page not found</em> errors for "
+"your site."
+msgstr ""
+"Modul legacy poskytuje starší volání pro aktualizace ze starších instalací "
+"Drupalu. Pomáhá automaticky přesměrovat odkazy na stránky ze starší "
+"instalace a zabránit tak chybě <em>stránka nenalezena</em>."
+
+#: modules/legacy/legacy.module:16
+msgid ""
+"The legacy module handles legacy style taxonomy page, taxonomy feed, and "
+"blog feed paths. It also handles URL upgrades from Drupal 4.1. It rewrites "
+"old-style URLs to new-style URLs (clean URLs). "
+msgstr ""
+"Modul legacy zpracovává starší stránky taxonomie, exporty taxonomie a cesty "
+"pro exporty blogu. Také poskytuje aktuální verzi URL z Drupal 4.1. Přepisuje "
+"stará URL na nová (čistá URL)."
+
+#: modules/legacy/legacy.module:17
+msgid ""
+"<p>Example Mappings:</p>\n"
+"<ul>\n"
+"<li><em>taxonomy/page/or/52,97</em> to <em>taxonomy/term/52+97</em>.</li>\n"
+"<li><em>taxonomy/feed/or/52,97</em> to <em>taxonomy/term/52+97/0/feed</em>.</"
+"li>\n"
+"<li><em>blog/feed/52</em> to <em>blog/52/feed</em>.</li>\n"
+"<li><em>node/view/52</em> to <em>node/52</em>.</li>\n"
+"<li><em>book/view/52</em> to <em>node/52</em>.</li>\n"
+"<li><em>user/view/52</em> to <em>user/52</em>.</li>\n"
+"</ul>\n"
+msgstr ""
+"<p>Příklady mapování:</p>\n"
+"<ul>\n"
+"<li><em>taxonomy/page/or/52,97</em> na <em>taxonomy/term/52+97</em>.</li>\n"
+"<li><em>taxonomy/feed/or/52,97</em> na <em>taxonomy/term/52+97/0/feed</em>.</"
+"li>\n"
+"<li><em>blog/feed/52</em> na <em>blog/52/feed</em>.</li>\n"
+"<li><em>node/view/52</em> na <em>node/52</em>.</li>\n"
+"<li><em>book/view/52</em> na <em>node/52</em>.</li>\n"
+"<li><em>user/view/52</em> na <em>user/52</em>.</li>\n"
+"</ul>\n"
+
+#: modules/legacy/legacy.module:27
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@legacy\">Legacy page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href=\"@legacy"
+"\">stránce Legacy</a>."
+
+#: modules/legacy/legacy.module:119
+msgid "Legacy filter"
+msgstr "Legacy filtr"
+
+#: modules/legacy/legacy.module:122
+msgid "Replaces URLs from Drupal 4.1 (and lower) with updated equivalents."
+msgstr "Nahrazuje URL z Drupal 4.1 (a starších) za aktuální ekvivalenty."
+
+#: modules/ping/ping.module:15
+msgid ""
+"The ping module is useful for notifying interested sites that your site has "
+"changed. It automatically sends notifications (called \"pings\") to the <a "
+"href=\"@external-http-pingomatic-com\">pingomatic</a> service to tell it "
+"that your site has changed. In turn pingomatic will ping other services such "
+"as weblogs.com, Technorati, blo.gs, BlogRolling, Feedster.com, Moreover, etc."
+msgstr ""
+"Modul ping se používá pro informování spřízněných webů o změně Vašeho webu. "
+"Automaticky posílá upozornění (tzv. \"pingy\") na službu <a href=\"@external-"
+"http-pingomatic-com\">pingomatic</a>, které oznámí, že se Váš web změnil. "
+"Pingomatic poté posílá ping na další služby jako weblogs.com, Technorati, "
+"blo.gs, BlogRolling, Feedster.com, Moreover atd."
+
+#: modules/ping/ping.module:16
+msgid ""
+"The ping module requires <code>cron</code> or a similar periodic job "
+"scheduler to be enabled."
+msgstr ""
+"Modul ping vyžaduje <code>cron</code> nebo podobný spouštěč pravidelných "
+"dávek."
+
+#: modules/ping/ping.module:17
+msgid ""
+"For more information please read the configuration and customization "
+"handbook <a href=\"@ping\">Ping page</a>."
+msgstr ""
+"Více informací najdete v příručce pro nastavení a úpravy na <a href=\"@ping"
+"\">stránce Ping</a>."
+
+#: modules/ping/ping.module:55
+msgid "Failed to notify pingomatic.com (site)."
+msgstr "Selhalo upozornění pingomatic.com (web)."
+
+#: modules/ping/ping.module:55
+msgid "directory ping"
+msgstr "directory ping"
+
+#: modules/ping/ping.module:0
+msgid "ping"
+msgstr "ping"
+
+#: themes/chameleon/chameleon.theme:143;171
+msgid "By !author at @date"
+msgstr "Od !author v @date"
+
+#: themes/chameleon/chameleon.theme:0
+msgid "chameleon"
+msgstr "chameleon"
+
+#: themes/engines/phptemplate/phptemplate.engine:31
+msgid "header"
+msgstr "hlavička"
+
+#: themes/engines/phptemplate/phptemplate.engine:32
+msgid "footer"
+msgstr "patička"
+
+#: themes/engines/phptemplate/phptemplate.engine:284;308
+msgid "Submitted by !a on @b."
+msgstr "Vložil !a, @b"
+
+#: themes/engines/phptemplate/phptemplate.engine:379
+msgid ""
+"%engine.engine was instructed to override the %name theme function, but no "
+"valid template file was found."
+msgstr ""
+"%engine.engine bylo určeno přetížit funkci %name, ale nebyl nalezen platný "
+"soubor šablony."
+
+#: themes/pushbutton/page.tpl.php:13;13
+msgid "Skip navigation"
+msgstr "Přeskočit navigaci"

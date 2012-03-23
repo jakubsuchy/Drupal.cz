@@ -1,0 +1,10 @@
+<?php
+// $Id: lost_character_captcha.install,v 1.1 2007/08/21 13:40:20 soxofaan Exp $
+
+/**
+ * On uninstall: remove module variables and clear variable cache
+ */
+function lost_character_captcha_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'lost_character_captcha_%'");
+  cache_clear_all('variables', 'cache');
+}

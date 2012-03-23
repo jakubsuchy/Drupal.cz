@@ -1,0 +1,1651 @@
+<?php
+// $Id: img_assist.module,v 1.56.2.6 2006/06/16 17:33:15 bjshell Exp $
+
+/**
+ * Implementation of hook_help().
+ */
+function img_assist_help($section) {
+  switch ($section) {
+    case 'admin/modules#description':
+      return t('Enables users easily upload and insert images into content.');
+    case 'img_assist/template':
+      return "<div class=\"%image-class\">\n  <a href=\"%link\">%image</a>\n  <div class=\"caption\">%caption</div>\n</div>";
+    case 'admin/settings/img_assist#pages':
+      return "node/*\ncomment/*";
+  }
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function img_assist_menu($may_cache) {
+  $items = array();
+  if ($may_cache) {
+    $items[] = array(
+      'path' => 'img_assist/load',
+      'title' => t('Image Assist'),
+      'callback' => 'img_assist_loader',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK);
+    // the following page callbacks are called internally from the page above
+    $items[] = array(
+      'path' => 'img_assist/header',
+      'title' => t('Image Assist Header'),
+      'callback' => 'img_assist_header',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK);
+    $items[] = array(
+      'path' => 'img_assist/thumbs',
+      'title' => t('Image Assist Thumbnails'),
+      'callback' => 'img_assist_thumbs',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK);
+    $items[] = array(
+      'path' => 'img_assist/upload',
+      'title' => t('Image Assist Upload'),
+      'callback' => 'img_assist_upload',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK);
+    $items[] = array(
+      'path' => 'img_assist/properties',
+      'title' => t('Image Assist Propperties'),
+      'callback' => 'img_assist_properties',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK);
+    // popup images page
+    $items[] = array(
+      'path' => 'img_assist/popup',
+      'title' => t('Popup Image'),
+      'callback' => 'img_assist_popup',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK);
+    // insert callback (only for inserting with the <IMG> tag, not the Drupal filter tags)
+    $items[] = array(
+      'path' => 'img_assist/insert_html',
+      'title' => t('Insert Callback'),
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK,
+      'callback' => 'img_assist_insert_html'
+     );
+  } else {
+    $path = drupal_get_path('module', 'img_assist');
+    if (variable_get('img_assist_page_styling', 'yes') == 'yes') {
+      theme_add_style($path . '/img_assist.css');
+    }
+    // the base url here is used for popup windows
+    $js_base_url  = "\n<script type=\"text/javascript\"><!--\n";
+    $js_base_url .= "  var BASE_URL = \"" . base_path() . "\";\n";
+    $js_base_url .= "--></script>\n";
+    drupal_set_html_head($js_base_url);
+    drupal_add_js($path . '/img_assist.js');
+
+  }
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function img_assist_perm() {
+  return array('access img_assist', 'access all images', 'access advanced options');
+}
+
+/**
+ * Implementation of hook_elements()
+ */
+function img_assist_elements() {
+  $type['textarea'] = array('#process' => array('img_assist_textarea' => array()));
+  return $type;
+}
+
+/*
+ * Add image link underneath textareas
+ */
+function img_assist_textarea($element) {
+  $link = variable_get('img_assist_link', 'icon');
+  if (($link == 'icon') || ($link == 'text')) {
+    if (_img_assist_page_match() && !strstr($_GET['q'], 'img_assist')) { // removed ($op == 'post')
+      if (user_access('access img_assist')) {
+        $output = theme('img_assist_textarea_link', $element, $link);
+        $element['#suffix'] .= $output;
+      }
+    }
+  }
+  return $element;
+}
+
+/**
+ * Theme for adding an image link underneath textareas
+ */
+function theme_img_assist_textarea_link($element, $link) {
+  $output  = '<div class="img_assist-button"><a class="img_assist-link" id="img_assist-link-'. $element['#id'] .'" title="' . t('Click here to add images') . '" href="'. url('img_assist/load/textarea', 'textarea='. $element['#name']) .'" onclick="window.open(this.href, \'img_assist_link\', \'width=600,height=350,scrollbars=yes,status=yes,resizable=yes,toolbar=no,menubar=no\'); return false">';
+  $output .= ($link == 'icon') ? '<img src="'. base_path() . drupal_get_path('module', 'img_assist') .'/add-image.jpg" border="0" width="36" height="25" />' : t('add image');
+  $output .= '</a></div>';
+  return $output;
+}
+
+/**
+ * Implementation of hook_block().
+ *
+ * Generates a block that references the other places the current image is used.
+ * The block is only visible when looking at the full view of an image.
+ */
+function img_assist_block($op = 'list', $delta = 0) {
+  if ($op == 'list') {
+    $blocks[0]['info'] = t('Image reference');
+    return $blocks;
+  }
+  else if ($op == 'view') {
+    switch($delta) {
+      case 0:
+        /* Since blocks aren't passed node objects (which makes sense) we need
+           to determine if we are viewing a node and grab its nid */
+        $uri = parse_url(request_uri());
+        $nid = array_pop(explode('/', $uri['path']));
+        if ($nid > 0) {
+          $block['subject'] = t('This image appears in...');
+          $block['content'] = img_assist_get_references($nid);
+          return $block;
+        }
+        break;
+    }
+  }
+}
+
+/**
+ * Implementation of hook_settings().
+ */
+function img_assist_settings() {
+  // check for image.module or upload.module
+  $upload_enabled = function_exists('upload_help');
+  $image_enabled  = function_exists('image_help');
+  if (!$upload_enabled && !$image_enabled) {
+    drupal_set_message(t('Neither Upload module or Image module are enabled. Img_assist needs one of these modules enabled in order to work. Please do that now.'), 'error');
+  }
+
+  // Access Settings
+  $form['access'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Access settings'),
+    '#collapsible' => true,
+    '#collapsed' => true,
+  );
+  $form['access']['img_assist_all'] = array(
+    '#type' => 'radios',
+    '#title' => t('Display img_assist on'),
+    '#default_value' => variable_get('img_assist_all', 0),
+    '#options' => array(t('on specific pages'), t('on all textareas')),
+  );
+
+  if (!variable_get('img_assist_all', 0)) {
+    $form['access']['img_assist_pages'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Pages'),
+      '#default_value' => variable_get('img_assist_pages', "node/*\ncomment/*"),
+      '#cols' => 40,
+      '#rows' => 5,
+      '#description' => t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are '<em>blog</em>' for the blog page and '<em>blog/*</em>' for every personal blog. '<em>&lt;front&gt;</em>' is the front page."),
+    );
+  }
+  $form['access']['img_assist_link'] = array(
+    '#type' => 'select',
+    '#title' => t('Textarea Image link'),
+    '#default_value' => variable_get('img_assist_link', 1),
+    '#options' => array('icon' => t('Show icon'), 'text' => t('Show text link'), 'none' => t('Do not show a link')),
+    '#description' => t('Choose what to show under the textareas for which img_assist is enabled.'),
+  );
+  if (module_exist('taxonomy')) {
+    $vocs[0] = '<'. t('none') .'>';
+    foreach (taxonomy_get_vocabularies() as $vid => $voc) {
+      $vocs[$vid] = $voc->name;
+    }
+    if ($voc) {
+      $form['access']['img_assist_vocabs'] = array(
+        '#type' => 'select',
+        '#multiple' => true,
+        '#title' => t('Select the vocabularies to use for img_assist'),
+        '#default_value' => variable_get('img_assist_vocabs', array()),
+        '#options' => $vocs,
+        '#description' => t('Select the vocabularies you want to be able to filter thumbnails by. This setting changes the behavior of img_assist at startup from loading all image thumbnails to displaying a list of image names until a filter is chosen.'),
+      );
+    }
+  }
+
+  // Image Settings
+  $form['image'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Image settings'),
+    '#collapsible' => true,
+    '#collapsed' => true,
+  );
+  $form['image']['img_assist_preview_count'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Max number of thumbnails per page'),
+    '#default_value' => variable_get('img_assist_preview_count', 8),
+    '#size' => 6,
+    '#maxlength' => 6,
+    '#description' => t('Enter the number of images to display in the thumbnail browser.  If there are more images, next and previous links will be displayed.'),
+  );
+  $form['image']['img_assist_max_size'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Max inline image size allowed'),
+    '#default_value' => variable_get('img_assist_max_size', '640x640'),
+    '#size' => 9,
+    '#maxlength' => 9,
+    '#description' => t('Enter the number of maximum image dimension to display with img_assist.  This is a way to prevent users from breaking your layouts.  This is applied when the filter tag is processed, so it will affect existing images.  If an existing image exceeds these dimensions, a smaller derivative of the image will be substituted (or a smaller version will be created if you have allowed img_assist to create its\' own derivatives).'),
+  );
+  if (function_exists('_image_get_sizes')) {
+    // get maximum size allowed inline
+    $max_size = explode('x', variable_get('img_assist_max_size', '640x640'));
+    $oversize_count = 0;
+    foreach (_image_get_sizes() as $size) {
+      if ($size['label']) {
+				$dimensions = $size['width'] . 'x' . $size['height'];
+        if (($size['width'] <= $max_size[0]) && ($size['height'] <= $max_size[1])) {
+          $derivatives[$dimensions] = $size['label'];
+        } elseif ($size['label'] == 'thumbnail') { // the thumbnail option will be shown even if it is larger than the maximum size
+          $derivatives[$dimensions] = $size['label'];
+        } else {
+          $oversize_count++;
+        }
+      }
+    }
+    $oversize_alert = ($oversize_count) ? ' <strong>' . format_plural($oversize_count, '1 image size is not being shown because it exceeds the the maximum inline image size setting.', '%count image sizes are not being shown because they exceed the the maximum inline image size setting.') . '</strong>' : '';
+    $form['image']['img_assist_default_label'] = array(
+      '#type' => 'select',
+      '#title' => t('Default size for inline images'),
+      '#default_value' => variable_get('img_assist_default_label', '100x100'),
+      '#options' => $derivatives,
+      '#description' => t('Select a derivative to be used by default for inline images.') . $oversize_alert,
+    );
+  }
+  $form['image']['img_assist_create_derivatives'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Allow img_assist to create its\' own image derivatives?'),
+    '#default_value' =>  variable_get('img_assist_create_derivatives', array('properties', 'custom_all', 'custom_advanced')),
+    '#options' => array(
+      'properties' => t('Yes, create 200x200 temporary images for the image properties window (useful if the thumbnail size is small)'),
+      'custom_all' => t('Yes, allow all img_assist users to create custom size inline images'),
+      'custom_advanced' => t('Yes, allow priviledged users to create custom size inline images'),
+    ),
+    '#description' => t('These options allow img_assist to generate its\' custom image sizes (in the same manor as image.module) when a user would prefer a different size from the standard image sizes defined in the image.module settings.'),
+  );
+
+  // Other Properties
+  $form['properties'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Other Properties'),
+    '#collapsible' => true,
+    '#collapsed' => true,
+  );
+  $form['properties']['img_assist_default_link_behavior'] = array(
+    '#type' => 'select',
+    '#title' => t('Default link behavior'),
+    '#default_value' => variable_get('img_assist_default_link_behavior', 'none'),
+    '#options' => array('none' => t('Not a link'), 'node' => t('Link to image page'), 'popup' => t('Open in popup window'), 'url' => t('Go to URL')),
+    '#description' => t('The link behavior can be overriden when inserting images by users with the proper permissions, but these defaults will still be used for everyone else.'),
+  );
+  $form['properties']['img_assist_default_link_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Default URL'),
+    '#default_value' => variable_get('img_assist_default_link_url', 'http://'),
+    '#size' => 30,
+    '#maxlength' => 255,
+    '#description' => t('The default URL is used when Go to URL is choosen as the link behavior.'),
+  );
+  $form['properties']['img_assist_default_insert_mode'] = array(
+    '#type' => 'select',
+    '#title' => t('Default insert mode'),
+    '#default_value' => variable_get('img_assist_default_insert_mode', 'none'),
+    '#options' => array('filtertag' => t('Filter Tag'), 'html' => t('HTML Code')),
+    '#description' => t('The link behavior can be overriden when inserting images by users with the proper permissions, but these defaults will still be used for everyone else.'),
+  );
+
+  // Image Settings
+  $form['display'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Display settings'),
+    '#collapsible' => true,
+    '#collapsed' => true,
+  );
+  $form['display']['img_assist_page_styling'] = array(
+      '#type' => 'select',
+      '#title' => t('Include img_assist.css on all pages for styling inline images?'),
+      '#default_value' => variable_get('img_assist_page_styling', 'yes'),
+      '#options' => array('yes' => t('yes'), 'no'=> t('no')),
+      '#description' => t('Advanced users can customize their theme\'s CSS file so that inclusion of the img_assist.css file will not be necessary.  See notes at the bottom of img_assist.css for details.'),
+  );
+  return $form;
+}
+
+/**
+ * Implementation of hook_filter().
+ */
+function img_assist_filter($op, $delta = 0, $format = -1, $text = '') {
+  switch ($op) {
+    case 'list':
+      return array(0 => t('Inline images'));
+
+    case 'description':
+      return t('Add images to your posts with img_assist.');
+
+    case 'process':
+      foreach(img_assist_get_macros($text) as $unexpanded_macro => $macro) {
+        $expanded_macro = img_assist_render_image($macro);
+        $text = str_replace($unexpanded_macro, $expanded_macro, $text);
+      }
+			return theme('img_assist_filter', $text);
+    default:
+      return $text;
+  }
+}
+
+function theme_img_assist_filter($text) {
+	// the br tag added to the end of each node is usually necessary for
+  // clearing the floating properties of the inline images
+  return $text . "<br class=\"clear\" />";
+}	
+
+/**
+ * Implementation of hook_filter_tips().
+ */
+function img_assist_filter_tips($delta, $format, $long = false) {
+  return t('Images can be added to this post.');
+}
+
+/**
+ * Implementation of hook_nodeapi().
+ *
+ * Keep track of where images are used.
+ */
+function img_assist_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
+    case 'insert':
+    case 'update':
+      img_assist_map_save($node);
+      break;
+    case 'delete':
+      img_assist_map_image_delete($node);
+      break;
+  }
+}
+
+/********************************************************************
+ * Image Assist Pages (all but img_assist_loader() are in frames)
+ ********************************************************************/
+
+/**
+ * Print the main img_assist interface.
+ */
+function img_assist_loader() {
+
+  $editor = arg(2) ? arg(2) : 'textarea';
+
+  $title = t('Image Assist');
+  $header = url('img_assist/header');
+  $main = url('img_assist/thumbs');
+
+	$output  = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN">' . "\n";
+	$output .= "<html>\n";
+	$output .= "<head>\n";
+	$output .= "<title>Image Assist</title>\n";
+	//$output .= "<base href=\"" . base_path() . "\" />\n"; // normally called from drupal_get_html_head()
+	$output .= "\n<script type=\"text/javascript\"><!--\n";
+	$output .= "  var BASE_URL = \"" . base_path() . "\";\n";
+	$output .= "--></script>\n";
+
+	$path = drupal_get_path('module', 'img_assist');
+	$output .= '<script type="text/javascript" src="' . base_path() . $path . '/img_assist.js"></script>' . "\n";
+	if ($editor == 'tinymce') { // I'd prefer not to hard code for tinymce here, but I can't figure out a better solution
+		$tinymce_path = drupal_get_path('module', 'tinymce');
+		$tinymce_js = base_path() . $tinymce_path . '/tinymce/jscripts/tiny_mce/tiny_mce_popup.js';
+		$output .= "<script type=\"text/javascript\" src=\"$tinymce_js\"></script>\n"; // splitting the tag helps Dreamweaver color coding
+	}
+	$editor_js = base_path() . $path . '/img_assist_' . $editor . '.js';
+	$output .= "<script type=\"text/javascript\" src=\"$editor_js\"></script>\n";
+
+	$output .= "</head>\n\n";
+
+	$output .= "<frameset rows=\"38, *\" onload=\"initLoader()\" frameborder=\"0\" border=\"0\" framespacing=\"0\"> >\n";
+	$output .= "<frame name=\"img_assist_header\" src=\"\" class=\"img_assist_header\" noresize=\"noresize\">\n";
+	$output .= "<frame name=\"img_assist_main\" src=\"\" class=\"img_assist_main\" noresize=\"noresize\">\n";
+	$output .= "</frameset>\n";
+	$output .= "<noframes></noframes>\n";
+
+	$output .= "</html>\n";
+	print $output;
+}
+
+function img_assist_header() {
+  global $user;
+
+  $mode = arg(2); // uploading, properties, or browse
+
+  if ($mode == 'uploading') {
+    $form[] = array('#value' => "\n<div id=\"header-uploading\">");
+    $form[] = array('#value' => '<strong>' . t('Upload: ') . '</strong>' . t('Fill in the form below to upload a new image.'));
+    $form[] = array('#value' => "</div>\n<div id=\"header-startover\">\n");
+    $form['startover'] = array(
+      '#type' => 'button',
+      '#value' => t('Start Over'),
+      '#button_type' => 'button',
+      '#attributes' => array('onclick'=>'parent.onClickStartOver();', 'id'=>'startover'),
+    );
+    $form[] = array('#value' => "</div>\n");
+
+  } elseif ($mode == 'properties') {
+    $form[] = array('#value' => "\n<div id=\"header-properties\">");
+    $form[] = array('#value' => '<strong>' . t('Properties: ') . '</strong>' . t('Change how the image is displayed.'));
+    $form[] = array('#value' => "</div>\n<div id=\"header-startover\">");
+    $form['startover'] = array(
+      '#type' => 'button',
+      '#value' => t('Start Over'),
+      '#button_type' => 'button',
+      '#attributes' => array('onclick'=>'parent.onClickStartOver()', 'id'=>'startover'),
+    );
+    $form[] = array('#value' => "</div>\n");
+
+  } else { // 'browse'
+    $form[] = array('#value' => "\n<div id=\"header-browse\">");
+    $form[] = array('#value' => '<strong>' . t('Browse Images: ') . '</strong>');
+
+    // get my images & count
+    $result = db_query("SELECT COUNT(n.nid) FROM {node} n WHERE n.type='image' AND n.uid= %d", $user->uid);
+    $count = $result ? db_result($result, 0) : 0;
+    $options['myimages'] = t('My Images') . " ($count)";
+
+    // get all images & count
+    if (user_access('access all images')) { // count ALL published images + the USER's unpublished images
+      $result = db_query("SELECT COUNT(n.nid) FROM {node} n WHERE n.type='image' AND (n.uid = %d OR n.status = 1)", $user->uid);
+      $count = $result ? db_result($result, 0) : 0;
+      $options['allimages']  = t('All Images') . " ($count)";
+    }
+    // get category list & count
+    $vocabs = get_image_vocabs();
+    foreach ($vocabs as $vid) {
+      $vocab = taxonomy_get_vocabulary($vid);
+      $terms = taxonomy_get_tree($vid);
+      if ($terms) {
+        foreach ($terms as $key => $value) {
+          $tid = $value->tid;
+          $name = $value->name;
+
+          if (user_access('access all images')) { // for this term, count ALL published images + the USER's unpublished images
+            $result = db_query("SELECT COUNT(n.nid) FROM {node} n, {term_node} t WHERE t.nid=n.nid AND n.type='image' AND t.tid = %d AND (n.uid = %d OR n.status = 1)", $tid, $user->uid);
+          } else { // for this term, count only the user's images
+            $result = db_query("SELECT COUNT(n.nid) FROM {node} n, {term_node} t WHERE t.nid=n.nid AND n.type='image' AND t.tid = %d AND n.uid = %d", $tid, $user->uid);
+          }
+          $count = $result ? db_result($result, 0) : 0;
+          if ($count) {
+            $options[$vocab->name][$tid] = $name . " ($count)";
+          }
+        }
+      }
+    }
+    $form['browse'] = array(
+      '#type' => 'select',
+      '#prefix' => '<span id="browse">',
+      '#suffix' => '</span>',
+      '#default_value' => variable_get('feed_item_length','teaser'),
+      '#options' => $options,
+      '#attributes' => array('onchange'=>'parent.onChangeBrowseBy()'),
+    );
+    if (user_access('create images')) {
+      $form['upload'] = array(
+        '#type' => 'button',
+        '#prefix' => ' ' . t('or') . ' ',
+        '#value' => t('Upload'),
+        '#suffix' => ' ' . t('a new image'),
+        '#button_type' => 'button',
+        '#attributes' => array('onclick'=>'parent.onClickUpload()'),
+      );
+    }
+    $form[] = array('#value' => "</div>\n<div id=\"header-cancel\">");
+    $form['cancel'] = array(
+        '#type' => 'button',
+        '#value' => t('Cancel'),
+        '#button_type' => 'button',
+        '#attributes' => array('onclick'=>'parent.cancelAction()'),
+      );
+    $form[] = array('#value' => "</div>\n");
+  }
+  $output .= drupal_get_form('img_assist_header', $form);
+  print theme('img_assist_page', $output, array('id'=>'img_assist_header', 'onload'=>'parent.initHeader();', 'class'=>'img_assist'));
+}
+
+/**
+ * Interface and controller for adding images. It simply calls node_add('image');
+ */
+function img_assist_upload() {
+
+	if (module_exist('image') && user_access('create images')) {
+		$edit = $_POST['edit'];
+		$op = $_POST['op'];
+
+		switch ($op) {
+			case t('Submit'):
+				$output .= img_assist_node_add('image', $op); // use a custom function so we can control the redirect
+				break;
+			default:
+				$output .= node_add('image'); // use default node_add function
+		}
+		// on other img_assist_pages I've added the javascript using the body onload attribute,
+		// but for this page will also need the collapse functions and setting the body onload
+		// interferes with this.  To solve this, I'm forced use the addLoadEvent call.  I should
+		// probably switch all the pages to this format to be more Drupal friendly, but at the same
+		// time I don't know if it really matters.  If a user doesn't have Javascript, they can't
+		// use img_assist at all.
+		$output .= "\n<script type=\"text/javascript\"><!-- \n";
+		$output .= "  if (isJsEnabled()) { \n";
+		$output .= "    addLoadEvent(parent.initUpload);\n";
+		$output .= "  } \n";
+		$output .= "--></script>\n";
+
+	} else {
+		if (!module_exist('image')) {
+			$output = t('The image module must be enabled to use img_assist.');
+		} else {
+			$output = t('Your account does not have image uploading privileges.');
+		}
+	}
+	print theme('img_assist_page', $output, array('id'=>'img_assist_upload', 'class'=>'img_assist'));
+}
+
+
+// --------------------------------------------------------------------------------
+// Node Add Functions: Used for uploading an image
+// These are basically just copies of the functions from the node.module.  The only
+// difference is that the last function called, img_assist_node_form_submit(), does
+// not call drupal_goto() to go to the node page.  Instead, it returns the NID so
+// img_assist_upload() can redirect to the img_assist properties page
+// --------------------------------------------------------------------------------
+function img_assist_node_add($type) {
+  global $user;
+
+  // If a node type has been specified, validate its existence.
+  if (array_key_exists($type, node_get_types()) && node_access('create', $type)) {
+    // Initialize settings:
+    $node = array('uid' => $user->uid, 'name' => $user->name, 'type' => $type);
+
+    // Allow the following fields to be initialized via $_GET (e.g. for use
+    // with a "blog it" bookmarklet):
+    foreach (array('title', 'teaser', 'body') as $field) {
+      if ($_GET['edit'][$field]) {
+        $node[$field] = $_GET['edit'][$field];
+      }
+    }
+    $output = img_assist_node_form($node);
+    drupal_set_title(t('Submit %name', array('%name' => node_get_name($node))));
+  }
+  else {
+    // If no (valid) node type has been provided, display a node type overview.
+    foreach (node_get_types() as $type => $name) {
+      if (module_invoke(node_get_base($type), 'access', 'create', $type)) {
+        $out = '<dt>'. l($name, "node/add/$type", array('title' => t('Add a new %s.', array('%s' => $name)))) .'</dt>';
+        $out .= '<dd>'. implode("\n", module_invoke_all('help', 'node/add#'. $type)) .'</dd>';
+        $item[$name] = $out;
+      }
+    }
+
+    if (isset($item)) {
+      uasort($item, 'strnatcasecmp');
+      $output = t('Choose the appropriate item from the list:') .'<dl>'. implode('', $item) .'</dl>';
+    }
+    else {
+      $output = t('You are not allowed to create content.');
+    }
+  }
+
+  return $output;
+}
+
+function img_assist_node_form($node) {
+  $node = (object)$node;
+  $form = node_form_array($node);
+  return drupal_get_form($node->type .'_node_form', $form, 'img_assist_node_form');
+}
+
+function img_assist_node_form_validate($form_id, $edit) {
+  node_validate($edit);
+}
+
+function img_assist_node_form_submit($form_id, $edit) {
+  global $user;
+
+  // Fix up the node when required:
+  $node = node_submit($edit);
+
+  // Prepare the node's body:
+  if ($node->nid) {
+    // Check whether the current user has the proper access rights to
+    // perform this operation:
+    if (node_access('update', $node)) {
+      node_save($node);
+      watchdog('content', t('%type: updated %title.', array('%type' => theme('placeholder', $node->type), '%title' => theme('placeholder', $node->title))), WATCHDOG_NOTICE, l(t('view'), 'node/'. $node->nid));
+      drupal_set_message(t('The %post was updated.', array ('%post' => node_get_name($node))));
+    }
+  }
+  else {
+    // Check whether the current user has the proper access rights to
+    // perform this operation:
+    if (node_access('create', $node)) {
+      node_save($node);
+      watchdog('content', t('%type: added %title.', array('%type' => theme('placeholder', $node->type), '%title' => theme('placeholder', $node->title))), WATCHDOG_NOTICE, l(t('view'), "node/$node->nid"));
+      drupal_set_message(t('Your %post was created.', array ('%post' => node_get_name($node))));
+    }
+  }
+  drupal_goto('img_assist/properties/' . $node->nid);
+}
+
+
+/**
+ * Load the thumbnail display pane
+ *
+ * Grabs all images from image.module and loads the thumbnails.
+ */
+function img_assist_thumbs() {
+  global $user;
+
+	if (module_exist('image')) {
+		$browse = arg(2);
+		if ($browse == 'myimages') {
+			$myimagesonly = true;
+			$tid = 0;
+		} elseif ($browse == 'allimages') {
+			$myimagesonly = false;
+			$tid = 0;
+		} else {
+			$myimagesonly = false;
+			$tid = $browse;
+		}
+
+		$output .= "<div align=\"center\">\n";
+
+		if ($tid) { // show by term ID
+			if (user_access('access all images')) { // for this term, show ALL published images + the USER's unpublished images
+				$query = "SELECT n.nid FROM {node} n, {term_node} t WHERE t.nid=n.nid AND n.type='image' AND t.tid = %d AND (n.uid = %d OR n.status = 1) ORDER BY n.sticky DESC, n.created DESC";
+				$params = array($tid, $user->uid);
+			} else { // for this term, show only the user's images
+				$query = "SELECT n.nid FROM {node} n, {term_node} t WHERE t.nid=n.nid AND n.type='image' AND t.tid = %d AND n.uid = %d ORDER BY n.sticky DESC, n.created DESC";
+				$params = array($tid, $user->uid);
+			}
+		} else {
+			 if (user_access('access all images') && (!$myimagesonly)) { // show ALL published images + the USER's unpublished images
+				$query = "SELECT n.nid FROM {node} n WHERE n.type='image' AND (n.uid = %d OR n.status = 1) ORDER BY n.sticky DESC, n.created DESC";
+				$params = array($user->uid);
+			} else { // default condition: show only the user's images
+				$query = "SELECT n.nid FROM {node} n WHERE n.type='image' AND n.uid= %d ORDER BY n.sticky DESC, n.created DESC";
+				$params = array($user->uid);
+			}
+		}
+
+		$show_amount = variable_get('img_assist_preview_count', 10);
+		$result = pager_query($query, $show_amount, $element = 0, $count_query = NULL, $params);
+		while ($row = db_fetch_object($result)) {
+			$node = node_load(array('nid' => $row->nid));
+			$image = img_assist_display($node, 'thumbnail');
+			$output .= l($image, "img_assist/properties/{$node->nid}", $attributes = array(), $query = NULL, $fragment = NULL, $absolute = FALSE, $html = TRUE) . "\n";
+		}
+		if (!db_num_rows($result)) {
+			$output .= t('No images were found.  Please upload a new image or browse images by a different category.');
+		}
+
+		$output .= theme('pager', NULL, $show_amount);
+		$output .= "</div>\n";
+	} else {
+		$output = t('The image module must be enabled to use img_assist.');
+	}
+	print theme('img_assist_page', $output, array('id'=>'img_assist_thumbs', 'onload'=>'parent.initThumbs();', 'class'=>'img_assist'));
+}
+
+function get_image_vocabs() {
+  $vocabs = variable_get('img_assist_vocabs', array());
+  $vocabs = (array)$vocabs; // make sure this variable is an array
+  //if (!$vocabs) {
+  //  $result = db_query("SELECT vid FROM {vocabulary_node_types} WHERE type='image'");
+    // there may be more than one result, but we're just going to use the first one
+    // since the administrator didn't specify a vocabulary in the options for this module
+  //  $vocabs[] = $result ? db_result($result, 0) : 0;
+  //}
+  return $vocabs;
+}
+
+/**
+ * Load the image properties pane
+ */
+function img_assist_properties() {
+  $nid = arg(2);
+  $edit = (arg(3)) ? 1 : 0; // edit is put into a hidden field so the javascripts can see it
+
+  if (is_numeric($nid)) {
+    $node = node_load(array('nid' => $nid));
+
+    // Setup a default caption & description
+    $node->title = str_replace("\r", ' ', strip_tags($node->title));
+    $node->title = str_replace("\n", ' ', trim($node->title));
+    $node->body = str_replace("\r", ' ', strip_tags($node->body));
+    $node->body = str_replace("\n", ' ', trim($node->body));
+
+    // Select (or generate) a preview image
+    $img_assist_create_derivatives = variable_get('img_assist_create_derivatives', array());
+    if ($img_assist_create_derivatives['properties']) {
+      $properties_size['label'] = 'img_assist_properties';
+      $properties_size['width'] = 200;
+      $properties_size['height'] = 200;
+    } else {
+      $properties_size['label'] = 'thumbnail';
+    }
+    $properties_image = img_assist_display($node, $properties_size);
+    $properties_size = image_get_info(file_create_path($node->images[$properties_size['label']])); // get the actual size now
+
+    // Create an array of image derivative choices
+    //
+    // The name for each option is actually the size in pixels, not the derivative name
+    // This is necessary so that (1) the Javascript that process this page and
+    // inserts code to your textarea or editor will know the size to make the
+    // image placeholder (in a WYSIWYG editor), and (2) the code that processes the
+    // img_assist filter tags can work with standard sizes and custom sizes in the
+    // same way.  The WYSIWYG placeholder, however, is the most important reason to keep
+    // the img_assist tags this way.  This way users can even resize images in the
+    // editor, and if they aren't allow to create custom sizes the filter will pick the
+    // existing derivative that is closest to the size of the WYSIWYG placeholder.  For
+    // users not familiar with pixel sizes or names like "thumbnail" and "preview",
+    // this is a nice visual way to size images.  The size selection dropdown could
+    // even be hidden using the stylesheet, making the insertion of images even more
+    // of a visual process.  And for administrators and those with the proper permissions,
+    // images don't have to snap to the nearest standard size.  You can create any
+    // arbitrary size you choose.
+    $max_size = explode('x', variable_get('img_assist_max_size', '640x640'));
+    $default_label = variable_get('img_assist_default_label', 'thumbnail');
+    foreach (_image_get_sizes() as $size) {
+      if ($size['label']) {
+        if (($size['width'] <= $max_size[0]) && ($size['height'] <= $max_size[1])) {
+          $derivatives[$size['width'] . 'x' . $size['height']] = $size['label'];
+        } elseif ($size['label'] == 'thumbnail') { // the thumbnail option will be shown even if it is larger than the maximum size
+          $derivatives[$size['width'] . 'x' . $size['height']] = $size['label'];
+        } elseif ($size == $default_label) { // the default_label may be set to a size that is too large
+          $default_label == 'thumbnail'; // change the default label to thumbnail
+        }
+      }
+    }
+
+    // Add a choice for 'other' if the user has the proper permission to create custom sizes
+    if ($img_assist_create_derivatives['custom_advanced'] && user_access('access advanced options')) {
+      $derivatives['other'] = t('other');
+    }
+
+    // Get the default pixel size from the default label size
+    // If 'other' is the default label, use the 'preview' size as the default
+    //$default_size = ($default_label == 'other') ? 'preview' : $default_label;
+    // we are getting the 'preview' size instead of the default size (as in the commented
+    // out line above), because of an new derivative size has been setup but the
+    // image hasn't been generated this will cause an error here.
+    $default_size = image_get_info(file_create_path($node->images['preview']));
+    $default_width = $default_size['width'];
+    $default_height = $default_size['height'];
+
+    // Calculate the aspect ratio to keep in a hidden field
+    // When 'other' is chosen, the custom size will always follow the aspect ratio.
+    // It doesn't really matter what this value is here because the actual custom
+    // image will be created when the  filter tag is processed.  The size, of course,
+    // is a bounding box.  If it a user stretches an image placeholder out of
+    // proportion in the WYSIWYG editor, the image will never be out of proportion
+    // on the processed page.
+    $aspect_ratio = round($default_width / $default_height, 6);
+
+    // Create the form
+    $form[] = array('#value' => "<div id=\"properties\">\n");
+    $form[] = array('#value' => '<table width="100%" border="0" cellspacing="0" cellpadding="0">');
+    $form[] = array('#value' => "<tr><td valign=\"top\" rowspan=\"3\" id=\"preview\">\n");
+    $form[] = array('#value' => $properties_image);
+    $form[] = array('#value' => "<span id=\"caption\" style=\"width: {$properties_size['width']}px;\">{$node->title}</span>\n");
+    $form[] = array('#value' => "</td><td width=\"100%\" colspan=\"2\">\n");
+
+    $form['title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title (optional)'),
+      '#default_value' => $node->title,
+      '#size' => 50,
+      '#maxlength' => 255,
+      '#description' => NULL,
+      '#attributes' => array('onblur'=>'parent.updateCaption()'),
+    );
+    $form['desc'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Description (optional)'),
+      '#default_value' => $node->body,
+      '#size' => 50,
+      '#maxlength' => 255,
+      '#description' => NULL,
+      '#attributes' => array('onblur'=>'parent.updateCaption()'),
+    );
+
+    // Size
+    $form[] = array('#value'=>"</td></tr><tr><td width=\"90%\">\n");
+    $form[] = array('#value'=>"<div class=\"form-item\" id=\"size\">\n");
+    $form[] = array('#value'=>"<label for=\"edit-size\">Size:</label>\n");
+    $form['size_label'] = array(
+      '#type' => 'select',
+      '#default_value' => variable_get('img_assist_default_label', '100x100'),
+      '#options' => $derivatives,
+      '#attributes' => array('onchange'=>'parent.onChangeSizeLabel()'),
+    );
+    $form[] = array('#value'=>"<div class=\"form-item\" id=\"size-other\">\n");
+    $form['width'] = array(
+      '#type' => 'textfield',
+      '#default_value' => $default_width,
+      '#size' => 4,
+      '#maxlength' => 4,
+      '#attributes' => array('onblur'=>'parent.onChangeWidth()'),
+    );
+    $form[] = array('#value'=>" x \n");
+    $form['height'] = array(
+      '#type' => 'textfield',
+      '#default_value' => $default_height,
+      '#size' => 4,
+      '#maxlength' => 4,
+      '#attributes' => array('onblur'=>'parent.onChangeHeight()'),
+    );
+    $form[] = array('#value'=>"</div></div>\n");
+    $form[] = array('#value'=>"</td><td>\n");
+
+    // Alignment
+    $form['align'] = array(
+      '#type' => 'select',
+      '#title' => t('Alignment'),
+      '#default_value' => variable_get('img_assist_default_alignment', 'left'),
+      '#options' => array('left'=>'left', 'right'=>'right'),
+      '#prefix' => '<span id="alignment">',
+      '#suffix' => '</span>'
+    );
+    $form[] = array('#value'=>"</td></tr><tr><td colspan=\"2\">\n");
+
+    // Link
+    if (user_access('access advanced options')) {
+      $form[] = array('#value'=>"<div class=\"form-item\" id=\"link-group\">\n");
+      $form['link'] = array(
+        '#type' => 'select',
+        '#title' => t('Link'),
+        '#default_value' => variable_get('img_assist_default_link_behavior', 'none'),
+        '#options' => array('none' => t('Not a link'), 'node' => t('Link to image page'), 'popup' => t('Open in popup window'), 'url' => t('Go to URL')),
+        '#attributes' => array('onchange'=>'parent.onChangeLink()'),
+      );
+      $form['url'] = array(
+        '#type' => 'textfield',
+        '#default_value' => variable_get('img_assist_default_link_url', 'http://'),
+        '#size' => 25,
+        '#maxlength' => 255,
+        '#description' => NULL,
+      );
+      $form['link_options_visible'] = array(
+        '#type' => 'hidden',
+        '#value' => 1,
+      );
+      $form[] = array('#value'=>"</div>\n");
+    } else {
+      $form['link'] = array(
+        '#type' => 'hidden',
+        '#value' => variable_get('img_assist_default_link_behavior', 'none'),
+      );
+      $form['url'] = array(
+        '#type' => 'hidden',
+        '#value' => variable_get('img_assist_default_link_url', 'http://'),
+      );
+      $form['link_options_visible'] = array(
+        '#type' => 'hidden',
+        '#value' => 0,
+      );
+    }
+
+    // Insert Mode (HTML or Filter Tag)
+    if (user_access('access advanced options')) {
+      $form[] = array('#value'=>"<div id=\"insertmode\">\n");
+      $form['insertmode'] = array(
+        '#type' => 'select',
+        '#title' => t('Insert Mode'),
+        '#default_value' => variable_get('img_assist_default_insert_mode', 'filtertag'),
+        '#options' => array('filtertag' => t('Filter Tag'), 'html' => t('HTML Code')),
+      );
+      $form[] = array('#value' => "</div>\n");
+    } else {
+      $form['insertmode'] = array(
+        '#type' => 'hidden',
+        '#value' => variable_get('img_assist_default_insert_mode', 'filtertag'),
+      );
+    }
+
+    // Hidden Fields
+    $form['nid'] = array(
+      '#type' => 'hidden',
+      '#value' => $node->nid,
+    );
+    $form['edit'] = array(
+      '#type' => 'hidden',
+      '#value' => $edit,
+    );
+    $form['aspect'] = array(
+      '#type' => 'hidden',
+      '#value' => $aspect_ratio,
+    );
+
+    // Buttons
+    $form[] = array('#value' => "<div id=\"buttons\">\n");
+    $form['insert'] = array(
+      '#type' => 'submit',
+      '#value' => ($update) ? t('Update') : t('Insert'),
+      '#attributes' => array('onclick' => 'parent.insertImage()', 'style' => 'float:left;', 'id' => 'insert'),
+    );
+    $form['cancel'] = array(
+      '#type' => 'button',
+      '#value' => t('Cancel'),
+      '#button_type' => 'button',
+      '#attributes' => array('onclick' => 'parent.cancelAction()', 'style' => 'float:right;', 'id' => 'cancel'),
+    );
+
+    $form[] = array('#value' => "</div>\n");
+    $form[] = array('#value' => "</td></tr></table></div>\n");
+  } else {
+    $form[] = array('#value' => t('Image ID not found'));
+  }
+
+  $form['#attributes'] = array('name'=>'img_assist');
+  $output = drupal_get_form('img_assist_properties', $form);
+  print theme('img_assist_page', $output, array('id'=>'img_assist_properties', 'onload'=>'parent.initProperties();', 'class'=>'img_assist'));
+}
+
+function img_assist_properties_validate($form_id, $form_values) {
+  $html = img_assist_render_image($form_values);
+  img_assist_set_htmlcode($html);
+  drupal_goto('img_assist/insert_html');
+}
+
+// used for saving HTML code so it can be inserted instead of the filter tags
+function img_assist_set_htmlcode($htmlcode = NULL) {
+  if (isset($htmlcode)) {
+    $_SESSION['htmlcode'] = urlencode($htmlcode);
+  } else {
+    $html = urldecode($_SESSION['htmlcode']);
+    $_SESSION['htmlcode'] = '';
+    return $html;
+  }
+}
+
+function img_assist_insert_html() {
+  $htmlcode = img_assist_set_htmlcode();
+  $form[] = array('#value'=>'<div id="finalhtmlcode">' . $htmlcode . '</div>');
+
+  $form['insertmode'] = array(
+    '#type' => 'hidden',
+    '#value' => 'html2',
+  );
+  //$form['#attributes'] = array('name'=>'img_assist');
+  $output = drupal_get_form('img_assist_insert_html', $form);
+  print theme('img_assist_page', $output, array('id'=>'img_assist_insert_html', 'onload'=>'parent.insertImage();', 'class'=>'img_assist'));
+}
+
+/********************************************************************
+ * Module Functions :: Image Generation
+ ********************************************************************/
+
+/* functions used in image.module vs img_assist.module (simplified):
+-------------
+image.module:
+-------------
+image_display()
+  ~ is called for galleries, image nodes, image blocks, etc (everytime in image is shown)
+  ~ returns <span ...><img ...></span>
+  ~ can be passed a specific standard size only
+  ~ may call _image_build_derivatives()
+  ~ calls theme_image() to create the <img> tag
+_image_build_derivatives()
+  ~ rebuilds all standard image sizes for a particular node
+------------------
+img_assist.module: (more complicated, but more flexible)
+------------------
+image_display()
+  ~ is called for thumbnails browsing, inline images, etc (everytime in image is shown)
+  ~ returns <span ...><img ...></span>
+  ~ can be passed EITHER a specific standard size only OR a custom size
+  ~ may call _image_build_derivatives()
+  ~ calls theme_image() to create the <img> tag
+_image_build_derivatives()
+  ~ rebuilds only a specfic image size (standard or custom size)
+
+
+*/
+
+/**
+ * Create an <img> tag for an image.
+ * This is nearly identical to image_display, but:
+ *   ~ It uses a more efficient regenerate images routine
+ *   ~ The size attribute can be a custom size OR a standard size
+ */
+function img_assist_display(&$node, $size = NULL, $attributes = array()) {
+  if (is_array($size) && ($size['label']) && ($size['width']) && ($size['height'])) { // custom size: should include values for label, width, and height
+    $label = $size['label'];
+  } elseif ($size) { // standard size
+    if (is_array($size)) { // size can be an array without the width and/or height
+      $size = $size['label']; // size is no longer an array
+    }
+    $label = $size;
+  } else { // no size specified: assign preview size
+    $label = 'thumbnail';
+  }
+
+  // regenerate images?
+  if (!$node->images[$label]) {
+    $regen = true;
+  } elseif (!is_file(file_create_path($node->images[$label]))) {
+    $regen = true;
+  } elseif (filemtime(file_create_path($node->images[$label])) < variable_get('image_updated', 0)) {
+    $regen = true;
+  } else {
+    if (is_array($size)) {
+      $info = image_get_info(file_create_path($node->images[$label]));
+      if (($info['width'] != $size['width']) && ($info['height'] != $size['height'])) {
+        $regen = true;
+      }
+    }
+  }
+
+  if ($regen) {
+    _img_assist_build_derivatives($node, false, $size);
+  }
+
+  if (empty($node->images[$label])) {
+    return;
+  }
+
+  $info = image_get_info(file_create_path($node->images[$label])); // get actual size ($size is just a bounding box)
+	$attributes['class'] = "image $label". (isset($attributes['class']) ? " ". $attributes['class'] : "");
+  $attributes['width'] = $info['width'];
+  $attributes['height'] = $info['height'];
+  return theme('image_display', $node, $label, file_create_url($node->images[$label]), $attributes);
+  //return theme('image_display', file_create_url($node->images[$label]), $node->title, $node->title, $attr, false);
+}
+
+/**
+ * Generate one image derivative (closely based on _image_build_derivatives() in the image.module)
+ * $size is an array, including: $size['label'], $size['width'], $size['height']
+ */
+function _img_assist_build_derivatives(&$node, $temp = FALSE, $size = NULL) {
+  // sanity check:
+  if (!_image_check_settings()) {
+    return false;
+  }
+  $info = image_get_info(file_create_path($node->images['_original']));
+
+  if ($size['label'] && $size['width'] && $size['height']) { // custom size
+      $sizes[] = $size;
+  } elseif ($size) { // standard size
+    if (is_array($size)) { // size can be an array without the width and/or height
+      $size = $size['label'];
+    }
+    foreach (_image_get_sizes() as $stdsize) {
+      if ($stdsize['label'] == $size) {
+        $sizes[] = $stdsize;
+      }
+    }
+  } else { // no size given: rebuild derivatives for all standard sizes
+    $sizes = _image_get_sizes();
+  }
+
+  foreach ($sizes as $size) {
+    if (!$temp) {
+      _img_assist_remove($node, $size);
+    }
+
+    if (is_array($size) && ($size['label']) && ($size['width']) && ($size['height'])) {
+      if ($info['width'] > $size['width'] || $info['height'] > $size['height']) {
+        $source = file_create_path($node->images['_original']);
+        $destination = _image_filename(basename($source), $size['label'], $temp);
+        if (!image_scale($source, file_create_path($destination), $size['width'], $size['height'])) {
+          drupal_set_message(t('Unable to create %label image', array('%label' => $size['label'])), 'error');
+        } else {
+          $node->images[$size['label']] = $destination;
+          if (!$temp) {
+            _image_insert($node, $size['label'], file_create_path($destination));
+          }
+        }
+      } else {
+        $node->images[$size['label']] = $node->images['_original'];
+      }
+    }
+  }
+}
+
+
+function _img_assist_remove($node, $size) {
+  $result = db_query("SELECT * FROM {files} WHERE nid=%d AND filename='%s'", $node->nid, $size['label']);
+  while ($file = db_fetch_object($result)) {
+    // Never delete the original!
+    if ($file->filepath != $node->images['_original']) {
+      file_delete(file_create_path($file->filepath));
+    }
+  }
+  db_query("DELETE FROM {files} WHERE nid=%d AND filename='%s'", $node->nid, $size['label']);
+}
+
+/**
+ * Return image HTML.
+ */
+function img_assist_render_image($attributes = array()) {
+  global $user;
+
+  if ($attributes['nid']) {
+    $node = node_load(array('nid'=>$attributes['nid']));
+
+    // get size
+    $width  = $attributes['width'];
+    $height = $attributes['height'];
+    if ($width && $height) {
+
+      // Check to ensure that the dimensions don't exceed the max set in the img_assist settings
+      $max_size = explode('x', variable_get('img_assist_max_size', '640x640'));
+      $width = ($width <= $max_size[0]) ? $width : $max_size[0];
+      $height = ($height <= $max_size[1]) ? $height : $max_size[1];
+
+      // Get the width & height of the 'preview' size
+      $preview_size = image_get_info(file_create_path($node->images['preview']));
+      $preview_width = $preview_size['width'];
+      $preview_height = $preview_size['height'];
+
+      if (($preview_width) && ($preview_height)) {
+        // Get the aspect ratio from the 'preview' image dimensions
+        $aspect_ratio = round($preview_width / $preview_height, 6);
+
+        // Get new width & height for this inline image
+        if (round($width / $aspect_ratio) <= $height) { // width is controlling factor
+          $height = round($width / $aspect_ratio);
+        } else { // height is controlling factor
+          $width = round($height * $aspect_ratio);
+        }
+
+        // Compare the new width & height to existing image derivative sizes
+        $diag_size_new = sqrt(pow($width, 2) + pow($height, 2));
+        $closest_difference = 9999;
+        foreach (_image_get_sizes() as $stdsize) {
+          if ($stdsize['label']) {
+            $width_std = $stdsize['width'];
+            $height_std = $stdsize['height'];
+            // Get standard width & height, taking into account the aspect ratio
+            if (round($width_std / $aspect_ratio) <= $height_std) { // width is controlling factor
+              $height_std = round($width_std / $aspect_ratio);
+            } else { // height is controlling factor
+              $width_std = round($height_std * $aspect_ratio);
+            }
+            // Get the diagonal size of this standard image
+            $diag_size_std = sqrt(pow($width_std, 2) + pow($height_std, 2));
+            $difference = abs($diag_size_new - $diag_size_std);
+            if ($difference < $closest_difference) {
+              $closest_std_size = $stdsize['label'];
+              $closest_difference = $difference;
+            }
+          }
+        }
+
+        // find out if the desired width/height is the same (or extremely close) to the
+        // size of a standard image derivative; if so, we will use the standard size image instead
+        // of generating our own image
+        if ($closest_difference < 3) {
+          $create_custom = false;
+        } else {
+          $img_assist_create_derivatives = variable_get('img_assist_create_derivatives', array());
+          // if all users are allowed to create custom sized images
+          if ($img_assist_create_derivatives['custom_all']) {
+            $create_custom = true;
+          } elseif ($img_assist_create_derivatives['custom_advanced']) {
+            // NOTE: the following line is NOT the right way to do this.
+            // The user acount passed to user_access() should be the user
+            // who CREATED this node, not the CURRENT user.  The problem is,
+            // I'm not sure how to get the user who created the node because
+            // this function doesn't have access to the node object.  I could
+            // probably figure out some hack, but I think I'm going to completely
+            // rethink the 'img_assist_create_derivatives' option.  When I started
+            // it this method made sense, but the more I've worked on this, the
+            // more confusing it gets.
+            if (user_access('access advanced options', $user)) {
+              $create_custom = true;
+            } else {
+              $create_custom = true;
+            }
+          }  else {
+            $create_custom = false;
+          }
+        }
+      }
+
+      if ($create_custom) {
+        // try to get this page's NID to add to this custom image's derivative label;
+        // otherwise you can't really have the same image inline in more than one node at different custom sizes
+        $page_nid = is_numeric(arg(2)) ? '_' . arg(2) : '';
+
+        $size['label'] = 'img_assist_custom';
+        $size['width'] = $width;
+        $size['height'] = $height;
+      } else {
+        $size['label'] = $closest_std_size;
+      }
+    } else { // default to thumbnail if the width and/or height is missing
+      foreach (_image_get_sizes() as $stdsize) {
+        if ($stdsize['label'] == 'thumbnail') {
+          $size = $stdsize;
+        }
+      }
+    }
+    return theme('img_assist_inline', $node, $size, $attributes);//$caption, $vars['align']);
+
+  // LEGACY img_assist filter tags
+  } elseif ($attributes['fid']) {
+    $img = img_assist_load_image($attributes['fid'], FALSE);
+    $image = array_shift($img);
+
+    $width  = $attributes['width']  ? $attributes['width']  : $image->width;
+    $height = $attributes['height'] ? $attributes['height'] : $image->height;
+    $src    = file_create_url($image->filepath);
+    $class  = $attributes['class'] ? $attributes['class'] : 'image';
+
+    $img_template = theme('img_assist_legacy');
+    $img_template = strtr($img_template, array('%caption' => $attributes['caption'], '%node-link' => url("node/$image->nid"), '%nid' => $image->nid, '%img-link' => $image->filepath, '%alt' => check_plain($attributes['alt']), '%width' => $width, '%height' => $height, '%src' => $src, '%image-class' => $class));
+
+    return $img_template;
+  }
+}
+
+function theme_img_assist_inline($node, $size, $attributes) {
+
+  if ($attributes['title'] && $attributes['desc']) {
+    $caption = '<strong>' . $attributes['title'] . ': </strong>' . $attributes['desc'];
+  } elseif ($attributes['title']) {
+    $caption = '<strong>' . $attributes['title'] . '</strong>';
+  }
+  $node->title = strip_tags($caption); // change the node title because img_assist_display() uses the node title for alt and title
+  $img_tag = img_assist_display($node, $size);
+
+  $output  = "<span class=\"inline {$attributes['align']}\">";
+  $link = explode(',', $attributes['link']);
+
+  if ($link[0] == 'node') {
+    $output .= l($img_tag, "node/" . $node->nid, array(), NULL, NULL, FALSE, TRUE);
+
+  } elseif ($link[0] == 'popup') {
+    $popup_size = variable_get('img_assist_popup_label', 'preview');
+    $info = image_get_info(file_create_path($node->images[$popup_size]));
+    $width = $info['width'];
+    $height = $info['height'];
+    $output .= l($img_tag, '', array('onclick'=>"launch_popup($node->nid, $width, $height); return false;", 'target'=>'_blank'), NULL, NULL, FALSE, TRUE);
+
+  } elseif ($link[0] == 'url') {
+    $output .= l($img_tag, $link[1], array(), NULL, NULL, FALSE, TRUE);
+  } else {
+    $output .= $img_tag;
+  }
+
+  if ($caption) {
+    $info = image_get_info(file_create_path($node->images[$size['label']]));
+    $width = $info['width'] - 2; // reduce the caption width slightly so the variable width of the text doesn't ever exceed the image width
+    $output .= "<span class=\"caption\" style=\"width: {$width}px;\">$caption</span>";
+  }
+  $output .= "</span>";
+  return $output;
+}
+
+function img_assist_popup() {
+  $nid = arg(2);
+  $node = node_load(array('nid' => $nid));
+  drupal_set_title($node->title);
+  $size = variable_get('img_assist_popup_label', 'preview');
+  $size = array('label'=>$size);
+  $content = img_assist_display($node, $size);
+  $attributes = array('id'=>'img_assist_popup');
+
+  print theme('img_assist_popup', $content, $attributes);
+}
+
+function theme_img_assist_popup($content, $attributes = NULL) {
+  $title = drupal_get_title();
+  $output  = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">' . "\n";
+  $output .= "<html>\n";
+  $output .= "<head>\n";
+  $output .= "<title>$title</title>\n";
+  $output .= drupal_get_html_head();
+  $output .= theme_get_styles();
+  $output .= "</head>\n";
+  $output .= "<body" . drupal_attributes($attributes) . ">\n";
+  $output .= "\n<!-- begin content -->\n";
+  $output .= l($content, '', array('onclick'=>'javascript:window.close();'), NULL, NULL, FALSE, TRUE);
+  $output .= "\n<!-- end content -->\n";
+  $output .= '</body>';
+  $output .= '</html>';
+  return $output;
+}
+
+/********************************************************************
+ * Module Functions :: Image Referencing Routines
+ ********************************************************************/
+/**
+ * Update the map table
+ *
+ * Look for any images linked in this content and keep a reference of them.
+ */
+function img_assist_map_save($node) {
+  $macros = (array) img_assist_get_macros($node->body);
+  db_query('DELETE FROM {img_assist_map} WHERE nid = %d', $node->nid);
+  //$macros = array_unique($macros); // No dups stored here.
+  static $nids = array();
+  foreach ($macros as $m) {
+    if (!isset($nids[$m['nid']])) {
+      db_query('INSERT INTO {img_assist_map} (nid, iid) VALUES(%d, %d)', $node->nid, $m['nid']);
+      $nids[$m['nid']] = $m['nid'];
+    }
+  }
+}
+
+/**
+ * Delete references to a non-existant image
+ *
+ * If an image is being deleted update the map table. Note: nodes that link
+ * to this image (inside $node->body) will still be broken.
+ */
+function img_assist_map_image_delete($node) {
+  db_query('DELETE FROM {img_assist_map} WHERE iid = %d', $node->nid);
+}
+
+/**
+ * Load the image map for a given nid.
+ */
+function img_assist_map_load($nid) {
+  $imagemap = array();
+  $result = db_query('SELECT * FROM {files} f INNER JOIN {img_assist_map} i ON f.fid = i.iid WHERE f.nid = %d', $nid);
+  while ($data = db_fetch_object($result)) {
+    $imagemap[] = $data->nid;
+  }
+
+  return $imagemap;
+}
+
+/**
+ * Return a list of node links for a given nid.
+ */
+function img_assist_get_references($nid, $limit = 10) {
+  $and_clause = array();
+  $images = img_assist_map_load($nid);
+  foreach ($images as $id) {
+    $and_clause[] = "n.nid = $id";
+  }
+  $and_clause = implode(' OR ', $and_clause);
+
+  if ($images) {
+    return node_title_list(db_query_range(db_rewrite_sql("SELECT n.nid, n.title FROM {node} n WHERE n.status = 1 AND $and_clause ORDER BY n.nid DESC"), 0, (int) $limit));
+  }
+}
+
+/********************************************************************
+ * Module Functions :: Filter macro parsing
+ ********************************************************************/
+
+/**
+ * Return all img_assist macros as an array.
+ */
+function img_assist_get_macros($text) {
+  $m = array();
+  preg_match_all('/ \[ ( [^\[\]]+ )* \] /x', $text, $matches);
+  $tag_match = (array) array_unique($matches[1]); // Don't process duplicates.
+
+  foreach($tag_match as $macro) {
+    $current_macro = '['. $macro .']';
+    $param = array_map('trim', explode('|', $macro));
+    $func_name = array_shift($param); // The first macro param is assumed to be the function name.
+    //$num_params = count($param); // Get the number of parameters
+    if ($func_name == 'img_assist') {
+      $vars = array();
+      foreach($param as $p) {
+        $pos = strpos($p, '=');
+        $varname = substr($p, 0, $pos);
+        $varvalue = substr($p, $pos + 1);
+        $vars[$varname] = $varvalue;
+      }
+      // the full unaltered filter string is the key for the array of filter attributes
+      $m[$current_macro] = $vars;
+    }
+  }
+
+  return $m;
+}
+
+/**
+ * Determine if img_assist can render the current page.
+ *
+ * @return
+ *   TRUE if can render, FALSE if not allowed.
+ */
+function _img_assist_page_match() {
+  if (variable_get('img_assist_all', 1)) {
+    return TRUE;
+  }
+  else {
+    $page_match = FALSE;
+    $pages = variable_get('img_assist_pages', img_assist_help('admin/settings/img_assist#pages'));
+    if ($pages) {
+      $path = drupal_get_path_alias($_GET['q']);
+      $regexp = '/^('. preg_replace(array('/(\r\n?|\n)/', '/\\\\\*/', '/(^|\|)\\\\<front\\\\>($|\|)/'), array('|', '.*', '\1'. variable_get('site_frontpage', 'node') .'\2'), preg_quote($pages, '/')) .')$/';
+      $page_match = preg_match($regexp, $path);
+    }
+    return $page_match;
+  }
+}
+
+// --------------------------------------------------------------------------------
+// Theme Functions
+// --------------------------------------------------------------------------------
+function theme_img_assist_page($content, $attributes = NULL) {
+
+  $output .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n";
+  $output .= '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">' . "\n";
+  //$output  = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">' . "\n";
+  //$output .= "<html>\n";
+  $output .= "<head>\n";
+  $output .= " <title>$title</title>\n";
+  /*
+  Note on CSS files from Benjamin Shell:
+  Stylesheets are a problem with image assist.  Image assist works great as a
+  TinyMCE plugin, so I want it to LOOK like a TinyMCE plugin.  However, it's not
+  always a TinyMCE plugin, so then it should like a themed Drupal page.  Advanced
+  users will be able to customize everything, even TinyMCE, so I'm more concerned
+  about everyone else.  TinyMCE looks great out-of-the-box so I want image assist
+  to look great as well.  My solution to this problem is as follows: If this
+  image assist window was loaded from TinyMCE, then include the TinyMCE popups_css
+  file (configurable with the initialization string on the page that loaded TinyMCE).
+  Otherwise, load drupal.css and the theme's styles.  This still leaves out sites
+  that allow users to use the TinyMCE plugin AND the Add Image link (visibility of this
+  link is now  a setting).  However, on my site I turned off the text link since
+  I use TinyMCE.  I think it would confuse users to  have an Add Images link AND a
+  button on the TinyMCE toolbar.
+
+  Note that in both cases the img_assist.css file is loaded last.  This provides a
+  way to make style changes to img_assist independently of how it was loaded.
+  */
+  $output .= drupal_get_html_head();
+  $output .= "\n<script type=\"text/javascript\"><!-- \n";
+  $output .= "  if (parent.tinyMCE) {\n";
+  $output .= "    document.write('<link href=\"' + parent.tinyMCE.getParam(\"popups_css\") + '\" rel=\"stylesheet\" type=\"text/css\">');\n";
+  $output .= "  } else {\n";
+  //$path = drupal_get_path('module', 'img_assist');
+  //if (variable_get('img_assist_page_styling', 'yes') == 'yes') {
+  //  theme_add_style($path . '/img_assist.css');
+  //}
+  foreach (theme_add_style() as $style) {
+    if (!strstr($style->path, 'img_assist.css')) { // don't import img_assist.css twice
+      $output .= "  document.write('<style type=\"text/css\" media=\"{$style->media}\">@import \"{$style->path}\";</style>');\n";
+    }
+  }
+  $output .= "  }\n";
+  $output .= "--></script>\n";
+  $output .= theme('stylesheet_import', base_path() . drupal_get_path('module', 'img_assist') ."/img_assist.css");
+
+  $output .= "</head>\n";
+  $output .= "<body" . drupal_attributes($attributes) . ">\n";
+
+  $output .= theme_status_messages();
+
+  $output .= "\n<!-- begin content -->\n";
+  $output .= $content;
+  $output .= "\n<!-- end content -->\n";
+  $output .= '</body>';
+  $output .= '</html>';
+  return $output;
+}
+
+
+// --------------------------------------------------------------------------------
+// Legacy Functions: Used only for backwords compatibility with the original img_assist module
+// --------------------------------------------------------------------------------
+/**
+ * Load all images into a static array
+ */
+function img_assist_load_images($tid = null, $uid = NULL) {
+  static $image;
+
+  if ($tid) {
+    foreach ($tid as $key => $term) {
+      if ($term == 0) {
+        unset ($tid[$key]);
+      }
+    }
+    $image = null;
+  }
+
+  $where = '';
+  if ($uid > 0) {
+    $image = null;
+    $where = 'AND n.uid = '. db_escape_string($uid);
+  }
+
+  if (!$image) {
+    $result = db_query(db_rewrite_sql("SELECT n.nid, n.title, r.teaser, f.* FROM {node} n INNER JOIN {node_revisions} r ON r.nid = n.nid AND r.vid = n.nid INNER JOIN {files} f ON n.nid = f.nid AND n.type = 'image' ". $where ." ORDER BY n.changed DESC"));
+    while ($node = db_fetch_object($result)) {
+      $node->filepath = file_create_path($node->filepath);
+      $dim = getimagesize($node->filepath, $info);
+      $node->width  = $dim[0];
+      $node->height = $dim[1];
+      $image[$node->nid][$node->filename] = $node;
+
+      if ($tid) {
+        $tid2 = array();
+        foreach (taxonomy_node_get_terms($node->nid) as $term) {
+          $tid2[] = $term->tid;
+        }
+        if (array_intersect($tid, $tid2) == $tid) {
+          $img[$node->nid][$node->filename] = $node;
+        }
+      }
+    } // End while
+    $image  = ($tid) ? $img : $image;
+
+    // NOTE: If we didn't use "LIKE 'image/%%'" here we could load other files.
+    // Might be interesting to expand on this someday.
+    if ($image) {
+      $result = db_query(db_rewrite_sql("SELECT n.nid, n.title, r.teaser, f.* FROM {files} f, {node} n INNER JOIN {node_revisions} r ON r.nid = n.nid AND r.vid = n.nid WHERE f.nid = n.nid AND f.filemime LIKE 'image/%%' AND n.nid NOT IN (". implode(array_keys($image), ', ') .") ". $where ." ORDER BY n.changed DESC"));
+      while ($node = db_fetch_object($result)) {
+        $node->filepath = file_create_path($node->filepath);
+        $dim = getimagesize($node->filepath, $info);
+        $node->width  = $dim[0];
+        $node->height = $dim[1];
+        $image[$node->nid]['thumbnail'] = $node;
+        $image[$node->nid]['_original']  = $node;
+
+        if ($tid) {
+          $tid2 = array();
+          foreach (taxonomy_node_get_terms($node->nid) as $term) {
+            $tid2[] = $term->tid;
+          }
+          if (array_intersect($tid, $tid2) == $tid) {
+            $img[$node->nid]['thumbnail'] = $node;
+            $img[$node->nid]['_original'] = $node;
+          }
+        }
+      } // End while
+      $image  = ($tid) ? $img : $image;
+    }
+  }
+
+  return $image;
+}
+
+/**
+ * Load an image from the database
+ */
+function img_assist_load_image($id, $derivatives = TRUE) {
+  //$node = db_fetch_object(db_query(db_rewrite_sql('SELECT n.nid, n.title, r.teaser, f.* FROM {files} f, {node} n INNER JOIN {node_revisions} r ON r.nid = n.nid AND r.vid = n.nid WHERE f.nid = n.nid AND f.fid = %d'), $id));
+	$node = db_fetch_object(db_query(db_rewrite_sql('SELECT n.nid, n.title, f.* FROM {files} f, {node} n WHERE f.nid = n.nid AND f.fid = %d'), $id));
+  $node->filepath = file_create_path($node->filepath);
+
+  if (!$derivatives) {
+    $dim = getimagesize($node->filepath, $info);
+    $node->width  = $dim[0];
+    $node->height = $dim[1];
+    $image[$node->filename] = $node;
+  }
+  else {
+    $image_module_image = FALSE;
+    if (function_exists('_image_get_sizes')) {
+      foreach (_image_get_sizes() as $size) {
+        if ($size['label'] == $node->filename) {
+          $image_module_image = TRUE;
+          $result = db_query(db_rewrite_sql('SELECT n.nid, n.title, r.teaser, f.* FROM {files} f, {node} n INNER JOIN {node_revisions} r ON r.nid = n.nid AND r.vid = n.nid WHERE f.nid = n.nid AND n.nid = %d'), $node->nid);
+          while ($node = db_fetch_object($result)) {
+            $node->filepath = file_create_path($node->filepath);
+            $dim = getimagesize($node->filepath, $info);
+            $node->width  = $dim[0];
+            $node->height = $dim[1];
+            $image[$node->filename] = $node;
+          } // End while
+          break;
+        }
+      }
+    }
+
+    if (!$image_module_image) {
+      $dim = getimagesize($node->filepath, $info);
+      $node->width  = $dim[0];
+      $node->height = $dim[1];
+      $image['thumbnail'] = $node;
+      $image['_original'] = $node;
+    }
+  }
+  return $image;
+}
+
+/**
+ * Attach the thumbnail metadata to the image object.
+ *
+ * Unfortunately we have to query the database since the thumbnail can be named
+ * something entirely different from the original image.
+ */
+function _img_assist_get_thumbnail(&$image) {
+  static $thumbs = array();
+  if ($thumbs[$image->nid] === NULL) {
+    $thumbpath = file_create_path(db_result(db_query("SELECT filepath FROM {files} WHERE nid = %d AND filename = 'thumbnail'", $image->nid)));
+    // In the really old version of image.module thumbnail names were 'thumb_filename.ext'.
+    if (!file_exists($thumbpath)) {
+      $pos = strrpos($image->filepath, '/') + 1;
+      $thumbpath = file_create_path(substr($image->filepath, 0, $pos) .'thumb_'. substr($image->filepath, $pos));
+    }
+    $img->thumbpath = is_file($thumbpath) && preg_match('|^'. variable_get('file_directory_path', 'files') .'\/'. variable_get('image_default_path', 'images'). '\/' .'|', $image->filepath) ? $thumbpath : $image->filepath;
+    $dim = getimagesize($img->thumbpath, $info);
+    $img->thumbwidth = $dim[0];
+    $img->thumbheight = $dim[1];
+    $thumbs[$image->nid] = $img;
+  }
+  if ($thumbs[$image->nid]) {
+    foreach($thumbs[$image->nid] as $key => $value) {
+      $image->$key = $value;
+    }
+  }
+}
+
+function theme_img_assist_legacy() {
+	return "<div class=\"%image-class\">\n  <a href=\"%node-link\"><img src=\"%src\" width=\"%width\" height=\"%height\" alt=\"%alt\" /></a>\n  <div class=\"caption\">%caption</div>\n</div>";
+}
+
+?>

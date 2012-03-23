@@ -1,0 +1,22 @@
+mail.module
+INSTALL
+
+Requirements
+------------
+
+Sending of attachments requires the upload module to be enabled
+and uploads configured for mail nodes, or other content types
+for which mailing is enabled.
+
+Installation
+------------
+
+Create a new "mail" directory in your "modules" directory and copy
+the two files mail.module and activeMailLib.php to the new directory.
+
+Go to "modules" under "site configuration" in the administration 
+pages and enable the module.
+
+
+
+

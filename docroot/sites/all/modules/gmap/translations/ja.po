@@ -1,0 +1,981 @@
+# $Id: ja.po,v 1.2 2008/11/13 08:01:04 imagine Exp $
+#
+# Japanese translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  gmap.php,v 1.2 2008/07/15 16:30:29 bdragon
+#  gmap.module,v 1.87 2008/11/07 20:17:50 bdragon
+#  gmap_plugin_style_gmap.inc,v 1.1 2008/09/17 22:47:10 bdragon
+#  gmap_location.module,v 1.43 2008/11/07 19:28:47 bdragon
+#  gmap_settings_ui.inc,v 1.10 2008/10/29 17:39:41 bdragon
+#  gmap.info,v 1.3 2008/07/15 17:19:33 bdragon
+#  gmap_location.info,v 1.3 2008/07/15 18:45:37 bdragon
+#  gmap_macro_builder.info,v 1.3 2008/07/15 18:09:12 bdragon
+#  gmap_taxonomy.info,v 1.3 2008/07/15 18:09:12 bdragon
+#  gmap_macro_builder.module,v 1.5 2008/11/07 19:28:47 bdragon
+#  gmap_taxonomy.module,v 1.5 2008/10/02 18:01:37 bdragon
+#  gmap_location.install,v 1.5 2008/09/15 16:57:38 bdragon
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-11-13 15:28+0900\n"
+"PO-Revision-Date: 2008-11-13 16:18+0900\n"
+"Last-Translator: PineRay <matsudaterutaka@gmail.com>\n"
+"Language-Team: Japanese <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: gmap.php:62
+#: gmap.module:163
+msgid "Disable mousezoom"
+msgstr "マウスズームを無効にする"
+
+#: gmap.php:64
+#: gmap.module:165
+msgid "Disable using the scroll wheel to zoom the map."
+msgstr "スクロールホイールを使用してマップのズームレベルを変更できないようにします。"
+
+#: gmap_plugin_style_gmap.inc:106
+#: gmap_location.module:409;478
+msgid "Macro"
+msgstr "マクロ"
+
+#: gmap_plugin_style_gmap.inc:113
+msgid "Data Source"
+msgstr "データソース"
+
+#: gmap_plugin_style_gmap.inc:115
+msgid "Location.module"
+msgstr "locationモジュール"
+
+#: gmap_plugin_style_gmap.inc:116
+msgid "Fields named \"latitude\" and \"longitude\" @@@TODO"
+msgstr "「緯度」や「経度」と名づけられたフィールド @@@TODO"
+
+#: gmap_plugin_style_gmap.inc:125
+msgid "Marker handling"
+msgstr "マーカーの扱い"
+
+#: gmap_plugin_style_gmap.inc:128
+msgid "By content type (for node views)"
+msgstr "コンテンツタイプ別 (ノード表示)"
+
+#: gmap_plugin_style_gmap.inc:130
+msgid "Use single marker type"
+msgstr "単一のマーカータイプを使用"
+
+#: gmap_plugin_style_gmap.inc:138
+msgid "Marker type to use"
+msgstr "使用マーカータイプ"
+
+#: gmap_settings_ui.inc:18
+msgid "Google Map Initialize"
+msgstr "Google Map 初期設定"
+
+#: gmap_settings_ui.inc:23;33
+#: gmap.module:1104
+msgid "Google Maps API Key"
+msgstr "Google Maps API Key"
+
+#: gmap_settings_ui.inc:27;34
+msgid "Your personal Googlemaps API key.  You must get this for each separate website at <a href=\"http://www.google.com/apis/maps/\">Google Map API website</a>."
+msgstr "あなたの個人的なGooglemapsのAPIキー。ウェブサイトごとに<a href=\"http://www.google.com/apis/maps/\">Google Map API website</a>で取得する必要があります。"
+
+#: gmap_settings_ui.inc:35
+msgid "Managed by <a href='@url'>keys api</a>."
+msgstr "<a href='@url'>API Keys</a>で管理しています。"
+
+#: gmap_settings_ui.inc:42
+msgid "Path to gmap_markers.js"
+msgstr "gmap_markers.jsへのパス"
+
+#: gmap_settings_ui.inc:43
+msgid "You are using the <em>Private</em> download method. For markers to work properly. you must press the <em>Regenerate</em> button, manually copy js/gmap_markers.js from the files directory to a location accessible by the webserver, and enter the file path relative to the Drupal root in this field."
+msgstr "<em>プライベート</em>のダウンロード方法を使用しています。マーカーを正しく動作させるためには、<em>再生成</em>ボタンを押して、ウェブサーバからアクセス可能な位置に js/gmap_markers.js をfiles ディレクトリから手作業でコピーし、Drupalインストールディレクトリからファイルへの相対パスをこのフィールドに入力する必要があります。"
+
+#: gmap_settings_ui.inc:50
+msgid "Regenerate marker cache"
+msgstr "マーカーキャッシュを再生成"
+
+#: gmap_settings_ui.inc:51
+msgid "If you are having problems with markers, or have modified the .ini files in the markers folder, click here to rebuild the marker cache file."
+msgstr "マーカーに問題があるか、またはmarkersフォルダの .ini ファイルを修正した場合は、こちらをクリックしてマーカーのキャッシュファイルを再生成してください。"
+
+#: gmap_settings_ui.inc:56
+msgid "Regenerate"
+msgstr "再生成"
+
+#: gmap_settings_ui.inc:64
+msgid "Default map settings"
+msgstr "マップのデフォルト設定"
+
+#: gmap_settings_ui.inc:90
+msgid "Default width"
+msgstr "デフォルトの横幅"
+
+#: gmap_settings_ui.inc:94
+msgid "The default width of a Google map, as a CSS length or percentage. Examples: <em>50px</em>, <em>5em</em>, <em>2.5in</em>, <em>95%</em>"
+msgstr "Google mapのデフォルトの横幅を、CSSの表記方法またはパーセントで指定します。例: <em>50px</em>、<em>5em</em>、<em>2.5in</em>、<em>95%</em>"
+
+#: gmap_settings_ui.inc:99
+msgid "Default height"
+msgstr "デフォルトの高さ"
+
+#: gmap_settings_ui.inc:103
+msgid "The default height of a Google map, as a CSS length or percentage. Examples: <em>50px</em>, <em>5em</em>, <em>2.5in</em>, <em>95%</em>"
+msgstr "Google mapのデフォルトの高さを、CSSの表記方法またはパーセントで指定します。例: <em>50px</em>、<em>5em</em>、<em>2.5in</em>、<em>95%</em>"
+
+#: gmap_settings_ui.inc:109
+msgid "Default center"
+msgstr "デフォルトの中心位置"
+
+#: gmap_settings_ui.inc:113
+msgid "The default center coordinates of Google map, expressed as a decimal latitude and longitude, separated by a comma."
+msgstr "Google mapのデフォルトの中心位置の座標を、10進数表記の緯度および経度をコンマで区切って指定します。"
+
+#: gmap_settings_ui.inc:117
+msgid "Default zoom"
+msgstr "デフォルトのズームレベル"
+
+#: gmap_settings_ui.inc:120
+msgid "The default zoom level of a Google map."
+msgstr "Google mapのデフォルトのズームレベル。"
+
+#: gmap_settings_ui.inc:125
+msgid "Maximum initial zoom"
+msgstr "初期ズームの最大値"
+
+#: gmap_settings_ui.inc:128
+msgid "The maximum initial zoom (affects things such as the zoom of the node location block.)"
+msgstr "初期ズームの最大値 (ノードの位置情報ブロックなどに影響します)"
+
+#: gmap_settings_ui.inc:135
+msgid "Line default style"
+msgstr "線のデフォルトのスタイル"
+
+#: gmap_settings_ui.inc:136
+msgid "Lines without a specific style defined will fall back to this style"
+msgstr "線に特定のスタイルを指定していなければ、このスタイルで表示します。"
+
+#: gmap_settings_ui.inc:142
+msgid "Polygon default style"
+msgstr "面のデフォルトのスタイル"
+
+#: gmap_settings_ui.inc:143
+msgid "Polygons without a specific style defined will fall back to this style"
+msgstr "面に特定のスタイルを指定していなければ、このスタイルで表示します。"
+
+#: gmap_settings_ui.inc:149
+msgid "Default control type"
+msgstr "デフォルトのコントロールタイプ"
+
+#: gmap_settings_ui.inc:150;159
+msgid "None"
+msgstr "無し"
+
+#: gmap_settings_ui.inc:150
+msgid "Micro"
+msgstr "ミクロ"
+
+#: gmap_settings_ui.inc:150
+msgid "Small"
+msgstr "小"
+
+#: gmap_settings_ui.inc:150
+msgid "Large"
+msgstr "大"
+
+#: gmap_settings_ui.inc:157
+msgid "Map Type Control"
+msgstr "マップタイプのコントロール"
+
+#: gmap_settings_ui.inc:160
+msgid "Standard (GMapTypeControl)"
+msgstr "標準 (GMapTypeControl)"
+
+#: gmap_settings_ui.inc:161
+msgid "Hierarchical (GHierarchicalMapTypeControl)"
+msgstr "階層 (GHierarchicalMapTypeControl)"
+
+#: gmap_settings_ui.inc:162
+msgid "Dropdown (GMenuMapTypeControl)"
+msgstr "ドロップダウン (GMenuMapTypeControl)"
+
+#: gmap_settings_ui.inc:169
+msgid "Enabled map types (\"base layers\")"
+msgstr "有効なマップタイプ (\"基本レイヤー\")"
+
+#: gmap_settings_ui.inc:191
+msgid "Default map type"
+msgstr "デフォルトのマップタイプ"
+
+#: gmap_settings_ui.inc:216
+msgid "Map Behavior flags"
+msgstr "マップのビヘイビアフラグ"
+
+#: gmap_settings_ui.inc:218
+msgid "Behavior flags modify how a map behaves. Grayed out flags are not settable here, but may be set on a map by map basis via code or a macro. Changes to behaviors will not affect the preview map shown above until changes are saved."
+msgstr "マップがどのように動作するかを決定するビヘイビアフラグ。グレーで塗りつぶされているフラグはここでは設定できませんが、コードやマクロで指定することができます。ビヘイビアを変更しても、それを保存するまでは、上記のプレビューマップには反映されません。"
+
+#: gmap_settings_ui.inc:225
+msgid "@name : @title"
+msgstr "@name : @title"
+
+#: gmap_settings_ui.inc:238
+#: gmap_location.module:433;502
+msgid "Marker action"
+msgstr "マーカーアクション"
+
+#: gmap_settings_ui.inc:239
+#: gmap_location.module:434;503
+msgid "Perform this action when a marker is clicked."
+msgstr "マーカーがクリックされたときのアクションを指定します。"
+
+#: gmap_settings_ui.inc:240
+#: gmap_location.module:435;504
+msgid "Do nothing"
+msgstr "何もしない。"
+
+#: gmap_settings_ui.inc:240
+#: gmap_location.module:435;504
+msgid "Open info window"
+msgstr "情報ウィンドウを開く"
+
+#: gmap_settings_ui.inc:240
+#: gmap_location.module:435;504
+msgid "Open link"
+msgstr "リンク先を開く"
+
+#: gmap_settings_ui.inc:249
+msgid "Default Line 1 Color"
+msgstr "線1のデフォルトのカラー"
+
+#: gmap_settings_ui.inc:256
+msgid "Default Line 2 Color"
+msgstr "線2のデフォルトのカラー"
+
+#: gmap_settings_ui.inc:263
+msgid "Default Line 3 Color"
+msgstr "線3のデフォルトのカラー"
+
+#: gmap_settings_ui.inc:302
+msgid "Marker manager"
+msgstr "マーカーマネージャ"
+
+#: gmap_settings_ui.inc:310
+msgid "No manager (use GMap API directly)"
+msgstr "マネージャ無し (GMap APIを直接使用)"
+
+#: gmap_settings_ui.inc:311
+msgid "Google's GMarkerManager"
+msgstr "GoogleのGMarkerManager"
+
+#: gmap_settings_ui.inc:312
+msgid "Jef Poskanzer's Clusterer"
+msgstr "Jef PoskanzerのClusterer"
+
+#: gmap_settings_ui.inc:315
+msgid "If you are planning on using many markers on a single map, you may want to consider using a marker manager to speed up map rendering."
+msgstr "ひとつのマップに多くのマーカーを表示させるなら、マップのレンダリング速度を向上させるために、マーカーマネージャーの使用を検討してください。"
+
+#: gmap_settings_ui.inc:320
+msgid "Unmanaged marker settings"
+msgstr "管理なしマーカーの設定"
+
+#: gmap_settings_ui.inc:321
+msgid "There are no settings for unmanaged markers."
+msgstr "管理なしマーカーの設定はありません。"
+
+#: gmap_settings_ui.inc:326
+msgid "GMarkerManager settings"
+msgstr "GMarkerManager設定"
+
+#: gmap_settings_ui.inc:327
+msgid "GMarkerManager is a new part of the official Google Maps API that provides a marker manager."
+msgstr "GMarkerManagerは、Google Maps APIによる公式の機能で、マーカーマネージャーを提供します。"
+
+#: gmap_settings_ui.inc:332
+msgid "Border padding"
+msgstr "境界線のパディング"
+
+#: gmap_settings_ui.inc:333
+msgid "Markers located less than this number of pixels from the viewport will be added to the map by the manager (even if they would be fully invisible.)"
+msgstr "表示領域からこのピクセル分より内側に位置するマーカーは、（たとえそれらが全く見えないとしても）マネージャーによってマップに追加されます。"
+
+#: gmap_settings_ui.inc:340;367
+msgid "Maximum zoom"
+msgstr "最大ズーム"
+
+#: gmap_settings_ui.inc:342
+msgid "At the specified zoom level and above, the marker manager will disable itself for additional speed."
+msgstr "上記で指定したズームレベルになると、処理速度向上のためにマーカーマネージャーが無効になります。"
+
+#: gmap_settings_ui.inc:347
+msgid "Track markers"
+msgstr "マーカーを追跡"
+
+#: gmap_settings_ui.inc:348
+msgid "If enabled, the marker manager will track marker movements. Leave off unless you need to move markers around with setPoint."
+msgstr "有効にすると、マーカーが移動するのをマーカーマネージャーは追跡します。設定した場所からマーカーを移動させる必要がないなら無効にします。"
+
+#: gmap_settings_ui.inc:353
+msgid "Marker defaults"
+msgstr "マーカーのデフォルト設定"
+
+#: gmap_settings_ui.inc:354
+msgid "Default marker-specific settings for GMarkerManager. Markers will appear when the current zoom level is between minZoom and maxZoom."
+msgstr "GMarkerManagerのマーカー特有の設定。現在のズームレベルが最小ズームから最大ズームの間にある場合にだけ、マーカーを表示します。"
+
+#: gmap_settings_ui.inc:358
+msgid "Minimum zoom"
+msgstr "最小ズーム"
+
+#: gmap_settings_ui.inc:360
+msgid "At the specified zoom level and above (i.e. zooming in,) the marker will be shown. Choose 0 to show markers at all zoom levels by default."
+msgstr "指定したズームレベル以上でマーカーが表示されます。すべてのズームレベルでマーカーを表示するには0を選択します。"
+
+#: gmap_settings_ui.inc:369
+msgid "At the specified zoom level and above (i.e. zooming in,) the marker will be hidden. Choose 0 to disable by default."
+msgstr "指定したズームレベル以上でマーカーが表示されません。デフォルトで無効にするには0を選択します。"
+
+#: gmap_settings_ui.inc:376
+msgid "Clusterer settings"
+msgstr "Clusterer設定"
+
+#: gmap_settings_ui.inc:381
+msgid "Clusterer filename"
+msgstr "Clustererファイル名"
+
+#: gmap_settings_ui.inc:382
+msgid "Set the name of the Clusterer file in the thirdparty folder."
+msgstr "thirdpartyフォルダにあるClustererのファイル名を入力します。"
+
+#: gmap_settings_ui.inc:387
+msgid "Marker for clusters"
+msgstr "クラスタ用マーカー"
+
+#: gmap_settings_ui.inc:388
+msgid "The marker to use when creating a cluster."
+msgstr "クラスタを作成する際に使用するマーカー。"
+
+#: gmap_settings_ui.inc:393
+msgid "Activate on"
+msgstr "クラスタを有効にするマーカー数"
+
+#: gmap_settings_ui.inc:394;403
+msgid "or more markers"
+msgstr "以上"
+
+#: gmap_settings_ui.inc:395
+msgid "Clustering is enabled when more than the specified number of markers are visible at the same time."
+msgstr "指定した数以上のマーカーが同時に表示される場合にクラスタを有効にします。"
+
+#: gmap_settings_ui.inc:402
+msgid "Cluster on"
+msgstr "1クラスタあたりのマーカー数"
+
+#: gmap_settings_ui.inc:404
+msgid "Minimal number of markers per cluster"
+msgstr "クラスタごとの最小マーカー数"
+
+#: gmap_settings_ui.inc:411
+msgid "Lines per box"
+msgstr "1ボックスあたりの線数"
+
+#: gmap_settings_ui.inc:412
+msgid "at most"
+msgstr "最大"
+
+#: gmap_settings_ui.inc:413
+msgid "lines"
+msgstr "線"
+
+#: gmap_settings_ui.inc:414
+msgid "Maximum number of lines per info box"
+msgstr "情報ボックスあたりの最大線数"
+
+#: gmap_settings_ui.inc:435
+msgid "You must select at least one baselayer!"
+msgstr "基本レイヤーを少なくとも1つは選択してください！"
+
+#: gmap_settings_ui.inc:440
+msgid "The default map type must be an enabled baselayer!"
+msgstr "デフォルトのマップタイプは有効な基本レイヤーでなければなりません！"
+
+#: gmap_settings_ui.inc:449
+msgid "Marker cache regenerated."
+msgstr "マーカーキャッシュを再生成しました。"
+
+#: gmap.module:107
+msgid "GMap marker file settings are not configured properly for Private download method, markers will not work!"
+msgstr "プライベートダウンロードに適したGMapマーカーファイルの設定がなされていないため、マーカーが動作しません！"
+
+#: gmap.module:147
+msgid "Location chooser"
+msgstr "場所の選択を補助"
+
+#: gmap.module:149
+msgid "Used to activate location choosing using a gmap."
+msgstr "gmapを使って場所を選択します。"
+
+#: gmap.module:153
+msgid "Disable dragging"
+msgstr "ドラッグを無効にする"
+
+#: gmap.module:155
+msgid "Remove the ability for the user to drag the map. If dragging is disabled, keyboard shortcuts are implicitly disabled."
+msgstr "ユーザがマップをドラッグできないようにします。ドラッグが無効になると、キーボードショートカットも当然のように無効となります。"
+
+#: gmap.module:158
+msgid "Disable keyboard"
+msgstr "キーボードを無効にする"
+
+#: gmap.module:160
+msgid "Disable the keyboard shortcuts."
+msgstr "キーボードショートカットを無効にします。"
+
+#: gmap.module:168
+msgid "Disable Continuous Zoom"
+msgstr "連続ズームを無効にする"
+
+#: gmap.module:170
+msgid "Disable dynamically resizing images while waiting for tiles to load when zooming."
+msgstr "ズーミングでタイルをロードしている間、画像の動的なリサイズを無効にします。"
+
+#: gmap.module:173
+msgid "Use AutoZoom"
+msgstr "自動ズームを使用"
+
+#: gmap.module:175
+msgid "Automatically zoom the map to fit all markers when markers are added."
+msgstr "マーカーが追加されたときに、すべてのマーカーが収まるようにマップのズームレベルを自動的に調整します。"
+
+#: gmap.module:178
+msgid "Unconditionally enable marker interface"
+msgstr "マーカーインターフェースを無条件で有効"
+
+#: gmap.module:180
+msgid "Load the marker loader system even if no markers to load are detected. Useful if you are injecting markers from somewhere else."
+msgstr "読み込むべきマーカーがなくても、マーカーローダーを読み込みます。どこか他の場所にあるマーカーを使用している場合に役立ちます。"
+
+#: gmap.module:183
+msgid "Enable Overview Map"
+msgstr "オーバービューマップ有効"
+
+#: gmap.module:185
+msgid "Enable the \"overview map\" in the bottom right corner."
+msgstr "右下の角に「オーバービューマップ」を表示します。"
+
+#: gmap.module:195
+msgid "Work around bugs when maps appear in collapsible fieldsets"
+msgstr "折りたたみ可能なフィールドセットの中にマップを配置する際のバグに対処"
+
+#: gmap.module:197
+msgid "Enabling this will work around some issues that can occur when maps appear inside collapsible fieldsets."
+msgstr "この設定を有効にすると、折りたたみ可能なフィールドセットの中にマップを配置する際に発生する問題に対して効果があります。"
+
+#: gmap.module:202
+msgid "Add scale control to map."
+msgstr "サイズ変更のコントロールをマップに追加。"
+
+#: gmap.module:204
+msgid "Adds a scale control to the map in the default position."
+msgstr "サイズ変更のコントロールをマップのデフォルトの位置に追加します。"
+
+#: gmap.module:212
+msgid "Map: Standard street map."
+msgstr "地図: 標準的なストリートマップ"
+
+#: gmap.module:214
+msgid "The standard default street map. Internal name: G_NORMAL_MAP"
+msgstr "標準的なデフォルトのストリートマップ。内部名: G_NORMAL_MAP"
+
+#: gmap.module:217
+msgid "Satellite: Standard satellite map."
+msgstr "航空写真: 標準的な衛星写真のマップ。"
+
+#: gmap.module:219
+msgid "Satellite view without street overlay. Internal name: G_SATELLITE_MAP"
+msgstr "ストリートオーバーレイのない衛星写真。内部名: G_SATELLITE_MAP"
+
+#: gmap.module:222
+msgid "Hybrid: Hybrid satellite map."
+msgstr "ハイブリッド: ハイブリッドな衛星写真のマップ。"
+
+#: gmap.module:224
+msgid "Satellite view with street overlay. Internal name: G_HYBRID_MAP"
+msgstr "ストリートオーバーレイのある衛星写真。内部名: G_HYBRID_MAP"
+
+#: gmap.module:227
+msgid "Terrain: Physical feature map."
+msgstr "地形: 物理的な特徴を表すマップ"
+
+#: gmap.module:229
+msgid "Map with physical data (terrain, vegetation.) Internal name: G_PHYSICAL_MAP"
+msgstr "物理データ (地形、植生) 付きのマップ。内部名: G_PHYSICAL_MAP"
+
+#: gmap.module:402
+msgid "The specified value is not a valid CSS dimension."
+msgstr "指定された値はCSSで使用される寸法ではありません。"
+
+#: gmap.module:412
+msgid "GMap filter"
+msgstr "GMapフィルタ"
+
+#: gmap.module:415
+msgid "Google map filter"
+msgstr "GoogleMapフィルタ"
+
+#: gmap.module:418
+msgid "converts a google map  macro into the html required for inserting a google map."
+msgstr "GoogleMapを挿入できる形式のHTMLコードへ、マクロを変換します。"
+
+#: gmap.module:442;445
+msgid "Insert Google Map macro."
+msgstr "Google Mapマクロを挿入"
+
+#: gmap.module:442
+msgid "Create a macro"
+msgstr "マクロを作成"
+
+#: gmap.module:558
+msgid "Stroke color"
+msgstr "線のカラー"
+
+#: gmap.module:565
+msgid "Stroke weight"
+msgstr "線の太さ"
+
+#: gmap.module:566
+msgid "Thickness of line, in pixels."
+msgstr "線の太さをピクセル単位で指定します。"
+
+#: gmap.module:569
+msgid "px"
+msgstr "ピクセル"
+
+#: gmap.module:576
+msgid "Stroke opacity"
+msgstr "線の不透明度"
+
+#: gmap.module:586
+msgid "Fill color"
+msgstr "塗りのカラー"
+
+#: gmap.module:587
+msgid "Hex color value for fill color. Example: #<em>00AA33</em>"
+msgstr "塗りのカラーを16進数表記で指定します。例: #<em>00AA33</em>"
+
+#: gmap.module:597
+msgid "Fill opacity"
+msgstr "塗りの不透明度"
+
+#: gmap.module:598
+msgid "Opacity of fill, from 0 to 100%."
+msgstr "塗りの不透明度を 0 から 100% までの間で指定します。"
+
+#: gmap.module:629
+msgid "Overlay editor"
+msgstr "オーバーレイエディタ"
+
+#: gmap.module:635
+msgid "Click map"
+msgstr "マップクリック時"
+
+#: gmap.module:638
+msgid "Points"
+msgstr "ポイント"
+
+#: gmap.module:639
+msgid "Lines"
+msgstr "線"
+
+#: gmap.module:640
+msgid "Circles"
+msgstr "円"
+
+#: gmap.module:641
+msgid "Filled Polygons"
+msgstr "面"
+
+#: gmap.module:647
+msgid "Click marker / segment"
+msgstr "マーカーまたはセグメントをクリック"
+
+#: gmap.module:650
+msgid "Remove"
+msgstr "除去"
+
+#: gmap.module:653
+msgid "Edit Info"
+msgstr "情報を編集"
+
+#: gmap.module:662
+msgid "Marker"
+msgstr "マーカー"
+
+#: gmap.module:669
+msgid "Line style"
+msgstr "線のスタイル"
+
+#: gmap.module:677
+msgid "Use for new and changed lines"
+msgstr "新しい、または変更する線に使用"
+
+#: gmap.module:684
+msgid "Polygon style"
+msgstr "面のスタイル"
+
+#: gmap.module:692
+msgid "Use for new and changed polygons"
+msgstr "新しい、または変更する面に使用"
+
+#: gmap.module:856
+msgid "Javascript is required to view this map."
+msgstr "このマップを表示するにはjavascriptが必要です。"
+
+#: gmap.module:1103
+msgid "Gmap"
+msgstr "GMap"
+
+#: gmap.module:1128;454
+#: gmap.info:0
+msgid "GMap"
+msgstr "GMap"
+
+#: gmap.module:1129
+msgid "Displays rows as a map."
+msgstr "行をマップとして表示。"
+
+#: gmap.module:455
+msgid "Configure GMap settings"
+msgstr "GMapの設定を行います"
+
+#: gmap.module:0
+msgid "gmap"
+msgstr "GMap"
+
+#: gmap_location.module:212
+msgid "To add/change your location to the user map, <a href=\"@url\">edit your location</a>."
+msgstr "位置情報をユーザマップに追加または変更するには、<a href=\"@url\">あなたの位置情報を編集してください</a>。"
+
+#: gmap_location.module:385
+msgid "Geocode Locations"
+msgstr "ジオコードによる位置測定"
+
+#: gmap_location.module:389
+msgid "Enable the Google Map API geocoding"
+msgstr "Google Map APIのジオコーディングを有効にする"
+
+#: gmap_location.module:391
+msgid "Enabled"
+msgstr "有効"
+
+#: gmap_location.module:391
+msgid "Disabled"
+msgstr "無効"
+
+#: gmap_location.module:396
+msgid "User settings"
+msgstr "ユーザの設定"
+
+#: gmap_location.module:404
+msgid "User Map (<em>map/user</em>)"
+msgstr "ユーザマップ (<em>map/user</em>)"
+
+#: gmap_location.module:413
+msgid "The gmap macro where the user information will be diplayed on."
+msgstr "ユーザ情報を表示するGMapマクロ"
+
+#: gmap_location.module:417;486
+msgid "Page header"
+msgstr "ページヘッダ"
+
+#: gmap_location.module:418
+msgid "Text at the top of the user map."
+msgstr "ユーザマップの最上部に表示するテキスト。"
+
+#: gmap_location.module:425;494
+msgid "Page footer"
+msgstr "ページフッタ"
+
+#: gmap_location.module:426
+msgid "Text at the bottom of the user map."
+msgstr "ユーザマップの最下部に表示するテキスト。"
+
+#: gmap_location.module:443
+msgid "Markers per role"
+msgstr "ロール別のマーカー"
+
+#: gmap_location.module:444
+msgid "Choose a marker to represent each user role on the user map. If a user belongs to multiple roles, the marker for the highest Role ID will be used."
+msgstr "ユーザマップで各ユーザロールを表すマーカーを選択してください。もしもユーザが複数のロールに属している場合は、ロールIDが最も高いもののマーカーを使用します。"
+
+#: gmap_location.module:458
+msgid "%role (Role ID: %rid)"
+msgstr "%role (ロールID: %rid)"
+
+#: gmap_location.module:465
+msgid "Node settings"
+msgstr "ノードの設定"
+
+#: gmap_location.module:473
+msgid "Node Map (<em>map/node</em>)"
+msgstr "ノードマップ (<em>map/node</em>)"
+
+#: gmap_location.module:482
+msgid "The gmap macro where the node information will be diplayed on."
+msgstr "ノードの情報を表示するGMapマクロ。"
+
+#: gmap_location.module:487
+msgid "Text at the top of the node map."
+msgstr "ノードマップの最上部に表示するテキスト。"
+
+#: gmap_location.module:495
+msgid "Text at the bottom of the node map."
+msgstr "ノードマップの最下部に表示するテキスト。"
+
+#: gmap_location.module:511
+msgid "Markers per content type"
+msgstr "コンテンツタイプ別のマーカー"
+
+#: gmap_location.module:512
+msgid "Choose a marker to represent each type of content on the node map."
+msgstr "ノードマップで各コンテンツタイプを表すマーカーを選択してください。"
+
+#: gmap_location.module:523
+msgid "Marker for %type"
+msgstr "%typeのマーカー"
+
+#: gmap_location.module:528
+msgid "This content type is not currently Location enabled."
+msgstr "このコンテンツタイプは位置情報が有効になっていません。"
+
+#: gmap_location.module:540
+msgid "Location map"
+msgstr "位置情報マップ"
+
+#: gmap_location.module:541
+msgid "Author map"
+msgstr "投稿者マップ"
+
+#: gmap_location.module:549;573
+msgid "Map Macro"
+msgstr "マップマクロ"
+
+#: gmap_location.module:552
+msgid "A macro to be used as a base map for the location block.  This map will be recentered on the location, so the center is not that important. <p>Alternate base map macros can be entered for a specific node type below."
+msgstr "位置情報ブロックの基本マップに使用するマクロ。位置情報の座標にマップの中心を合わせるため、中心位置の指定は重要ではありません。<p>下記の特定のコンテンツタイプ用に、基本のマップマクロを入力することができます。"
+
+#: gmap_location.module:562
+msgid "Map Macro for %type"
+msgstr "%typeのマップマクロ"
+
+#: gmap_location.module:576
+msgid "A macro to be used as a base map for the location block author.  This map will be recentered on the location, so the center is not that important."
+msgstr "投稿者の位置情報ブロックの基本マップに使用するマクロ。位置情報の座標にマップの中心を合わせるため、中心座標の指定は重要ではありません。"
+
+#: gmap_location.module:582
+msgid "Enable author block for the following content types"
+msgstr "以下のコンテンツタイプで投稿者ブロックを有効にする"
+
+#: gmap_location.module:589
+msgid "Marker to use for author map"
+msgstr "投稿者マップに使用するマーカー"
+
+#: gmap_location.module:691
+#: gmap.info:0
+#: gmap_location.info:0
+#: gmap_macro_builder.info:0
+#: gmap_taxonomy.info:0
+msgid "Location"
+msgstr "場所"
+
+#: gmap_location.module:726
+msgid "Author Location"
+msgstr "投稿者の位置情報"
+
+#: gmap_location.module:31
+msgid "set user location"
+msgstr "ユーザの位置情報をセット"
+
+#: gmap_location.module:31
+msgid "show user map"
+msgstr "ユーザマップを表示"
+
+#: gmap_location.module:31
+msgid "user locations"
+msgstr "ユーザの位置情報"
+
+#: gmap_location.module:31
+msgid "show node map"
+msgstr "ノードマップを表示"
+
+#: gmap_location.module:65
+msgid "User locations"
+msgstr "ユーザの位置情報"
+
+#: gmap_location.module:76
+msgid "Node locations"
+msgstr "ノードの位置情報"
+
+#: gmap_location.module:88
+#: gmap_location.info:0
+msgid "GMap Location"
+msgstr "GMap位置情報"
+
+#: gmap_location.module:92
+msgid "Configure GMap Location settings."
+msgstr "GMap位置情報の設定を行います。"
+
+#: gmap_location.module:0
+msgid "gmap_location"
+msgstr "gmap_location"
+
+#: gmap_macro_builder.module:17
+msgid "You can use this interface to create a map macro suitable for pasting into a node or any other place that accepts a GMap macro."
+msgstr "このインターフェースを使って、GMapマクロを使用できるノードやその他の場所に貼り付けるマップマクロを作成することができます。"
+
+#: gmap_macro_builder.module:55
+msgid "Gmap macro creation"
+msgstr "GMapマクロの作成"
+
+#: gmap_macro_builder.module:79
+msgid "Map id attribute"
+msgstr "マップのID属性"
+
+#: gmap_macro_builder.module:80
+msgid "If you need to access this map from a script, you can assign a map ID here."
+msgstr "このマップにスクリプトからアクセスする必要があれば、ここでマップのIDを指定します。"
+
+#: gmap_macro_builder.module:103
+msgid "Map type"
+msgstr "マップタイプ"
+
+#: gmap_macro_builder.module:113
+msgid "Controls"
+msgstr "コントロール"
+
+#: gmap_macro_builder.module:123
+msgid "Address"
+msgstr "住所"
+
+#: gmap_macro_builder.module:129
+msgid "The Latitude and Longitude of the centre of the map"
+msgstr "マップの中心の緯度と経度"
+
+#: gmap_macro_builder.module:135
+msgid "Map width"
+msgstr "マップの横幅"
+
+#: gmap_macro_builder.module:139
+msgid "The map width, as a CSS length or percentage. Examples: <em>50px</em>, <em>5em</em>, <em>2.5in</em>, <em>95%</em>"
+msgstr "マップの横幅を、CSSの表記方法またはパーセントで指定します。例: <em>50px</em>、<em>5em</em>、<em>2.5in</em>、<em>95%</em>"
+
+#: gmap_macro_builder.module:145
+msgid "Map height"
+msgstr "マップの高さ"
+
+#: gmap_macro_builder.module:149
+msgid "The map height, as a CSS length or percentage. Examples: <em>50px</em>, <em>5em</em>, <em>2.5in</em>, <em>95%</em>"
+msgstr "マップの高さを、CSSの表記方法またはパーセントで指定します。例: <em>50px</em>、<em>5em</em>、<em>2.5in</em>、<em>95%</em>"
+
+#: gmap_macro_builder.module:156
+msgid "Alignment"
+msgstr "整列"
+
+#: gmap_macro_builder.module:161
+msgid "The current magnification of the map"
+msgstr "地図の倍率"
+
+#: gmap_macro_builder.module:171
+msgid "Macro text"
+msgstr "マクロテキスト"
+
+#: gmap_macro_builder.module:25
+msgid "create macro"
+msgstr "マクロを作成"
+
+#: gmap_macro_builder.module:34
+msgid "Build a GMap macro"
+msgstr "GMapマクロを生成"
+
+#: gmap_macro_builder.module:0
+msgid "gmap_macro_builder"
+msgstr "gmap_macro_builder"
+
+#: gmap_taxonomy.module:18
+msgid "GMap markers"
+msgstr "GMapマーカー"
+
+#: gmap_taxonomy.module:27
+msgid "Enable"
+msgstr "有効"
+
+#: gmap_taxonomy.module:28
+msgid "Enable choosing a marker for terms in this vocabulary."
+msgstr "このボキャブラリにあるタームのマーカーを選択できるようにします。"
+
+#: gmap_taxonomy.module:43
+msgid "GMap Marker"
+msgstr "GMapマーカー"
+
+#: gmap_taxonomy.module:46
+msgid "If you would like nodes tagged as this term to have a special marker, choose one here."
+msgstr "ノードをこのタームでタグ付けして特定のマーカーで表したい場合は、こちらで選択してください。"
+
+#: gmap_taxonomy.module:163
+msgid "GMap Taxonomy: Marker"
+msgstr "GMapタクソノミー: マーカー"
+
+#: gmap_taxonomy.module:164
+msgid "Displays the marker name GMap Taxonomy associates with this node."
+msgstr "GMapタクソノミーがこのノードと関連付けているマーカーの名前を表示。"
+
+#: gmap_taxonomy.module:0
+msgid "gmap_taxonomy"
+msgstr "gmap_taxonomy"
+
+#: gmap_location.install:27;31
+msgid "WARNING! Obsolete gmap_location update #@num was triggered! Please verify the schema of your location table manually!"
+msgstr "警告！　現在は使用されていないgmap_locationのアップデート #@numが発生しました！　locationテーブルのスキーマを手動で確認してください！"
+
+#: gmap_location.install:123;142
+msgid "You have customized the !type macro. Be advised that the new default macro is %macro. Please check your macro on the <a href=\"@url\">block configuration page</a>."
+msgstr "!typeのマクロをカスタマイズしています。新しいデフォルトのマクロは %macro です。<a href=\"@url\">ブロック設定ページ</a>でマクロを確認してください。"
+
+#: gmap_location.install:123
+msgid "Location block"
+msgstr "位置情報ブロック"
+
+#: gmap_location.install:142
+msgid "Author block"
+msgstr "投稿者ブロック"
+
+#: gmap.info:0
+msgid "Filter to allow insertion of a google map into a node"
+msgstr "Google Mapをノードに挿入できるようになるフィルタ"
+
+#: gmap_location.info:0
+msgid "Display location.module information on Google Maps"
+msgstr "locationモジュールの情報をGoogle Mapsに表示します。"
+
+#: gmap_macro_builder.info:0
+msgid "GMap Macro Builder"
+msgstr "GMapマクロビルダー"
+
+#: gmap_macro_builder.info:0
+msgid "UI for building GMap macros."
+msgstr "GMapマクロ生成用のユーザインターフェース。"
+
+#: gmap_taxonomy.info:0
+msgid "GMap Taxonomy Markers"
+msgstr "GMapタクソノミーマーカー"
+
+#: gmap_taxonomy.info:0
+msgid "Taxonomy based markers"
+msgstr "タクソノミー別マーカー"
+

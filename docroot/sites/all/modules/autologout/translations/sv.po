@@ -1,0 +1,191 @@
+# $Id: sv.po,v 1.2 2009/04/17 14:05:52 jvandervort Exp $
+#
+# Swedish translation of Drupal (autologout)
+# Copyright 2008 Magnus Gunnarsson <seals@passagen.se>
+# Generated from files:
+#  autologout.module,v 1.5.2.5.2.18 2008/03/14 20:05:41 jvandervort
+#  autologout.info,v 1.2.2.1 2008/02/15 17:41:19 jvandervort
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Autologout 6.x\n"
+"POT-Creation-Date: 2008-04-05 15:48+0200\n"
+"PO-Revision-Date: 2008-04-05 16:34+0100\n"
+"Last-Translator: Magnus Gunnarsson <seals@passagen.se>\n"
+"Language-Team: drupalsverige.se <seals@passagen.se>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: autologout.module:48
+msgid "Automated logout"
+msgstr "Automatisk utloggning"
+
+#: autologout.module:50;331
+msgid "Manage the automated logout features"
+msgstr "Handha funktionerna för den automatiska utloggningen"
+
+#: autologout.module:97
+msgid "automated logout info"
+msgstr "information om automatisk utloggning"
+
+#: autologout.module:107
+msgid "Countdown Timer admin settings"
+msgstr "Inställningar för automatisk nedräkningstimer"
+
+#: autologout.module:107
+msgid "  for Javascript load options should be set to EVERY PAGE or this block will not display properly."
+msgstr " eftersom laddningsalternativet för Javascript skall vara satta till VARJE SIDA annars så visas inte detta block på rätt sätt."
+
+#: autologout.module:111
+msgid "Javascript Countdown Timer"
+msgstr "Nedräkningstimer av typen Javascript"
+
+#: autologout.module:111
+msgid " must be installed for the block to be visable."
+msgstr "måste vara installerad för att blocket skall synas."
+
+#: autologout.module:128
+msgid "autologout block called and Countdown Timer admin settings is not set for EVERY PAGE"
+msgstr "Anropningen av blocket för automatisk utloggning och inställningarna för nedräkningstimern är inte inställt för ALLA SIDOR."
+
+#: autologout.module:271
+msgid "Disable inactivity automated logout"
+msgstr "Avaktivera automatisk utloggning vid inaktivitet"
+
+#: autologout.module:330
+msgid "Automatic logout"
+msgstr "Automatisk utloggning"
+
+#: autologout.module:360
+msgid "auto logout settings"
+msgstr "inställningar för automatisk utloggning"
+
+#: autologout.module:369
+msgid "Enable module"
+msgstr "Aktivera modulen"
+
+#: autologout.module:371
+msgid "Uncheck this and save settings to disable auto logout"
+msgstr "Bocka av detta och spara inställningar för att avaktivera automatisk utloggning"
+
+#: autologout.module:375
+msgid "Timeout value in seconds"
+msgstr "Antal sekunder innan timeout"
+
+#: autologout.module:379
+msgid "The length of inactivity time, in seconds, before auto logout"
+msgstr "Antal sekunder av inaktiv tid innan automatisk utloggning sker"
+
+#: autologout.module:383
+msgid "Enable watchdog auto-logout logging"
+msgstr "Aktiverar övervakarens loggning vid automatisk utloggning"
+
+#: autologout.module:385
+msgid "Enable logging of automatically logged out users"
+msgstr "Aktiverar loggning av automatiskt utloggade användare"
+
+#: autologout.module:389
+msgid "Block title"
+msgstr "Blocktitel"
+
+#: autologout.module:392
+msgid "The title of the block"
+msgstr "Titeln på blocket"
+
+#: autologout.module:404
+msgid "Enforce"
+msgstr "Upprätthålla"
+
+#: autologout.module:404
+msgid "Exclude"
+msgstr "Uteslut"
+
+#: autologout.module:404
+msgid "By user"
+msgstr "Av användare"
+
+#: autologout.module:410
+msgid "Enforce : all users in this role will be auto-logged out"
+msgstr "Upprätthålla: alla användare inom denna roll kommer att loggas ut automatiskt"
+
+#: autologout.module:411
+msgid "Exclude : all users in this role are excluded from auto-logout functionality"
+msgstr "Uteslut: alla användare inom denna roll är uteslutna från funktionen automatisk utloggning"
+
+#: autologout.module:412
+msgid "By user : all users in this role can select to switch off this functionality"
+msgstr "Av användare: alla användare inom denna roll kan välja att stänga av denna funktion."
+
+#: autologout.module:414
+msgid "Policy description"
+msgstr "Beskrivning av policy"
+
+#: autologout.module:415
+msgid "Please note, if a user is found to be in a role that allows disabling this feature, this overrides any enforcement"
+msgstr "Var vänlig notera att om en användare återfinns i en roll som medger avaktivering av denna funktion åsidosätts alla tillämpningar."
+
+#: autologout.module:425
+msgid "Redirect URL at logout"
+msgstr "Omdirigera webbadress vid utloggning"
+
+#: autologout.module:428
+msgid "If you want to redirect users to another page when they are logged out. (FULL http:// path)"
+msgstr "Om du vill omdirigera användarna till en annan sida när de är utloggade. (FULLSTÄNDIG sökväg med inledande http:// )"
+
+#: autologout.module:432
+msgid "Display a message box at logout"
+msgstr "Visa ett meddelandefönster vid utloggningen"
+
+#: autologout.module:435
+msgid "If you want to display a message to the users when they are logged out."
+msgstr "Om du vill visa ett meddelande till användaren när de är utloggade."
+
+#: autologout.module:442
+msgid "Browser refresh delay"
+msgstr "Fördröjning på webbläsarens omladdning av sidan"
+
+#: autologout.module:446
+msgid "The length of time, in seconds, after a timeout that a browser refresh is forced. Setting this to 0 (zero) disables the browser refresh facility. Using this facility will force a browser refresh and expire the session thus sending the user's browser to the homepage, in a logged out state."
+msgstr "Antal sekunder, efter en timout som en webbläsare tvingas ladda om sidan. Sätts detta till 0 (noll) avaktiveras tvånget på omladdning för webbläsaren. Genom att använda denna funktion tvingas webbläsaren ladda om sidan, sessionen upphör att gälla, och webbläsaren sänds till startsidan i ett utloggat läge."
+
+#: autologout.module:583
+msgid "Set-up your site policy by role:-"
+msgstr "Sätt upp din webbplats policy baserat per roll:-"
+
+#: autologout.module:585
+msgid "WARNING, user with ID = 1 (initial admin user) is never auto-logged out"
+msgstr "VARNING, användare med ID = ! (den första administratören) loggas aldrig ut automatiskt"
+
+#: autologout.module:223
+msgid "user"
+msgstr "användare"
+
+#: autologout.module:223
+msgid "automatic logout activated"
+msgstr "automatisk utloggning aktiverad"
+
+#: autologout.module:62
+msgid "autologout_perm()"
+msgstr "autologout_perm()"
+
+#: autologout.module:64
+msgid "administer autologout"
+msgstr "administrera automatisk utloggning"
+
+#: autologout.module:0
+msgid "autologout"
+msgstr "autologout"
+
+#: autologout.info:0
+msgid "Autologout"
+msgstr "Automatiskt utloggning"
+
+#: autologout.info:0
+msgid "Adds automated timed logout"
+msgstr "Lägger till automatisk tidsbestämd utloggning"
+
