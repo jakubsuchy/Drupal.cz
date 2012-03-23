@@ -1,5 +1,4 @@
 <?php
-// $Id: node.module,v 1.947.2.15 2009/02/16 14:39:40 goba Exp $
 
 /**
  * @file
@@ -7,6 +6,12 @@
  * programmatically submit nodes using the usual form API pattern.
  */
 
+/**
+ * Nodes changed before this time are always marked as read.
+ *
+ * Nodes changed after this time may be marked new, updated, or read, depending
+ * on their state for the current user. Defaults to 30 days ago.
+ */
 define('NODE_NEW_LIMIT', time() - 30 * 24 * 60 * 60);
 
 define('NODE_BUILD_NORMAL', 0);
@@ -392,23 +397,30 @@ function node_teaser($body, $format = NULL, $size = NULL) {
 }
 
 /**
- * Builds a list of available node types, and returns all of part of this list
- * in the specified format.
+ * Builds a list of available node types, and returns all or part of this list.
  *
  * @param $op
- *   The format in which to return the list. When this is set to 'type',
- *   'module', or 'name', only the specified node type is returned. When set to
- *   'types' or 'names', all node types are returned.
+ *   The format in which to return the list: 'type', 'types', 'module', 'name',
+ *   or 'names'. See return value section below for details.
  * @param $node
- *   A node object, array, or string that indicates the node type to return.
- *   Leave at default value (NULL) to return a list of all node types.
+ *   A node object, an array representation of a node object, or a node type
+ *   name string. See return value section below for details.
  * @param $reset
  *   Whether or not to reset this function's internal cache (defaults to
  *   FALSE).
  *
  * @return
- *   Either an array of all available node types, or a single node type, in a
- *   variable format. Returns FALSE if the node type is not found.
+ *   If $node is supplied and it doesn't correspond to a known node type,
+ *   or if $op is 'type', 'name', or 'module' and $node is not given, the
+ *   function returns FALSE. Otherwise, the return value depends on the
+ *   value of $op:
+ *   - 'types': An array of all available node type objects, keyed by machine
+ *     name.
+ *   - 'type': The single node type object indicated by $node.
+ *   - 'names': An array of the display names of all available node types,
+ *     keyed by machine name and sorted by display name.
+ *   - 'name': The single node type display name indicated by $node.
+ *   - 'module': The name of the node type module indicated by $node.
  */
 function node_get_types($op = 'types', $node = NULL, $reset = FALSE) {
   static $_node_types, $_node_names;
@@ -743,10 +755,10 @@ function node_load($param = array(), $revision = NULL, $reset = NULL) {
   // No db_rewrite_sql is applied so as to get complete indexing for search.
   if ($revision) {
     array_unshift($arguments, $revision);
-    $node = db_fetch_object(db_query('SELECT '. $fields .' FROM {node} n INNER JOIN {users} u ON u.uid = n.uid INNER JOIN {node_revisions} r ON r.nid = n.nid AND r.vid = %d WHERE '. $cond, $arguments));
+    $node = db_fetch_object(db_query_slave('SELECT '. $fields .' FROM {node} n INNER JOIN {users} u ON u.uid = n.uid INNER JOIN {node_revisions} r ON r.nid = n.nid AND r.vid = %d WHERE '. $cond, $arguments));
   }
   else {
-    $node = db_fetch_object(db_query('SELECT '. $fields .' FROM {node} n INNER JOIN {users} u ON u.uid = n.uid INNER JOIN {node_revisions} r ON r.vid = n.vid WHERE '. $cond, $arguments));
+    $node = db_fetch_object(db_query_slave('SELECT '. $fields .' FROM {node} n INNER JOIN {users} u ON u.uid = n.uid INNER JOIN {node_revisions} r ON r.vid = n.vid WHERE '. $cond, $arguments));
   }
 
   if ($node && $node->nid) {
@@ -782,7 +794,7 @@ function node_validate($node, $form = array()) {
   // Make sure the body has the minimum number of words.
   // TODO : use a better word counting algorithm that will work in other languages
   if (!empty($type->min_word_count) && isset($node->body) && count(explode(' ', $node->body)) < $type->min_word_count) {
-    form_set_error('body', t('The body of your @type is too short. You need at least %words words.', array('%words' => $type->min_word_count, '@type' => $type->name)));
+    form_set_error('body', t('The @body_label of your @type is too short. You need at least %words words.', array('@body_label' => $type->body_label, '@type' => $type->name, '%words' => $type->min_word_count)));
   }
 
   if (isset($node->nid) && (node_last_changed($node->nid) > $node->changed)) {
@@ -810,7 +822,13 @@ function node_validate($node, $form = array()) {
 }
 
 /**
- * Prepare node for save and allow modules to make changes.
+ * Prepares a node for saving by populating teaser, author, and creation date.
+ *
+ * @param object|array $node
+ *   A node object or array.
+ *
+ * @return
+ *   A validated node object with a populated teaser, author, and creation date.
  */
 function node_submit($node) {
   global $user;
@@ -859,13 +877,10 @@ function node_save(&$node) {
   node_invoke_nodeapi($node, 'presave');
   global $user;
 
-  $node->is_new = FALSE;
+  // Insert a new node.
+  $node->is_new = empty($node->nid);
 
-  // Apply filters to some default node fields:
-  if (empty($node->nid)) {
-    // Insert a new node.
-    $node->is_new = TRUE;
-
+  if ($node->is_new || !empty($node->revision)) {
     // When inserting a node, $node->log must be set because
     // {node_revisions}.log does not (and cannot) have a default
     // value.  If the user does not have permission to create
@@ -874,35 +889,35 @@ function node_save(&$node) {
     if (!isset($node->log)) {
       $node->log = '';
     }
-
-    // For the same reasons, make sure we have $node->teaser and
-    // $node->body.  We should consider making these fields nullable
-    // in a future version since node types are not required to use them.
-    if (!isset($node->teaser)) {
-      $node->teaser = '';
-    }
-    if (!isset($node->body)) {
-      $node->body = '';
-    }
   }
-  elseif (!empty($node->revision)) {
+  elseif (empty($node->log)) {
+    // When updating a node, however, avoid clobbering an existing
+    // log entry with an empty one.
+    unset($node->log);
+  }
+
+  // For the same reasons, make sure we have $node->teaser and
+  // $node->body set.
+  if (!isset($node->teaser)) {
+    $node->teaser = '';
+  }
+  if (!isset($node->body)) {
+    $node->body = '';
+  }
+
+  // Save the old revision if needed.
+  if (!$node->is_new && !empty($node->revision) && $node->vid) {
     $node->old_vid = $node->vid;
   }
-  else {
-    // When updating a node, avoid clobberring an existing log entry with an empty one.
-    if (empty($node->log)) {
-      unset($node->log);
-    }
-  }
 
-  // Set some required fields:
+  $time = time();
   if (empty($node->created)) {
-    $node->created = time();
+    $node->created = $time;
   }
   // The changed timestamp is always updated for bookkeeping purposes (revisions, searching, ...)
-  $node->changed = time();
+  $node->changed = $time;
 
-  $node->timestamp = time();
+  $node->timestamp = $time;
   $node->format = isset($node->format) ? $node->format : FILTER_FORMAT_DEFAULT;
 
   // Generate the node table query and the node_revisions table query.
@@ -933,6 +948,10 @@ function node_save(&$node) {
 
   // Clear the page and block caches.
   cache_clear_all();
+
+  // Ignore slave server temporarily to give time for the
+  // saved node to be propagated to the slave.
+  db_ignore_slave();
 }
 
 /**
@@ -958,11 +977,14 @@ function _node_save_revision(&$node, $uid, $update = NULL) {
  */
 function node_delete($nid) {
 
-  $node = node_load($nid);
+  // Clear the cache before the load, so if multiple nodes are deleted, the
+  // memory will not fill up with nodes (possibly) already removed.
+  $node = node_load($nid, NULL, TRUE);
 
   if (node_access('delete', $node)) {
     db_query('DELETE FROM {node} WHERE nid = %d', $node->nid);
     db_query('DELETE FROM {node_revisions} WHERE nid = %d', $node->nid);
+    db_query('DELETE FROM {node_access} WHERE nid = %d', $node->nid);
 
     // Call the node-specific callback (if any):
     node_invoke($node, 'delete');
@@ -1058,8 +1080,8 @@ function node_prepare($node, $teaser = FALSE) {
  *   Whether the node is being displayed by itself as a page.
  *
  * @return
- *   An structured array containing the individual elements
- *   of the node's body.
+ *   A node object with its content property set to a structured array
+ *   containing the individual elements of the node's body.
  */
 function node_build_content($node, $teaser = FALSE, $page = FALSE) {
 
@@ -1227,7 +1249,10 @@ function node_search($op = 'search', $keys = NULL) {
       }
       if ($weight = (int)variable_get('node_rank_recent', 5)) {
         // Exponential decay with half-life of 6 months, starting at last indexed node
-        $ranking[] = '%d * POW(2, (GREATEST(MAX(n.created), MAX(n.changed), MAX(c.last_comment_timestamp)) - %d) * 6.43e-8)';
+        // c.last_comment_timestamp may be NULL. Since both MAX(anynumber, NULL) and
+        // GREATEST(anynumber, NULL) return NULL, we use COALESCE(MAX(c.last_comment_timestamp), 0)
+        // to prevent it from being NULL.
+        $ranking[] = '%d * POW(2, (GREATEST(MAX(n.created), MAX(n.changed), COALESCE(MAX(c.last_comment_timestamp), 0)) - %d) * 6.43e-8)';
         $arguments2[] = $weight;
         $arguments2[] = (int)variable_get('node_cron_last', 0);
         $join2 .= ' LEFT JOIN {node_comment_statistics} c ON c.nid = i.sid';
@@ -1280,9 +1305,13 @@ function node_search($op = 'search', $keys = NULL) {
         $node->body = drupal_render($node->content);
 
         // Fetch comments for snippet.
-        $node->body .= module_invoke('comment', 'nodeapi', $node, 'update index');
+        if (module_exists('comment')) {
+          $node->body .= comment_nodeapi($node, 'update index');
+        }
         // Fetch terms for snippet.
-        $node->body .= module_invoke('taxonomy', 'nodeapi', $node, 'update index');
+        if (module_exists('taxonomy')) {
+          $node->body .= taxonomy_nodeapi($node, 'update index');
+        }
 
         $extra = node_invoke_nodeapi($node, 'search result');
         $results[] = array(
@@ -1607,7 +1636,7 @@ function node_last_changed($nid) {
  */
 function node_revision_list($node) {
   $revisions = array();
-  $result = db_query('SELECT r.vid, r.title, r.log, r.uid, n.vid AS current_vid, r.timestamp, u.name FROM {node_revisions} r LEFT JOIN {node} n ON n.vid = r.vid INNER JOIN {users} u ON u.uid = r.uid WHERE r.nid = %d ORDER BY r.timestamp DESC', $node->nid);
+  $result = db_query('SELECT r.vid, r.title, r.log, r.uid, n.vid AS current_vid, r.timestamp, u.name FROM {node_revisions} r LEFT JOIN {node} n ON n.vid = r.vid INNER JOIN {users} u ON u.uid = r.uid WHERE r.nid = %d ORDER BY r.vid DESC', $node->nid);
   while ($revision = db_fetch_object($result)) {
     $revisions[$revision->vid] = $revision;
   }
@@ -1725,7 +1754,7 @@ function node_feed($nids = FALSE, $channel = array()) {
 
   $channel_defaults = array(
     'version'     => '2.0',
-    'title'       => variable_get('site_name', 'Drupal'),
+    'title'       => variable_get('site_name', 'Pressflow'),
     'link'        => $base_url,
     'description' => variable_get('site_mission', ''),
     'language'    => $language->language
@@ -1756,11 +1785,11 @@ function node_page_default() {
 
   if ($num_rows) {
     $feed_url = url('rss.xml', array('absolute' => TRUE));
-    drupal_add_feed($feed_url, variable_get('site_name', 'Drupal') .' '. t('RSS'));
+    drupal_add_feed($feed_url, variable_get('site_name', 'Pressflow') .' '. t('RSS'));
     $output .= theme('pager', NULL, variable_get('default_nodes_main', 10));
   }
   else {
-    $default_message = t('<h1 class="title">Welcome to your new Drupal website!</h1><p>Please follow these steps to set up and start using your website:</p>');
+    $default_message = t('<h1 class="title">Welcome to your new Pressflow website!</h1><p>Please follow these steps to set up and start using your website:</p>');
     $default_message .= '<ol>';
 
     $default_message .= '<li>'. t('<strong>Configure your website</strong> Once logged in, visit the <a href="@admin">administration section</a>, where you can <a href="@config">customize and configure</a> all aspects of your website.', array('@admin' => url('admin'), '@config' => url('admin/settings'))) .'</li>';
@@ -1988,7 +2017,7 @@ function node_search_validate($form, &$form_state) {
  *   Optional, a user object representing the user for whom the operation is to
  *   be performed. Determines access for a user other than the current user.
  * @return
- *   TRUE if the operation may be performed.
+ *   TRUE if the operation may be performed, or FALSE otherwise.
  */
 function node_access($op, $node, $account = NULL) {
   global $user;
@@ -2045,9 +2074,9 @@ function node_access($op, $node, $account = NULL) {
       $grants_sql = 'AND ('. implode(' OR ', $grants) .')';
     }
 
-    $sql = "SELECT COUNT(*) FROM {node_access} WHERE (nid = 0 OR nid = %d) $grants_sql AND grant_$op >= 1";
-    $result = db_query($sql, $node->nid);
-    return (db_result($result));
+    $sql = "SELECT 1 FROM {node_access} WHERE (nid = 0 OR nid = %d) $grants_sql AND grant_$op >= 1";
+    $result = db_query_range($sql, $node->nid, 0, 1);
+    return (bool) db_result($result);
   }
 
   // Let authors view their own nodes.
@@ -2178,13 +2207,13 @@ function node_db_rewrite_sql($query, $primary_table, $primary_field) {
 }
 
 /**
- * This function will call module invoke to get a list of grants and then
- * write them to the database. It is called at node save, and should be
- * called by modules whenever something other than a node_save causes
- * the permissions on a node to change.
+ * Gets the list of node access grants and writes them to the database.
  *
- * This function is the only function that should write to the node_access
- * table.
+ * This function is called when a node is saved, and can also be called by
+ * modules if something other than a node save causes node access permissions
+ * to change. It collects all node access grants for the node from
+ * hook_node_access_records() implementations and saves the collected
+ * grants to the database.
  *
  * @param $node
  *   The $node to acquire grants for.
@@ -2208,12 +2237,12 @@ function node_access_acquire_grants($node) {
 }
 
 /**
- * This function will write a list of grants to the database, deleting
- * any pre-existing grants. If a realm is provided, it will only
- * delete grants from that realm, but it will always delete a grant
- * from the 'all' realm. Modules which utilize node_access can
- * use this function when doing mass updates due to widespread permission
- * changes.
+ * Writes a list of grants to the database, deleting any previously saved ones.
+ *
+ * If a realm is provided, it will only delete grants from that realm, but it
+ * will always delete a grant from the 'all' realm. Modules that utilize
+ * node_access can use this function when doing mass updates due to widespread
+ * permission changes.
  *
  * @param $node
  *   The $node being written to. All that is necessary is that it contain a nid.
@@ -2318,9 +2347,9 @@ function node_access_rebuild($batch_mode = FALSE) {
       batch_set($batch);
     }
     else {
-      // If not in 'safe mode', increase the maximum execution time.
-      if (!ini_get('safe_mode')) {
-        set_time_limit(240);
+      // Try to allocate enough time to rebuild node grants
+      if (function_exists('set_time_limit')) {
+        @set_time_limit(240);
       }
       $result = db_query("SELECT nid FROM {node}");
       while ($node = db_fetch_object($result)) {
@@ -2371,7 +2400,7 @@ function _node_access_rebuild_batch_operation(&$context) {
       node_access_acquire_grants($loaded_node);
     }
     $context['sandbox']['progress']++;
-    $context['sandbox']['current_node'] = $loaded_node->nid;
+    $context['sandbox']['current_node'] = $row['nid'];
   }
 
   // Multistep processing : report progress.
@@ -2676,7 +2705,7 @@ function node_save_action($node) {
 function node_assign_owner_action(&$node, $context) {
   $node->uid = $context['owner_uid'];
   $owner_name = db_result(db_query("SELECT name FROM {users} WHERE uid = %d", $context['owner_uid']));
-  watchdog('action', 'Changed owner of @type %title to uid %name.', array('@type' => node_get_types('type', $node), '%title' => $node->title, '%name' => $owner_name));
+  watchdog('action', 'Changed owner of @type %title to uid %name.', array('@type' => node_get_types('name', $node), '%title' => $node->title, '%name' => $owner_name));
 }
 
 function node_assign_owner_action_form($context) {
@@ -2709,7 +2738,7 @@ function node_assign_owner_action_form($context) {
       '#default_value' => $owner_name,
       '#autocomplete_path' => 'user/autocomplete',
       '#size' => '6',
-      '#maxlength' => '7',
+      '#maxlength' => '60',
       '#description' => $description,
     );
   }

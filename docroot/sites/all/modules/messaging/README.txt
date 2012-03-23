@@ -1,4 +1,4 @@
-// $Id: README.txt,v 1.1.4.2 2008/09/15 15:09:52 jareyero Exp $
+// $Id: README.txt,v 1.1.4.2.2.1 2009/11/11 18:07:24 jareyero Exp $
 
 README.txt - Drupal Module - Messaging
 ======================================
@@ -13,6 +13,10 @@ See Drupal notifications module for an usage usage example implementing the full
 
 Online documentation, includes end user and development handbooks: http://drupal.org/node/252582
 
+SimpleTest:
+-----------
+Tests for this module will run on SimpleTest 6.x-2.8 (old version).
+About this see http://drupal.org/node/584596
 
 Features:
 ---------

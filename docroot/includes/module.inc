@@ -1,5 +1,4 @@
 <?php
-// $Id: module.inc,v 1.115.2.1 2009/02/16 10:32:10 goba Exp $
 
 /**
  * @file
@@ -94,6 +93,14 @@ function module_list($refresh = FALSE, $bootstrap = TRUE, $sort = FALSE, $fixed_
  *   The array of filesystem objects used to rebuild the cache.
  */
 function module_rebuild_cache() {
+  $write_database = TRUE;
+  // If lock not acquired, return $files data without writing to database.
+  if (!lock_acquire('module_rebuild_cache')) {
+    $write_database = FALSE;
+    // Wait for the parallel thread to be done so we are more likely
+    // to get updated and consistent data.
+    lock_wait('module_rebuild_cache');
+  }
   // Get current list of modules
   $files = drupal_system_listing('\.module$', 'modules', 'name', 0);
 
@@ -120,32 +127,39 @@ function module_rebuild_cache() {
       unset($files[$filename]);
       continue;
     }
-    // Merge in defaults and save.
-    $files[$filename]->info = $file->info + $defaults;
 
     // Invoke hook_system_info_alter() to give installed modules a chance to
     // modify the data in the .info files if necessary.
     drupal_alter('system_info', $files[$filename]->info, $files[$filename]);
 
-    // Log the critical hooks implemented by this module.
-    $bootstrap = 0;
-    foreach (bootstrap_hooks() as $hook) {
-      if (module_hook($file->name, $hook)) {
-        $bootstrap = 1;
-        break;
+    // Merge in defaults and save.
+    $files[$filename]->info = $file->info + $defaults;
+  }
+
+  // If lock not acquired, return $files data without writing to database.
+  if ($write_database) {
+    foreach ($files as $filename => $file) {
+      // Log the critical hooks implemented by this module.
+      $bootstrap = 0;
+      foreach (bootstrap_hooks() as $hook) {
+        if (module_hook($file->name, $hook)) {
+          $bootstrap = 1;
+          break;
+        }
+      }
+
+      // Update the contents of the system table:
+      if (isset($file->status)) {
+        db_query("UPDATE {system} SET info = '%s', name = '%s', filename = '%s', bootstrap = %d WHERE filename = '%s'", serialize($files[$filename]->info), $file->name, $file->filename, $bootstrap, $file->old_filename);
+      }
+      else {
+        // This is a new module.
+        $files[$filename]->status = 0;
+        $files[$filename]->throttle = 0;
+        db_query("INSERT INTO {system} (name, info, type, filename, status, throttle, bootstrap) VALUES ('%s', '%s', '%s', '%s', %d, %d, %d)", $file->name, serialize($files[$filename]->info), 'module', $file->filename, 0, 0, $bootstrap);
       }
     }
-
-    // Update the contents of the system table:
-    if (isset($file->status) || (isset($file->old_filename) && $file->old_filename != $file->filename)) {
-      db_query("UPDATE {system} SET info = '%s', name = '%s', filename = '%s', bootstrap = %d WHERE filename = '%s'", serialize($files[$filename]->info), $file->name, $file->filename, $bootstrap, $file->old_filename);
-    }
-    else {
-      // This is a new module.
-      $files[$filename]->status = 0;
-      $files[$filename]->throttle = 0;
-      db_query("INSERT INTO {system} (name, info, type, filename, status, throttle, bootstrap) VALUES ('%s', '%s', '%s', '%s', %d, %d, %d)", $file->name, serialize($files[$filename]->info), 'module', $file->filename, 0, 0, $bootstrap);
-    }
+    lock_release('module_rebuild_cache');
   }
   $files = _module_build_dependencies($files);
   return $files;
@@ -243,13 +257,25 @@ function module_load_install($module) {
 
 /**
  * Load a module include file.
+ * 
+ * Examples:
+ * @code
+ *   // Load node.admin.inc from the node module.
+ *   module_load_include('inc', 'node', 'node.admin');
+ *   // Load content_types.inc from the node module.
+ *   module_load_include('inc', 'node', 'content_types');  
+ * @endcode
+ * 
+ * Do not use this function to load an install file. Use module_load_install()
+ * instead.
  *
  * @param $type
  *   The include file's type (file extension).
  * @param $module
  *   The module to which the include file belongs.
  * @param $name
- *   Optionally, specify the file name. If not set, the module's name is used.
+ *   Optionally, specify the base file name (without the $type extension). 
+ *   If not set, $module is used.
  */
 function module_load_include($type, $module, $name = NULL) {
   if (empty($name)) {
@@ -356,19 +382,19 @@ function module_disable($module_list) {
  * Allow modules to interact with the Drupal core.
  *
  * Drupal's module system is based on the concept of "hooks". A hook is a PHP
- * function that is named foo_bar(), where "foo" is the name of the module (whose
- * filename is thus foo.module) and "bar" is the name of the hook. Each hook has
- * a defined set of parameters and a specified result type.
+ * function that is named foo_bar(), where "foo" is the name of the module
+ * (whose filename is thus foo.module) and "bar" is the name of the hook. Each
+ * hook has a defined set of parameters and a specified result type.
  *
- * To extend Drupal, a module need simply implement a hook. When Drupal wishes to
- * allow intervention from modules, it determines which modules implement a hook
- * and call that hook in all enabled modules that implement it.
+ * To extend Drupal, a module need simply implement a hook. When Drupal wishes
+ * to allow intervention from modules, it determines which modules implement a
+ * hook and calls that hook in all enabled modules that implement it.
  *
  * The available hooks to implement are explained here in the Hooks section of
  * the developer documentation. The string "hook" is used as a placeholder for
- * the module name is the hook definitions. For example, if the module file is
- * called example.module, then hook_help() as implemented by that module would be
- * defined as example_help().
+ * the module name in the hook definitions. For example, if the module file is
+ * called example.module, then hook_help() as implemented by that module would
+ * be defined as example_help().
  */
 
 /**

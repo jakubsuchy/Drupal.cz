@@ -1,5 +1,5 @@
 <?php
-// $Id: image_captcha.user.inc,v 1.23 2009/12/15 23:53:37 soxofaan Exp $
+// $Id: image_captcha.user.inc,v 1.25.2.1 2010/11/29 23:33:37 soxofaan Exp $
 
 /**
  * @file
@@ -93,8 +93,12 @@ function _image_captcha_generate_image($code) {
   }
   imagefilledrectangle($image, 0, 0, $width, $height, $background_color);
 
+  // Do we need to draw in RTL mode?
+  global $language;
+  $rtl = $language->direction && ((bool) variable_get('image_captcha_rtl_support', 0));
+
   // draw text
-  $result = _image_captcha_image_generator_print_string($image, $width, $height, $fonts, $font_size, $code);
+  $result = _image_captcha_image_generator_print_string($image, $width, $height, $fonts, $font_size, $code, $rtl);
   if (!$result) {
     return FALSE;
   }
@@ -227,7 +231,7 @@ function _image_captcha_image_generator_add_dots(&$image, $width, $height, $colo
 /**
  * Helper function for drawing text on the image.
  */
-function _image_captcha_image_generator_print_string(&$image, $width, $height, $fonts, $font_size, $text) {
+function _image_captcha_image_generator_print_string(&$image, $width, $height, $fonts, $font_size, $text, $rtl=FALSE) {
   // get characters
   $characters = _image_captcha_utf8_split($text);
   $character_quantity = count($characters);
@@ -257,14 +261,26 @@ function _image_captcha_image_generator_print_string(&$image, $width, $height, $
   foreach ($characters as $c => $character) {
     // initial position of character: in the center of its cage
     $center_x = ($c + 0.5) * $ccage_width;
+    if ($rtl) {
+      $center_x = $width - $center_x;
+    }
     $center_y = 0.5 * $height;
 
     // Pick a random font from the list.
-    $font = array_rand($fonts);
+    $font = $fonts[array_rand($fonts)];
 
-    // get character dimensions for ttf fonts
+    // Get character dimensions for TrueType fonts.
     if ($font != 'BUILTIN') {
       $bbox = imagettfbbox($font_size, 0, realpath($font), $character);
+      // In very rare cases with some versions of the GD library, the x-value
+      // of the left side of the bounding box as returned by the first call of
+      // imagettfbbox is corrupt (value -2147483648 = 0x80000000).
+      // The weird thing is that calling the function a second time
+      // can be used as workaround.
+      // This issue is discussed at http://drupal.org/node/349218.
+      if ($bbox[2] < 0) {
+        $bbox = imagettfbbox($font_size, 0, realpath($font), $character);
+      }
     }
     else {
       $character_width = imagefontwidth(5);

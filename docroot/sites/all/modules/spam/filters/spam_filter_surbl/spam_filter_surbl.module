@@ -1,0 +1,150 @@
+<?php
+
+/**
+ * @file
+ * Surbl filter plug in for the spam module.
+ * Copyright(c) 2007-2008
+ *  Jeremy Andrews <jeremy@tag1consulting.com>.
+ *
+ */
+
+/**
+ * http://www.surbl.org/lists.html#multi bitmap
+ */
+define('SPAM_FILTER_SURBL_SC', 2);
+define('SPAM_FILTER_SURBL_WS', 4);
+define('SPAM_FILTER_SURBL_PH', 8);
+define('SPAM_FILTER_SURBL_OB', 16);
+define('SPAM_FILTER_SURBL_AB', 32);
+define('SPAM_FILTER_SURBL_JP', 64);
+
+/**
+ * Spam hook_spamapi implementation.
+ */
+function spam_filter_surbl_spamapi($op, $type = NULL, $content = array(), $fields = array(), $extra = NULL) {
+  switch ($op) {
+    case 'filter':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_surbl', $type, $content, $fields, $extra)) return;
+      return spam_filter_surbl_spam_filter($content, $type, $fields, $extra);
+
+    case 'filter_module':
+      return 'spam_filter_surbl';
+
+    case 'filter_info':
+      return array(
+        'name' => t('Surbl filter'),
+        'module' => t('spam_filter_surbl'),
+        'description' => t('A spam url filter.'),
+        'help' => t('Look up URLs in SURBL to determine if is spam.'),
+      );
+      break;
+
+    case 'filter_install':
+      return array(
+        'status' => SPAM_FILTER_ENABLED,
+        'gain' => 250,
+        'weight' => -7,
+      );
+
+  }
+}
+
+/**
+ * Extract URLs from content.
+ */
+function _spam_filter_surbl_url_extract($content, $type, $fields, $extra = array()) {
+  static $urls = array();
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+
+  if (is_object($content)) {
+    $content = (array)$content;
+  }
+
+  if (!isset($urls["$type-$id"])) {
+    $string = '';
+    foreach ($fields['main'] as $field) {
+      $string .= $content["$field"] .' ';
+    }
+    if (isset($fields['other']) && is_array($fields['other'])) {
+      foreach ($fields['other'] as $field) {
+        $string .= $content["$field"] .' ';
+      }
+    }
+
+    // TODO: Improve this matching.  We don't actually extract mailto: urls.
+    $URI = "(http://|https://|ftp://|mailto:)";
+    // Find all urls in content.
+    preg_match_all("!(<p>|[ \n\r\t\(]*)($URI([a-zA-Z0-9@:%_~#?&=.,/;-]*[a-zA-Z0-9@:%_~#&=/;-]))([.,?]?)(?=(</p>|[ \n\r\t\)]*))!i", $string, $matches);
+    $u = array();
+    foreach ($matches[2] as $url) {
+      $url = preg_replace("'$URI'", '', $url);
+      // get full domain (ie www.sample.com)
+      preg_match("/^()?([^\/\"\']+)/i", $url, $domain);
+      // get root domain (ie sample.com)
+      preg_match("/[^\.\/]+\.[^\.\/]+$/", $domain[2], $root);
+      $u[md5($root[0])] = htmlspecialchars(drupal_strtolower($root[0]));
+    }
+    $urls["$type-$id"] = $u;
+  }
+
+  return $urls["$type-$id"];
+}
+
+/**
+ * Search for known spam urls in content.
+ */
+function spam_filter_surbl_spam_filter($content, $type, $fields, $extra = array(), $filter_test = FALSE) {
+  $action = array();
+
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  $spam = FALSE;
+
+  $urls = _spam_filter_surbl_url_extract($content, $type, $fields, $extra);
+
+  if (is_array($urls) && !empty($urls)) {
+    foreach ($urls as $url) {
+      $lookup = "$url.multi.surbl.org";
+      $ip = gethostbyname($lookup);
+      if ($ip != $lookup) {
+        // this domain was in a SURBL, process accordingly
+        preg_match("/[^\.\/]+$/", $ip, $code);
+        if ($code[0] & SPAM_FILTER_SURBL_SC) {
+          spam_log(SPAM_IMPORTANT, 'spam_filter_surbl_spam_filter', t('found spam url(@url) @surbl', array('@url' => $url, '@surbl' => t('SpamCop message-body URI domains'))), $type, $id);
+        }
+        if ($code[0] & SPAM_FILTER_SURBL_WS) {
+          spam_log(SPAM_IMPORTANT, 'spam_filter_surbl_spam_filter', t('found spam url(@url) @surbl', array('@url' => $url, '@surbl' => t('sa-blacklist domains'))), $type, $id);
+        }
+        if ($code[0] & SPAM_FILTER_SURBL_PH) {
+          spam_log(SPAM_IMPORTANT, 'spam_filter_surbl_spam_filter', t('found spam url(@url) @surbl', array('@url' => $url, '@surbl' => t('Phishing data source'))), $type, $id);
+        }
+        if ($code[0] & SPAM_FILTER_SURBL_OB) {
+          spam_log(SPAM_IMPORTANT, 'spam_filter_surbl_spam_filter', t('found spam url(@url) @surbl', array('@url' => $url, '@surbl' => t('Outblaze URI blacklist'))), $type, $id);
+        }
+        if ($code[0] & SPAM_FILTER_SURBL_AB) {
+          spam_log(SPAM_IMPORTANT, 'spam_filter_surbl_spam_filter', t('found spam url(@url) @surbl', array('@url' => $url, '@surbl' => t('AbuseButler spamvertised sites'))), $type, $id);
+        }
+        if ($code[0] & SPAM_FILTER_SURBL_JP) {
+          spam_log(SPAM_IMPORTANT, 'spam_filter_surbl_spam_filter', t('found spam url(@url) @surbl', array('@url' => $url, '@surbl' => t('jwSpamSpy + Prolocation data source'))), $type, $id);
+        }
+        $action['spam_filter_surbl'][] = array(
+          'url' => $url,
+          'probability' => 99,
+        );
+        $spam = TRUE;
+      }
+      else {
+        spam_log(SPAM_DEBUG, 'spam_filter_surbl_spam_filter', t('not spam url(@url)', array('@url' => $url)), $type, $id);
+      }
+    }
+  }
+
+  if ($spam) {
+    $action['total'] = 99;
+  }
+  else {
+    $action['total'] = 0;
+  }
+
+  return $action;
+}
+

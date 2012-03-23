@@ -1,5 +1,4 @@
 <?php
-// $Id: blog.pages.inc,v 1.6.2.1 2008/02/08 21:15:12 goba Exp $
 
 /**
  * @file
@@ -58,13 +57,13 @@ function blog_page_last() {
   $output = '';
   $items = array();
 
-  if (user_access('edit own blog')) {
+  if (user_access('create blog entries')) {
     $items[] = l(t('Create new blog entry.'), "node/add/blog");
   }
 
   $output = theme('item_list', $items);
 
-  $result = pager_query(db_rewrite_sql("SELECT n.nid, n.created FROM {node} n WHERE n.type = 'blog' AND n.status = 1 ORDER BY n.sticky DESC, n.created DESC"), variable_get('default_nodes_main', 10));
+  $result = pager_query(db_rewrite_sql("SELECT n.nid, n.sticky, n.created FROM {node} n WHERE n.type = 'blog' AND n.status = 1 ORDER BY n.sticky DESC, n.created DESC"), variable_get('default_nodes_main', 10));
   $has_posts = FALSE;
 
   while ($node = db_fetch_object($result)) {
@@ -88,7 +87,7 @@ function blog_page_last() {
  */
 function blog_feed_user($account) {
   $result = db_query_range(db_rewrite_sql("SELECT n.nid, n.created FROM {node} n  WHERE n.type = 'blog' AND n.uid = %d AND n.status = 1 ORDER BY n.created DESC"), $account->uid, 0, variable_get('feed_default_items', 10));
-  $channel['title'] = $account->name ."'s blog";
+  $channel['title'] = t("!name's blog", array('!name' => $account->name));
   $channel['link'] = url('blog/'. $account->uid, array('absolute' => TRUE));
 
   $items = array();
@@ -103,7 +102,7 @@ function blog_feed_user($account) {
  */
 function blog_feed_last() {
   $result = db_query_range(db_rewrite_sql("SELECT n.nid, n.created FROM {node} n WHERE n.type = 'blog' AND n.status = 1 ORDER BY n.created DESC"), 0, variable_get('feed_default_items', 10));
-  $channel['title'] = variable_get('site_name', 'Drupal') .' blogs';
+  $channel['title'] = t('!site_name blogs', array('!site_name' => variable_get('site_name', 'Pressflow')));
   $channel['link'] = url('blog', array('absolute' => TRUE));
 
   $items = array();

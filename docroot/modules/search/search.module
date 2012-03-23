@@ -1,5 +1,4 @@
 <?php
-// $Id: search.module,v 1.250.2.5 2009/02/25 16:17:40 goba Exp $
 
 /**
  * @file
@@ -42,11 +41,11 @@ define('PREG_CLASS_SEARCH_EXCLUDE',
 '\x{2108}\x{2109}\x{2114}\x{2116}-\x{2118}\x{211e}-\x{2123}\x{2125}\x{2127}'.
 '\x{2129}\x{212e}\x{2132}\x{213a}\x{213b}\x{2140}-\x{2144}\x{214a}-\x{2b13}'.
 '\x{2ce5}-\x{2cff}\x{2d6f}\x{2e00}-\x{3005}\x{3007}-\x{303b}\x{303d}-\x{303f}'.
-'\x{3099}-\x{309e}\x{30a0}\x{30fb}-\x{30fe}\x{3190}-\x{319f}\x{31c0}-\x{31cf}'.
-'\x{3200}-\x{33ff}\x{4dc0}-\x{4dff}\x{a015}\x{a490}-\x{a716}\x{a802}\x{a806}'.
-'\x{a80b}\x{a823}-\x{a82b}\x{d800}-\x{f8ff}\x{fb1e}\x{fb29}\x{fd3e}\x{fd3f}'.
-'\x{fdfc}-\x{fe6b}\x{feff}-\x{ff0f}\x{ff1a}-\x{ff20}\x{ff3b}-\x{ff40}\x{ff5b}-'.
-'\x{ff65}\x{ff70}\x{ff9e}\x{ff9f}\x{ffe0}-\x{fffd}');
+'\x{3099}-\x{309e}\x{30a0}\x{30fb}\x{30fd}\x{30fe}\x{3190}-\x{319f}\x{31c0}-'.
+'\x{31cf}\x{3200}-\x{33ff}\x{4dc0}-\x{4dff}\x{a015}\x{a490}-\x{a716}\x{a802}'.
+'\x{a806}\x{a80b}\x{a823}-\x{a82b}\x{d800}-\x{f8ff}\x{fb1e}\x{fb29}\x{fd3e}'.
+'\x{fd3f}\x{fdfc}-\x{fe6b}\x{feff}-\x{ff0f}\x{ff1a}-\x{ff20}\x{ff3b}-\x{ff40}'.
+'\x{ff5b}-\x{ff65}\x{ff70}\x{ff9e}\x{ff9f}\x{ffe0}-\x{fffd}');
 
 /**
  * Matches all 'N' Unicode character classes (numbers)
@@ -287,7 +286,7 @@ function search_update_totals() {
     $total = log10(1 + 1/(max(1, $total)));
     db_query("UPDATE {search_total} SET count = %f WHERE word = '%s'", $total, $word);
     if (!db_affected_rows()) {
-      db_query("INSERT INTO {search_total} (word, count) VALUES ('%s', %f)", $word, $total);
+      @db_query("INSERT INTO {search_total} (word, count) VALUES ('%s', %f)", $word, $total);
     }
   }
   // Find words that were deleted from search_index, but are still in
@@ -640,6 +639,7 @@ function search_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
       if (count($output)) {
         return '<a>('. implode(', ', $output) .')</a>';
       }
+      break;
     // Reindex the node when it is updated.  The node is automatically indexed
     // when it is added, simply by being added to the node table.
     case 'update':
@@ -910,7 +910,7 @@ function _search_parse_query(&$word, &$scores, $not = FALSE) {
  *              Default: 'ORDER BY score DESC'
  *
  * @return
- *   An array of SIDs for the search results.
+ *   An array of objects for the search results.
  *
  * @ingroup search
  */
@@ -987,15 +987,14 @@ function search_get_keys() {
  * for all of the search features to work.
  *
  * There are three ways to interact with the search system:
- * - Specifically for searching nodes, you can implement nodeapi('update index')
- *   and nodeapi('search result'). However, note that the search system already
- *   indexes all visible output of a node, i.e. everything displayed normally
- *   by hook_view() and hook_nodeapi('view'). This is usually sufficient.
- *   You should only use this mechanism if you want additional, non-visible data
- *   to be indexed.
+ * - Specifically for searching nodes, you can implement
+ *   hook_nodeapi('update index') and hook_nodeapi('search result'). However,
+ *   note that the search system already indexes all visible output of a node,
+ *   i.e. everything displayed normally by hook_view() and hook_nodeapi('view').
+ *   This is usually sufficient. You should only use this mechanism if you want
+ *   additional, non-visible data to be indexed.
  * - Implement hook_search(). This will create a search tab for your module on
- *   the /search page with a simple keyword search form. You may optionally
- *   implement hook_search_item() to customize the display of your results.
+ *   the /search page with a simple keyword search form.
  * - Implement hook_update_index(). This allows your module to use Drupal's
  *   HTML indexing mechanism for searching full text efficiently.
  *
@@ -1018,7 +1017,7 @@ function search_get_keys() {
  * @param $prompt
  *   A piece of text to put before the form (e.g. "Enter your keywords")
  * @return
- *   An HTML string containing the search form.
+ *   A Form API array for the search form.
  */
 function search_form(&$form_state, $action = '', $keys = '', $type = NULL, $prompt = NULL) {
 
@@ -1037,7 +1036,7 @@ function search_form(&$form_state, $action = '', $keys = '', $type = NULL, $prom
     '#attributes' => array('class' => 'search-form'),
   );
   $form['module'] = array('#type' => 'value', '#value' => $type);
-  $form['basic'] = array('#type' => 'item', '#title' => $prompt);
+  $form['basic'] = array('#type' => 'item', '#title' => $prompt, '#id' => 'edit-keys');
   $form['basic']['inline'] = array('#prefix' => '<div class="container-inline">', '#suffix' => '</div>');
   $form['basic']['inline']['keys'] = array(
     '#type' => 'textfield',
@@ -1059,7 +1058,7 @@ function search_form(&$form_state, $action = '', $keys = '', $type = NULL, $prom
  *
  * @ingroup forms
  * @see search_box_form_submit()
- * @see theme_search_box_form()
+ * @see search-block-form.tpl.php
  */
 function search_box(&$form_state, $form_id) {
   $form[$form_id] = array(
@@ -1071,7 +1070,6 @@ function search_box(&$form_state, $form_id) {
   );
   $form['submit'] = array('#type' => 'submit', '#value' => t('Search'));
   $form['#submit'][] = 'search_box_form_submit';
-  $form['#validate'][] = 'search_box_form_validate';
 
   return $form;
 }
@@ -1080,6 +1078,17 @@ function search_box(&$form_state, $form_id) {
  * Process a block search form submission.
  */
 function search_box_form_submit($form, &$form_state) {
+  // The search form relies on control of the redirect destination for its
+  // functionality, so we override any static destination set in the request,
+  // for example by drupal_access_denied() or drupal_not_found()
+  // (see http://drupal.org/node/292565).
+  if (isset($_REQUEST['destination'])) {
+    unset($_REQUEST['destination']);
+  }
+  if (isset($_REQUEST['edit']['destination'])) {
+    unset($_REQUEST['edit']['destination']);
+  }
+
   $form_id = $form['form_id']['#value'];
   $form_state['redirect'] = 'search/node/'. trim($form_state['values'][$form_id]);
 }

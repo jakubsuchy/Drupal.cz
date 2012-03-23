@@ -1,3 +1,81 @@
+February 13, 2011
+    o #1060198: fixed the SELECT COUNT() in duplicate filter to use db_filter()
+January 20, 2011
+    o #1024646: renamed old variable spam_blacklist_ip as it should have been
+January 10, 2011
+    o #734642: initial commit of SimpleTest functionality. Thanks to Kars-T for the code.
+    o #448412: initial Actions integration. Thanks to naught101 for the code.
+January 9, 2011
+    o #1020662: fixed an E_NOTICE in spam_content_comment_admin()
+    o #1020740: fixed an E_NOTICE due to .= usage on first initializing variable
+      (see theme_spam_admin_filters() function)
+    o #1020840: moved the definition of $id so it is defined in all cases
+January 3, 2011
+    o #1014102: wrong number of columns for message when list is empty
+    o #1014122: 'score' index undefined in $extra, added empty() test
+December 31 2010
+    o #862982: add UI elements for spam user module
+December 29th 2010
+    o #672912: use hook_init in spam.module
+      patch thanks to Steve Dondley, assist by Kars-T
+  - spam_filter_bayesian
+    o #1010112: Optimization to the regex & a foreach() loop
+    o #1009234: Removed the 1st if() of the spam_filter_bayesian_tokens_update()
+    o #1009234: Check $old instead of $old->probability in spam_filter_bayesian_tokens_update()
+December 28th 2010
+    o #802840: remove "place into special review queue" option
+    o #670764: moderated comments marked as spam not in spam queue
+    o #738378: make module names translation-independent
+    o #532158: add DEVELOPER.txt for dev best practices
+December 27th 2010
+    o #178156: spam_filter_url: improve url matching based on _url_filter()
+      patch thanks to PieterDC
+December 26th 2010
+    o bug #984698: code clarification on spam option enumeration
+    o #375624: small doc fix to clarify upgrade path from 5.x-1.x
+December 25th 2010
+    o bug #361547: limit for url filter
+      patch thanks to naught101, assist by PieterDC
+    o bug #914212: clarify error messages for no entry in spam_tracker; drop
+      to WATCHDOG_NOTICE
+ - spam_filter_custom.module
+    o bug #976958: properly escape custom filters -- typo fix
+ - spam_scan() defines $id early so all spam_log() calls can use it
+    o bug #781248: put the $id back and define $id as required
+December 24th 2010
+ - spam_filter_duplicate.module
+    o bug #774160: $index missing in _spam_filter_duplicate_arg() function
+      original report by keinstein
+    o bug #781248: removed some $id in calls to spam_log() when $id is not defined
+December 23rd 2010
+ - spam_filter_custom.module
+    o bug #976958: properly escape custom filters
+      patch thanks to AlexisWilke
+    o bug #813504: missing quotes around spam_filter_custom module defines
+      patch thanks to AlexisWilke
+ - spam_filter_duplicate.module
+    o bug #977796: unknown column spam_filter_duplicate_hash
+      patch thanks to AlexisWilke
+ - spam.module
+    o bug #779010: typo in menu constant, MENU_LOCAL_CALLBACK
+      patch thanks to keinstein
+    o bug #937384: update spam_tracker with proper number of fields
+      patch thanks to progga and AlexisWilke
+    o bug #977628: fix spelling error in drupal message
+      patch thanks to AlexisWilke
+    o bug #282062: content_id is integer, use %d not %s for db_query
+      based on patch by nilesh.3892
+ - spam_comment.inc
+    o bug #932758: fix spam comment actions (including teaching not spam)
+      based on patch by mr.j
+ - spam_node.comment.inc
+    o bug #712624: don't pollute session table with form contents
+      based on patch by mavimo
+
+August 31st, 2009
+ - spam.module
+    o bug #531214: fix feedback form, properly call drupal_process_form()
+
 August 9th, 2009 (6.x-1.0)
  - spam.module
     o bug #531528: simplify debug logic, cleanup code

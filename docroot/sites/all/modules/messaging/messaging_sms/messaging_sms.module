@@ -59,7 +59,7 @@ function messaging_sms_user_destination($account, $message) {
  */
 function messaging_sms_send_msg($destination, $message, $params = array()) {
   $text = messaging_text_build($message, ' ');
-  return sms_send($destination, $text);
+  return sms_send($destination, $text, $params);
 }
  
 /**

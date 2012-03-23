@@ -1,5 +1,10 @@
 <?php
-// $Id: filefield.devel.inc,v 1.2 2009/04/16 00:59:09 quicksketch Exp $
+
+/**
+ * @file
+ * Utility functions for generating FileField content. Note that image
+ * generation support requires the GD toolkit.
+ */
 
 /**
  * Private function used by filefield_content_generate().
@@ -41,7 +46,7 @@ function _filefield_generate_file($field) {
     $filesize = empty($field['widget']['max_filesize_per_file']) ? 1024 : parse_size($field['widget']['max_filesize_per_file']);
     return _filefield_generate_textfile($filesize);
   }
-  elseif (in_array($extension, array('png', 'jpg'))) {
+  elseif (in_array($extension, array('png', 'jpg')) && function_exists('imagecreate')) {
     $min_resolution = empty($field['widget']['min_resolution']) ? '100x100' : $field['widget']['min_resolution'];
     $max_resolution = empty($field['widget']['max_resolution']) ? '600x600' : $field['widget']['max_resolution'];
     return _filefield_generate_image($extension, $min_resolution, $max_resolution);
@@ -50,6 +55,9 @@ function _filefield_generate_file($field) {
   return FALSE;
 }
 
+/**
+ * Private function for generating a random text file.
+ */
 function _filefield_generate_textfile($filesize = 1024) {
   static $filesizes = array();
 
@@ -69,6 +77,11 @@ function _filefield_generate_textfile($filesize = 1024) {
   return $temp_file;
 }
 
+/**
+ * Private function for creating a random image.
+ *
+ * This function only works with the GD toolkit. ImageMagick is not supported.
+ */
 function _filefield_generate_image($extension = 'png', $min_resolution, $max_resolution) {
   static $images = array();
 

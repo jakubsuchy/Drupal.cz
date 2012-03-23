@@ -1,5 +1,4 @@
 <?php
-// $Id: pathauto_node.inc,v 1.47 2008/06/10 21:41:53 freso Exp $
 
 /**
  * @file
@@ -9,7 +8,7 @@
  */
 
 /**
- * Implementation of hook_pathauto().
+ * Implements hook_pathauto().
  */
 function node_pathauto($op) {
   switch ($op) {
@@ -17,9 +16,9 @@ function node_pathauto($op) {
       $settings = array();
       $settings['module'] = 'node';
       $settings['token_type'] = 'node';
-      $settings['groupheader'] = t('Node path settings');
+      $settings['groupheader'] = t('Node paths');
       $settings['patterndescr'] = t('Default path pattern (applies to all node types with blank patterns below)');
-      $settings['patterndefault'] = t('content/[title-raw]');
+      $settings['patterndefault'] = 'content/[title-raw]';
       $settings['bulkname'] = t('Bulk generate aliases for nodes that are not aliased');
       $settings['bulkdescr'] = t('Generate aliases for all existing nodes which do not already have aliases.');
 
@@ -97,22 +96,16 @@ function node_pathauto_bulkupdate() {
 
   $count = 0;
   if (count($pattern_types)) {
-    $query = "SELECT n.nid, n.vid, n.type, n.title, n.uid, n.created, n.language, alias.src, alias.dst FROM {node} n LEFT JOIN {url_alias} alias ON CONCAT('node/', CAST(n.nid AS CHAR)) = alias.src WHERE alias.src IS NULL AND n.type IN (". db_placeholders($pattern_types, 'varchar') .')';
-    $result = db_query_range($query, $pattern_types, 0, variable_get('pathauto_max_bulk_update', 50));
+    $concat = _pathauto_sql_concat("'node/'", 'n.nid');
+    $sql = "SELECT n.nid FROM {node} n LEFT JOIN {url_alias} ua ON $concat = ua.src WHERE ua.src IS NULL AND n.type IN (". db_placeholders($pattern_types, 'varchar') .')';
+    $query = db_query_range($sql, $pattern_types, 0, variable_get('pathauto_max_bulk_update', 50));
 
     $placeholders = array();
-    while ($node_ref = db_fetch_object($result)) {
-      $node = node_load($node_ref->nid, NULL, TRUE);
-      $node->src = $node_ref->src;
-      $node->dst = $node_ref->dst;
-      if (module_exists('taxonomy')) {
-        // Must populate the terms for the node here for the category
-        // placeholders to work
-        $node->taxonomy = array_keys(taxonomy_node_get_terms($node));
-      }
+    while ($nid = db_result($query)) {
+      $node = node_load($nid, NULL, TRUE);
       $placeholders = pathauto_get_placeholders('node', $node);
-      $src = "node/$node->nid";
-      if ($alias = pathauto_create_alias('node', 'bulkupdate', $placeholders, $src, $node->nid, $node->type, $node->language)) {
+      $source = "node/$node->nid";
+      if (pathauto_create_alias('node', 'bulkupdate', $placeholders, $source, $node->nid, $node->type, $node->language)) {
         $count++;
       }
     }

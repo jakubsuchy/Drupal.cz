@@ -1,5 +1,4 @@
 <?php
-// $Id: update.compare.inc,v 1.8.2.2 2008/08/28 08:14:56 dries Exp $
 
 /**
  * @file
@@ -16,9 +15,18 @@
  * that logic is only required when preparing the status report, not for
  * fetching the available release data.
  *
+ * This array is fairly expensive to construct, since it involves a lot of
+ * disk I/O, so we cache the results into the {cache_update} table using the
+ * 'update_project_projects' cache ID. However, since this is not the data
+ * about available updates fetched from the network, it is ok to invalidate it
+ * somewhat quickly. If we keep this data for very long, site administrators
+ * are more likely to see incorrect results if they upgrade to a newer version
+ * of a module or theme but do not visit certain pages that automatically
+ * clear this cache.
+ *
  * @see update_process_project_info()
  * @see update_calculate_project_data()
- *
+ * @see update_project_cache()
  */
 function update_get_projects() {
   static $projects = array();
@@ -29,8 +37,10 @@ function update_get_projects() {
       // Still empty, so we have to rebuild the cache.
       _update_process_info_list($projects, module_rebuild_cache(), 'module');
       _update_process_info_list($projects, system_theme_data(), 'theme');
-      // Set the projects array into the cache table.
-      cache_set('update_project_projects', $projects, 'cache_update', time() + 3600);
+      // Allow other modules to alter projects before fetching and comparing.
+      drupal_alter('update_projects', $projects);
+      // Cache the site's project data for at most 1 hour.
+      _update_cache_set('update_project_projects', $projects, time() + 3600);
     }
   }
   return $projects;
@@ -41,7 +51,22 @@ function update_get_projects() {
  */
 function _update_process_info_list(&$projects, $list, $project_type) {
   foreach ($list as $file) {
-    if (empty($file->status)) {
+    // A disabled base theme of an enabled sub-theme still has all of its code
+    // run by the sub-theme, so we include it in our "enabled" projects list.
+    if (!$file->status && !empty($file->sub_themes)) {
+      foreach ($file->sub_themes as $key => $name) {
+        // Build a list of enabled sub-themes.
+        if ($list[$key]->status) {
+          $file->enabled_sub_themes[$key] = $name;
+        }
+      }
+      // If there are no enabled subthemes, we should ingore this theme and go
+      // on to the next one.
+      if (empty($file->enabled_sub_themes)) {
+        continue;
+      }
+    }
+    elseif (empty($file->status)) {
       // Skip disabled modules or themes.
       continue;
     }
@@ -73,21 +98,47 @@ function _update_process_info_list(&$projects, $list, $project_type) {
       $file->info['_info_file_ctime'] = filectime($info_filename);
     }
 
+    if (!isset($file->info['datestamp'])) {
+      $file->info['datestamp'] = 0;
+    }
+
     $project_name = $file->info['project'];
+
+    // Add a list of sub-themes that "depend on" the project and a list of base
+    // themes that are "required by" the project.
+    if ($project_name == 'drupal') {
+      // Drupal core is always required, so this extra info would be noise.
+      $sub_themes = array();
+      $base_themes = array();
+    }
+    else {
+      // Add list of enabled sub-themes.
+      $sub_themes = !empty($file->enabled_sub_themes) ? $file->enabled_sub_themes : array();
+      // Add list of base themes.
+      $base_themes = !empty($file->base_themes) ? $file->base_themes : array();
+    }
+
     if (!isset($projects[$project_name])) {
       // Only process this if we haven't done this project, since a single
       // project can have multiple modules or themes.
       $projects[$project_name] = array(
         'name' => $project_name,
-        'info' => $file->info,
-        'datestamp' => isset($file->info['datestamp']) ? $file->info['datestamp'] : 0,
+        // Only save attributes from the .info file we care about so we do not
+        // bloat our RAM usage needlessly.
+        'info' => update_filter_project_info($file->info),
+        'datestamp' => $file->info['datestamp'],
         'includes' => array($file->name => $file->info['name']),
         'project_type' => $project_name == 'drupal' ? 'core' : $project_type,
+        'sub_themes' => $sub_themes,
+        'base_themes' => $base_themes,
       );
     }
     else {
       $projects[$project_name]['includes'][$file->name] = $file->info['name'];
       $projects[$project_name]['info']['_info_file_ctime'] = max($projects[$project_name]['info']['_info_file_ctime'], $file->info['_info_file_ctime']);
+      $projects[$project_name]['datestamp'] = max($projects[$project_name]['datestamp'], $file->info['datestamp']);
+      $projects[$project_name]['sub_themes'] = array_merge($projects[$project_name]['sub_themes'], $sub_themes);
+      $projects[$project_name]['base_themes'] = array_merge($projects[$project_name]['base_themes'], $base_themes);
     }
   }
 }
@@ -223,12 +274,23 @@ function update_process_project_info(&$projects) {
  * version (e.g. 5.x-1.5-beta1, 5.x-1.5-beta2, and 5.x-1.5). Development
  * snapshots for a given major version are always listed last.
  *
+ * The results of this function are expensive to compute, especially on sites
+ * with lots of modules or themes, since it involves a lot of comparisons and
+ * other operations. Therefore, we cache the results into the {cache_update}
+ * table using the 'update_project_data' cache ID. However, since this is not
+ * the data about available updates fetched from the network, it is ok to
+ * invalidate it somewhat quickly. If we keep this data for very long, site
+ * administrators are more likely to see incorrect results if they upgrade to
+ * a newer version of a module or theme but do not visit certain pages that
+ * automatically clear this cache.
+ *
  * @param $available
  *  Array of data about available project releases.
  *
  * @see update_get_available()
  * @see update_get_projects()
  * @see update_process_project_info()
+ * @see update_project_cache()
  */
 function update_calculate_project_data($available) {
   // Retrieve the projects from cache, if present.
@@ -281,6 +343,11 @@ function update_calculate_project_data($available) {
               'data' => t('This project is no longer supported, and is no longer available for download. Disabling everything included by this project is strongly recommended!'),
             );
             break;
+          case 'not-fetched':
+            $projects[$project]['status'] = UPDATE_NOT_FETCHED;
+            $projects[$project]['reason'] = t('Failed to fetch available update data');
+            break;
+
           default:
             // Assume anything else (e.g. 'published') is valid and we should
             // perform the rest of the logic in this function.
@@ -444,7 +511,7 @@ function update_calculate_project_data($available) {
 
         // If we're running a dev snapshot and have a timestamp, stop
         // searching for security updates once we hit an official release
-        // older than what we've got.  Allow 100 seconds of leeway to handle
+        // older than what we've got. Allow 100 seconds of leeway to handle
         // differences between the datestamp in the .info file and the
         // timestamp of the tarball itself (which are usually off by 1 or 2
         // seconds) so that we don't flag that as a new release.
@@ -550,8 +617,8 @@ function update_calculate_project_data($available) {
   // projects or releases).
   drupal_alter('update_status', $projects);
 
-  // Set the projects array into the cache table.
-  cache_set('update_project_data', $projects, 'cache_update', time() + 3600);
+  // Cache the site's update status for at most 1 hour.
+  _update_cache_set('update_project_data', $projects, time() + 3600);
   return $projects;
 }
 
@@ -567,6 +634,13 @@ function update_calculate_project_data($available) {
  * administration pages, since we should always recompute the most current
  * values on any of those pages.
  *
+ * Note: while both of these arrays are expensive to compute (in terms of disk
+ * I/O and some fairly heavy CPU processing), neither of these is the actual
+ * data about available updates that we have to fetch over the network from
+ * updates.drupal.org. That information is stored with the
+ * 'update_available_releases' cache ID -- it needs to persist longer than 1
+ * hour and never get invalidated just by visiting a page on the site.
+ *
  * @param $cid
  *   The cache id of data to return from the cache. Valid options are
  *   'update_project_data' and 'update_project_projects'.
@@ -579,18 +653,49 @@ function update_calculate_project_data($available) {
 function update_project_cache($cid) {
   $projects = array();
 
-  // In some cases, we must clear the cache.  Rather than do so on a time
-  // basis, we check for specific paths.
+  // On certain paths, we should clear the cache and recompute the projects or
+  // update status of the site to avoid presenting stale information.
   $q = $_GET['q'];
   $paths = array('admin/build/modules', 'admin/build/themes', 'admin/reports', 'admin/reports/updates', 'admin/reports/status', 'admin/reports/updates/check');
   if (in_array($q, $paths)) {
-    cache_clear_all($cid, 'cache_update');
+    _update_cache_clear($cid);
   }
   else {
-    $cache = cache_get($cid, 'cache_update');
+    $cache = _update_cache_get($cid);
     if (!empty($cache->data) && $cache->expire > time()) {
       $projects = $cache->data;
     }
   }
   return $projects;
+}
+
+/**
+ * Filter the project .info data to only save attributes we need.
+ *
+ * @param array $info
+ *   Array of .info file data as returned by drupal_parse_info_file().
+ *
+ * @return
+ *   Array of .info file data we need for the Update manager.
+ *
+ * @see _update_process_info_list()
+ */
+function update_filter_project_info($info) {
+  $whitelist = array(
+    '_info_file_ctime',
+    'datestamp',
+    'major',
+    'name',
+    'package',
+    'project',
+    'project status url',
+    'version',
+  );
+  $whitelist = array_flip($whitelist);
+  foreach ($info as $key => $value) {
+    if (!isset($whitelist[$key])) {
+      unset($info[$key]);
+    }
+  }
+  return $info;
 }

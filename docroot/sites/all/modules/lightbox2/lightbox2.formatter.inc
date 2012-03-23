@@ -1,5 +1,5 @@
 <?php
-// $Id: lightbox2.formatter.inc,v 1.1.2.16 2009/01/05 13:30:18 snpower Exp $
+// $Id: lightbox2.formatter.inc,v 1.1.2.30 2010/09/22 10:47:15 snpower Exp $
 
 /**
  * @file
@@ -30,6 +30,9 @@ function theme_lightbox2_image($path, $alt = '', $title = '', $attributes = arra
 /**
  * Handler for Lightbox2 display of imagecache + imagefield CCK fields.
  *
+ * The compact view shows only the first image in a multiple imagefield but
+ * shows all images in the lightbox.
+ *
  * @param $element
  *   The CCK field element.
  * @return
@@ -45,7 +48,8 @@ function theme_lightbox2_formatter_imagefield($element) {
   $formatter = $element['#formatter'];
   $node = node_load($element['#item']['nid']);
 
-  if (strpos($formatter, '__lightbox2__') !== FALSE || strpos($formatter, '__lightshow2__') !== FALSE || strpos($formatter, '__lightframe2__') !== FALSE) {
+  if (strpos($formatter, '__lightbox2__') !== FALSE || strpos($formatter, '__lightshow2__') !== FALSE || strpos($formatter, '__lightframe2__') !== FALSE
+    || strpos($formatter, '__lightbox2_compact__') !== FALSE || strpos($formatter, '__lightshow2_compact__') !== FALSE || strpos($formatter, '__lightframe2_compact__') !== FALSE) {
     list($tmp, $lightbox_type, $view_preset, $lightbox_preset) = explode('__', $formatter, 4);
     return lightbox2_imagefield_image_imagecache($field_name, $item, $formatter, $node, $view_preset, $lightbox_preset);
   }
@@ -70,7 +74,7 @@ function theme_lightbox2_formatter_imagefield($element) {
  * @return
  *   The themed imagefield + imagecache image and link.
  */
-function lightbox2_imagefield_image_imagecache($field_name, $item, $formatter, $node, $view_preset, $lightbox_preset) {
+function lightbox2_imagefield_image_imagecache($field_name, $item, $formatter, $node, $view_preset, $lightbox_preset, $args = array()) {
   // Load file data if missing
   if (!isset($item['filepath']) && !empty($item['fid'])) {
     $file = field_file_load($item['fid']);
@@ -81,7 +85,6 @@ function lightbox2_imagefield_image_imagecache($field_name, $item, $formatter, $
     return '';
   }
 
-  $args = array();
   $args['lightbox_preset'] = $lightbox_preset;
 
   // Check view_preset for existence.
@@ -95,13 +98,23 @@ function lightbox2_imagefield_image_imagecache($field_name, $item, $formatter, $
   else {
     $rules = _imagecache_get_presets();
   }
-  if ($view_preset == 'original' || in_array($view_preset, (array) $rules)) {
+  if ($view_preset == 'link' || $view_preset == 'original' || in_array($view_preset, (array) $rules)) {
     $rel = 'lightbox';
     if (strpos($formatter, '__lightshow2__') !== FALSE) {
       $rel = 'lightshow';
     }
+    elseif (strpos($formatter, '__lightshow2_compact__') !== FALSE) {
+      $rel = 'lightshow';
+      $args['compact'] = TRUE;
+    }
     elseif (strpos($formatter, '__lightframe2__') !== FALSE) {
       $rel = 'lightframe';
+    }
+
+    // Check if this is a compact display.
+    list($tmp, $lightbox_type, $tmp) = explode('__', $formatter, 3);
+    if ($lightbox_type == 'lightbox2_compact') {
+      $args['compact'] = TRUE;
     }
     return theme('imagefield_image_imagecache_lightbox2', $view_preset, $field_name, $item, $node, $rel, $args);
   }
@@ -134,7 +147,8 @@ function theme_imagefield_image_imagecache_lightbox2($view_preset, $field_name, 
   }
   // Can't show current node page in a lightframe on the node page.
   // Switch instead to show it in a lightbox.
-  if ($rel == 'lightframe' && arg(0) == 'node' && arg(1) == $node->nid) {
+  $on_image_node = (arg(0) == 'node') && (arg(1) == $node->nid);
+  if ($rel == 'lightframe' && $on_image_node) {
     $rel = 'lightbox';
   }
   $orig_rel = $rel;
@@ -149,16 +163,16 @@ function theme_imagefield_image_imagecache_lightbox2($view_preset, $field_name, 
   $image_title = $item_data['description'];
   $image_title = (!empty($image_title) ? $image_title : $item_data['title']);
   $image_title = (!empty($image_title) ? $image_title : $item_data['alt']);
+  if (empty($image_title) || variable_get('lightbox2_imagefield_use_node_title', FALSE)) {
+    $node = node_load($node->nid);
+    $image_title = $node->title;
+  }
 
   $image_tag_title = '';
   if (!empty($item_data['title'])) {
     $image_tag_title = $item_data['title'];
   }
 
-  if (variable_get('lightbox2_imagefield_use_node_title', FALSE)) {
-    $node = node_load($node->nid);
-    $image_title = $node->title;
-  }
 
   // Enforce image alt.
   $image_tag_alt = '';
@@ -173,18 +187,18 @@ function theme_imagefield_image_imagecache_lightbox2($view_preset, $field_name, 
   $node_links = array();
   if (!empty($item['nid'])) {
     $attributes = array();
-    $attributes['id'] = 'node_link_text';
+    $attributes['id'] = 'lightbox2-node-link-text';
     $target = variable_get('lightbox2_node_link_target', FALSE);
     if (!empty($target)) {
       $attributes['target'] = $target;
     }
     $node_link_text = variable_get('lightbox2_node_link_text', 'View Image Details');
-    if (!empty($node_link_text)) {
+    if (!$on_image_node && !empty($node_link_text)) {
       $node_links[] = l($node_link_text, 'node/'. $item['nid'], array('attributes' => $attributes));
     }
     $download_link_text = check_plain(variable_get('lightbox2_download_link_text', 'Download Original'));
-    if (!empty($download_link_text) && user_access('download original image') && user_access('view imagefield uploads')) {
-      $node_links[] = l($download_link_text, $item['filepath'], array('attributes' => array('target' => '_blank', 'id' => 'download_link_text')));
+    if (!empty($download_link_text) && user_access('download original image')) {
+      $node_links[] = l($download_link_text, file_create_url($item['filepath']), array('attributes' => array('target' => '_blank', 'id' => 'lightbox2-download-link-text')));
     }
   }
 
@@ -206,7 +220,10 @@ function theme_imagefield_image_imagecache_lightbox2($view_preset, $field_name, 
   // Set up the rel attribute.
   $full_rel = '';
   $imagefield_grouping = variable_get('lightbox2_imagefield_group_node_id', 1);
-  if ($imagefield_grouping == 1) {
+  if (isset($args['rel_grouping'])) {
+    $full_rel = $rel .'['. $args['rel_grouping'] .']['. $caption .']';
+  }
+  elseif ($imagefield_grouping == 1) {
     $full_rel = $rel .'['. $field_name .']['. $caption .']';
   }
   elseif ($imagefield_grouping == 2 && !empty($item['nid'])) {
@@ -215,20 +232,31 @@ function theme_imagefield_image_imagecache_lightbox2($view_preset, $field_name, 
   elseif ($imagefield_grouping == 3 && !empty($item['nid'])) {
     $full_rel = $rel .'['. $field_name .'_'. $item['nid'] .']['. $caption .']';
   }
-  elseif (isset($args['rel_grouping'])) {
-    $full_rel = $rel .'['. $args['rel_grouping'] .']['. $caption .']';
+  elseif ($imagefield_grouping == 4 ) {
+    $full_rel = $rel .'[allnodes]['. $caption .']';
   }
   else {
     $full_rel = $rel .'[]['. $caption .']';
   }
+  $class = '';
+  if ($view_preset != 'original') {
+    $class = 'imagecache imagecache-' . $field_name . ' imagecache-' . $view_preset . ' imagecache-' . $field_name . '-' . $view_preset;
+  }
   $link_attributes = array(
     'rel' => $full_rel,
+    'class' => 'imagefield imagefield-lightbox2 imagefield-lightbox2-' . $view_preset . ' imagefield-' . $field_name . ' ' . $class,
   );
 
-
   $attributes = array();
-  if ($view_preset == 'original') {
+  if (isset($args['compact']) && $item['#delta']) {
+    $image = '';
+  }
+  elseif ($view_preset == 'original') {
     $image = theme('lightbox2_image', $item['filepath'], $image_tag_alt, $image_tag_title, $attributes);
+  }
+  elseif ($view_preset == 'link') {
+    // Not actually an image, just a text link.
+    $image = variable_get('lightbox2_view_image_text', 'View image');
   }
   else {
     $image = theme('imagecache', $view_preset, $item['filepath'], $image_tag_alt, $image_tag_title, $attributes);
@@ -294,8 +322,11 @@ function theme_lightbox2_file_formatter_lightbox2_iframe($file, $field, $file_fo
     $file_data = unserialize($file->data);
   }
   $description = $file_data['description'];
+  if (empty($description)) {
+    $description = $file->filename;
+  }
   $attributes = array();
-  $attributes['id'] = 'node_link_text';
+  $attributes['id'] = 'lightbox2-node-link-text';
   $target = variable_get('lightbox2_node_link_target', FALSE);
   if (!empty($target)) {
     $attributes['target'] = $target;
@@ -380,7 +411,7 @@ function theme_lightbox2_emimage($field, $item, $formatter, $node, $args = array
       $link = NULL;
     }
     $attributes = array();
-    $attributes['id'] = 'node_link_text';
+    $attributes['id'] = 'lightbox2-node-link-text';
     if ($width) {
       $attributes['width'] = $width;
     }
@@ -481,14 +512,18 @@ function theme_lightbox2_formatter_emvideo_lightvideo($element) {
  *   The formatter to use for the field.
  * @param $node
  *   The node object.
+ * @param $options
+ *   Options array.
  * @return
  *   Themed link to the embedded media field video.
  */
-function theme_lightbox2_emvideo($field, $item, $formatter, $node) {
-
-  $options = array();
-  $thumbnail = theme('emvideo_video_thumbnail', $field, $item, 'video_thumbnail', $node, TRUE, $options);
-
+function theme_lightbox2_emvideo($field, $item, $formatter, $node, $options = array()) {
+  $thumbnail = isset($options['thumbnail']) ? $options['thumbnail'] : theme('emvideo_video_thumbnail', $field, $item, 'video_thumbnail', $node, TRUE, $options);
+  // if options title set use that, otherwise use video title if set in node,
+  // otherwise try node title, then widget thumbnail setting and fallback to
+  // default string.
+  $title = isset($options['title']) ? $options['title'] : (isset($item['data']['emthumb']['emthumb_title']) ? $item['data']['emthumb']['emthumb_title'] : (isset($node->title) ? $node->title : (isset($field['widget']['thumbnail_link_title']) ? $field['widget']['thumbnail_link_title'] : variable_get('emvideo_default_thumbnail_link_title', t('See video')))));
+  
   $destination = 'video-cck/lightbox2/'. $node->nid .'/'. $field['widget']['video_width'] .'/'. $field['widget']['video_height'] .'/'. $field['field_name'] .'/'. $item['provider'] .'/'. $item['value'];
   $width = $field['widget']['video_width'] + 20;
   $height = $field['widget']['video_height'] + 20;
@@ -496,9 +531,21 @@ function theme_lightbox2_emvideo($field, $item, $formatter, $node) {
     $width = $field['widget']['video_width'] + 40;
     $height = $field['widget']['video_height'] + 40;
   }
-  $rel_full = 'lightframe[|width:'. $width .'px; height:'. $height .'px; overflow:visible;]';
+  $rel_full = 'lightframe['. $field['type_name'] . '|width:'. $width .'px; height:'. $height .'px; overflow:visible;]';
 
-  $output = l($thumbnail, $destination, array('attributes' => array('rel' => $rel_full, 'class' => $field['type_name']), 'html' => TRUE));
+  $attributes = array(
+    'attributes' => array(
+      'title' => $title,
+      'class' => $field['type_name'],
+      'rel' => $rel_full,
+    ),
+    'query' => NULL,
+    'fragment' => NULL,
+    'absolute' => FALSE,
+    'html' => TRUE,
+  );
+
+  $output = l($thumbnail, $destination, $attributes);
   return $output;
 }
 

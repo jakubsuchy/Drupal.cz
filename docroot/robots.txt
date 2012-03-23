@@ -1,4 +1,3 @@
-# $Id: robots.txt,v 1.7.2.3 2008/12/10 20:24:38 drumm Exp $
 #
 # robots.txt
 #
@@ -25,11 +24,8 @@ Disallow: /misc/
 Disallow: /modules/
 Disallow: /profiles/
 Disallow: /scripts/
-Disallow: /sites/
 Disallow: /themes/
 # Files
-Disallow: /drupal_cz.sql.bz2
-Disallow: /drupal_cz.sql
 Disallow: /CHANGELOG.txt
 Disallow: /cron.php
 Disallow: /INSTALL.mysql.txt
@@ -44,7 +40,7 @@ Disallow: /xmlrpc.php
 # Paths (clean URLs)
 Disallow: /admin/
 Disallow: /comment/reply/
-Disallow: /contact/
+Disallow: /filter/tips/
 Disallow: /logout/
 Disallow: /node/add/
 Disallow: /search/
@@ -54,7 +50,7 @@ Disallow: /user/login/
 # Paths (no clean URLs)
 Disallow: /?q=admin/
 Disallow: /?q=comment/reply/
-Disallow: /?q=contact/
+Disallow: /?q=filter/tips/
 Disallow: /?q=logout/
 Disallow: /?q=node/add/
 Disallow: /?q=search/

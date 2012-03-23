@@ -1,5 +1,4 @@
 <?php
-// $Id: database.inc,v 1.92.2.4 2009/02/16 14:41:58 goba Exp $
 
 /**
  * @file
@@ -32,11 +31,11 @@ define('DB_ERROR', 'a515ac9c2796ca0e23adbe92c68fc9fc');
  * For example, one might wish to return a list of the most recent 10 nodes
  * authored by a given user. Instead of directly issuing the SQL query
  * @code
- *   SELECT n.title, n.body, n.created FROM node n WHERE n.uid = $uid LIMIT 0, 10;
+ *   SELECT n.nid, n.title, n.created FROM node n WHERE n.uid = $uid LIMIT 0, 10;
  * @endcode
  * one would instead call the Drupal functions:
  * @code
- *   $result = db_query_range('SELECT n.title, n.body, n.created
+ *   $result = db_query_range('SELECT n.nid, n.title, n.created
  *     FROM {node} n WHERE n.uid = %d', $uid, 0, 10);
  *   while ($node = db_fetch_object($result)) {
  *     // Perform operations on $node->body, etc. here.
@@ -116,14 +115,15 @@ function db_prefix_tables($sql) {
  * code.
  *
  * @param $name
- *   The name assigned to the newly active database connection. If omitted, the
+ *   The key in the $db_url global variable from settings.php. If omitted, the
  *   default connection will be made active.
  *
- * @return the name of the previously active database or FALSE if non was found.
+ * @return
+ *   The name of the previously active database, or FALSE if none was found.
  */
 function db_set_active($name = 'default') {
-  global $db_url, $db_type, $active_db;
-  static $db_conns, $active_name = FALSE;
+  global $db_url, $db_slave_url, $db_type, $active_db, $active_slave_db;
+  static $db_conns, $db_slave_conns, $active_name = FALSE;
 
   if (empty($db_url)) {
     include_once 'includes/install.inc';
@@ -134,9 +134,23 @@ function db_set_active($name = 'default') {
     // Initiate a new connection, using the named DB URL specified.
     if (is_array($db_url)) {
       $connect_url = array_key_exists($name, $db_url) ? $db_url[$name] : $db_url['default'];
+      if (is_array($db_slave_url[$name])) {
+        $slave_index = mt_rand(0, count($db_slave_url[$name]) - 1);
+        $slave_connect_url = $db_slave_url[$name][$slave_index];
+      }
+      else {
+        $slave_connect_url = $db_slave_url[$name];        
+      }
     }
     else {
       $connect_url = $db_url;
+      if (is_array($db_slave_url)) {
+        $slave_index = mt_rand(0, count($db_slave_url) - 1);
+        $slave_connect_url = $db_slave_url[$slave_index];
+      }
+      else {
+        $slave_connect_url = $db_slave_url;        
+      }
     }
 
     $db_type = substr($connect_url, 0, strpos($connect_url, '://'));
@@ -150,12 +164,21 @@ function db_set_active($name = 'default') {
     }
 
     $db_conns[$name] = db_connect($connect_url);
+    if (!empty($slave_connect_url)) {
+      $db_slave_conns[$name] = db_connect($slave_connect_url); 
+    }
   }
 
   $previous_name = $active_name;
   // Set the active connection.
   $active_name = $name;
   $active_db = $db_conns[$name];
+  if (isset($db_slave_conns[$name])) {
+    $active_slave_db = $db_slave_conns[$name];
+  }
+  else {
+    unset($active_slave_db);
+  }
 
   return $previous_name;
 }
@@ -174,7 +197,7 @@ function _db_error_page($error = '') {
   global $db_type;
   drupal_init_language();
   drupal_maintenance_theme();
-  drupal_set_header('HTTP/1.1 503 Service Unavailable');
+  drupal_set_header($_SERVER['SERVER_PROTOCOL'] .' 503 Service Unavailable');
   drupal_set_title('Site off-line');
 
   $message = '<p>The site is currently not available due to technical problems. Please try again later. Thank you for your understanding.</p>';
@@ -208,7 +231,19 @@ function _db_query_callback($match, $init = FALSE) {
 
   switch ($match[1]) {
     case '%d': // We must use type casting to int to convert FALSE/NULL/(TRUE?)
-      return (int) array_shift($args); // We don't need db_escape_string as numbers are db-safe
+      $value = array_shift($args);
+      // Do we need special bigint handling?
+      if ($value > PHP_INT_MAX) {
+        $precision = ini_get('precision');
+        @ini_set('precision', 16);
+        $value = sprintf('%.0f', $value);
+        @ini_set('precision', $precision);
+      }
+      else {
+        $value = (int) $value;
+      }
+      // We don't need db_escape_string as numbers are db-safe.
+      return $value;
     case '%s':
       return db_escape_string(array_shift($args));
     case '%n':
@@ -295,6 +330,42 @@ function _db_rewrite_sql($query = '', $primary_table = 'n', $primary_field = 'ni
 }
 
 /**
+ * Runs a basic query in the active slave database.
+ *
+ * User-supplied arguments to the query should be passed in as separate
+ * parameters so that they can be properly escaped to avoid SQL injection
+ * attacks.
+ *
+ * @param $query
+ *   A string containing an SQL query.
+ * @param ...
+ *   A variable number of arguments which are substituted into the query
+ *   using printf() syntax. Instead of a variable number of query arguments,
+ *   you may also pass a single array containing the query arguments.
+ *
+ *   Valid %-modifiers are: %s, %d, %f, %b (binary data, do not enclose
+ *   in '') and %%.
+ *
+ *   NOTE: using this syntax will cast NULL and FALSE values to decimal 0,
+ *   and TRUE values to decimal 1.
+ *
+ * @return
+ *   A database query result resource, or FALSE if the query was not
+ *   executed correctly.
+ */
+function db_query_slave($query) {
+  $args = func_get_args();
+  array_shift($args);
+  $query = db_prefix_tables($query);
+  if (isset($args[0]) and is_array($args[0])) { // 'All arguments in one array' syntax
+    $args = $args[0];
+  }
+  _db_query_callback($args, TRUE);
+  $query = preg_replace_callback(DB_QUERY_REGEXP, '_db_query_callback', $query);
+  return _db_query($query, FALSE, TRUE);
+}
+
+/**
  * Rewrites node, taxonomy and comment queries. Use it for listing queries. Do not
  * use FROM table1, table2 syntax, use JOIN instead.
  *
@@ -377,6 +448,32 @@ function db_rewrite_sql($query, $primary_table = 'n', $primary_field = 'nid',  $
 }
 
 /**
+ * Adds the DISTINCT flag to the supplied query and returns the altered query.
+ *
+ * The supplied query should not contain a DISTINCT flag. This will not, and
+ * never did guarantee that you will obtain distinct values of $table.$field.
+ *
+ * @param $table
+ *   Unused. Kept to retain API compatibility.
+ * @param $field
+ *   Unused. Kept to retain API compatibility.
+ * @param $query
+ *   Query to which the DISTINCT flag should be applied.
+ *
+ * @return
+ *   SQL query with the DISTINCT flag set.
+ */
+function db_distinct_field($table, $field, $query) {
+  $matches = array();
+  if (!preg_match('/^SELECT\s*DISTINCT/i', $query, $matches)) {
+    // Only add distinct to the outer SELECT to avoid messing up subqueries.
+    $query = preg_replace('/^SELECT/i', 'SELECT DISTINCT', $query);
+  }
+
+  return $query;
+}
+
+/**
  * Restrict a dynamic table, column or constraint name to safe characters.
  *
  * Only keeps alphanumeric and underscores.
@@ -416,7 +513,6 @@ function db_escape_table($string) {
  *   - 'fields': An associative array ('fieldname' => specification)
  *     that describes the table's database columns.  The specification
  *     is also an array.  The following specification parameters are defined:
- *
  *     - 'description': A string describing this field and its purpose.
  *       References to other tables should be enclosed in
  *       curly-brackets.  For example, the node table vid field
@@ -427,13 +523,14 @@ function db_escape_table($string) {
  *       just map to the according database engine specific
  *       datatypes.  Use 'serial' for auto incrementing fields. This
  *       will expand to 'int auto_increment' on mysql.
+ *     - 'serialize': A boolean indicating whether the field will be stored
+         as a serialized string.
  *     - 'size': The data size: 'tiny', 'small', 'medium', 'normal',
  *       'big'.  This is a hint about the largest value the field will
  *       store and determines which of the database engine specific
  *       datatypes will be used (e.g. on MySQL, TINYINT vs. INT vs. BIGINT).
  *       'normal', the default, selects the base type (e.g. on MySQL,
  *       INT, VARCHAR, BLOB, etc.).
- *
  *       Not all sizes are available for all data types. See
  *       db_type_map() for possible combinations.
  *     - 'not null': If true, no NULL values will be allowed in this
@@ -443,7 +540,7 @@ function db_escape_table($string) {
  *       specify '0' as the default value for a type 'int' field it
  *       will not work because '0' is a string containing the
  *       character "zero", not an integer.
- *     - 'length': The maximal length of a type 'varchar' or 'text'
+ *     - 'length': The maximal length of a type 'char', 'varchar' or 'text'
  *       field.  Ignored for other field types.
  *     - 'unsigned': A boolean indicating whether a type 'int', 'float'
  *       and 'numeric' only is signed or unsigned.  Defaults to
@@ -452,10 +549,8 @@ function db_escape_table($string) {
  *       the precision (total number of significant digits) and scale
  *       (decimal digits right of the decimal point).  Both values are
  *       mandatory.  Ignored for other field types.
- *
  *     All parameters apart from 'type' are optional except that type
  *     'numeric' columns must specify 'precision' and 'scale'.
- *
  *  - 'primary key': An array of one or more key column specifiers (see below)
  *    that form the primary key.
  *  - 'unique keys': An associative array of unique keys ('keyname' =>
@@ -585,3 +680,24 @@ function db_type_placeholder($type) {
 /**
  * @} End of "defgroup schemaapi".
  */
+
+/**
+ * Sets a session variable specifying the lag time for ignoring a slave server.
+ * Backport of D7 functionality.
+ */
+function db_ignore_slave() {
+  global $active_slave_db;
+
+  // Only set ignore_slave_server if there are slave servers being used, which
+  // is assumed db_url is an array.
+  if (isset($active_slave_db)) {
+    // Five minutes is long enough to allow the slave to break and resume
+    // interrupted replication without causing problems on the Drupal site from
+    // the old data.
+    $duration = variable_get('maximum_replication_lag', 300);
+    // Set session variable with amount of time to delay before using slave.
+    // This will stick around for 5 minutes by default. 
+    // There is another $_Session variable 'not_slavesafe' for single queries.
+    $_SESSION['ignore_slave_server'] = $_SERVER['REQUEST_TIME'] + $duration;
+  }
+}

@@ -1,5 +1,4 @@
 <?php
-// $Id: openid.inc,v 1.8 2008/01/30 22:11:22 goba Exp $
 
 /**
  * @file
@@ -74,11 +73,14 @@ function openid_redirect_form(&$form_state, $url, $message) {
  * Determine if the given identifier is an XRI ID.
  */
 function _openid_is_xri($identifier) {
-  $firstchar = substr($identifier, 0, 1);
-  if ($firstchar == "@" || $firstchar == "=")
-    return TRUE;
+  // Strip the xri:// scheme from the identifier if present.
+  if (strpos(strtolower($identifier), 'xri://') !== FALSE) {
+    $identifier = substr($identifier, 6);
+  }
 
-  if (stristr($identifier, 'xri://') !== FALSE) {
+  // Test whether the identifier starts with an XRI global context symbol or (.
+  $firstchar = substr($identifier, 0, 1);
+  if (strpos("=@+$!(", $firstchar) !== FALSE) {
     return TRUE;
   }
 
@@ -111,6 +113,9 @@ function _openid_normalize_url($url) {
   if (stristr($url, '://') === FALSE) {
     $normalized_url = 'http://'. $url;
   }
+
+  // Strip the fragment and fragment delimiter if present.
+  $normalized_url = strtok($normalized_url, '#');
 
   if (substr_count($normalized_url, '/') < 3) {
     $normalized_url .= '/';

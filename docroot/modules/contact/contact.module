@@ -1,5 +1,4 @@
 <?php
-// $Id: contact.module,v 1.103.2.1 2008/04/09 21:11:46 goba Exp $
 
 /**
  * @file
@@ -110,19 +109,39 @@ function contact_menu() {
 }
 
 /**
- * Determine if a user can access to the contact tab.
+ * Menu access callback for a user's personal contact form.
+ *
+ * @param $account
+ *   A user account object.
+ * @return
+ *   TRUE if the current user has access to the requested user's contact form,
+ *   or FALSE otherwise.
  */
 function _contact_user_tab_access($account) {
   global $user;
-  if (!isset($account->contact)) {
-    $account->contact = FALSE;
+
+  // Anonymous users cannot use or have contact forms.
+  if (!$user->uid || !$account->uid) {
+    return FALSE;
   }
-  return
-    $account && $user->uid &&
-    (
-      ($user->uid != $account->uid && $account->contact) ||
-      user_access('administer users')
-    );
+
+  // User administrators should always have access to personal contact forms.
+  if (user_access('administer users')) {
+    return TRUE;
+  }
+
+  // Users may not contact themselves.
+  if ($user->uid == $account->uid) {
+    return FALSE;
+  }
+
+  // If the requested user has disabled their contact form, or this preference
+  // has not yet been saved, do not allow users to contact them.
+  if (empty($account->contact)) {
+    return FALSE;
+  }
+
+  return TRUE;
 }
 
 /**
@@ -182,9 +201,9 @@ function contact_mail($key, &$message, $params) {
     case 'user_copy':
       $user = $params['user'];
       $account = $params['account'];
-      $message['subject'] .= '['. variable_get('site_name', 'Drupal') .'] '. $params['subject'];
+      $message['subject'] .= '['. variable_get('site_name', 'Pressflow') .'] '. $params['subject'];
       $message['body'][] = "$account->name,";
-      $message['body'][] = t("!name (!name-url) has sent you a message via your contact form (!form-url) at !site.", array('!name' => $user->name, '!name-url' => url("user/$user->uid", array('absolute' => TRUE, 'language' => $language)), '!form-url' => url($_GET['q'], array('absolute' => TRUE, 'language' => $language)), '!site' => variable_get('site_name', 'Drupal')), $language->language);
+      $message['body'][] = t("!name (!name-url) has sent you a message via your contact form (!form-url) at !site.", array('!name' => $user->name, '!name-url' => url("user/$user->uid", array('absolute' => TRUE, 'language' => $language)), '!form-url' => url($_GET['q'], array('absolute' => TRUE, 'language' => $language)), '!site' => variable_get('site_name', 'Pressflow')), $language->language);
       $message['body'][] = t("If you don't want to receive such e-mails, you can change your settings at !url.", array('!url' => url("user/$account->uid", array('absolute' => TRUE, 'language' => $language))), $language->language);
       $message['body'][] = t('Message:', NULL, $language->language);
       $message['body'][] = $params['message'];

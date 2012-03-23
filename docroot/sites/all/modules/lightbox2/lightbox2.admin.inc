@@ -1,5 +1,5 @@
 <?php
-// $Id: lightbox2.admin.inc,v 1.1.2.24 2009/01/07 17:46:47 snpower Exp $
+// $Id: lightbox2.admin.inc,v 1.1.2.38 2010/09/24 08:41:02 snpower Exp $
 
 /**
  * @file
@@ -69,6 +69,14 @@ function lightbox2_general_settings_form() {
     '#default_value' => variable_get('lightbox2_force_show_nav', FALSE),
   );
 
+  // Show caption
+  $form['layout_fieldset']['lightbox2_show_caption'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show image caption'),
+    '#description' => t('Unset this to always hide the image caption (usually the title).'),
+    '#default_value' => variable_get('lightbox2_show_caption', TRUE),
+  );
+
   // Add checkbox for "looping through images'.
   $form['layout_fieldset']['lightbox2_loop_items'] = array(
     '#type' => 'checkbox',
@@ -86,8 +94,17 @@ function lightbox2_general_settings_form() {
     '#return_value' => '_blank',
   );
 
+  // Define Lightbox2 text settings.
+  /* ------------------------------- */
+  $form['lightbox2_text_settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Text settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
   // Add text box for link text to node.
-  $form['layout_fieldset']['lightbox2_node_link_text'] = array(
+  $form['lightbox2_text_settings']['lightbox2_node_link_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Text for image page link'),
     '#description' => t('This is the text that will appear as the link to the image page underneath the image in the lightbox.  Leave this blank for the link not to appear.'),
@@ -95,16 +112,15 @@ function lightbox2_general_settings_form() {
   );
 
   // Add text box for link text to node.
-  $form['layout_fieldset']['lightbox2_download_link_text'] = array(
+  $form['lightbox2_text_settings']['lightbox2_download_link_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Text for image original link'),
-    '#description' => t('This is the text that will appear as the link to the original file underneath the image in the lightbox.  Leave this blank for the link not to appear.'),
+    '#description' => t('This is the text that will appear as the link to the original file underneath the image in the lightbox.  Leave this blank for the link not to appear.  It will only appear for images uploaded via the "image" or "imagefield" modules.  Users will need the "download original image" permission, but also the "view original images" permission if using the "image" module.'),
     '#default_value' => variable_get('lightbox2_download_link_text', 'Download Original'),
   );
 
-
   // Add text box for image count for grouping.
-  $form['layout_fieldset']['lightbox2_image_count_str'] = array(
+  $form['lightbox2_text_settings']['lightbox2_image_count_str'] = array(
     '#type' => 'textfield',
     '#title' => t('Image count text'),
     '#description' => t('This text is used to display the image count underneath the image in the lightbox when image grouping is enabled.  Use !current as a placeholder for the number of the current image and !total for the total number of images in the group.  For example, "Image !current of !total".  Leave blank for text not to appear.'),
@@ -112,7 +128,7 @@ function lightbox2_general_settings_form() {
   );
 
   // Add text box for page count for grouping.
-  $form['layout_fieldset']['lightbox2_page_count_str'] = array(
+  $form['lightbox2_text_settings']['lightbox2_page_count_str'] = array(
     '#type' => 'textfield',
     '#title' => t('Page count text'),
     '#description' => t('This text is used to display the page count underneath HTML content displayed in the lightbox when using groups.  Use !current as a placeholder for the number of the current page and !total for the total number of pages in the group.  For example, "Page !current of !total".  Leave blank for text not to appear.'),
@@ -120,12 +136,21 @@ function lightbox2_general_settings_form() {
   );
 
   // Add text box for video count for grouping.
-  $form['layout_fieldset']['lightbox2_video_count_str'] = array(
+  $form['lightbox2_text_settings']['lightbox2_video_count_str'] = array(
     '#type' => 'textfield',
     '#title' => t('Video count text'),
     '#description' => t('This text is used to display the count underneath video content displayed in the lightbox when using groups.  Use !current as a placeholder for the number of the current video and !total for the total number of videos in the group.  For example, "Video !current of !total".  Leave blank for text not to appear.'),
     '#default_value' => variable_get('lightbox2_video_count_str', 'Video !current of !total'),
   );
+
+  // Add text box for video count for grouping.
+  $form['lightbox2_text_settings']['lightbox2_filter_xss_allowed_tags'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Allowed HTML tags'),
+    '#description' => t('A list of comma separated HTML tags which are allowed to be used in the caption text area.'),
+    '#default_value' => variable_get('lightbox2_filter_xss_allowed_tags', 'p, br, a, em, strong, cite, code, ul, ol, li, dl, dt, dd'),
+  );
+
 
   // Define Lightbox2 zoom fieldset.
   /* -------------------------------- */
@@ -198,8 +223,8 @@ function lightbox2_general_settings_form() {
   $form['video_fieldset']['lightbox2_flv_player_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to FLV Player'),
-    '#description' => t('The path to the FLV player, relative to Drupal root directory.'),
-    '#default_value' => variable_get('lightbox2_flv_player_path', '/flvplayer.swf'),
+    '#description' => t('The path to the FLV player, relative to Drupal root directory. No leading slashes.'),
+    '#default_value' => variable_get('lightbox2_flv_player_path', 'flvplayer.swf'),
   );
 
   // Add textfield for FLV Player flashvars.
@@ -210,7 +235,8 @@ function lightbox2_general_settings_form() {
     '#default_value' => variable_get('lightbox2_flv_player_flashvars', ''),
   );
 
-  // Add fieldset for page specific lightbox2 settings.
+  // Define Lightbox2 page specific settings fieldset.
+  /* ------------------------------------------------ */
   $form['lightbox2_page_init'] = array(
     '#type' => 'fieldset',
     '#title' => t('Page specific lightbox2 settings'),
@@ -252,6 +278,7 @@ function lightbox2_general_settings_form() {
       1 => t('Group by field name'),
       2 => t('Group by node id'),
       3 => t('Group by field name and node id'),
+      4 => t('Group all nodes and fields'),
     );
 
     // Add checkbox for emfield emimage grouping.
@@ -280,6 +307,13 @@ function lightbox2_general_settings_form() {
         '#description' => t('By default, the caption for imagefields is the image title text configured.  If no title is configured, then the alt text will be used.  This option allows you to override that and always display the node title as the image caption.'),
         '#default_value' => variable_get('lightbox2_imagefield_use_node_title', FALSE),
       );
+      $form['cck_options']['lightbox2_view_image_text'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Text to view image'),
+        '#description' => t('This is the text that can appear when linking to the image using CCK imagefields.'),
+        '#default_value' => variable_get('lightbox2_view_image_text', 'View image'),
+      );
+
     }
   }
 
@@ -477,7 +511,7 @@ function lightbox2_general_settings_form() {
     '#title' => t('Appearance duration'),
     '#size' => 5,
     '#maxlength' => 5,
-    '#description' => t('The duration (in seconds) of the lightbox appearance animation.  Enter a value between 0 and 10.'),
+    '#description' => t('The duration (in seconds) of the lightbox appearance animation.  Enter a positive number less than 10.'),
     '#default_value' => variable_get('lightbox2_fadein_speed', 0.4),
   );
 
@@ -501,7 +535,7 @@ function lightbox2_general_settings_form() {
  * numeric.
  */
 function lightbox2_general_settings_form_validate($form, &$form_state) {
-  if ($form_state['values']['op'] == 'Save configuration') {
+  if ($form_state['values']['op'] == t('Save configuration')) {
     $border_size = $form_state['values']['lightbox2_border_size'];
     $box_hex_colour = $form_state['values']['lightbox2_box_color'];
     $font_hex_colour = $form_state['values']['lightbox2_font_color'];
@@ -512,7 +546,7 @@ function lightbox2_general_settings_form_validate($form, &$form_state) {
     $slide_down_speed = $form_state['values']['lightbox2_slidedown_speed'];
     $flv_player_path = $form_state['values']['lightbox2_flv_player_path'];
 
-    if ($flv_player_path != '' && $form_state['values']['lightbox2_enable_video']) {
+    if (!empty($flv_player_path) && $form_state['values']['lightbox2_enable_video']) {
       if (strpos($flv_player_path, base_path()) === 0) {
         $flv_player_path = drupal_substr($flv_player_path, drupal_strlen(base_path()));
       }
@@ -520,7 +554,6 @@ function lightbox2_general_settings_form_validate($form, &$form_state) {
         form_set_error('lightbox2_flv_player_path', t("FLV player path doesn't exist."));
       }
     }
-
 
     if (!_lightbox2_validate_hex_color($overlay_hex_colour)) {
       form_set_error('lightbox2_overlay_color', t('You must enter a properly formed hex value.'));
@@ -532,7 +565,7 @@ function lightbox2_general_settings_form_validate($form, &$form_state) {
       }
 
       if (!_lightbox2_validate_hex_color($box_hex_colour)) {
-        form_set_error('lightbox2_border_color', t('You must enter a properly formed hex value.'));
+        form_set_error('lightbox2_box_color', t('You must enter a properly formed hex value.'));
       }
 
       if (!_lightbox2_validate_hex_color($font_hex_colour)) {
@@ -547,7 +580,7 @@ function lightbox2_general_settings_form_validate($form, &$form_state) {
         form_set_error('lightbox2_resize_speed', t('You must enter a duration between 0 and 10 seconds.'));
       }
 
-      if (!is_numeric($fadein_speed) || $fadein_speed <= 0 || $fadein_speed >= 10) {
+      if (!is_numeric($fadein_speed) || $fadein_speed < 0 || $fadein_speed >= 10) {
         form_set_error('lightbox2_fadein_speed', t('You must enter a duration between 0 and 10 seconds.'));
       }
 
@@ -622,7 +655,7 @@ function lightbox2_slideshow_settings_form() {
   );
 
   // Add checkbox for "pausing on prev click".
-  $form['lightbox2_slideshow_pause_on_prev_click'] = array(
+  $form['lightbox2_slideshow_pause_on_previous_click'] = array(
     '#type' => 'checkbox',
     '#title' => t('Pause slideshow on "Previous Image" click'),
     '#description' => t('When enabled the slideshow is automatically paused, and the previous image shown, when the "Previous" button is clicked.'),
@@ -770,7 +803,7 @@ function lightbox2_auto_image_handling_settings_form() {
     $sizes = _image_get_sizes();
     foreach ($sizes as $size_key => $size) {
       if ($size_key == 'original' or $size_key == '_original')  {
-        $size_key = '';
+        $size_key = 'original';
       }
       $size_options[$size_key] = $size['label'];
     }
@@ -778,7 +811,7 @@ function lightbox2_auto_image_handling_settings_form() {
       '#type' => 'select',
       '#title' => t('Lightbox image display size'),
       '#options' => $size_options,
-      '#default_value' => variable_get('lightbox2_display_image_size', ''),
+      '#default_value' => variable_get('lightbox2_display_image_size', 'original'),
       '#description' => t('Select which image size will be loaded in the lightbox.  This only applies to images uploaded with the Image module.'),
     );
 
@@ -839,16 +872,16 @@ function lightbox2_auto_image_handling_settings_form() {
   /* ----------------------- */
   $form['handler_options']['inline_options'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Inline images'),
+    '#title' => t('Inline module images'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
   // Add checkbox for inline image support.
   $form['handler_options']['inline_options']['lightbox2_inline'] = array(
     '#type' => 'select',
-    '#title' => t('Automatic handler for Inline images'),
+    '#title' => t('Automatic handler for Inline module images'),
     '#options' => $automatic_options,
-    '#description' => t('Choose how URLs for Inline images will be automatically handled.'),
+    '#description' => t('Choose how URLs for Inline module images will be automatically handled.'),
     '#default_value' => variable_get('lightbox2_inline', 0),
   );
 

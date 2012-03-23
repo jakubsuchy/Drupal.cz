@@ -1,0 +1,14 @@
+/* $Id: image_captcha-rtl.css,v 1.1.2.1 2010/11/29 23:33:37 soxofaan Exp $ */
+
+/**
+ * Styling of the font selection list (with previews)
+ * on the Image CAPTCHA settings page.
+ */
+
+/**
+ * Float the fonts with preview (with a fixed width)
+ * to create a multi-column layout.
+ */
+.image_captcha_admin_font_preview {
+  float: right;
+}

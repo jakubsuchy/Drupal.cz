@@ -1,5 +1,5 @@
 <?php
-// $Id: lightbox2.install,v 1.1.4.4.2.44 2009/01/05 03:19:51 snpower Exp $
+// $Id: lightbox2.install,v 1.1.4.4.2.49 2010/09/22 17:26:19 snpower Exp $
 
 /**
  * @file
@@ -41,7 +41,9 @@ function lightbox2_uninstall() {
   variable_del('lightbox2_disable_these_urls');
   variable_del('lightbox2_imagefield_group_node_id');
   variable_del('lightbox2_imagefield_use_node_title');
+  variable_del('lightbox2_view_image_text');
   variable_del('lightbox2_image_ncck_group_node_id');
+  variable_del('lightbox2_show_caption');
   // Advanced settings.
   variable_del('lightbox2_js_location');
   variable_del('lightbox2_keys_close');
@@ -89,6 +91,7 @@ function lightbox2_uninstall() {
   variable_del('lightbox2_node_link_text');
   variable_del('lightbox2_download_link_text');
   variable_del('lightbox2_node_link_target');
+  variable_del('lightbox2_show_caption');
   variable_del('lightbox2_image_group');
   variable_del('lightbox2_disable_nested_acidfree_galleries');
   variable_del('lightbox2_acidfree_video');
@@ -165,6 +168,35 @@ function lightbox2_update_3() {
   variable_set('lightbox2_disable_resize', $disable_zoom);
   variable_set('lightbox2_disable_zoom', FALSE);
 
+  return array();
+}
+
+function lightbox2_update_6001() {
+  $size = variable_get('lightbox2_display_image_size', 'original');
+  if ($size == '') {
+    variable_set('lightbox2_display_image_size', 'original');
+  }
+  return array();
+}
+
+/**
+ * 'lightbox2_slideshow_pause_on_previous_click' was mis-named as
+ * 'lightbox2_slideshow_pause_on_prev_click'.
+ */
+function lightbox2_update_6002() {
+  $vars = variable_init();
+  if (array_key_exists('lightbox2_slideshow_pause_on_prev_click', $vars)) {
+    $value = $vars['lightbox2_slideshow_pause_on_prev_click'];
+    variable_set('lightbox2_slideshow_pause_on_previous_click', $value);
+    variable_del('lightbox2_slideshow_pause_on_prev_click');
+  }
+  return array();
+}
+
+/**
+ * Menu paths changed.
+ */
+function lightbox2_update_6003() {
   return array();
 }
 
