@@ -1,5 +1,27 @@
-// $Id: CHANGELOG.txt,v 1.1.2.8.2.29.2.11 2009/06/22 10:05:18 jareyero Exp $
+// $Id: CHANGELOG.txt,v 1.1.2.8.2.29.2.21 2011/02/16 23:30:37 jareyero Exp $
 
+6.x-2.3 to 6.x-2.4
+------------------------
+- Added proper filtering for messaging method names.
+
+6.x-2.2 to 6.x-2.3
+------------------------
+- Added PHPMailer support for secure sending port (Gmail support), by foxtrotcharlie, #549382
+- Check message['headers'] is actually an array, by Scott Reynolds, #653856
+- Removed obsoleted messaging_get_log() function, #717852
+- Fixing issue: Unsupported operand types (method disabled), #451638
+- Improved logging system so it needs to be enabled, see #733176
+- Updated translation function to work with latest i18nstrings. New messaging_translate()
+
+6.x-2.1 to 6.x-2.2
+-------------------------
+- Fixed: removed no caching for filters, #577418
+- Fixed: 'aftersend' typo by batje, #508054 
+- Added line break default filter on install, by aaronbauman, #516012
+- PHPMailer: Added support for libraries API, by markus_petrux, #541938
+- Fixed issue with sms sending, #407524
+- Strenghtening message filtering, better description, #546116
+ 
 6.x-2.0 to 6.x-2.1
 --------------------------
 - Fixed: outdated permission in privatemsg module, by askibinski, #491364

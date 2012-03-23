@@ -1,4 +1,4 @@
-/* $Id: lightbox_lite.js,v 1.1.2.2.2.18 2008/08/14 11:28:16 snpower Exp $ */
+/* $Id: lightbox_lite.js,v 1.1.2.2.2.19 2010/06/07 14:54:30 snpower Exp $ */
 
 /**
  * Lightbox JS: Fullsize Image Overlays
@@ -117,7 +117,7 @@ function pause(ms) {
 // hideLightbox()
 function hideLightbox() {
   // get objects
-  objOverlay = document.getElementById('overlay');
+  objOverlay = document.getElementById('lightbox2-overlay');
   objLightbox = document.getElementById('lightbox');
 
   // hide lightbox and overlay
@@ -185,7 +185,7 @@ function imgLoadingError(image, objImage, objLink) {
 function showLightbox(objLink) {
   var settings = Drupal.settings.lightbox2;
   // prep objects
-  var objOverlay = document.getElementById('overlay');
+  var objOverlay = document.getElementById('lightbox2-overlay');
   var objLightbox = document.getElementById('lightbox');
   var objCaption = document.getElementById('lightboxCaption');
   var objImage = document.getElementById('lightboxImage');
@@ -302,7 +302,7 @@ function initLightbox() {
 
   // the rest of this code inserts html at the top of the page that looks like
   // this:
-  // <div id="overlay">
+  // <div id="lightbox2-overlay">
   //  <a href="#" onclick="hideLightbox(); return false;"><img id="loadingImage" /></a>
   // </div>
   // <div id="lightbox">
@@ -320,7 +320,7 @@ function initLightbox() {
 
   // create overlay div and hardcode some functional styles (aesthetic styles are in CSS file)
   var objOverlay = document.createElement("div");
-  objOverlay.setAttribute('id', 'overlay');
+  objOverlay.setAttribute('id', 'lightbox2-overlay');
   objOverlay.onclick = function () { hideLightbox(); return false; };
   objOverlay.style.display = 'none';
   objOverlay.style.position = 'absolute';

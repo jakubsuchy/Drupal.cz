@@ -1,5 +1,5 @@
 <?php
-// $Id: messaging.store.inc,v 1.1.2.4.2.9.2.1 2009/06/13 14:49:13 jareyero Exp $
+// $Id: messaging.store.inc,v 1.1.2.4.2.9.2.2 2009/11/11 18:07:24 jareyero Exp $
 /**
  * @file
  *   Database storage for the messaging framework
@@ -68,7 +68,7 @@ function messaging_store_queue_process_step($limit, $timeout = 0) {
     messaging_store_unpack($message, TRUE);
     // Actual sending functions function
     $message->process = TRUE;
-    $message = messaging_message_callbacks(array('multisend', 'alftersend'), $message, messaging_method_info($message->method));
+    $message = messaging_message_callbacks(array('multisend', 'aftersend'), $message, messaging_method_info($message->method));
     if ($message->success) {
       $sent[] = $message->mqid;
     } else {

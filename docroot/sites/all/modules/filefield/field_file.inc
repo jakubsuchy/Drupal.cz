@@ -1,5 +1,4 @@
 <?php
-// $Id: field_file.inc,v 1.33 2009/04/28 04:03:24 quicksketch Exp $
 
 /**
  * @file
@@ -38,12 +37,14 @@ function field_file_load($fid, $reset = NULL) {
     }
 
     if (!$file) {
-      $file = array('fid' => 0, 'filepath' => '', 'filename' => '', 'filemime' => '', 'filesize' => 0);
+      $file = (object) array('fid' => 0, 'filepath' => '', 'filename' => '', 'filemime' => '', 'filesize' => 0);
     }
 
     foreach (module_implements('file_load') as $module) {
-      $function =  $module .'_file_load';
-      $function($file);
+      if ($module != 'field') {
+        $function = $module .'_file_load';
+        $function($file);
+      }
     }
 
     // Cache the fully loaded file for later use.
@@ -52,7 +53,7 @@ function field_file_load($fid, $reset = NULL) {
 
   // Cast to an array for the field storage.
   // Contrary to fields, hook_file() and core file functions expect objects.
-  return (array)$files[$fid];
+  return isset($files[$fid]) ? (array) $files[$fid] : FALSE;
 }
 
 /**
@@ -85,7 +86,7 @@ function field_file_save_upload($source, $validators = array(), $dest = FALSE) {
     return 0;
   }
   if (!@chmod($file->filepath, 0664)) {
-    watchdog('filefield', 'Could not set permissons on destination file: %file', array('%file' => $file->filepath));
+    watchdog('filefield', 'Could not set permissions on destination file: %file', array('%file' => $file->filepath));
   }
 
   // Let modules add additional properties to the yet barebone file object.
@@ -156,7 +157,10 @@ function field_file_save_file($filepath, $validators = array(), $dest = FALSE, $
   // Call the validation functions.
   $errors = array();
   foreach ($validators as $function => $args) {
-    array_unshift($args, $file);
+      // Add the $file variable to the list of arguments and pass it by
+      // reference (required for PHP 5.3 and higher).
+    array_unshift($args, NULL);
+    $args[0] = &$file;
     $errors = array_merge($errors, call_user_func_array($function, $args));
   }
 
@@ -368,6 +372,34 @@ function field_file_strip_path($path) {
   $dirlen = drupal_strlen($dirpath);
   if (drupal_substr($path, 0, $dirlen + 1) == $dirpath .'/') {
     $path = drupal_substr($path, $dirlen + 1);
+  }
+  return $path;
+}
+
+/**
+ * Encode a file path in a way that is compatible with file_create_url().
+ *
+ * This function should be used on the $file->filepath property before any call
+ * to file_create_url(). This ensures that the file directory path prefix is
+ * unmodified, but the actual path to the file will be properly URL encoded.
+ */
+function field_file_urlencode_path($path) {
+  // Encode the parts of the path to ensure URLs operate within href attributes.
+  // Private file paths are urlencoded for us inside of file_create_url().
+  if (variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC) == FILE_DOWNLOADS_PUBLIC) {
+    $file_directory_path = file_directory_path();
+    if (strpos($path, $file_directory_path . '/') === 0) {
+      $path = trim(substr($path, strlen($file_directory_path)), '\\/');
+    }
+
+    $parts = explode('/', $path);
+    foreach ($parts as $index => $part) {
+      $parts[$index] = rawurlencode($part);
+    }
+    $path = implode('/', $parts);
+
+    // Add the file directory path again (not encoded).
+    $path = $file_directory_path . '/' . $path;
   }
   return $path;
 }

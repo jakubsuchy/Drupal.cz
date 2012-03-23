@@ -1,5 +1,4 @@
 <?php
-// $Id: spam.module,v 1.51.4.1.2.41.2.30.2.16 2009/08/10 03:03:11 gnassar Exp $
 
 /**
  * @file
@@ -25,47 +24,29 @@ define('SPAM_LOG', 1);
 define('SPAM_VERBOSE', 3);
 define('SPAM_DEBUG', 5);
 
-spam_init_api();
-
 /**
  * API call for scanning content for spam.  If spam is found, the appropriate
  * action will be taken.
  */
 function spam_scan($content, $type, $extra = array(), $filter_test = FALSE) {
-  if (user_access('bypass filters')) {
-    spam_log(SPAM_DEBUG, 'spam_scan', t('bypassing filters'), $type, $id);
-    return;
-  }
-  // bypass filters when admins publish content from spam feedback
-  if (isset($_SESSION['bypass_spam_filter'])) {
-    if (_spam_sign($content['form_token']) == $_SESSION['bypass_spam_filter']) {
-      unset($_SESSION['bypass_spam_filter']);
-      spam_log(SPAM_DEBUG, 'spam_scan', t('bypassing filters by request'), $type, $id);
-      return;
-    }
-  }
   $id = spam_invoke_module($type, 'content_id', $content, $extra);
   spam_log(SPAM_DEBUG, 'spam_scan', t('scanning content'), $type, $id);
-  spam_update_statistics(t('scan @type', array('@type' => $type)));
-  if (spam_content_is_spam($content, $type, $extra, $filter_test)) {
-    spam_log(SPAM_DEBUG, 'spam_scan', t('content is spam'), $type, $id);
-    spam_update_statistics(t('detected spam @type', array('@type' => $type)));
-    switch (variable_get('spam_visitor_action', SPAM_ACTION_PREVENT)) {
-      case SPAM_ACTION_PREVENT:
-        spam_log(SPAM_LOG, 'spam_scan', t('content is spam, action(prevent)'), $type, $id);
-      default:
-        $_SESSION['content'] = serialize((array)$content);
-        $_SESSION['type'] = $type;
-        spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
-        drupal_goto('spam/denied');
+  $spam = spam_content_is_spam($content, $type, $extra, $filter_test);
 
+  if (spam_bypass_filters() || user_access('bypass filters')) {
+    spam_log(SPAM_DEBUG, 'spam_scan', t('bypassing spam actions'), $type, $id);
+    return $spam['score'];
+  }
+
+  _spam_update_statistics(t('scan @type', array('@type' => $type)));
+
+  if ($spam['is_spam']) {
+    spam_log(SPAM_DEBUG, 'spam_scan', t('content is spam'), $type, $id);
+    _spam_update_statistics(t('detected spam @type', array('@type' => $type)));
+    switch (variable_get('spam_visitor_action', SPAM_ACTION_PREVENT)) {
       case SPAM_ACTION_PREVENT_SILENT:
         spam_log(SPAM_LOG, 'spam_scan', t('content is spam, action(prevent silently)'), $type, $id);
-        spam_update_statistics(t('silently prevented spam @type', array('@type' => $type)));
-        if ($id) {
-          // Content was already published, so we unpublish it.
-          spam_unpublish($type, $id, $extra);
-        }
+        _spam_update_statistics(t('silently prevented spam @type', array('@type' => $type)));
         // TODO: We redirect to avoid the content being posted, but we should
         //       be much smarter about where we redirect to.
         drupal_goto('');
@@ -73,13 +54,30 @@ function spam_scan($content, $type, $extra = array(), $filter_test = FALSE) {
 
       case SPAM_ACTION_UNPUBLISH:
         spam_log(SPAM_LOG, 'spam_scan', t('content is spam, action(unpublish)'), $type, $id);
-        spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
+        _spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
         if ($id) {
           spam_unpublish($type, $id, $extra);
         }
         break;
 
-      // TODO: SPAM_ACTION_HOLD
+      case SPAM_ACTION_HOLD:
+        $_SESSION['spam_content'] = serialize((array)$content);
+        $_SESSION['spam_type'] = $type;
+        spam_log(SPAM_LOG, 'spam_scan', t('content is spam, holding'), $type, $id);
+        _spam_update_statistics(t('held spam @type', array('@type' => $type)));
+        if ($id) {
+          spam_hold($type, $id, $content);
+        }
+        break;
+
+      case SPAM_ACTION_PREVENT:
+        spam_log(SPAM_LOG, 'spam_scan', t('content is spam, action(prevent)'), $type, $id);
+      default:
+        $_SESSION['spam_content'] = serialize((array)$content);
+        $_SESSION['spam_type'] = $type;
+        _spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
+        drupal_goto('spam/denied');
+        break;
     }
   }
 }
@@ -88,24 +86,24 @@ function spam_scan($content, $type, $extra = array(), $filter_test = FALSE) {
  * API call to simply test if content is spam or not.  No action is taken.
  */
 function spam_content_is_spam($content, $type, $extra = array(), $filter_test = FALSE) {
-  if (user_access('bypass filters')) {
-    spam_log(SPAM_DEBUG, 'spam_content_is_spam', t('bypassing filters'), $type, $id);
-    return 0;
-  }
-  $score = spam_content_filter($content, $type, $extra, $filter_test);
+  static $scores = array();
+
   $id = spam_invoke_module($type, 'content_id', $content, $extra);
-  spam_log(SPAM_DEBUG, 'spam_content_is_spam', t('checking if spam...'), $type, $id);
-  if ($score >= variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD)) {
-    if ($id) {
-      spam_mark_as_spam($type, $id, array('score' => $score));
+  
+  if (!isset($scores["$type-$id"])) {
+    $score = spam_content_filter($content, $type, $extra, $filter_test);
+    spam_log(SPAM_DEBUG, 'spam_content_is_spam', t('checking if spam...'), $type, $id);
+    if ($score >= variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD)) {
+      $spam = 1;
     }
-    $spam = 1;
+    else {
+      $spam = 0;
+    }
+    spam_log(SPAM_DEBUG, 'spam_content_is_spam', t('score(@score) spam(@spam)', array('@score' => $score, '@spam' => $spam)), $type, $id);
+    $scores["$type-$id"] = array('score' => $score, 'is_spam' => $spam);
   }
-  else {
-    $spam = 0;
-  }
-  spam_log(SPAM_DEBUG, 'spam_content_is_spam', t('score(@score) spam(@spam)', array('@score' => $score, '@spam' => $spam)), $type, $id);
-  return $spam;
+
+  return $scores["$type-$id"];
 }
 
 /**
@@ -119,16 +117,15 @@ function spam_content_is_spam($content, $type, $extra = array(), $filter_test = 
  *  A string naming the type of content to be filtered.
  */
 function spam_content_filter($content, $type, $extra, $filter_test = FALSE) {
-  if (user_access('bypass filters')) {
-    spam_log(SPAM_DEBUG, 'spam_content_filter', t('bypassing filters'), $type, $id);
-    return;
-  }
-
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
   if (!spam_filter_content_type($content, $type, $extra)) return;
 
   static $scores = array();
 
-  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  if (isset($scores["$type-$id"])) {
+    return $scores["$type-$id"];
+  }
+
   spam_log(SPAM_DEBUG, 'spam_content_filter', t('invoking content filters'), $type, $id);
 
   // There's no need to scan the same content multiple times.
@@ -136,30 +133,29 @@ function spam_content_filter($content, $type, $extra, $filter_test = FALSE) {
     // Determine which fields we need to run through the spam filter.
     $fields = spam_invoke_module($type, 'filter_fields', $content, $extra);
     if (!empty($fields) && is_array($fields['main'])) {
-      // TODO: Once content-type groups are implemented, this query will
-      // determine  which group to filter the given piece of content with.  It
-      // will default to a gid of 0 if undefined.
-      //$gid = (int)db_result(db_query("SELECT gid FROM {spam_filters_groups_data} WHERE content_type = '%s'", $type));
-      $gid = $score = $total = 0;
-      $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE gid = %d AND status = %d ORDER BY weight', $gid, SPAM_FILTER_ENABLED);
+      $score = $total = 0;
+      $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE status = %d ORDER BY weight', SPAM_FILTER_ENABLED);
       $counter = 0;
       while ($filter = db_fetch_object($filters)) {
         $counter++;
         spam_log(SPAM_DEBUG, 'spam_content_filter', t('invoking @filter [@counter], gain = @gain', array('@filter' => $filter->name, '@counter' => $counter, '@gain' => $filter->gain)), $type, $id);
         $actions[$filter->module] = spam_invoke_module($filter->module, 'filter', $type, $content, $fields, $extra, $filter_test);
-        spam_log(SPAM_VERBOSE, 'spam_content_filter', t('@filter: total(@total) redirect(@redirect) gain(@gain)', array('@filter' => $filter->name, '@total' => $actions[$filter->module]['total'], '@redirect' => $actions[$filter->module]['redirect'], '@gain' => $filter->gain)), $type, $id);
-        if ($actions[$filter->module]['total']) {
-          $score += ($actions[$filter->module]['total'] * $filter->gain);
+        $actions_total = empty($actions[$filter->module]['total']) ? 0 : $actions[$filter->module]['total'];
+        spam_log(SPAM_VERBOSE, 'spam_content_filter', t('@filter: total(@total) redirect(@redirect) gain(@gain)', array('@filter' => $filter->name, '@total' => $actions_total, '@redirect' => isset($actions[$filter->module]['redirect']) ? $actions[$filter->module]['redirect'] : '', '@gain' => $filter->gain)), $type, $id);
+        if ($actions_total) {
+          $score += ($actions_total * $filter->gain);
           $total += $filter->gain;
           spam_log(SPAM_DEBUG, 'spam_content_filter', t('current score(@score) current total(@total) average(@average)', array('@score' => $score, '@total' => $total, '@average' => spam_sanitize_score($score / $total))), $type, $id);
-          if ($actions[$filter->module]['redirect']) {
-            $redirect = $actions[$filter->module]['redirect'];
-            break;
+          if (isset($actions[$filter->module]['redirect'])) {
+            if (!isset($extra['redirect']) || $extra['redirect']) { // Do not redirect when $extra['redirect'] === FALSE (i.e. called from batch or cron job).
+              $redirect = $actions[$filter->module]['redirect'];
+              break;
+            }
           }
         }
       }
       if (!$counter) {
-        spam_log(SPAM_VERBOSE, 'spam_content_filter', t('No filters enabled for group !gid, content not scanned.', array('!gid' => $gid)), $type, $id);
+        spam_log(SPAM_VERBOSE, 'spam_content_filter', t('No filters enabled, content not scanned.'), $type, $id);
       }
       if ($total) {
         $log_score = spam_sanitize_score($score / $total);
@@ -187,11 +183,17 @@ function spam_content_filter($content, $type, $extra, $filter_test = FALSE) {
         }
       }
       else {
-        spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
+        _spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
       }
-      spam_update_statistics(t('detected spam'));
-      spam_update_statistics(t('content_filter redirect'));
+      _spam_update_statistics(t('detected spam'));
+      _spam_update_statistics(t('content_filter redirect'));
       spam_log(SPAM_VERBOSE, 'spam_content_filter', t('Spam score [!score], redirecting to: !url', array('!score' => $log_score, '!url' => $redirect)), $type, $id);
+
+      if (spam_bypass_filters() || user_access('bypass filters')) {
+        spam_log(SPAM_DEBUG, 'spam_content_filter', t('bypassing filter redirect'), $type, $id);
+        return;
+      }
+
       drupal_goto($redirect);
     }
   }
@@ -224,14 +226,23 @@ function spam_content_insert($content, $type, $extra = array()) {
   if (!spam_filter_content_type($content, $type, $extra)) return;
 
   $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  if (spam_bypass_filters() || user_access('bypass filters')) {
+    spam_log(SPAM_DEBUG, 'spam_content_insert', t('bypassing filters'), $type, $id);
+    return;
+  }
   spam_log(SPAM_VERBOSE, 'spam_content_insert', t('inserting'), $type, $id);
   $score = 0;
 
   $error = FALSE;
   if ($id) {
-    $score = spam_content_filter($content, $type, $extra);
-    db_query("INSERT INTO {spam_tracker} (content_type, content_id, score, hostname, timestamp) VALUES('%s', %d, %d, '%s', %d)", $type, $id, $score, ip_address(), time());
-    $sid = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
+    $spam = spam_content_is_spam($content, $type, $extra);
+    $score = $spam['score'];
+    // this is neccessary in case that some content types have potentially identical IDs, such as hashes.
+    $sid = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
+    if (!$sid) {
+      db_query("INSERT INTO {spam_tracker} (content_type, content_id, score, hostname, timestamp) VALUES('%s', '%s', %d, '%s', %d)", $type, $id, $score, ip_address(), time());
+      $sid = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
+    }
     if ($sid) {
       watchdog('spam', 'Inserted %type with id %id into spam tracker table.', array('%type' => $type, '%id' => $id), WATCHDOG_NOTICE);
       $extra['sid'] = $sid;
@@ -242,8 +253,7 @@ function spam_content_insert($content, $type, $extra = array()) {
       }
       $fields = spam_invoke_module($type, 'filter_fields', $content, $extra);
       if (!empty($fields) && is_array($fields['main'])) {
-        $gid = 0;
-        $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE gid = %d AND status = %d ORDER BY weight', $gid, SPAM_FILTER_ENABLED);
+        $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE status = %d ORDER BY weight', SPAM_FILTER_ENABLED);
         while ($filter = db_fetch_object($filters)) {
           // Let filters act on insert action.
           spam_invoke_module($filter->module, 'insert', $type, $content, $fields, $extra);
@@ -267,11 +277,13 @@ function spam_content_insert($content, $type, $extra = array()) {
   // This content became spam during an insert, mark it as such.
   if ($score >= variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD)) {
     spam_mark_as_spam($type, $id, $extra);
-    $_SESSION['content'] = serialize((array)$content);
-    $_SESSION['type'] = $type;
-    spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
-    spam_log(SPAM_DEBUG, 'spam_content_insert', t('redirecting to spam/denied'), $type, $id);
-    drupal_goto('spam/denied');
+    $_SESSION['spam_content'] = serialize((array)$content);
+    $_SESSION['spam_type'] = $type;
+    if (!in_array(variable_get('spam_visitor_action', SPAM_ACTION_PREVENT), array(SPAM_ACTION_HOLD))) {
+      _spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
+      spam_log(SPAM_DEBUG, 'spam_content_insert', t('redirecting to spam/denied'), $type, $id);
+      drupal_goto('spam/denied');
+    }
   }
 
   return $error;
@@ -288,14 +300,21 @@ function spam_content_insert($content, $type, $extra = array()) {
 function spam_content_update($content, $type, $extra = array()) {
   if (!spam_filter_content_type($content, $type, $extra)) return;
   $id = spam_invoke_module($type, 'content_id', $content, $extra);
+
+  if (spam_bypass_filters() || user_access('bypass filters')) {
+    spam_log(SPAM_DEBUG, 'spam_content_update', t('bypassing filters'), $type, $id);
+    return;
+  }
+
   spam_log(SPAM_VERBOSE, 'spam_content_update', t('updating'), $type, $id);
 
   $error = FALSE;
   $score = 0;
   if ($id) {
-    $score = spam_content_filter($content, $type, $extra);
-    db_query("UPDATE {spam_tracker} SET score = %d, hostname = %d, timestamp = %d WHERE content_type = '%s' AND content_id = '%s'", $score, time(), $type, $id);
-    $sid = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
+    $spam = spam_content_is_spam($content, $type, $extra);
+    $score = $spam['score'];
+    db_query("UPDATE {spam_tracker} SET score = %d, hostname = '%s', timestamp = %d WHERE content_type = '%s' AND content_id = '%s'", $score, ip_address(), time(), $type, $id);
+    $sid = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
     if ($sid) {
       watchdog('spam', 'Updated %type with id %id in spam tracker table.', array('%type' => $type, '%id' => $id), WATCHDOG_NOTICE);
       $extra['sid'] = $sid;
@@ -306,8 +325,7 @@ function spam_content_update($content, $type, $extra = array()) {
       }
       $fields = spam_invoke_module($type, 'filter_fields', $content, $extra);
       if (!empty($fields) && is_array($fields['main'])) {
-        $gid = 0;
-        $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE gid = %d AND status = %d ORDER BY weight', $gid, SPAM_FILTER_ENABLED);
+        $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE status = %d ORDER BY weight', SPAM_FILTER_ENABLED);
         while ($filter = db_fetch_object($filters)) {
           // Let filters act on insert action.
           spam_invoke_module($filter->module, 'update', $type, $content, $fields, $extra);
@@ -333,11 +351,13 @@ function spam_content_update($content, $type, $extra = array()) {
   // This content became spam during an update, mark it as such.
   if ($score >= variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD)) {
     spam_mark_as_spam($type, $id, $extra);
-    $_SESSION['content'] = serialize((array)$content);
-    $_SESSION['type'] = $type;
-    spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
-    spam_log(SPAM_DEBUG, 'spam_content_update', t('redirecting to spam/denied'), $type, $id);
-    drupal_goto('spam/denied');
+    $_SESSION['spam_content'] = serialize((array)$content);
+    $_SESSION['spam_type'] = $type;
+    if (!in_array(variable_get('spam_visitor_action', SPAM_ACTION_PREVENT), array(SPAM_ACTION_HOLD))) {
+      _spam_update_statistics(t('prevented spam @type', array('@type' => $type)));
+      spam_log(SPAM_DEBUG, 'spam_content_update', t('redirecting to spam/denied'), $type, $id);
+      drupal_goto('spam/denied');
+    }
   }
 
   return $error;
@@ -357,7 +377,7 @@ function spam_content_delete($content, $type, $extra = array()) {
 
   $error = FALSE;
   if ($id) {
-    $sid = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
+    $sid = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
     if ($sid) {
       $extra['sid'] = $sid;
       if (!isset($extra['host'])) {
@@ -367,8 +387,7 @@ function spam_content_delete($content, $type, $extra = array()) {
       }
       $fields = spam_invoke_module($type, 'filter_fields', $content, $extra);
       if (!empty($fields) && is_array($fields['main'])) {
-        $gid = 0;
-        $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE gid = %d AND status = %d ORDER BY weight', $gid, SPAM_FILTER_ENABLED);
+        $filters = db_query('SELECT name, module, gain FROM {spam_filters} WHERE status = %d ORDER BY weight', SPAM_FILTER_ENABLED);
         while ($filter = db_fetch_object($filters)) {
           // Let filters act on insert action.
           spam_invoke_module($filter->module, 'delete', $type, $content, $fields, $extra);
@@ -379,10 +398,10 @@ function spam_content_delete($content, $type, $extra = array()) {
         $error = -3;
       }
       db_query("DELETE FROM {spam_tracker} WHERE sid = %d", $sid);
-      watchdog('spam', 'Deleted %type content with id %id.', array('%type' => $type, '%id' => $id), WATCHDOG_NOTICE);
+      watchdog('spam', 'Removed %type (id %id) from spam_tracker table.', array('%type' => $type, '%id' => $id), WATCHDOG_NOTICE);
     }
     else {
-      watchdog('spam', 'Atempt to delete %type with id %id failed, does not exist in spam_tracker table.', array('%type' => $type, '%id' => $id), WATCHDOG_WARNING);
+      watchdog('spam', 'Attempt to remove %type (id %id) from spam_tracker failed: does not exist.', array('%type' => $type, '%id' => $id), WATCHDOG_NOTICE);
       $error = -2;
     }
   }
@@ -397,11 +416,12 @@ function spam_content_delete($content, $type, $extra = array()) {
 /**
  * Increment internal counters.
  */
-function spam_update_statistics($name, $op = '+', $inc = 1) {
+function _spam_update_statistics($name, $op = '+', $inc = 1) {
+  spam_log(LOG_DEBUG, 'spam_update_statistics', t('@name = @name @op @inc', array('@name' => $name, '@op' => $op, '@inc' => $inc)));
   if ($op != '+' && $op != '-') {
     watchdog('spam', 'Invalid operator(@op), ignored.', array('@op' => $op));
+    return;
   }
-  spam_log(LOG_DEBUG, 'spam_update_statistics', t('@name = @name @op @inc', array('@name' => $name, '@op' => $op, '@inc' => $inc)));
   db_query("UPDATE {spam_statistics} SET count = count %s %d, timestamp = %d WHERE name = '%s'", $op, $inc, time(), $name);
   if (!db_affected_rows()) {
     if ($op == '-') {
@@ -473,16 +493,6 @@ function spam_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'access arguments' => array('administer spam'),
   );
-// TODO: Content groups.
-/*
-    $items['admin/settings/spam/groups'] = array(
-      'title' => 'Content groups',
-      'weight' => 0,
-      'page callback' => 'spam_admin_filter_groups',
-      'access arguments' => array('administer spam'),
-      'type' => MENU_LOCAL_TASK,
-    );
- */
 
   $items['admin/reports/spam'] = array(
     'title' => 'Spam logs',
@@ -518,14 +528,14 @@ function spam_menu() {
     'access callback' => TRUE,
   );
   $items['spam/%spam_mark/%/spam'] = array(
-    'page callback' => 'spam_mark_as_spam',
+    'page callback' => 'spam_mark_as_spam_callback',
     'page arguments' => array(1, 2, array('redirect' => TRUE)),
     'load arguments' => array(2, 3),
     'type' => MENU_CALLBACK,
     'access arguments' => array('administer spam'),
   );
   $items['spam/%spam_mark/%/not_spam'] = array(
-    'page callback' => 'spam_mark_as_not_spam',
+    'page callback' => 'spam_mark_as_not_spam_callback',
     'page arguments' => array(1, 2, array('redirect' => TRUE)),
     'load arguments' => array(2, 3),
     'type' => MENU_CALLBACK,
@@ -535,13 +545,13 @@ function spam_menu() {
     'access arguments' => array('administer spam'),
     'page callback' => 'spam_logs_entry',
     'page arguments' => array(3),
-    'type' => MENU_LOCAL_CALLBACK,
+    'type' => MENU_CALLBACK,
   );
   $items["admin/reports/spam/%spam_number/trace"] = array(
     'access arguments' => array('administer spam'),
     'page callback' => 'spam_logs_trace',
     'page arguments' => array(3),
-    'type' => MENU_LOCAL_CALLBACK,
+    'type' => MENU_CALLBACK,
   );
   $items["admin/content/spam/feedback/%spam_number"] = array(
     'title' => 'View feedback',
@@ -559,7 +569,7 @@ function spam_menu() {
  * Wildcard loader function.
  */
 function spam_hash_load($hash1, $hash2) {
-  return ($hash1 == md5($_SESSION['content']) && $hash2 = _spam_sign($_SESSION['content']));
+  return ($hash1 == md5($_SESSION['spam_content']) && $hash2 = _spam_sign($_SESSION['spam_content']));
 }
 
 /**
@@ -567,17 +577,18 @@ function spam_hash_load($hash1, $hash2) {
  */
 function spam_mark_load($type, $id, $action) {
   if (is_numeric($id) && ($action == 'spam' || $action == 'not_spam')) {
+    // We load these files here in case the menu function is called before _init. See https://drupal.org/node/1194730
     if (spam_invoke_module($type, 'content_module') == $type) {
       if ($action == 'spam') {
-        spam_update_statistics(t('@type manually marked as spam', array('@type' => $type)));
+        _spam_update_statistics(t('@type manually marked as spam', array('@type' => $type)));
       }
       else {
-        spam_update_statistics(t('@type manually marked as not spam', array('@type' => $type)));
+        _spam_update_statistics(t('@type manually marked as not spam', array('@type' => $type)));
       }
       return $type;
     }
   }
-  return $false;
+  return FALSE;
 }
 
 /**
@@ -667,31 +678,13 @@ function spam_link($type, $content = 0, $main = 0) {
 
 /**
  * Spam filter overview page.  Allows enabling/disabling, ordering, and tuning
- * of individual filters, on a per-content-type-group basis.  This allows you
- * to enable different filters for different content types.
+ * of individual filters.
  */
 function spam_admin_filter_overview() {
-  /**
-   *  TODO: For phase one we will only have the default group.  A later
-   *        development phase will allow the creation/configuration of custom
-   *        content-type groups.  Content-types are defined through hooks, and
-   *        include nodes (book, forum, etc), comments, users, profiles, etc...
-   */
   // Install any new filters that may have become available.
   spam_init_filters();
 
   $output = drupal_get_form('spam_admin_filters');
-  return $output;
-}
-
-/**
- * Spam filter content-type groups page.  Allows creation/deletion of
- * content-type groups.  Each content type can only be in one group.  If a
- * content-type is not specifically added to one of these groups, it is
- * automatically part of the default group (gid=0).
- */
-function spam_admin_filter_groups() {
-  $output = drupal_get_form('spam_admin_groups_form');
   return $output;
 }
 
@@ -704,7 +697,7 @@ function spam_admin_settings() {
 }
 
 function spam_admin_filters() {
-  $result = pager_query('SELECT fid, gid, name, status, weight, gain FROM {spam_filters} WHERE gid = %d ORDER BY weight ASC', 50, 0, NULL, 0);
+  $result = pager_query('SELECT fid, name, status, weight, gain FROM {spam_filters} ORDER BY weight ASC', 50, 0, NULL, 0);
 
   $counter = 0;
   while ($filter = db_fetch_object($result)) {
@@ -727,10 +720,6 @@ function spam_admin_filters() {
     $form['fid']["fid-$counter"] = array(
       '#type' => 'hidden',
       '#value' => $filter->fid,
-    );
-    $form['gid']["gid-$counter"] = array(
-      '#type' => 'hidden',
-      '#value' => $filter->gid,
     );
     $counter++;
   }
@@ -755,7 +744,7 @@ function spam_admin_filters() {
  */
 function spam_admin_filters_submit($form, &$form_state) {
   for ($i = 0; $i < $form_state['values']['counter']; $i++) {
-    db_query('UPDATE {spam_filters} SET status = %d, gain = %d, weight = %d WHERE fid = %d AND gid = %d', $form_state['values']["status-$i"], $form_state['values']["gain-$i"], $form_state['values']["weight-$i"], $form_state['values']["fid-$i"], $form_state['values']["gid-$i"]);
+    db_query('UPDATE {spam_filters} SET status = %d, gain = %d, weight = %d WHERE fid = %d', $form_state['values']["status-$i"], $form_state['values']["gain-$i"], $form_state['values']["weight-$i"], $form_state['values']["fid-$i"]);
   }
 }
 
@@ -779,7 +768,7 @@ function theme_spam_admin_filters($form) {
     $rows[] = array(array('data' => t('There are currently no spam filters available.'), 'colspan' => 4));
   }
 
-  $output .= theme('table', $header, $rows);
+  $output = theme('table', $header, $rows);
   if ($form['pager']['#value']) {
     $output .= drupal_render($form['pager']);
   }
@@ -787,17 +776,6 @@ function theme_spam_admin_filters($form) {
   $output .= drupal_render($form);
 
   return $output;
-}
-
-/**
- * Spam module groups form.
- */
-function spam_admin_groups_form() {
-  $form['groups'] = array(
-    '#type' => 'fieldset',
-    '#value' => t('Groups'),
-  );
-  return $form;
 }
 
 /**
@@ -817,7 +795,7 @@ function spam_admin_settings_form() {
         $name = $content_type['name'];
         $form['content']["spam_filter_$name"] = array(
           '#type' => 'checkbox',
-          '#title' => t($content_type['title']),
+          '#title' => $content_type['title'],
           '#description' => $content_type['description'],
           '#default_value' => variable_get("spam_filter_$name", (int)$content_type['default_value']),
         );
@@ -833,7 +811,8 @@ function spam_admin_settings_form() {
   $form['actions']['spam_visitor_action'] = array(
     '#type' => 'select',
     '#title' => t('Posting action'),
-    '#options' => array(t('silently prevent spam content from being posted'), t('prevent spam content from being posted, notify visitor'), t('place spam into special review queue, notify visitor'), t('allow spam content to be posted, automatically unpublish and notify visitor')),
+    '#options' => array(SPAM_ACTION_PREVENT_SILENT => t('silently prevent spam content from being posted'), SPAM_ACTION_PREVENT => t('prevent spam content from being posted, notify visitor'), SPAM_ACTION_UNPUBLISH => t('allow spam content to be posted, automatically unpublish and notify visitor'), SPAM_ACTION_HOLD => t('allow spam content to be posted, do not unpublish and do not notify visitor')),
+    // TODO: add 'place spam into special review queue, notify visitor' when SPAM_ACTION_HOLD is ready
     '#default_value' => variable_get('spam_visitor_action', SPAM_ACTION_PREVENT),
   );
   $form['actions']['spam_filtered_message'] = array(
@@ -886,7 +865,7 @@ function spam_admin_settings_form() {
 function spam_filter_content_type($content, $type, $extra) {
   $filter = spam_invoke_module($type, 'filter_content_type', $content, $extra);
   if (!$filter) {
-    spam_log(SPAM_DEBUG, 'spam_filter_content_type', t('not configured to scan this content type'), $type, $id);
+    spam_log(SPAM_DEBUG, 'spam_filter_content_type', t('not configured to scan this content type'), $type);
   }
   return $filter;
 }
@@ -943,24 +922,45 @@ function spam_install_filter($filter) {
 }
 
 /**
- * As the spam module isn't a core Drupal module, many important modules won't
- * utilize its API.  We define the appropriate hooks for these modules in the
- * modules/ subdirectory.  For example, we define the spam api hooks for the
- * node module in modules/spam_node.inc.
+ * Since the spam module is not a core Drupal module, the core modules won't
+ * know of the spam module API.
+ *
+ * Instead, we define the appropriate hooks for these modules in the
+ * spam/content/ sub-directory.  For example, we define the spam api hooks for the
+ * node module in spam/content/spam_content_node.inc.
+ *
+ * Any other 3rd party module is expected to define its own spam hooks if it
+ * wants to implement its own filters.
+ *
+ * The include files MUST be loaded at the same time this .module file is loaded.
+ * This is important because they include hook functions that should be defined
+ * in the corresponding .module file (i.e. node.module. See [#1222546])
+ *
+ * Loading in the hook_boot() is too early (i.e. before common.inc is loaded?!)
+ *
+ * Loading in the hook_init() is too late since all the modules having a hook_init()
+ * function implemented and that run before the spam_init() hook is called would
+ * not see the special spam hooks. Especially, the hook_nodeapi(), hook_user(), and
+ * other similar hooks would be missing and not be run as expected.
+ *
+ * The only way to go like the system does is to load those .inc files at the same
+ * time we get loaded.
+ *
+ * @see spam_load_inc_files()
  */
-function spam_init_api() {
-  static $initialized = FALSE;
+spam_load_inc_files();
 
-  if (!$initialized) {
-    // We only need to module_load_include('initialized = TRUE', 'spam', '');
-    $path = drupal_get_path('module', 'spam') .'/modules';
-    // These files must be names spam_*.inc, such as spam_node.inc.
-    $files = drupal_system_listing('spam_.*\.inc$', $path, 'name', 0);
-    foreach ($files as $file) {
-      $module = substr_replace($file->name, '', 0, 5);
-      if (module_exists($module)) {
-        require_once './' . $file->filename;
-      }
+/**
+ * Load the inc files for the various content types.
+ */
+function spam_load_inc_files() {
+  $path = drupal_get_path('module', 'spam') .'/content';
+  // These files must be names spam_content_*.inc, such as spam_content_node.inc.
+  $files = drupal_system_listing('spam_content_.*\.inc$', $path, 'name', 0);
+  foreach ($files as $file) {
+    $module = substr_replace($file->name, '', 0, 13);
+    if (module_exists($module)) {
+      require_once './' . $file->filename;
     }
   }
 }
@@ -1049,7 +1049,7 @@ function spam_admin_feedback_form($form_state, $bid) {
     '#disabled' => TRUE,
   );
 
-  $trid = db_result(db_query_range("SELECT trid FROM {spam_log} WHERE content_type = '%s' AND content_id = %d", $feedback->content_type, $feedback->content_id, 0, 1));
+  $trid = db_result(db_query_range("SELECT trid FROM {spam_log} WHERE content_type = '%s' AND content_id = '%s'", $feedback->content_type, $feedback->content_id, 0, 1));
   if (!empty($trid)) {
     $form['logs'] = array(
       '#type' => 'markup',
@@ -1066,6 +1066,7 @@ function spam_admin_feedback_form($form_state, $bid) {
   $form['delete'] = array(
     '#type' => 'submit',
     '#value' => t('Delete feedback'),
+    '#submit' => array('spam_admin_feedback_delete_submit'),
   );
   $form['cancel'] = array(
     '#value' => l(t('Cancel'), 'admin/content/spam/feedback'),
@@ -1099,39 +1100,35 @@ function spam_admin_feedback_form($form_state, $bid) {
  * Process spam feedback.
  */
 function spam_admin_feedback_form_submit($form, &$form_state) {
-/* TODO The 'op' element in the form values is deprecated.
-   Each button can have #validate and #submit functions associated with it.
-   Thus, there should be one button that submits the form and which invokes
-   the normal form_id_validate and form_id_submit handlers. Any additional
-   buttons which need to invoke different validate or submit functionality
-   should have button-specific functions. */
-  if ($form_state['values']['op'] == t('Publish content')) {
-    $content = unserialize($form_state['values']['content']);
-    // mark the content as not spam
-    $extra['content'] = $content;
-    spam_mark_as_not_spam($form_state['values']['type'], $form_state['values']['id'], $extra);
-    // publish the content
-    // TODO: don't execute form if content is already published
-    // return will contain a url to the new content
-    $form = unserialize($form_state['values']['spam_form']);
-    $_SESSION['bypass_spam_filter'] = _spam_sign($form['#post']['form_token']);
-    $return = drupal_process_form($content['form_id'], unserialize($form_state['values']['spam_form']));
-    db_query('DELETE FROM {spam_filters_errors} WHERE bid = %d', $form_state['values']['bid']);
-    drupal_set_message(t('Content published.'));
-    drupal_goto('admin/content/spam/feedback');
+  $content = unserialize($form_state['values']['content']);
+  // mark the content as not spam
+  $extra['content'] = $content;
+  $extra['type'] = $form_state['values']['type'];
+  $extra['feedback_form'] = TRUE;
+  // This will publish any content that is unpublished.
+  spam_mark_as_not_spam($form_state['values']['type'], $form_state['values']['id'], $extra);
+  $values = $form_state['values'];
+  // process the form if applicable, we optionally let the content type module take care of this.
+  if (!spam_invoke_module($form_state['values']['type'], 'feedback_approved', $form_state['values']['id'], $extra)) {
+    if (variable_get('spam_visitor_action', SPAM_ACTION_PREVENT)) {
+      $form = unserialize($form_state['values']['spam_form']);
+      $_SESSION['spam_bypass_spam_filter'] = TRUE;
+      $form_state = array();
+      // We only have a form if we use this setting
+      // return will contain a url to the new content
+      $return = drupal_process_form($content['form_id'], $form, $form_state);
+    }
   }
-/* TODO The 'op' element in the form values is deprecated.
-   Each button can have #validate and #submit functions associated with it.
-   Thus, there should be one button that submits the form and which invokes
-   the normal form_id_validate and form_id_submit handlers. Any additional
-   buttons which need to invoke different validate or submit functionality
-   should have button-specific functions. */
-  if ($form_state['values']['op'] == t('Delete feedback')) {
-    // TODO: Confirm the delete.
-    db_query('DELETE FROM {spam_filters_errors} WHERE bid = %d', $form_state['values']['bid']);
-    drupal_set_message(t('Feedback deleted.'));
-    drupal_goto('admin/content/spam/feedback');
-  }
+  db_query('DELETE FROM {spam_filters_errors} WHERE bid = %d', $values['bid']);
+  drupal_set_message(t('Content published.'));
+  drupal_goto('admin/content/spam/feedback');
+}
+
+function spam_admin_feedback_delete_submit($form, &$form_state) {
+  // TODO: Confirm the delete.
+  db_query('DELETE FROM {spam_filters_errors} WHERE bid = %d', $form_state['values']['bid']);
+  drupal_set_message(t('Feedback deleted.'));
+  drupal_goto('admin/content/spam/feedback');
 }
 
 function _spam_truncate($text, $length = 64) {
@@ -1336,11 +1333,11 @@ function spam_admin_overview() {
     '#prefix' => '<div class="container-inline">',
     '#suffix' => '</div>',
   );
-  // Set desired callbacks as a subset of spam_spam_operations().
+  // Set labels for desired callbacks using spam_spam_operations().
   $options = array('markasnotspam'=>array(), 'publish'=>array(), 'unpublish'=>array());
-  $alloptions = module_invoke_all('spam_operations');
-  foreach ($options as $operation => $array) {
-    $options[$operation] = $alloptions[$operation]['label'];
+  $operations = module_invoke_all('spam_operations');
+  foreach ($options as $option => $array) {
+    $options[$option] = $operations[$option]['label'];
   }
   $form['options']['operation'] = array('#type' => 'select', '#options' => $options,  '#default_value' => 'approve');
   $form['options']['submit'] = array('#type' => 'submit', '#value' => t('Update'));
@@ -1351,19 +1348,23 @@ function spam_admin_overview() {
     $form['content_type']["$spam->content_type-$spam->content_id"] = array('#value' => $spam->content_type);
     $title = spam_invoke_module($spam->content_type, 'title', $spam->content_id);
     $link = spam_invoke_module($spam->content_type, 'edit_link', $spam->content_id);
-    $form['title']["$spam->content_type-$spam->content_id"] = array('#value' => l($title, $link));
+    if ($link) {
+      $form['title']["$spam->content_type-$spam->content_id"] = array('#value' => l($title, $link));
+    }
+    else {
+      $form['title']["$spam->content_type-$spam->content_id"] = array('#value' => check_plain($title));
+    }
     $form['score']["$spam->content_type-$spam->content_id"] = array('#value' => $spam->score);
     $status = spam_invoke_module($spam->content_type, 'status', $spam->content_id);
     $form['status']["$spam->content_type-$spam->content_id"] = array('#value' => $status == SPAM_PUBLISHED ? t('published') : t('not published'));
     $form['hostname']["$spam->content_type-$spam->content_id"] = array('#value' => $spam->hostname);
-    $feedback = db_result(db_query("SELECT bid FROM {spam_filters_errors} WHERE content_type = '%s' AND content_id = %d", $spam->content_type, $spam->content_id));
+    $feedback = db_result(db_query("SELECT bid FROM {spam_filters_errors} WHERE content_type = '%s' AND content_id = '%s'", $spam->content_type, $spam->content_id));
     if ($feedback) {
       $form['feedback']["$spam->content_type-$spam->content_id"] = array('#value' => l('view', "admin/content/spam/feedback/$feedback"));
     }
     else {
       $form['feedback']["$spam->content_type-$spam->content_id"] = array('#value' => '<em>n/a</em>');
     }
-    //$form['operations']["$spam->content_type-$spam->content_id"] = array('#value' => l(t('edit'), 'node/'. $ad->aid .'/edit', array('query' => $destination)));
   }
   $form['spam'] = array('#type' => 'checkboxes', '#options' => $all);
   $form['pager'] = array('#value' => theme('pager', NULL, 50, 0));
@@ -1376,7 +1377,7 @@ function spam_admin_overview() {
 function spam_admin_overview_validate($form, &$form_state) {
   $spam = array_filter($form_state['values']['spam']);
   if (count($spam) == 0) {
-    form_set_error('', t('You have note selected any spam content.'));
+    form_set_error('', t('You have not selected any spam content.'));
   }
 }
 
@@ -1396,8 +1397,9 @@ function spam_admin_overview_submit($form, &$form_state) {
     // Filter out unchecked nodes
     //$spam = array_filter($form_state['values'][$valuetype]);
     if ($form['#spam_submit_itemtype']) {
-      foreach ($form_state['values'][$valuetype] as $item => $content)
+      foreach ($form_state['values'][$valuetype] as $item => $content) {
         $spam["{$form['#spam_submit_itemtype']}-$item"] = "{$form['#spam_submit_itemtype']}-$item";
+      }
     }
     else {
       $spam = $form_state['values'][$valuetype];
@@ -1410,6 +1412,7 @@ function spam_admin_overview_submit($form, &$form_state) {
       else {
         $args = array($spam);
       }
+
       call_user_func_array($function, $args);
 
       cache_clear_all();
@@ -1441,7 +1444,7 @@ function theme_spam_admin_overview($form) {
 
   }
   else  {
-    $rows[] = array(array('data' => t('No spam content found.'), 'colspan' => '6'));
+    $rows[] = array(array('data' => t('No spam content found.'), 'colspan' => '7'));
   }
 
   $output .= theme('table', $header, $rows);
@@ -1464,7 +1467,7 @@ function theme_spam_admin_overview($form) {
 function spam_spam_operations() {
   $operations = array(
     'markasspam' => array(
-      'label' => t('Mark as not spam'),
+      'label' => t('Mark as spam'),
       'callback' => 'spam_operations_callback',
       'callback arguments' => array('mark_as_spam'),
     ),
@@ -1498,7 +1501,7 @@ function spam_spam_operations() {
 function spam_operations_callback($spam, $op) {
   foreach ($spam as $content) {
     $pieces = explode('-', $content);
-    if (drupal_strlen($pieces[0]) && is_numeric($pieces[1]) && drupal_strlen($op)) {
+    if (drupal_strlen($pieces[0]) && drupal_strlen($pieces[1]) && drupal_strlen($op)) {
       $func = "spam_{$op}";
       if (function_exists($func)) {
         spam_log(SPAM_VERBOSE, 'spam_operations_callback', t('bulk update @op', array('@op' => $op)), $pieces[0], $pieces[1]);
@@ -1594,8 +1597,6 @@ function _spam_sign($text) {
  * Helper function, generate a link for reporting mis-filtered content.
  */
 function _spam_error_link($text) {
-// TODO: Finish implementing error reporting functionality.
-//return t('Unable to generate error link.  Please email the site admins.');
   if (($text) && is_array(unserialize($text))) {
     return l(t('Report spam filter error.'), "spam/denied/error/" . md5($text) .'/'. _spam_sign($text));
   }
@@ -1613,15 +1614,25 @@ function _spam_error_link($text) {
  *       using the current theme.
  */
 function spam_denied_page($message = NULL, $title = NULL) {
+  global $theme;
+  $no_maintenance = !empty($theme);
+  if (!$no_maintenance) {
+    drupal_maintenance_theme();
+  }
   drupal_set_header('HTTP/1.1 403 Forbidden');
   if (!$message) {
-    $message = strtr(variable_get('spam_filtered_message', t('<p>Your posting on @site from %IP has been automatically flagged by our spam filters as being inappropriate for this website.</p>At @site we work very hard to keep our web pages free of spam.  Unfortunately, sometimes we accidentally block legitimate content.  If you are attempting to post legitimate content to this website, you can help us to improve our spam filters and ensure that your post appears on our website by clicking this link:</p><blockquote>%LINK</blockquote>', array('@site' => variable_get('site_name', 'Drupal'), ))), array('%IP' => ip_address(), '%LINK' => _spam_error_link($_SESSION['content'])));
+    $message = strtr(variable_get('spam_filtered_message', t('<p>Your posting on @site from %IP has been automatically flagged by our spam filters as being inappropriate for this website.</p>At @site we work very hard to keep our web pages free of spam.  Unfortunately, sometimes we accidentally block legitimate content.  If you are attempting to post legitimate content to this website, you can help us to improve our spam filters and ensure that your post appears on our website by clicking this link:</p><blockquote>%LINK</blockquote>', array('@site' => variable_get('site_name', 'Drupal'), ))), array('%IP' => ip_address(), '%LINK' => _spam_error_link($_SESSION['spam_content'])));
   }
   if (!$title) {
-    $title = t('Your posting was blocked by our spam filter.');
+    $title = t('Your posting was blocked by our spam filter');
   }
   drupal_set_title($title);
-  print theme('maintenance_page', filter_xss_admin($message));
+  if (!$no_maintenance) {
+    echo theme('maintenance_page', filter_xss_admin($message));
+  }
+  else {
+    echo '<html><head><title>', check_plain($title), '</title></head><body><h1>', check_plain($title), '</h1><p>', filter_xss_admin($message), '</p></body></html>';
+  }
 }
 
 /**
@@ -1629,10 +1640,10 @@ function spam_denied_page($message = NULL, $title = NULL) {
  * spam.
  */
 function spam_denied_in_error_page() {
-  if ($_SESSION['content']) {
-    $content = unserialize($_SESSION['content']);
+  if ($_SESSION['spam_content']) {
+    $content = unserialize($_SESSION['spam_content']);
     if (is_array($content)) {
-      $hash = md5($_SESSION['content']);
+      $hash = md5($_SESSION['spam_content']);
       $exists = db_result(db_query("SELECT bid FROM {spam_filters_errors} WHERE content_hash = '%s'", $hash));
       if ($exists) {
         $output = t('You have already reported this content as not spam.  Please be patient; a site administrator will review it soon.');
@@ -1650,8 +1661,8 @@ function spam_denied_in_error_page() {
  */
 // TODO: add captcha
 function spam_error_page() {
-  $content = unserialize($_SESSION['content']);
-  $type = $_SESSION['type'];
+  $content = unserialize($_SESSION['spam_content']);
+  $type = $_SESSION['spam_type'];
   $form = $_SESSION['spam_form'];
 
   $form = spam_invoke_module($type, 'error_form', $content);
@@ -1674,24 +1685,34 @@ function spam_error_page() {
 }
 
 /**
- * Store reported legitimate content in database.
+ * Form submit callback for feedback form.
  */
 function spam_error_page_submit($form, &$form_state) {
-  global $user;
-  $content = unserialize($_SESSION['content']);
-  $type = $_SESSION['type'];
+  spam_feedback_insert($form_state['values']['feedback']);
+  drupal_set_message(t('Your feedback will be reviewed by a site administrator.'));
+  $form_state['redirect'] = '';
+}
+
+/**
+ * Store reported legitimate content in database.
+ */
+function spam_feedback_insert($feedback) {
+  global $user, $language;
+  $content = unserialize($_SESSION['spam_content']);
+  $type = $_SESSION['spam_type'];
   $id = spam_invoke_module($type, 'content_id', $content);
-  $hash = md5($_SESSION['content']);
+  $hash = md5($_SESSION['spam_content']);
   if (is_array($_SESSION['spam_form'])) {
     $spam_form = serialize($_SESSION['spam_form']);
   }
   else {
     $spam_form = $_SESSION['spam_form'];
   }
-  db_query("INSERT INTO {spam_filters_errors} (uid, content_type, content_id, content_hash, content, form, hostname, feedback, timestamp) VALUES(%d, '%s', %d, '%s', '%s', '%s', '%s', '%s', %d)", $user->uid, $type, $id, $hash, $_SESSION['content'], $spam_form, ip_address() , $form_state['values']['feedback'], time());
-  $_SESSION['content'] = $_SESSION['type'] = $_SESSION['spam_form'] = '';
-  drupal_set_message(t('Your feedback will be reviewed by a site administrator.'));
-  drupal_goto('');
+  // We do not want to have spammers spam the error form and discard identical entries.
+  if (!db_result(db_query("SELECT COUNT(*) FROM {spam_filters_errors} WHERE content_hash = '%s'", $hash))) {
+    db_query("INSERT INTO {spam_filters_errors} (uid, language, content_type, content_id, content_hash, content, form, hostname, feedback, timestamp) VALUES(%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d)", $user->uid, $language->language, $type, $id, $hash, $_SESSION['spam_content'], $spam_form, ip_address() , $feedback, time());
+  }
+  $_SESSION['spam_content'] = $_SESSION['spam_type'] = $_SESSION['spam_form'] = '';
 }
 
 /**
@@ -1701,19 +1722,49 @@ function spam_links($type, $id, $content) {
   $links = array();
   if (spam_invoke_module($type, 'filter_content_type', $content)) {
     if (user_access('administer spam')) {
-      $score = (int)db_result(db_query("SELECT score FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
+      $score = (int)db_result(db_query("SELECT score FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
 
       if ($score >= variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD)) {
         $links['spam'] = array('title' => t('spam (@score)', array('@score' => $score)));
-        $links['mark-as-not-spam'] = array('href' => "spam/$type/$id/not_spam", 'title' => t('mark as not spam'));
+        $token = drupal_get_token("not spam $type $id");
+        $links['mark-as-not-spam'] = array('href' => "spam/$type/$id/not_spam", 'title' => t('mark as not spam'), 'query' => array('token' => $token));
       }
       else {
+        $token = drupal_get_token("spam $type $id");
         $links['spam'] = array('title' => t('not spam (@score)', array('@score' => $score)));
-        $links['mark-as-spam'] = array('href' => "spam/$type/$id/spam", 'title' => t('mark as spam'));
+        $links['mark-as-spam'] = array('href' => "spam/$type/$id/spam", 'title' => t('mark as spam'), 'query' => array('token' => $token));
       }
     }
   }
   return $links;
+}
+
+/**
+ * Menu callback that is used for the spam mark links.
+ *
+ * This is a wrapper with CSFR protection for spam_mark_as_spam 
+ */
+function spam_mark_as_spam_callback($type, $id, $extra = array()) {
+  if (drupal_valid_token($_GET['token'], "spam $type $id")) {
+    spam_mark_as_spam($type, $id, $extra);
+  }
+  else {
+    return drupal_access_denied();
+  }
+}
+
+/**
+ * Menu callback that is used for the not spam mark links.
+ *
+ * This is a wrapper with CSFR protection for spam_mark_as_not_spam 
+ */
+function spam_mark_as_not_spam_callback($type, $id, $extra = array()) {
+  if (drupal_valid_token($_GET['token'], "not spam $type $id")) {
+    spam_mark_as_not_spam($type, $id, $extra);
+  }
+  else {
+    return drupal_access_denied();
+  }
 }
 
 /**
@@ -1729,31 +1780,32 @@ function spam_mark_as_spam($type, $id, $extra = array()) {
   }
   $loop[$id] = TRUE;
 
-  spam_update_statistics(t('@type marked as spam', array('@type' => $type)));
-  $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
-  if (!$extra['score']) {
+  _spam_update_statistics(t('@type marked as spam', array('@type' => $type)));
+  $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
+  if (empty($extra['score'])) {
     $extra['score'] = 99;
   }
   spam_log(SPAM_VERBOSE, 'spam_mark_as_spam', t('marked as spam, score(@score)', array('@score' => $extra['score'])), $type, $id);
   if ($extra['sid']) {
     db_query('UPDATE {spam_tracker} SET score = %d WHERE sid = %d', $extra['score'], $extra['sid']);
-    $extra['content'] = spam_invoke_module($type, 'load', $id);
   }
   else {
     $hostname = spam_invoke_module($type, 'hostname', $id);
-    db_query("INSERT INTO {spam_tracker} (content_type, content_id, score, hostname, timestamp) VALUES('%s', %d, %d, '%s', %d)", $type, $id, $extra['score'], $hostname, time());
-    $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
-    $extra['content'] = spam_invoke_module($type, 'load', $id);
+    db_query("INSERT INTO {spam_tracker} (content_type, content_id, score, hostname, timestamp) VALUES('%s', '%s', %d, '%s', %d)", $type, $id, $extra['score'], $hostname, time());
+    $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
   }
+  $extra['content'] = spam_invoke_module($type, 'load', $id);
   $extra['id'] = $id;
   spam_invoke_api('mark_as_spam', $type,  array(), array(), $extra);
 
   if ($id) {
     // For now, we're hard coding the actions...
-    spam_unpublish($type, $id);
+    if (!in_array(variable_get('spam_visitor_action', SPAM_ACTION_PREVENT), array(SPAM_ACTION_HOLD))) {
+      spam_unpublish($type, $id);
+    }
   }
 
-  if ($extra['redirect']) {
+  if (!empty($extra['redirect'])) {
     spam_invoke_module($type, 'redirect', $id);
   }
 }
@@ -1771,9 +1823,9 @@ function spam_mark_as_not_spam($type, $id, $extra = array()) {
   }
   $loop[$id] = TRUE;
 
-  spam_update_statistics(t('@type marked as not spam', array('@type' => $type)));
-  $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
-  if (!$extra['score']) {
+  _spam_update_statistics(t('@type marked as not spam', array('@type' => $type)));
+  $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
+  if (!isset($extra['score'])) {
     $extra['score'] = 1;
   }
   spam_log(SPAM_VERBOSE, 'spam_mark_as_not_spam', t('marked as not spam, score(@score)', array('@score' => $extra['score'])), $type, $id);
@@ -1782,8 +1834,8 @@ function spam_mark_as_not_spam($type, $id, $extra = array()) {
   }
   else if ($id) {
     $hostname = spam_invoke_module($type, 'hostname', $id);
-    db_query("INSERT INTO {spam_tracker} (content_type, content_id, score, hostname, timestamp) VALUES('%s', %d, %d, '%s', %d)", $type, $id, $extra['score'], $hostname, time());
-    $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = %d", $type, $id));
+    db_query("INSERT INTO {spam_tracker} (content_type, content_id, score, hostname, timestamp) VALUES('%s', '%s', %d, '%s', %d)", $type, $id, $extra['score'], $hostname, time());
+    $extra['sid'] = db_result(db_query("SELECT sid FROM {spam_tracker} WHERE content_type = '%s' AND content_id = '%s'", $type, $id));
   }
   if (!isset($extra['content'])) {
     $extra['content'] = spam_invoke_module($type, 'load', $id);
@@ -1793,11 +1845,13 @@ function spam_mark_as_not_spam($type, $id, $extra = array()) {
   spam_invoke_api('mark_as_not_spam', $type, array(), array(), $extra);
 
   if ($id) {
+    // We've already filtered the content
+    $_SESSION['spam_bypass_spam_filter'] = TRUE;
     // For now, we're hard coding the actions...
     spam_publish($type, $id);
   }
 
-  if ($extra['redirect']) {
+  if (!empty($extra['redirect'])) {
     spam_invoke_module($type, 'redirect', $id);
   }
 }
@@ -1811,11 +1865,12 @@ function spam_get_text($content, $type, $fields, $extra = array(), $full = TRUE)
   }
 
   $text = '';
-
-  foreach ($fields['main'] as $field) {
-    $text .= $content[$field] .' ';
+  if (isset($fields['main']) && is_array($fields['main'])) {
+    foreach ($fields['main'] as $field) {
+      $text .= $content[$field] .' ';
+    }
   }
-  if ($full && is_array($fields['other'])) {
+  if ($full && isset($fields['other']) && is_array($fields['other'])) {
     foreach ($fields['other'] as $field) {
       $text .= $content[$field] .' ';
     }
@@ -1832,7 +1887,7 @@ function spam_log($level, $function, $message, $type = NULL, $id = NULL) {
   $trid = _spam_log_trace($message, $type, $id);
 
   if (variable_get('spam_log_level', SPAM_LOG) >= $level) {
-    db_query("INSERT INTO {spam_log} (level, trid, content_type, content_id, uid, function, message, hostname, timestamp) VALUES(%d, %d, '%s', %d, %d, '%s', '%s', '%s', %d)", $level, $trid, $type, $id, $user->uid, $function, $message, ip_address(), time());
+    db_query("INSERT INTO {spam_log} (level, trid, content_type, content_id, uid, function, message, hostname, timestamp) VALUES(%d, %d, '%s', '%s', %d, '%s', '%s', '%s', %d)", $level, $trid, $type, $id, $user->uid, $function, $message, ip_address(), time());
   }
 }
 
@@ -1846,7 +1901,7 @@ function _spam_log_trace($message, $type, $id) {
 
   if (!$trid && (variable_get('spam_log_level', SPAM_DEBUG) >= SPAM_VERBOSE)) {
     $key = md5(microtime() . $message);
-    db_query("INSERT INTO {spam_log} (level, content_type, content_id, uid, function, message, hostname, timestamp) VALUES(%d, '%s', %d, %d, '%s', '%s', '%s', %d)", SPAM_VERBOSE, $type, $id, $user->uid, '_spam_log_trace', $key, ip_address(), time());
+    db_query("INSERT INTO {spam_log} (level, content_type, content_id, uid, function, message, hostname, timestamp) VALUES(%d, '%s', '%s', %d, '%s', '%s', '%s', %d)", SPAM_VERBOSE, $type, $id, $user->uid, '_spam_log_trace', $key, ip_address(), time());
     $trid = db_result(db_query("SELECT lid FROM {spam_log} WHERE message = '%s'", $key));
     if ($trid) {
       db_query("UPDATE {spam_log} SET trid = %d, message = '%s' WHERE lid = %d", $trid, t('--'), $trid);
@@ -1937,7 +1992,7 @@ function spam_logs_overview($type = NULL, $id = NULL) {
   );
 
   if ($id) {
-    $sql = "SELECT * FROM {spam_log} WHERE content_type = '%s' AND content_id = %d";
+    $sql = "SELECT * FROM {spam_log} WHERE content_type = '%s' AND content_id = '%s'";
     $arguments = array($type, $id);
   }
   else if ($type) {
@@ -2055,7 +2110,7 @@ function spam_logs_trace($trid = NULL) {
   }
 
   if (!$rows) {
-    $rows[] = array(array('data' => t('No log messages available.'), 'colspan' => 6));
+    $rows[] = array(array('data' => t('No log messages available.'), 'colspan' => 7));
   }
 
   return theme('table', $header, $rows) . theme('pager', NULL, 50, 0);
@@ -2095,16 +2150,62 @@ function spam_unpublish($type, $id, $extra = array()) {
   spam_log(SPAM_VERBOSE, 'spam_unpublish', t('unpublished'), $type, $id);
   spam_invoke_module($type, 'unpublish', $id, $extra);
   cache_clear_all();
-  spam_update_statistics(t('unpublish @type', array('@type' => $type)));
+  _spam_update_statistics(t('unpublish @type', array('@type' => $type)));
 }
 
 /**
- * Invoke unpublish action for given content type.
+ * Invoke publish action for given content type.
  * TODO: Integrate with the Actions module.
  */
 function spam_publish($type, $id, $extra = array()) {
   spam_log(SPAM_VERBOSE, 'spam_publish', t('published'), $type, $id);
   spam_invoke_module($type, 'publish', $id, $extra);
   cache_clear_all();
-  spam_update_statistics(t('publish @type', array('@type' => $type)));
+  _spam_update_statistics(t('publish @type', array('@type' => $type)));
+}
+
+/**
+ * Invoke hold action for given content type.
+ * TODO: Integrate with the Actions module.
+ */
+function spam_hold($type, $id, $extra = array()) {
+  spam_log(SPAM_VERBOSE, 'spam_hold', t('held'), $type, $id);
+  spam_invoke_module($type, 'hold', $id, $extra);
+}
+
+/**
+* Implementation of hook_action_info().
+*/
+function spam_action_info() {
+  $spam_actions = array();
+  $spam_types = array('node', 'comment', 'user');
+  foreach ($spam_types as $type) {
+    if (module_exists($type)) {
+      $spam_actions['spam_mark_'.$type.'_as_spam_action'] = array(
+        'description' => t('Mark '.$type.' as spam'),
+        'type' => $type,
+        'configurable' => FALSE,
+        'hooks' => array( 'any' => TRUE )
+      );
+      $spam_actions['spam_mark_'.$type.'_as_not_spam_action'] = array(
+        'description' => t('Mark '.$type.' as not spam'),
+        'type' => $type,
+        'configurable' => FALSE,
+        'hooks' => array( 'any' => TRUE )
+      );
+    }
+  }
+  return $spam_actions;
+}
+
+/**
+ * Helper function to check whether the filter or their actions should be
+ * bypassed.
+ */
+function spam_bypass_filters() {
+  if ((isset($_SESSION['spam_bypass_spam_filter']) && $_SESSION['spam_bypass_spam_filter'])) {
+    unset($_SESSION['spam_bypass_spam_filter']);
+    return TRUE;
+  }
+  return FALSE;
 }

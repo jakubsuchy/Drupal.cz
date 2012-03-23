@@ -1,5 +1,4 @@
 <?php
-// $Id: pathauto.install,v 1.13 2008/05/28 16:04:35 freso Exp $
 
 /**
  * @file
@@ -45,6 +44,7 @@ function pathauto_install() {
   variable_set('pathauto_user_pattern', 'users/[user-raw]');
   variable_set('pathauto_user_supportsfeeds', NULL);
   variable_set('pathauto_verbose', FALSE);
+  variable_set('pathauto_node_applytofeeds', '');
 
   // Make sure we "replace hyphen with separator" by default
   variable_set('pathauto_punctuation_hyphen', 1); // 1 is replace

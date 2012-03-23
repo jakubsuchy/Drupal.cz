@@ -11,7 +11,7 @@ If upgrading from the 5.x-1.x or 5.x-2.x versions of the spam module, you MUST
 FIRST upgrade to 5.x-3.0-beta1 BEFORE upgrading to the 6.x-1.x version of the
 spam module.  If you neglect this step, the spam module will not work correctly
 and the only solution will be to completely uninstall it and reinstall it.
-After uninstalling the spam module and before reinstalling it, you should verify
+After uninstalling the spam module, but before reinstalling it, you should verify
 that there are no tables starting with the name 'spam'.  If any still exist,
 you should manually drop them.
 
@@ -22,11 +22,11 @@ to always visit update.php to perform any necessary schema updates.
 -------------
 Installation:
 -------------
-1) Extra the spam tarball.  Move the resulting 'spam/' subdirectory within the
+1) Extract the spam tarball.  Move the resulting 'spam/' subdirectory within the
    appropriate 'sites/*/modules' directory.  Be sure the web server has read
    permissions to this directory and the files within it.
 
-2) Log into your website and enabled the spam module.
+2) Log into your website and enable the spam module.
 
    Visit "Administer >> Site building >> Modules" and scroll down to the spam
    section.  Put a check mark next to "Spam API" and any spam filters you'd

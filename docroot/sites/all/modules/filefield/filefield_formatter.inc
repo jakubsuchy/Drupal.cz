@@ -1,5 +1,4 @@
 <?php
-// $Id: filefield_formatter.inc,v 1.14 2009/04/28 04:06:06 quicksketch Exp $
 /**
  * @file
  * FileField: Defines a CCK file field type.
@@ -39,8 +38,7 @@ function theme_filefield_formatter_path_plain($element) {
   if (empty($item['filepath']) && !empty($item['fid'])) {
     $item = array_merge($item, field_file_load($item['fid']));
   }
-
-  return empty($item['filepath']) ? '' : file_create_path($item['filepath']);
+  return empty($item['filepath']) ? '' : check_plain(file_create_path($item['filepath']));
 }
 
 /**
@@ -63,7 +61,11 @@ function theme_filefield_formatter_url_plain($element) {
     $item = array_merge($item, field_file_load($item['fid']));
   }
 
-  return empty($item['filepath']) ? '' : file_create_url($item['filepath']);
+  if (empty($item['filepath'])) {
+    return '';
+  }
+
+  return file_create_url(field_file_urlencode_path($item['filepath']));
 }
 
 /**
@@ -74,7 +76,7 @@ function theme_filefield_formatter_url_plain($element) {
  *
  * This function checks if the file may be shown and returns an empty string
  * if viewing the file is not allowed for any reason. If you need to display it
- * in any case, please use theme('filefield') instead.
+ * in any case, please use theme('filefield_file') instead.
  */
 function theme_filefield_item($file, $field) {
   if (filefield_view_access($field['field_name']) && filefield_file_listed($file, $field)) {
@@ -93,7 +95,7 @@ function theme_filefield_item($file, $field) {
  */
 function filefield_file_listed($file, $field) {
   if (!empty($field['list_field'])) {
-    return (bool)$file['list'];
+    return !empty($file['list']);
   }
   return TRUE;
 }
@@ -130,5 +132,5 @@ function theme_filefield_file($file) {
     $options['attributes']['title'] = $file['filename'];
   }
 
-  return '<div class="filefield-file clear-block">'. $icon . l($link_text, $url, $options) .'</div>';
+  return '<div class="filefield-file">'. $icon . l($link_text, $url, $options) .'</div>';
 }

@@ -1,0 +1,22 @@
+This document will currently serve as a catch-all for developer best practices, for both Spam core and API usage.
+----
+
+Spam logging guidelines
+-----------------------
+
+Per issue #532158.
+
+A starting recommendation of items that should be logged, and at what level:
+
+SPAM_LOG
+* content marked as spam by spam.module, with final score
+* content marked as spam or not-spam by user
+* any "this is never supposed to happen" errors (as they're probably indicative of a bug)
+
+SPAM_VERBOSE
+* content marked as not-spam by spam module, with final score
+* individual filters indicating spam, with scores
+
+SPAM_DEBUG
+* individual filters calculating all content score
+* any internal processes that would be handy to expose for debugging

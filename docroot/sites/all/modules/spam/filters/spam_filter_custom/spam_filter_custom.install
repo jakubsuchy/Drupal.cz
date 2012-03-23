@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Defines Custom module schema.
+ */
+
+function spam_filter_custom_schema() {
+  $schema['spam_filter_custom'] = array(
+    'fields' => array(
+      'cid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '11'),
+      'filter' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
+      'style' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+      'status' => array('type' => 'int', 'not null' => FALSE, 'default' => 0, 'disp-width' => '2'),
+      'scan' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+      'action' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+      'matches' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'last' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE, 'default' => 0, 'disp-width' => '11'),
+      'weight' => array('type' => 'int', 'not null' => FALSE, 'default' => 0, 'disp-width' => '3'),
+    ),
+    'primary key' => array('cid'),
+    'indexes' => array(
+      'filter' => array('filter'),
+      'last' => array('last'),
+      'matches' => array('matches'),
+      'weight' => array('weight'),
+    ),
+  );
+
+  return $schema;
+}
+
+function spam_filter_custom_install() {
+  // Create my tables.
+  drupal_install_schema('spam_filter_custom');
+}
+
+function spam_filter_custom_uninstall() {
+  // Remove tables.
+  drupal_uninstall_schema('spam_filter_custom');
+  drupal_set_message('The spam_filter_custom table has been dropped.');
+}
+
+/**
+ * Fix variable namespacing.
+ */
+function spam_filter_custom_update_6101() {
+  $ret = array();
+  $old_vars = array('custom_probably', 'custom_probablynot', 'custom_probablynot_value', 'custom_probably_value');
+  foreach ( $old_vars as $var ) {
+    $test = variable_get($var, null);
+    if ( !empty($test) && !strcmp(substr($var,0,12),"spam_filter_") ) {
+      $ret[] = update_sql('UPDATE {variables} SET name = %s WHERE name = %s', 'spam_filter_'.$var, $var);
+    }
+  }
+  return $ret;
+  }
+
+

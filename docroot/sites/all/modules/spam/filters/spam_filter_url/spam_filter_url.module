@@ -1,0 +1,269 @@
+<?php
+
+/**
+ * @file
+ * URL filter plug in for the spam module.
+ * Copyright(c) 2007-2008
+ *  Jeremy Andrews <jeremy@tag1consulting.com>.  All rights reserved.
+ *
+ */
+
+function spam_filter_url_spamapi($op, $type = NULL, $content = array(), $fields = array(), $extra = NULL) {
+  // Don't both with this hook unless the filter is actually enabled.
+
+  switch ($op) {
+    case 'filter':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_url', $type, $content, $fields, $extra)) return;
+      return spam_filter_url_spam_filter($content, $type, $fields, $extra);
+
+    case 'filter_module':
+      return 'spam_filter_url';
+
+    case 'filter_info':
+      return array(
+        'name' => t('URL filter'),
+        'module' => t('spam_filter_url'),
+        'description' => t('A spam url filter.'),
+        'help' => t('The url filter blocks posts containing spam-URLs, automatically learned with the bayesian filter module.'),
+      );
+      break;
+
+    case 'filter_install':
+      return array(
+        'status' => SPAM_FILTER_ENABLED,
+        'gain' => 250,
+        'weight' => -6,
+      );
+
+    case 'mark_as_spam':
+    case 'mark_as_not_spam':
+      if (!module_invoke('spam', 'filter_enabled', 'spam_filter_url', $type, $content, $fields, $extra)) return;
+      spam_log(SPAM_DEBUG, 'spam_filter_url_spamapi', t('@op', array('@op' => $op)), $type, $extra['id']);
+      $fields = spam_invoke_module($type, 'filter_fields', $extra['content']);
+      $spam_filter_urls = _spam_filter_url_extract($extra['content'], $type, $fields, $extra);
+      spam_filter_url_update($spam_filter_urls, ($op == 'mark_as_spam' ? TRUE : FALSE), $type, $extra['id']);
+      break;
+  }
+}
+
+function _spam_filter_url_extract($content, $type, $fields, $extra = array()) {
+  static $spam_filter_urls = array();
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+
+  if (is_object($content)) {
+    $content = (array)$content;
+  }
+
+  if (!isset($spam_filter_urls["$type-$id"])) {
+    $string = '';
+    if (isset($fields['main']) && is_array($fields['main'])) {
+      foreach ($fields['main'] as $field) {
+        $string .= $content["$field"] .' ';
+      }
+    }
+    if (isset($fields['other']) && is_array($fields['other'])) {
+      foreach ($fields['other'] as $field) {
+        $string .= $content["$field"] .' ';
+      }
+    }
+
+    $URI = "(http://|https://|ftp://|mailto:|smb://|afp://|file://|gopher://|news://|ssl://|sslv2://|sslv3://|tls://|tcp://|udp://)";
+    // Find all urls in content. Code based on _filter_url().
+    // Match absolute URLs.
+    preg_match_all("`(<p>|<li>|<br\s*/?>|[ \n\r\t\(])($URI([a-zA-Z0-9@:%_+*~#?&=.,/;-]*[a-zA-Z0-9@:%_+*~#&=/;-]))([.,?!]*?)(?=(</p>|</li>|<br\s*/?>|[ \n\r\t\)]))`i", $string, $matches_absolute);
+    // Match e-mail addresses.
+    preg_match_all("`(<p>|<li>|<br\s*/?>|[ \n\r\t\(])([A-Za-z0-9._-]+@[A-Za-z0-9._+-]+\.[A-Za-z]{2,4})([.,?!]*?)(?=(</p>|</li>|<br\s*/?>|[ \n\r\t\)]))`i", $string, $matches_email);
+    // Match www domains/addresses.
+    preg_match_all("`(<p>|<li>|[ \n\r\t\(])(www\.[a-zA-Z0-9@:%_+*~#?&=.,/;-]*[a-zA-Z0-9@:%_+~#\&=/;-])([.,?!]*?)(?=(</p>|</li>|<br\s*/?>|[ \n\r\t\)]))`i", $string, $matches_www);
+    $matches = array_merge($matches_absolute[2], $matches_email[2], $matches_www[2]);
+    $u = array();
+    foreach ($matches as $spam_filter_url) {
+      $spam_filter_url = preg_replace("'$URI'", '', $spam_filter_url);
+      // get full domain (ie www.sample.com)
+      preg_match("/^()?([^\/\"\']+)/i", $spam_filter_url, $domain);
+      // get root domain (ie sample.com)
+      preg_match("/[^\.\/]+\.[^\.\/]+$/", $domain[2], $root);
+      $spam_filter_url = htmlspecialchars(drupal_strtolower($root[0]));
+      _spam_filter_url_count($spam_filter_url);
+      $u[] = $spam_filter_url;
+    }
+    $spam_filter_urls["$type-$id"] = $u;
+  }
+
+  return $spam_filter_urls["$type-$id"];
+}
+
+/**
+ * Search for known spam urls in content.
+ */
+function spam_filter_url_spam_filter($content, $type, $fields, $extra = array(), $filter_test = FALSE) {
+  $action = array();
+
+  $id = spam_invoke_module($type, 'content_id', $content, $extra);
+  $spam = FALSE;
+
+  $spam_filter_urls = _spam_filter_url_extract($content, $type, $fields, $extra);
+  
+  $probability = variable_get('spam_filter_url_probability', 99);
+
+  if (is_array($spam_filter_urls) && !empty($spam_filter_urls)) {
+    $count = _spam_filter_url_count();
+
+    $limit = variable_get('spam_filter_url_limit_total', 10);
+    if ($limit > -1 && $count['total'] > $limit) {
+      spam_log(SPAM_VERBOSE, 'spam_filter_url_spam_filter', t('total urls(@total) > spam_filter_url_limit_total(@limit)', array('@total' => $count['total'], '@limit' => variable_get('spam_filter_url_limit_total', 10))), $type, $id);
+      $action['spam_filter_url'][] = array(
+        'limit' => 'total',
+        'total' => $count['total'],
+      );
+      $action['total'] = $probability;
+      return $action;
+    }
+    $limit = variable_get('spam_filter_url_limit_repeat', 5);
+    if ($limit > -1) {
+      // Sort urls from most repeated to least repeated.
+      asort($count);
+
+      // skip count['total']
+      array_pop($count);
+
+      $max = array_pop($count);
+      if ($max > $limit) {
+        spam_log(SPAM_VERBOSE, 'spam_filter_url_spam_filter', t('repeated urls(@total) > spam_filter_url_limit_repeat(@limit)', array('@total' => $max, '@limit' => variable_get('spam_filter_url_limit_repeat', 5))), $type, $id);
+        $action['spam_filter_url'][] = array(
+          'limit' => 'repeat',
+          'total' => $max,
+        );
+        $action['total'] = $probability;
+        return $action;
+      }
+    }
+
+    foreach ($spam_filter_urls as $spam_filter_url) {
+      $p = db_fetch_object(db_query("SELECT probability FROM {spam_filter_bayesian_tokens} WHERE class = 'spam_filter_url' AND token = '%s'", $spam_filter_url));
+      $action['spam_filter_url'][] = array(
+        'spam_filter_url' => $spam_filter_url,
+        'probability' => $p->probability,
+      );
+      if ($p->probability >= variable_get('spam_threshold', SPAM_DEFAULT_THRESHOLD)) {
+        spam_log(SPAM_VERBOSE, 'spam_filter_url_spam_filter', t('found spam url(@url) probability(@probability)', array('@url' => $spam_filter_url, '@probability' => $p->probability)), $type, $id);
+        $spam = TRUE;
+        break;
+      }
+      spam_log(SPAM_DEBUG, 'spam_filter_url_spam_filter', t('not spam url(@url) probability(@probability)', array('@url' => $spam_filter_url, '@probability' => $p->probability)), $type, $id);
+    }
+  }
+
+  if ($spam) {
+    $action['total'] = $probability;
+  }
+  else {
+    $action['total'] = 0;
+  }
+
+  return $action;
+}
+
+/**
+ * Update url probabilities in database.
+ */
+function spam_filter_url_update($spam_filter_urls, $yes, $type, $id) {
+  module_invoke('spam_filter_bayesian', 'tokens_update', 'spam_filter_url', $spam_filter_urls, $yes, $type, $id);
+}
+
+/**
+ * Keep track of the total number of URLs found in the current content.
+ *
+ * @param $spam_filter_url  A URL to be added to a static array.
+ * @return      Array of URLs showing how many times each URL is present, and
+ *              the total number of arrays.
+ */
+function _spam_filter_url_count($spam_filter_url = NULL) {
+  // build up an array of all URLs seen in current content
+  static $spam_filter_urls = array('total' => 0);
+
+  if ($spam_filter_url != NULL) {
+    if (empty($spam_filter_urls["$spam_filter_url"])) {
+      $spam_filter_urls["$spam_filter_url"] = 1;
+    }
+    else {
+      $spam_filter_urls["$spam_filter_url"]++;
+    }
+    $spam_filter_urls['total']++;
+  }
+
+  return $spam_filter_urls;
+}
+
+function spam_filter_url_menu() {
+  $items = array();
+
+  $items['admin/settings/spam/filters/url'] = array(
+    'title' => 'URL',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('spam_filter_url_admin_settings'),
+    'access arguments' => array('administer spam'),
+    'description' => 'Configure the url filter.',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+function spam_filter_url_admin_settings() {
+  $form = array();
+  $form['short'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'URL limits',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $max_urls = drupal_map_assoc(array(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 40, 100));
+  $max_urls[-1] = "Unlimited";
+  $form['short']['spam_filter_url_limit_total'] = array(
+    '#type' => 'select',
+    '#title' => t('Maximum total URLs per post'),
+    '#options' => $max_urls,
+    '#required' => TRUE,
+    '#default_value' => variable_get('spam_filter_url_limit_total', 10),
+  );
+  $max_dups = drupal_map_assoc(array(-1, 0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 40, 100));
+  $max_dups[-1] = "Unlimited";
+  $form['short']['spam_filter_url_limit_repeat'] = array(
+    '#type' => 'select',
+    '#title' => t('Maximum number of times the same URL can appear in a post'),
+    '#options' => $max_dups,
+    '#required' => TRUE,
+    '#default_value' => variable_get('spam_filter_url_limit_repeat', 5),
+  );
+  $url_spam_prob = drupal_map_assoc(array(60, 65, 70, 75, 80, 85, 90, 95, 99));
+  $form['short']['spam_filter_url_probability'] = array(
+    '#type' => 'select',
+    '#title' => t('Probability that content posted that exceeds the url limit or duplicate url limit is spam'),
+    '#options' => $url_spam_prob,
+    '#required' => TRUE,
+    '#default_value' => variable_get('spam_filter_url_probability', 99),
+  );
+  return system_settings_form($form);
+}
+
+function spam_filter_url_admin_settings_validate($form, &$form_state) {
+  $limit_long = $form_state['values']['spam_filter_url_limit_total'];
+  $limit_short = $form_state['values']['spam_filter_url_limit_repeat'];
+  if ($limit_short > $limit_long) {
+    form_set_error('spam_filter_url_limit_total', t('Total URL limit must be at least as big as the repeated URL limit.'));
+  }
+}
+
+function spam_filter_url_admin_settings_submit($form, &$form_state) {
+  if ($form_state['values']['op'] == t('Reset to defaults')) {
+    variable_del('spam_filter_url_limit_total');
+    variable_del('spam_filter_url_limit_repeat');
+    drupal_set_message('Configuration reset to defaults.');
+  }
+  else {
+    variable_set('spam_filter_url_limit_total', $form_state['values']['spam_filter_url_limit_total']);
+    variable_set('spam_filter_url_limit_repeat', $form_state['values']['spam_filter_url_limit_repeat']);
+    drupal_set_message('Configuration saved.');
+  }
+}

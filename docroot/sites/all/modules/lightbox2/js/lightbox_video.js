@@ -1,4 +1,4 @@
-/* $Id: lightbox_video.js,v 1.1.4.13 2009/01/05 01:12:34 snpower Exp $ */
+/* $Id: lightbox_video.js,v 1.1.4.20 2010/09/21 17:57:22 snpower Exp $ */
 
 /**
  * Lightbox video
@@ -13,22 +13,24 @@ var Lightvideo = {
     if (Lightvideo.checkKnownVideos(href)) {
       return;
     }
-    else if (href.match(/\.mov/i)) {
+    else if (href.match(/\.mov$/i)) {
       if (navigator.plugins && navigator.plugins.length) {
         Lightbox.modalHTML ='<object id="qtboxMovie" type="video/quicktime" codebase="http://www.apple.com/qtactivex/qtplugin.cab" data="'+href+'" width="'+Lightbox.modalWidth+'" height="'+Lightbox.modalHeight+'"><param name="allowFullScreen" value="true"></param><param name="src" value="'+href+'" /><param name="scale" value="aspect" /><param name="controller" value="true" /><param name="autoplay" value="true" /><param name="bgcolor" value="#000000" /><param name="enablejavascript" value="true" /></object>';
       } else {
         Lightbox.modalHTML = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="'+Lightbox.modalWidth+'" height="'+Lightbox.modalHeight+'" id="qtboxMovie"><param name="allowFullScreen" value="true"></param><param name="src" value="'+href+'" /><param name="scale" value="aspect" /><param name="controller" value="true" /><param name="autoplay" value="true" /><param name="bgcolor" value="#000000" /><param name="enablejavascript" value="true" /></object>';
       }
     }
-    else if (href.match(/\.wmv/i) || href.match(/\.asx/i)) {
+    else if (href.match(/\.wmv$/i) || href.match(/\.asx$/i)) {
       Lightbox.modalHTML = '<object NAME="Player" WIDTH="'+Lightbox.modalWidth+'" HEIGHT="'+Lightbox.modalHeight+'" align="left" hspace="0" type="application/x-oleobject" CLASSID="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6"><param name="allowFullScreen" value="true"></param><param NAME="URL" VALUE="'+href+'"></param><param NAME="AUTOSTART" VALUE="true"></param><param name="showControls" value="true"></param><embed WIDTH="'+Lightbox.modalWidth+'" HEIGHT="'+Lightbox.modalHeight+'" align="left" hspace="0" SRC="'+href+'" TYPE="application/x-oleobject" AUTOSTART="false"></embed></object>';
     }
     else {
       Lightbox.videoId = href;
-      href = Lightbox.flvPlayer + '?file=' + href;
-      if (Lightbox.flvFlashvars.length) {
-        variables = Lightbox.flvFlashvars;
-        href = href + '&' + Lightbox.flvFlashvars;
+      variables = '';
+      if (!href.match(/\.swf$/i)) {
+        href = Lightbox.flvPlayer + '?file=' + href;
+        if (Lightbox.flvFlashvars.length) {
+          variables = Lightbox.flvFlashvars;
+        }
       }
 
       Lightvideo.createEmbed(href, "flvplayer", "#ffffff", variables);

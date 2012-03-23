@@ -1,6 +1,19 @@
-// $Id: captcha.js,v 1.1 2009/06/18 10:04:16 soxofaan Exp $
+// $Id: captcha.js,v 1.2.2.3 2011/02/06 20:45:12 soxofaan Exp $
 
-$(document).ready(function(){
+// Javascript behaviors for general CAPTCHA functionality.
+Drupal.behaviors.captcha = function (context) {
+
+  // Turn off autocompletion for the CAPTCHA response field.
+  // We do it here with Javascript (instead of directly in the markup)
+  // because this autocomplete attribute is not standard and
+  // it would break (X)HTML compliance.
+  $("#edit-captcha-response").attr("autocomplete", "off");
+
+};
+
+
+// JavaScript behaviors for the CAPTCHA admin page
+Drupal.behaviors.captchaAdmin = function (context) {
 
 	// Add onclick handler to checkbox for adding a CAPTCHA description
 	// so that the textfields for the CAPTCHA description are hidden
@@ -20,4 +33,4 @@ $(document).ready(function(){
 		$("#edit-captcha-description-wrapper").hide();
 	}
 
-});
+};
