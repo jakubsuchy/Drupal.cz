@@ -1,5 +1,4 @@
 <?php
-// $Id: autologout.install,v 1.3 2009/04/17 14:05:51 jvandervort Exp $
 /**
  * @file
  * Install file for Automated Logout Module
@@ -26,6 +25,9 @@ function autologout_install() {
 function autologout_uninstall() {
   // Remove table.
   drupal_uninstall_schema('autologout');
+
+  variable_del('autologout');
+  variable_del('autologout_one_session');
 }
 
 
