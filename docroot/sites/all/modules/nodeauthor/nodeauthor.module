@@ -108,7 +108,7 @@ function nodeauthor_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
     case 'alter':
       if (user_access("view author info")) {
         $allowed = variable_get('nodes_add_info', array());
-        if ($allowed[$node->type]) {
+        if (isset($allowed[$node->type]) && !empty($allowed[$node->type])) {
           $user = user_load(array('uid' => $node->uid));
           if (!empty($user->info)) {
             // Display picture if enabled
