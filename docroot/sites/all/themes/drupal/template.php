@@ -172,6 +172,7 @@ function drupal_book_navigation($node) {
 
 function drupal_tagadelic_more($vid) { return; }
 function drupal_tagadelic_weighted($terms) {
+  $output = '';
   require_once drupal_get_path('module', 'pathauto') . '/pathauto.inc';
   switch($terms[0]->vid) {
     case 4:
