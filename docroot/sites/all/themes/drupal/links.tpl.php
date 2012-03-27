@@ -4,6 +4,7 @@ $social = 0;
 //$i = 0;
 $seqid = rand (0, 10000);
 $output = '';
+$socialprinted = 0;
 foreach($links as $key => $lnk) {
   $next = next($links);
   prev($links);

@@ -190,3 +190,10 @@ function drupal_tagadelic_weighted($terms) {
   return $output;
 }
 
+
+function phptemplate_preprocess_page(&$vars) {
+  if (!user_is_logged_in() && isset($_COOKIE[session_name()])) {
+    sess_destroy_sid($_COOKIE[session_name()]);
+    session_destroy();
+  }
+}
