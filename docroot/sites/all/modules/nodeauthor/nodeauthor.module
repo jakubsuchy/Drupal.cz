@@ -26,6 +26,7 @@ function nodeauthor_perm() {
  * Implementation of hook_user().
  */
 function nodeauthor_user($op, &$edit, &$account, $category = NULL) {
+  $form = array();
   if (($op == 'form') || ($op == 'register')) {
     if (user_access('edit own info', $account)) {
       $form['userinfo'] = array(
