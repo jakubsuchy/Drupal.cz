@@ -7,6 +7,7 @@
     <?php print $content?>
     <h3>Tagy</h3>
     <?php
+    _pathauto_include();
     foreach ($taxonomy as $term) {
       echo l($term['title'], "katalog/tagy/".pathauto_cleanstring($term['title']))."\n";
     }
