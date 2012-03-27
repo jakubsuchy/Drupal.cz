@@ -83,10 +83,10 @@
  <?php print $footer_message ?>
 
  <div class="preloader">
-  <img src="<?php print $directory?>/images/nav-right.png" width="1" height="1" alt="." />
-  <img src="<?php print $directory?>/images/nav-left.png" width="1" height="1" alt="." />
-  <img src="<?php print $directory?>/images/nav-left-active.png" width="1" height="1" alt="." />
-  <img src="<?php print $directory?>/images/nav-right-active.png" width="1" height="1" alt="." />
+  <img src="/<?php print $directory?>/images/nav-right.png" width="1" height="1" alt="." />
+  <img src="/<?php print $directory?>/images/nav-left.png" width="1" height="1" alt="." />
+  <img src="/<?php print $directory?>/images/nav-left-active.png" width="1" height="1" alt="." />
+  <img src="/<?php print $directory?>/images/nav-right-active.png" width="1" height="1" alt="." />
  </div>
 </div> <!-- footer end -->
 <?php print $closure ?>
