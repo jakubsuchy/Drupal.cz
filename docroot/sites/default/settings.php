@@ -241,3 +241,6 @@ ini_set('url_rewriter.tags',        '');
 #   'forum'      => 'Discussion board',
 #   '@count min' => '@count minutes',
 # );
+
+/* Turn off Notices in PHP */
+ini_set('error_reporting',          4);
