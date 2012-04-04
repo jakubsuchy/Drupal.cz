@@ -1,0 +1,179 @@
+<?php
+
+/**
+ * @file
+ * Allow users to override the default publishing options for nodes they can
+ * edit without giving them the 'administer nodes' permission.
+ */
+
+/**
+ * Implements hook_perm().
+ */
+function override_node_options_perm() {
+  $node_types = array_keys(node_get_types('names'));
+  foreach ($node_types as $node_type) {
+    $node_type = check_plain($node_type);
+    $perms[] = 'override ' . $node_type . ' published option';
+    $perms[] = 'override ' . $node_type . ' promote to front page option';
+    $perms[] = 'override ' . $node_type . ' sticky option';
+    $perms[] = 'enter ' . $node_type . ' revision log entry';
+    $perms[] = 'override ' . $node_type . ' revision option';
+    $perms[] = 'override ' . $node_type . ' authored on option';
+    $perms[] = 'override ' . $node_type . ' authored by option';
+    if (module_exists('comment')) {
+      $perms[] = 'override ' . $node_type . ' comment settings';
+    }
+    
+  }
+  return $perms;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function override_node_options_menu() {
+  $items['admin/settings/override_node_options'] = array(
+    'title' => 'Override node options',
+    'description' => 'Allow non-admins to override the default publishing options for nodes they can edit',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('override_node_options_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'override_node_options.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function override_node_options_form_alter(&$form, $form_state, $form_id) {
+  if (isset($form['type']['#value']) && $form['type']['#value'] . '_node_form' == $form_id && !user_access('administer nodes')) {
+    // Get a copy of the current node object.
+    $node = $form['#node'];
+
+    // Core doesn't include the revision fieldset if the user does not have
+    // access to it unlike all the other fieldsets, so we have to re-create it.
+    // @see http://drupal.org/node/668806
+    $form['revision_information'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Revision information'),
+      '#collapsible' => TRUE,
+      '#collapsed' => !$node->revision,
+      '#weight' => 20,
+    );
+    $form['revision_information']['revision'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Create new revision'),
+      '#default_value' => $node->revision,
+      '#access' => user_access('administer nodes') || user_access('override ' . $node->type . ' revision option'),
+    );
+    $form['revision_information']['log'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Log message'),
+      '#default_value' => (isset($node->log) ? $node->log : ''),
+      '#rows' => 2,
+      '#description' => t('An explanation of the additions or updates being made to help other authors understand your motivations.'),
+      '#access' => user_access('administer nodes') || user_access('enter ' . $node->type . ' revision log entry'),
+    );
+    $form['revision_information']['#access'] = $form['revision_information']['log']['#access'] || $form['revision_information']['revision']['#access'];
+
+    // Add access to the 'Authoring information' fieldset.
+    $form['author']['name']['#access'] = user_access('override ' . $node->type . ' authored by option');
+    $form['author']['date']['#access'] = user_access('override ' . $node->type . ' authored on option');
+    $form['author']['#access'] |= override_node_options_element_children_access($form['author']);
+
+    // Add access to the 'Publishing options' fieldset.
+    $form['options']['status']['#access'] = user_access('override ' . $node->type . ' published option');
+    $form['options']['promote']['#access'] = user_access('override ' . $node->type . ' promote to front page option');
+    $form['options']['sticky']['#access'] = user_access('override ' . $node->type . ' sticky option');
+    $form['options']['#access'] |= override_node_options_element_children_access($form['options']);
+    
+    // Add access to the 'Comment settings' fieldset.
+    if (module_exists('comment') && isset($form['comment_settings']) && !user_access('administer comments')) {
+      $form['comment_settings']['#access'] = user_access('override ' . $node->type . ' comment settings');
+    }
+    
+    // Add extra validation and processing if the user does not have the
+    // 'administer nodes' permission since it would be otherwise skipped by core.
+    if ($form['author']['#access']) {
+      $form['#validate'][] = 'override_node_options_validate_node';
+    }
+    if ($form['author']['name']['#access']) {
+      $form['#submit'][] = 'override_node_options_submit_node';
+    }
+  }
+
+  if (isset($form['type']['#value']) && $form['type']['#value'] . '_node_form' == $form_id) {
+    $form['options']['#collapsible'] = variable_get('override_node_options_pocollapsible', 1);
+    $form['options']['#collapsed'] = variable_get('override_node_options_pocollapsed', 1);
+
+    $form['author']['#collapsible'] = variable_get('override_node_options_aicollapsible', 1);
+    $form['author']['#collapsed'] = variable_get('override_node_options_aicollapsed', 1);
+
+    if (module_exists('upload') && isset($form['attachments'])) {
+      $form['attachments']['#collapsible'] = variable_get('override_node_options_facollapsible', 1);
+      $form['attachments']['#collapsed'] = variable_get('override_node_options_facollapsed', 1);
+    }
+    if (module_exists('scheduler') && isset($form['scheduler_settings'])) {
+      $form['scheduler_settings']['#collapsible'] = variable_get('override_node_options_sscollapsible', 1);
+      $form['scheduler_settings']['#collapsed'] = variable_get('override_node_options_sscollapsed', 1);
+    }
+  }
+}
+
+/**
+ * Perform additional node form validation normally skipped by core.
+ */
+function override_node_options_validate_node($form, &$form_state) {
+  // Validate the "authored by" field.
+  if (!empty($form_state['values']['name']) && !($account = user_load(array('name' => $form_state['values']['name'])))) {
+    // The use of empty() is mandatory in the context of usernames
+    // as the empty string denotes the anonymous user. In case we
+    // are dealing with an anonymous user we set the user ID to 0.
+    form_set_error('name', t('The username %name does not exist.', array('%name' => $form_state['values']['name'])));
+  }
+
+  // Validate the "authored on" field. As of PHP 5.1.0, strtotime returns FALSE instead of -1 upon failure.
+  if (!empty($form_state['values']['date']) && strtotime($form_state['values']['date']) <= 0) {
+    form_set_error('date', t('You have to specify a valid date.'));
+  }
+}
+
+/**
+ * Perform additional node form submission processing normally skipped by core.
+ */
+function override_node_options_submit_node($form, &$form_state) {
+  // Populate the "authored by" field.
+  if ($account = user_load(array('name' => $form_state['values']['name']))) {
+    $form_state['values']['uid'] = $account->uid;
+  }
+  else {
+    $form_state['values']['uid'] = 0;
+  }
+}
+
+/**
+ * Check if there is a child element accessible in a parent element.
+ *
+ * @param $element
+ *   A form element.
+ * @return
+ *   TRUE if a child element of $element if accessible, or FALSE otherwise.
+ */
+function override_node_options_element_children_access($element) {
+  foreach (element_children($element) as $key) {
+    // Skip un-accessible children.
+    if (isset($element[$key]['#access']) && !$element[$key]['#access']) {
+      continue;
+    }
+
+    // Skip value and hidden elements, since they are not rendered.
+    if (isset($element[$key]['#type']) && in_array($element[$key]['#type'], array('value', 'hidden'))) {
+      continue;
+    }
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
