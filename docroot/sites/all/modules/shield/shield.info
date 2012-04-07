@@ -1,0 +1,10 @@
+name = "PHP Authentication shield"
+description = "Creates a general shield for the site"
+core = "6.x"
+
+; Information added by drupal.org packaging script on 2011-12-13
+version = "6.x-1.1"
+core = "6.x"
+project = "shield"
+datestamp = "1323788149"
+

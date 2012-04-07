@@ -63,8 +63,23 @@ DirectoryIndex index.php
   #
   # If you want the site to be accessed WITH the www. only, adapt and
   # uncomment the following:
-  # RewriteCond %{HTTP_HOST} ^example\.com$ [NC]
-  # RewriteRule .* http://www.example.com/ [L,R=301]
+  RewriteCond %{HTTP_HOST} ^drupal\.cz$ [NC]
+  RewriteRule .* http://www.drupal.cz/ [L,R=301]
+
+
+  ### Begin custom rules
+  # Fix for shield on fast-cgi servers
+  RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+  # Rewrite the Acquia provided domains so that they can't be accessed.
+  RewriteCond %{HTTP_HOST} ^drupalczdev.prod.acquia-sites.com$ [NC]
+  RewriteRule ^(.*)$ http://dev.drupal.cz/$1 [L,R=301]
+  RewriteCond %{HTTP_HOST} ^drupalczstg.prod.acquia-sites.com$ [NC]
+  RewriteRule ^(.*)$ http://stage.drupal.cz/$1 [L,R=301]
+  RewriteCond %{HTTP_HOST} ^drupalcz.prod.acquia-sites.com$ [NC]
+  RewriteRule ^(.*)$ http://yoursite.com/$1 [L,R=301]
+  ### End custom rules
+
   #
   # If you want the site to be accessed only WITHOUT the www. prefix, adapt
   # and uncomment the following:

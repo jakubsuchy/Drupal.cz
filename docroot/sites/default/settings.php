@@ -244,3 +244,12 @@ ini_set('url_rewriter.tags',        '');
 
 /* Turn off Notices in PHP */
 ini_set('error_reporting',          4);
+
+/*
+ * On PROD, remove restricted access provided by shield module.
+ * Applies to DEV and STAGE to prevent crawlers and roving eyes from seeing our dev sites.
+ */
+if (isset($_ENV['AH_SITE_ENVIRONMENT']) && $_ENV['AH_SITE_ENVIRONMENT'] == 'prod') {
+  $conf['shield_user'] = '';
+  $conf['shield_pass'] = '';
+}
