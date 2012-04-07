@@ -1,0 +1,24 @@
+<?php
+/**
+ * @file
+ * Installation file for shield module
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function shield_install() {
+  variable_set('shield_state', 1);
+  variable_set('shield_allow_cli', 1);
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function shield_uninstall() {
+  variable_del('shield_state');
+  variable_del('shield_allow_cli');
+  variable_del('shield_user');
+  variable_del('shield_pass');
+  variable_del('shield_print');
+}
