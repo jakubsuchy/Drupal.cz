@@ -37,12 +37,12 @@ function dcz_base_strongarm() {
       'alt' => '0',
     ),
     2 => array(
-      'editor' => '3',
+      'editor' => '1',
       'alt' => '0',
       'weight' => 11,
     ),
     1 => array(
-      'editor' => '3',
+      'editor' => '1',
       'alt' => '0',
       'weight' => 12,
     ),
