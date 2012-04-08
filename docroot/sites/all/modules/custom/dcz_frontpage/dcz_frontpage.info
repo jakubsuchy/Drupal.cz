@@ -1,0 +1,6 @@
+name = "dcz_frontpage"
+description = "Frontpage configuration"
+core = "6.x"
+package = "Features"
+version = "6.x-1.0"
+project = "dcz_frontpage"
