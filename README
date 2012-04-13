@@ -13,7 +13,7 @@ Jak rozjet lokální verzi Drupal.cz?
 Pravidla vývoje
 ===============
 
-- Při vývoji dodržujte Drupal coding standards: http://drupal.org/coding-standards
+- Při vývoji dodržujte Drupal coding standards: http://atrium.drupal.cz/drupal_cz.sql.bz2
 - Všechny komentáře a commit messages pište v angličtině.
 - Veškeré změny v databázi musí být součástí update.php či feature.
 - Pro velké změny používejte Features
