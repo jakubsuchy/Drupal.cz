@@ -7,7 +7,7 @@
 include_once 'dcz_frontpage.features.inc';
 
 /**
- * Implementats hook_flag_access().
+ * Implementats hook_flag().
  */
 function dcz_frontpage_flag($action, $flag, $content_id, $account) {
   if ($flag->name == 'dcz_frontpage') {
