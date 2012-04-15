@@ -4,99 +4,23 @@
  * Code for the dcz_frontpage module.
  */
 
-/**
- * Implements hook_perm()
- */
-function dcz_frontpage_perm() {
-  return array('redaktor frontpage');
-}
+include_once 'dcz_frontpage.features.inc';
 
 /**
- * Implements hook_menu()
+ * Implementats hook_flag_access().
  */
-function dcz_frontpage_menu() {
-  $items['node/%node/promote'] = array(
-    'title' => 'Promote to front page',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dcz_frontpage_promote_confirm', 1),
-    'access callback' => 'dcz_frontpage_promote_access',
-    'access arguments' => array(1),
-    'type' => MENU_CALLBACK,
-  );
-  return $items;
-}
+function dcz_frontpage_flag($action, $flag, $content_id, $account) {
+  if ($flag->name == 'dcz_frontpage') {
+    $node = node_load($content_id);
+    switch($action) {
+      case 'flag':
+        node_promote_action($node);
+        break;
 
-/**
- * Menu link access callback
- * 
- * @todo Another access control then user_access? Content type?
- */
-function dcz_frontpage_promote_access($node, $account = NULL) {
-  global $user;
-  
-  if (!$node) {
-    return FALSE;
-  }
-  $node = (object)$node;
-  if (empty($account)) {
-    $account = $user;
-  }
-  
-  return user_access('redaktor frontpage', $account);
-}
-
-/**
- * Menu callback -- ask for confirmation of promote to frontpage
- * 
- * @todo Write a propper description
- */
-function dcz_frontpage_promote_confirm(&$form_state, $node) {
-  $form['nid'] = array(
-    '#type' => 'value',
-    '#value' => $node->nid,
-  );
-  // Feature decision if promote or unpromote
-  $form['promote'] = array(
-    '#type' => 'value',
-    '#value' => !$node->promote,
-  );
-  
-  return confirm_form($form,
-    ($node->promote? t("Unpromote node from frontpage"): t("Promote node to frontpage")),
-    isset($_GET['destination']) ? $_GET['destination'] : 'node/'. $node->nid,
-    t('Do you realy want to promote %title to frontpage?', array('%title' => $node->title)),
-    ($node->promote? t('Unpromote'): t('Promote')),
-    t('Cancel')
-  );
-}
-
-/**
- * Execute node promote
- */
-function dcz_frontpage_promote_confirm_submit($form, &$form_state) {
-  if ($form_state['values']['confirm']) {
-    $node = node_load($form_state['values']['nid'], NULL, TRUE);
-    $function = $form_state['values']['promote']? 'node_promote_action': 'node_unpromote_action';
-    $function($node);
+      case 'unflag':
+        node_unpromote_action($node);
+        break;
+    }
     node_save_action($node);
   }
-  $form_state['redirect'] = 'node/' . $form_state['values']['nid'];
-}
-
-/**
- * Implements hook_link()
- */
-function dcz_frontpage_link($type, $node = NULL, $teaser = FALSE) {
-  $links = array();
-
-  if ($type == 'node' && !$teaser) {
-    if (dcz_frontpage_promote_access($node)) {
-      $links['dcz_frontpage_node_promote'] = array(
-        'title' => $node->promote? t("Unpromote node from frontpage"): t("Promote node to frontpage"),
-        'href' => 'node/' . $node->nid . '/promote',
-      );
-    }
-  }
-
-  return $links;
 }
