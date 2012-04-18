@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the dcz_catalog feature.
+ */
+
+include_once 'dcz_catalog.features.inc';
