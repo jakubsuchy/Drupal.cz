@@ -11,12 +11,12 @@ function dcz_base_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'bueditor_roles';
   $strongarm->value = array(
-    4 => array(
+    7 => array(
       'weight' => '0',
       'editor' => '0',
       'alt' => '0',
     ),
-    3 => array(
+    4 => array(
       'weight' => '0',
       'editor' => '0',
       'alt' => '0',
@@ -26,7 +26,12 @@ function dcz_base_strongarm() {
       'editor' => '0',
       'alt' => '0',
     ),
-    7 => array(
+    3 => array(
+      'weight' => '0',
+      'editor' => '0',
+      'alt' => '0',
+    ),
+    9 => array(
       'weight' => '0',
       'editor' => '0',
       'alt' => '0',
@@ -36,13 +41,23 @@ function dcz_base_strongarm() {
       'editor' => '0',
       'alt' => '0',
     ),
+    11 => array(
+      'weight' => '0',
+      'editor' => '0',
+      'alt' => '0',
+    ),
+    10 => array(
+      'weight' => '0',
+      'editor' => '0',
+      'alt' => '0',
+    ),
     2 => array(
-      'editor' => '3',
+      'editor' => '1',
       'alt' => '0',
       'weight' => 11,
     ),
     1 => array(
-      'editor' => '3',
+      'editor' => '11',
       'alt' => '0',
       'weight' => 12,
     ),
