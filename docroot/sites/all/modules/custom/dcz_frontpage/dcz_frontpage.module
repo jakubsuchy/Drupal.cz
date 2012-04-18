@@ -1,0 +1,26 @@
+<?php
+/**
+ * @file
+ * Code for the dcz_frontpage module.
+ */
+
+include_once 'dcz_frontpage.features.inc';
+
+/**
+ * Implementats hook_flag().
+ */
+function dcz_frontpage_flag($action, $flag, $content_id, $account) {
+  if ($flag->name == 'dcz_frontpage') {
+    $node = node_load($content_id);
+    switch($action) {
+      case 'flag':
+        node_promote_action($node);
+        break;
+
+      case 'unflag':
+        node_unpromote_action($node);
+        break;
+    }
+    node_save_action($node);
+  }
+}
