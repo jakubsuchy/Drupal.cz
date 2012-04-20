@@ -798,16 +798,24 @@ color: #ff6600;
 .field-field-url-0 {
 	padding-right: 1em;
 }
+
+/* catalog adaptive layout */
 .katalogtext {
-float: left;
-width: 400px;
+	float: left;
+	width: 100%;
 }
+.katalogtext .field {
+	margin-right: 220px;
+}
+.catalog .field-field-screenshoty {
+	float: left;
+	width: 220px;
+	margin-left: -220px;
+}
+
 .katalogtext h3 {
 padding: 0;
-margin: 0;
-}
-.field-field-screenshoty {
-  padding-left: 20px;
+margin: .7em 0 0;
 }
 p.katalog-text {
 margin: 1em 0;

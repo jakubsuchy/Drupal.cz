@@ -1,9 +1,9 @@
 <div class="article <?php if ($sticky) { print " sticky"; } ?><?php if (!$status) { print " node-unpublished"; } ?>">
   <?php if ($submitted) { ?><span class="submitted"><?php print $submitted?></span><?php } ?>
   <div class="pcontent">
-    <div class="clear-block">
+    <div class="catalog clear-block">
       <div class="katalogtext">
-        <h3>O webu</h3>
+        <h3 class="field">O webu</h3>
         <div class="field field-type-text field-field-popis-webu">
           <div class="field-items">
             <?php foreach ((array)$field_popis_webu as $item) { ?>
