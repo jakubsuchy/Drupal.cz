@@ -290,6 +290,7 @@ color: #628a9a;
 background: url(images/article-spacer.gif) center center no-repeat;
 	    text-align: center;
 padding: 10px 0 10px 0;
+clear: both;
 }
 
 .hide {display:none;}
@@ -792,9 +793,10 @@ color: #ff6600;
        font-weight: bold;
 }
 .field-field-popis-webu {
-padding: 1em 0;
+	padding: 1em 1em 0 0;
 }
 .field-field-url-0 {
+	padding-right: 1em;
 }
 .katalogtext {
 float: left;
