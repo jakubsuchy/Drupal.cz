@@ -74,6 +74,5 @@ function cookie_cache_bypass_adv_setcookie() {
   } else {
     $set_cookie_path = request_uri().'/';
   }
-  print 'moo';
   setcookie('NO_CACHE', 'Y', $_SERVER['REQUEST_TIME'] + $lifetime , $set_cookie_path, $cookie_domain);
 }

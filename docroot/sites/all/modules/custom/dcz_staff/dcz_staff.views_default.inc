@@ -148,7 +148,7 @@ function dcz_staff_views_default_views() {
     'rid' => array(
       'operator' => 'or',
       'value' => array(
-        12 => '12',
+        16 => '16',
       ),
       'group' => '0',
       'exposed' => FALSE,
