@@ -943,3 +943,53 @@ margin: 0px;
 
 .view-sluzby .views-field-title { font-size: 120%; font-weight: bold; }
 .view-sluzby .view-content { margin-top: 30px; }
+
+
+/* Staff pages */
+#block-block-26, #block-block-31, #block-block-36, #block-block-41 {
+  clear: both;
+  margin-bottom: 0px;
+}
+
+#block-views-staff-block_1.db-content, 
+#block-views-staff-block_2.db-content, 
+#block-views-staff-block_3.db-content, 
+#block-views-staff-block_4.db-content, 
+#block-views-staff-block_5.db-content {
+  background: none repeat scroll 0% 0% transparent;
+  border: medium none;
+  float: left;
+  margin: 0px 0px 40px 0px;
+  width: 770px;
+}
+
+ /* removes unnecessary padding */
+#block-views-staff-block_1.db-content div.db-body > div, 
+#block-views-staff-block_2.db-content div.db-body > div, 
+#block-views-staff-block_3.db-content div.db-body > div, 
+#block-views-staff-block_4.db-content div.db-body > div, 
+#block-views-staff-block_5.db-content div.db-body > div, 
+.view-id-staff .view-content, 
+div.db-body div.view-id-staff {
+  padding: 0px;
+}
+
+.view-id-staff .views-row {
+  border: 1px solid #EEEEEE;
+  float: left;
+  height: 140px;
+  margin: 0px 15px 15px 0px;
+  padding: 10px;
+  text-align: center;
+  width: 140px;
+}
+
+.view-id-staff .views-row .views-field-picture {
+  margin: 0px;
+  padding: 0px;
+}
+
+ /* if avatar is small, makes images equal height */
+.view-id-staff .views-row .views-field-picture img {
+  height: 80px;
+}
