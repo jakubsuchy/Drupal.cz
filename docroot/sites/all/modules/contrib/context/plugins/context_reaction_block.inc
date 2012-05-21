@@ -1,5 +1,4 @@
 <?php
-// $Id: context_reaction_block.inc,v 1.1.2.35 2010/08/06 16:13:32 jmiccolis Exp $
 
 /**
  * Expose blocks as context reactions.

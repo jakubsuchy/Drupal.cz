@@ -1,5 +1,4 @@
 <?php
-// $Id: context_reaction_block.theme.inc,v 1.1.2.13 2010/08/23 14:29:09 yhahn Exp $
 
 /**
  * Block form.
