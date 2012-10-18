@@ -77,7 +77,7 @@ DirectoryIndex index.php
   RewriteCond %{HTTP_HOST} ^drupalczstg.prod.acquia-sites.com$ [NC]
   RewriteRule ^(.*)$ http://stage.drupal.cz/$1 [L,R=301]
   RewriteCond %{HTTP_HOST} ^drupalcz.prod.acquia-sites.com$ [NC]
-  RewriteRule ^(.*)$ http://yoursite.com/$1 [L,R=301]
+  RewriteRule ^(.*)$ http://www.drupal.cz/$1 [L,R=301]
   ### End custom rules
 
   #
