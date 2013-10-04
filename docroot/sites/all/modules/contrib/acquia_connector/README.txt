@@ -31,7 +31,7 @@ and site modifications - to speed support communication and issue resolution.
 Installation
 --------------------------------------------------------------------------------
 
-Consult the online documentation at https://network.acquia.com/documentation/network/gs-connect for installation instructions.
+Consult the online documentation at https://docs.acquia.com/network/install for installation instructions.
 
 Maintainers
 --------------------------------------------------------------------------------
