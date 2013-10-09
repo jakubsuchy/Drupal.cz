@@ -79,11 +79,11 @@ DirectoryIndex index.php
 
   # Rewrite the Acquia provided domains so that they can't be accessed.
   RewriteCond %{HTTP_HOST} ^drupalczdev.prod.acquia-sites.com$ [NC]
-  RewriteRule ^(.*)$ http://dev.drupal.cz/$1 [L,R=301]
+  RewriteRule ^(.*)$ https://dev.drupal.cz/$1 [L,R=301]
   RewriteCond %{HTTP_HOST} ^drupalczstg.prod.acquia-sites.com$ [NC]
-  RewriteRule ^(.*)$ http://stage.drupal.cz/$1 [L,R=301]
+  RewriteRule ^(.*)$ https://stage.drupal.cz/$1 [L,R=301]
   RewriteCond %{HTTP_HOST} ^drupalcz.prod.acquia-sites.com$ [NC]
-  RewriteRule ^(.*)$ http://yoursite.com/$1 [L,R=301]
+  RewriteRule ^(.*)$ https://www.drupal.cz/$1 [L,R=301]
   ### End custom rules
 
   #
