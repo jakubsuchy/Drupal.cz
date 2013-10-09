@@ -6,10 +6,6 @@
  <?php print $styles ?>
  <?php print $scripts; ?>
  <script type="text/javascript"><?php /* Needed to avoid Flash of Unstyle Content in IE */ ?> </script>
- <script type="text/javascript">
- _uacct = "UA-156212-2";
- urchinTracker();
- </script>
 </head>
 <body>
 <div id="container">
