@@ -11,7 +11,7 @@ $(function() {
       }
       var b = function() {
         if (q.value == '') {
-          q.style.background = '#FFFFFF url(http://www.google.com/coop/intl/' + Drupal.settings.googleCSE.language + '/images/google_custom_search_watermark.gif) left no-repeat';
+          q.style.background = '#FFFFFF url(https://www.google.com/coop/intl/' + Drupal.settings.googleCSE.language + '/images/google_custom_search_watermark.gif) left no-repeat';
         }
       };
       var f = function() {
