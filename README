@@ -17,3 +17,8 @@ Pravidla vývoje
 - Všechny komentáře a commit messages pište v angličtině.
 - Veškeré změny v databázi musí být součástí update.php či feature.
 - Pro velké změny používejte Features
+
+Jak udělat deploy? (Pro maintainery)
+====================================
+
+Dokumentace zde https://docs.google.com/a/acquia.com/document/d/1wY4IMbYJnbENQPIu0iIRqtBpI-v4JAPezt2NRMZANEg/edit#heading=h.lg7xxsfx9r1d
