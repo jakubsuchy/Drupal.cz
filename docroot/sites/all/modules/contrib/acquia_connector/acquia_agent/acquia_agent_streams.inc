@@ -264,12 +264,6 @@ function acquia_agent_http_request($context, $url, $headers = array(), $method =
       $result->error = $text;
   }
 
-  // DEBUG REMOVE ME!
-  //print '<pre>';
-  //print 'DATA: <br>';
-  //print_r($result);
-  // DEBUG REMOVE ME!
-
   $result->code = $code;
   return $result;
 }
@@ -282,13 +276,15 @@ function acquia_agent_http_request($context, $url, $headers = array(), $method =
  * @return
  *   TRUE or FALSE.
  */
-function acquia_agent_valid_response($data) {
+function acquia_agent_valid_response($data, $key = NULL) {
   $authenticator = $data['authenticator'];
   $result = $data['result'];
   $result_auth = $result['authenticator'];
   $valid = ($authenticator['nonce'] == $result_auth['nonce']);
   $valid = $valid && ($authenticator['time'] < $result_auth['time']);
-  $key = acquia_agent_settings('acquia_key');
+  if (empty($key)) {
+    $key = acquia_agent_settings('acquia_key');
+  }
   $hash = _acquia_agent_hmac($key, $result_auth['time'], $result_auth['nonce'], $result['body']);
   return $valid && ($hash == $result_auth['hash']);
 }
@@ -309,7 +305,14 @@ function _acquia_agent_request($url, $method, $data) {
     $result = _acquia_agent_xmlrpc($ctx, $url, $method, $data);
   }
   if ($errno = xmlrpc_errno()) {
-    watchdog('acquia agent', '@message (@errno): %server - %method - <pre>@data</pre>', array('@message' => xmlrpc_error_msg(), '@errno' => xmlrpc_errno(), '%server' => $url, '%method' => $method, '@data' => print_r($data, TRUE)), WATCHDOG_ERROR);
+    $acquia_debug = variable_get('acquia_agent_debug', FALSE);
+    if ($acquia_debug) {
+      watchdog('acquia agent', '@message (@errno): %server - %method - <pre>@data</pre>', array('@message' => xmlrpc_error_msg(), '@errno' => xmlrpc_errno(), '%server' => $url, '%method' => $method, '@data' => var_export($data, TRUE)), WATCHDOG_ERROR);
+    }
+    else {
+      watchdog('acquia agent', '@message (@errno): %server - %method', array('@message' => xmlrpc_error_msg(), '@errno' => xmlrpc_errno(), '%server' => $url, '%method' => $method), WATCHDOG_ERROR);
+    }
+    $result = FALSE;
   }
   
   return $result;

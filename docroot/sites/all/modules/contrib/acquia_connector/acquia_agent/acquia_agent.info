@@ -3,3 +3,10 @@ description = "Allows Drupal to securely communicate with the Acquia Network, an
 package = Acquia Network Connector
 php = 5.2
 core = 6.x
+
+; Information added by drupal.org packaging script on 2013-09-18
+version = "6.x-2.13"
+core = "6.x"
+project = "acquia_connector"
+datestamp = "1379523068"
+
