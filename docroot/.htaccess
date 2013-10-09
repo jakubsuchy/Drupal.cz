@@ -63,8 +63,14 @@ DirectoryIndex index.php
   #
   # If you want the site to be accessed WITH the www. only, adapt and
   # uncomment the following:
+
   RewriteCond %{HTTP_HOST} ^drupal\.cz$ [NC]
-  RewriteRule .* http://www.drupal.cz/ [L,R=301]
+  RewriteRule .* https://www.drupal.cz/ [L,R=301]
+
+  # Force SSL
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 
   ### Begin custom rules
@@ -73,11 +79,11 @@ DirectoryIndex index.php
 
   # Rewrite the Acquia provided domains so that they can't be accessed.
   RewriteCond %{HTTP_HOST} ^drupalczdev.prod.acquia-sites.com$ [NC]
-  RewriteRule ^(.*)$ http://dev.drupal.cz/$1 [L,R=301]
+  RewriteRule ^(.*)$ https://dev.drupal.cz/$1 [L,R=301]
   RewriteCond %{HTTP_HOST} ^drupalczstg.prod.acquia-sites.com$ [NC]
-  RewriteRule ^(.*)$ http://stage.drupal.cz/$1 [L,R=301]
+  RewriteRule ^(.*)$ https://stage.drupal.cz/$1 [L,R=301]
   RewriteCond %{HTTP_HOST} ^drupalcz.prod.acquia-sites.com$ [NC]
-  RewriteRule ^(.*)$ http://www.drupal.cz/$1 [L,R=301]
+  RewriteRule ^(.*)$ https://www.drupal.cz/$1 [L,R=301]
   ### End custom rules
 
   #
