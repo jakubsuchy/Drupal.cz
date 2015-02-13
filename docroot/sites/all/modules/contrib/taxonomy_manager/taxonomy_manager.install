@@ -1,0 +1,44 @@
+<?php
+
+// $Id: $
+
+/**
+ * @file defines necessary schema the Taxonomy Manager
+ */
+
+/**
+ * Implementation of hook_install
+ */
+function taxonomy_manager_install() {
+  drupal_install_schema('taxonomy_manager');
+}
+
+/**
+ * Implementation of hook_uninstall
+ */
+function taxonomy_manager_uninstall() {
+  drupal_uninstall_schema('taxonomy_manager');
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+function taxonomy_manager_schema() {
+  $schema['taxonomy_manager_merge'] = array(
+    'fields' => array(
+      'main_tid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'merged_tid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('merged_tid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * just run through the update process so that the menu and theme registry cache gets cleared
+ */
+function taxonomy_manager_update_6001() {
+  return array();
+}

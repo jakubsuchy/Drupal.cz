@@ -1,0 +1,11 @@
+name = Taxonomy Manager
+description = Tool for administrating taxonomy terms.
+core = "6.x"
+dependencies[] = taxonomy
+
+; Information added by drupal.org packaging script on 2013-02-20
+version = "6.x-2.3"
+core = "6.x"
+project = "taxonomy_manager"
+datestamp = "1361375058"
+
